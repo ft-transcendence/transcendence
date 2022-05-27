@@ -11,6 +11,15 @@ services:
     networks:
       my_network:
 
+  back:
+    container_name: back_container
+    build: ./back
+    ports:
+      - "4000:4000"
+    restart: always
+    networks:
+      my_network:
+
   nginx:
     container_name: nginx_container
     build: nginx
