@@ -33,6 +33,13 @@ Nginx reverse proxy redirects to the front.
 Front-end boiler plate was generated using `npx create-react-app front`.
 - `cd front`
 - run `npm run start`
-- go to `http://localhost:3000/`
+- go to `http://localhost:1024` or `http://localhost:3000/`
 
 This way, any changes in the src/App.js file is immediatly visible.
+
+### Back-end
+
+Back-end boiler plate was generated using `npx @nestjs/cli new back`.
+- `cd back`
+- run `npm run start` or `npm run start:dev` to watch for changes in your files
+- go to `http://localhost:1024/back` or `http://localhost:4000/`
