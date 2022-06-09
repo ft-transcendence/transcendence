@@ -1,15 +1,13 @@
-FROM debian:latest
+###
+## FRONT END DOCKERFILE
+###
 
-WORKDIR /front
+FROM node:lts-alpine
 
-RUN apt update && apt install -y npm
+COPY ./     /app/
 
-COPY . /front
+WORKDIR /app
 
-RUN npm i
-
-RUN npm run build
-
-EXPOSE 3000
+RUN npm install
 
 CMD ["npm", "run", "start"]

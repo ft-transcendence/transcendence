@@ -1,15 +1,13 @@
-FROM debian:latest
+###
+## BACK END DOCKERFILE
+###
 
-WORKDIR /back
+FROM node:lts-alpine
 
-RUN apt update && apt install -y npm
+COPY ./     /app/
 
-COPY . /back
+WORKDIR /app
 
-RUN npm i
+RUN npm install
 
-RUN npm run build
-
-EXPOSE 4000
-
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "start:dev"]
