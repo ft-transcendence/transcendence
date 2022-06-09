@@ -7,13 +7,13 @@ networks:
   backend:
 
 services:
-
+# FRONTEND
   front:
-    image: node:lts-alpine
+#    image: node:lts-alpine
     container_name: frontend
-    working_dir: /app
-    command: sh -c "npm install && npm run start"
-#   build: ./front
+#    working_dir: /app
+#    command: sh -c "npm install && npm run start"
+    build: ./front
     volumes:
       - ./front:/app
     ports:
@@ -21,13 +21,13 @@ services:
     restart: unless-stopped
     networks:
       - backend
-
+# BACKEND
   back:
-    image: node:lts-alpine
+#    image: node:lts-alpine
     container_name: backend
-    working_dir: /app
-    command: sh -c "npm install && npm run start:dev" 
-#   build: ./back
+#    working_dir: /app
+#    command: sh -c "npm install && npm run start:dev" 
+    build: ./back
     volumes:
       - ./back:/app
     ports:
@@ -35,7 +35,7 @@ services:
     restart: unless-stopped
     networks:
       - backend
-
+# POSTGRES
   postgres:
     image: postgres:14-alpine
     container_name: postgres
@@ -50,16 +50,16 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     networks:
       - backend
-
-# TO BE CONFIGURED
-
+# NGINX
   nginx:
-    image: nginx:lastest
+    image: nginx:stable-alpine
     container_name: nginx
-    build: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+#   build: ./nginx
     ports:
       - "1024:1024"
     restart: unless-stopped
     networks:
     - backend
-
+# 
