@@ -9,8 +9,13 @@ networks:
 services:
 
   front:
+    image: node:lts-alpine
     container_name: frontend
-    build: ./front
+    working_dir: /app
+    command: sh -c "npm install && npm run start"
+#   build: ./front
+    volumes:
+      - ./front:/app
     ports:
       - "3000:3000"
     restart: unless-stopped
@@ -18,8 +23,13 @@ services:
       - backend
 
   back:
+    image: node:lts-alpine
     container_name: backend
-    build: ./back
+    working_dir: /app
+    command: sh -c "npm install && npm run start:dev" 
+#   build: ./back
+    volumes:
+      - ./back:/app
     ports:
       - "4000:4000"
     restart: unless-stopped
@@ -43,12 +53,13 @@ services:
 
 # TO BE CONFIGURED
 
-#  nginx:
-#    container_name: nginx
-#    build: nginx
-#    ports:
-#      - "1024:1024"
-#    restart: unless-stopped
-#    networks:
-#    - backend
+  nginx:
+    image: nginx:lastest
+    container_name: nginx
+    build: nginx
+    ports:
+      - "1024:1024"
+    restart: unless-stopped
+    networks:
+    - backend
 
