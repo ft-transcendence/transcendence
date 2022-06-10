@@ -56,10 +56,12 @@ services:
     container_name: nginx
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/ssl-certs/cert.crt:/cert.crt
+      - ./nginx/ssl-certs/cert.key:/cert.key
 #   build: ./nginx
     ports:
       - "1024:1024"
     restart: unless-stopped
     networks:
     - backend
-# 
+# PGADMIN
