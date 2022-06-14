@@ -21,6 +21,8 @@ services:
     restart: unless-stopped
     networks:
       - backend
+    depends_on:
+      - back
 # BACKEND
   back:
     image: node:lts-alpine
@@ -35,6 +37,8 @@ services:
     restart: unless-stopped
     networks:
       - backend
+    depends_on:
+      - postgres
 # POSTGRES
   postgres:
     image: postgres:14-alpine
@@ -50,6 +54,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     networks:
       - backend
+    depends_on:
+      - nginx
 # NGINX
   nginx:
     image: nginx:stable-alpine
@@ -61,6 +67,7 @@ services:
 #   build: ./nginx
     ports:
       - "1024:1024"
+    command: sh -c "tail -f /dev/null"
     restart: unless-stopped
     networks:
     - backend
@@ -72,5 +79,10 @@ services:
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      - PGADMIN_LISTEN_PORT=${PGADMIN_LISTEN_PORT}
     ports:
-      - "5050:80"  
+      - "5050:5050"
+    networks:
+      - backend
+    depends_on:
+      - postgres
