@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { User, Bookmark } from '@prisma/client'		//turned into types by prisma
+import { PrismaService } from "src/prisma/prisma.service";
 
 /* Providers, or services, are responsible for executing the business logic, the execution, the DOING stuff :
 *  they can be injected as a dependency, meaning objects can create various relationships with each other
@@ -8,6 +9,9 @@ import { User, Bookmark } from '@prisma/client'		//turned into types by prisma
 
 @Injectable()
 export class AuthService{
+	// constructor(private prisma: PrismaService) {
+
+	// }
 	signin() {
 		return { msg : 'I am signing in'};
 	}   
