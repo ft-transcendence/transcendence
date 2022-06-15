@@ -9,9 +9,8 @@ import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class AuthService{
-	// constructor(private prisma: PrismaService) {
+	constructor(private prisma: PrismaService) {}		//the PrismaService is injectable, meaning this instantiates it into the prisma var
 
-	// }
 	signin() {
 		return { msg : 'I am signing in'};
 	}   

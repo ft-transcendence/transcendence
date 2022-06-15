@@ -18,8 +18,8 @@ import { PrismaModule } from './prisma/prisma.module';
 @Module({
   imports: [AuthModule, UserModule, BookmarkModule, PrismaModule],
 //greg- imports: [UsersModule, DatabaseModule],
-  // controllers: [AppController],
-  // providers: [AppService],
+  // controllers: [AppController],                  //useless as we deleted these files
+  // providers: [AppService],                       //useless as we deleted these files
 })
 export class AppModule {}   //exporting means this class will be available for all other ones in the project
 
