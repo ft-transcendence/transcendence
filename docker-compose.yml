@@ -34,6 +34,7 @@ services:
       - ./back:/app
     ports:
       - "4000:4000"
+      - "5555:5555"
     restart: unless-stopped
     networks:
       - backend
