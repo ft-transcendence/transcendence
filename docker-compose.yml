@@ -72,18 +72,18 @@ services:
     restart: unless-stopped
     networks:
     - backend
-## PGADMIN
-#  pgadmin:
-#    container_name: pgadmin4
-#    image: dpage/pgadmin4
-#    restart: always
-#    environment:
-#      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-#      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
-#      - PGADMIN_LISTEN_PORT=${PGADMIN_LISTEN_PORT}
-#    ports:
-#      - "5050:5050"
-#    networks:
-#      - backend
-#    depends_on:
-#      - postgres
+# PGADMIN
+  pgadmin:
+    container_name: pgadmin4
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      - PGADMIN_LISTEN_PORT=${PGADMIN_LISTEN_PORT}
+    ports:
+      - "5050:5050"
+    networks:
+      - backend
+    depends_on:
+      - postgres
