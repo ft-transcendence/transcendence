@@ -21,11 +21,15 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email String
+  email String @unique
   hash String
 
   firstName String? //optional -> ?
   lastName String?  //same
+
+  bookmarks Bookmark[]  //the user has an array of bookmarks
+
+  @@map("users")    //mapped to another name
 }
 
 model Bookmark {
@@ -36,4 +40,9 @@ model Bookmark {
   title String
   description String?
   link String
+
+  userId Int
+  user User @relation(fields: [userId], references: [id])   //sets ManyToOne logic
+
+  @@map("bookmark")
 }
