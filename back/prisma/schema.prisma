@@ -17,17 +17,33 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id				Int				@id @default(autoincrement())
 
-  email String @unique
-  hash String
+  createdAt	DateTime	@default(now())
+  updatedAt	DateTime	@updatedAt
 
-  firstName String? //optional -> ?
-  lastName String?  //same
+  email		 	String 		@unique
+	username	String
+  hash			String
+	picture		String
+
+  // firstName String? //optional -> ?
+  // lastName 	String?  //same
+
+	gamesWon		Int
+	gamesLost		Int
+	gamesPlayed	Int
+//game history ? Une partie = 2 id, un score
 
   bookmarks Bookmark[]  //the user has an array of bookmarks
+
+	friends		User[]		@relation(name: "relations", references: [id])  //array of friends based on their id 
+	blocked		User[]		@relation(name: "relations", references: [id])
+
+//channels irc
+
+	banned		Boolean
+	admin			Boolean
 
   @@map("users")    //mapped to another name
 }
@@ -45,4 +61,4 @@ model Bookmark {
   user User @relation(fields: [userId], references: [id])   //sets ManyToOne logic
 
   @@map("bookmark")
-}
+  }
