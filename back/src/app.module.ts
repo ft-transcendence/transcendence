@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { GameGateway } from './game/game.gateway';
 
 /* Modules are classes, here app.module, annotated with the module decorator.
 * Like any decorator, this adds metadata to a class or function.
@@ -17,6 +18,7 @@ import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [AuthModule, UserModule, BookmarkModule, PrismaModule],
+  providers: [GameGateway],
 //greg- imports: [UsersModule, DatabaseModule],
   // controllers: [AppController],                  //useless as we deleted these files
   // providers: [AppService],                       //useless as we deleted these files

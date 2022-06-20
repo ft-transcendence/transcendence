@@ -2,8 +2,15 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Hamburger from './Hamburger';
+import { io } from "socket.io-client";
+import { getImpliedNodeFormatForFile } from 'typescript';
+import { ServerResponse } from 'http';
+
+const socket = io("ws://localhost:4000");
+
 
 function App() {
+  socket.emit("game", {}, (data: string) => {console.log(data);}); // for testing purpose, must be removed
   return (
     <div className="App">
       <header className="App-header">
@@ -15,7 +22,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Learn Reacto
         </a>
       </header>
     </div>
