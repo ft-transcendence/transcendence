@@ -19,7 +19,6 @@ datasource db {
 model User {
   id				Int				@id @default(autoincrement())
 
-<<<<<<< HEAD
   createdAt	DateTime	@default(now())
   updatedAt	DateTime	@updatedAt
 
@@ -57,21 +56,8 @@ model Channel {
   members   User[]  @relation("member")
   blocked   User[]  @relation("blocked")
 
-=======
-  email String @unique
-  hash String
-
-  firstName String? //optional -> ?
-  lastName String?  //same
-
-  bookmarks Bookmark[]  //the user has an array of bookmarks
-
-  @@map("users")    //mapped to another name
->>>>>>> :card_file_box: added basic signin/signup logics
 }
 
-
-<<<<<<< HEAD
 
 // model Bookmark {
 //   id Int @id @default(autoincrement())
@@ -87,14 +73,4 @@ model Channel {
 
 //   @@map("bookmark")
 //   }
-=======
-  title String
-  description String?
-  link String
 
-  userId Int
-  user User @relation(fields: [userId], references: [id])   //sets ManyToOne logic
-
-  @@map("bookmark")
-}
->>>>>>> :card_file_box: added basic signin/signup logics
