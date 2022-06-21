@@ -5,7 +5,6 @@ import { AuthModule } from './auth/auth.module';
 //greg- import { UsersModule } from './users/users.module';
 //greg- import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
-import { BookmarkModule } from './bookmark/bookmark.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 
@@ -17,13 +16,12 @@ import { ConfigModule } from '@nestjs/config';
 */
 
 @Module({
-	imports: [AuthModule, 
-						UserModule, 
-						BookmarkModule, 
-						PrismaModule, 
-						ConfigModule.forRoot({isGlobal: true}),	//for integration of the .env + global so available all around
-					],
-//greg- imports: [UsersModule, DatabaseModule],
+	imports:	[AuthModule, 
+				UserModule, 
+				PrismaModule, 
+				ConfigModule.forRoot({isGlobal: true}),	//for integration of the .env + global so available all around
+				],
+
 	// controllers: [AppController],                  //useless as we deleted these files
 	// providers: [AppService],                       //useless as we deleted these files
 })
