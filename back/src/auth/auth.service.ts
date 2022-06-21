@@ -1,9 +1,13 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { User } from '@prisma/client'		//turned into types by prisma
 =======
 import { User, Bookmark } from '@prisma/client'		//turned into types by prisma
 >>>>>>> :card_file_box: added basic signin/signup logics
+=======
+import { User } from '@prisma/client'		//turned into types by prisma
+>>>>>>> 🚧 expanding user model
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { PrismaService } from "src/prisma/prisma.service";
 import { domainToASCII } from "url";
@@ -28,9 +32,13 @@ export class AuthService{
 					email: dto.email,
 					hash,
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> :card_file_box: added basic signin/signup logics
+=======
+
+>>>>>>> 🚧 expanding user model
 				},
 			});
 
