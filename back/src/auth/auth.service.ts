@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
-import { User, Bookmark } from '@prisma/client'		//turned into types by prisma
+import { User } from '@prisma/client'		//turned into types by prisma
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { PrismaService } from "src/prisma/prisma.service";
 import { domainToASCII } from "url";
@@ -23,6 +23,7 @@ export class AuthService{
 				data: {
 					email: dto.email,
 					hash,
+
 				},
 			});
 
