@@ -12,7 +12,7 @@ services:
     image: node:lts-alpine
     container_name: frontend
     working_dir: /app
-    command: sh -c "npm install && npm run start"
+    command: sh -c "yarn install && yarn run start"
 #    build: ./front
     volumes:
       - ./front:/app
@@ -28,7 +28,7 @@ services:
     image: node:lts-alpine
     container_name: backend
     working_dir: /app
-    command: sh -c "npm install && npm install -g @nestjs/cli && npm run start:dev" 
+    command: sh -c "yarn install && yarn add @nestjs/cli && yarn run start:dev" 
 #    build: ./back
     volumes:
       - ./back:/app
@@ -67,7 +67,7 @@ services:
 ##   build: ./nginx
     ports:
       - "1024:1024"
-    command: sh -c "tail -f /dev/null"
+#    command: sh -c "tail -f /dev/null"
     restart: unless-stopped
     networks:
     - backend
