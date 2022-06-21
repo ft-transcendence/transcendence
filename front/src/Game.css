@@ -1,9 +1,37 @@
 .Radial-background {
     height: 100vh;
-    background-image: radial-gradient(circle at top, #c04545 -5%, #39507f 35%, #193031 85%);
+    /* opacity: 90%; */
+    background-image: radial-gradient(circle at 50% 0%,#c04545 0%, #39507f 50%, #193031 100%);
+}
+.Page-top {
+    height: 25%
 }
 
 .Game-board {
 
  margin-top:0%
+}
+
+.Info-card {
+
+    margin-top:0%
+}
+
+.Field {
+    margin: auto;
+    height: 40vh;
+    width: 40%;
+    opacity: revert-layer;
+    background-image: radial-gradient(circle at 50% -36%, #c04545 -30%, #39507f 94%, #193031 184%);
+    border: 3px solid #6de5f2;
+    border-radius: 30px;
+    box-shadow: 20px 20px 10px 1px #00d6ff, inset 8px 8px 12px 5px #00d6ff;
+
+}
+
+.Pad {
+    height: 30px;
+    width:3px;
+    border: 1px solid #5dbccc;
+    box-shadow: 0 0 2px 2px #5dbccc;
 }
