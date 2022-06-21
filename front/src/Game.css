@@ -1,0 +1,9 @@
+.Radial-background {
+    height: 100vh;
+    background-image: radial-gradient(circle at top, #c04545 -5%, #39507f 35%, #193031 85%);
+}
+
+.Game-board {
+
+ margin-top:0%
+}
