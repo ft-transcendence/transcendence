@@ -17,23 +17,13 @@ import { ConfigModule } from '@nestjs/config';
 */
 
 @Module({
-<<<<<<< HEAD
 	imports: [AuthModule, 
-						UserModule, 
-						BookmarkModule, 
-						PrismaModule, 
-						ConfigModule.forRoot({isGlobal: true}),	//for integration of the .env + global so available all around
-					],
+			UserModule, 
+			PrismaModule, 
+			ConfigModule.forRoot({isGlobal: true}),	//for integration of the .env + global so available all around
+			],
 	providers: [GameGateway],		
 //greg- imports: [UsersModule, DatabaseModule],
-=======
-	imports:	[AuthModule, 
-				UserModule, 
-				PrismaModule, 
-				ConfigModule.forRoot({isGlobal: true}),	//for integration of the .env + global so available all around
-				],
-
->>>>>>> 🚧 expanding user model
 	// controllers: [AppController],                  //useless as we deleted these files
 	// providers: [AppService],                       //useless as we deleted these files
 })
