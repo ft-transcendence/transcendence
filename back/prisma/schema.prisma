@@ -17,23 +17,60 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id				Int				@id @default(autoincrement())
 
-  email String
-  hash String
+  createdAt	DateTime	@default(now())
+  updatedAt	DateTime	@updatedAt
 
-  firstName String? //optional -> ?
-  lastName String?  //same
+  email		 	String 		@unique
+	username	String?   
+  hash			String
+	picture		String?
+
+	gamesWon		Int?
+	gamesLost		Int?
+	gamesPlayed	Int?
+//game history ? Une partie = 2 id, un score
+
+	friends		User[]		@relation(name: "relationships", references: [id])  //array of friends based on their id 
+	blocked		User[]		@relation(name: "relationships", references: [id])
+
+  admin       Channel[] @relation("admin")
+  member      Channel[] @relation("member")
+  chanBlocked Channel[] @relation("blocked")
+
+  @@map("users")    //mapped to another name
 }
 
-model Bookmark {
-  id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Channel {
+  id    Int     @id @default(autoincrement())
 
-  title String
-  description String?
-  link String
+  name  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  private   Boolean
+  password  String
+
+  admins    User[]  @relation("admin")
+  members   User[]  @relation("member")
+  blocked   User[]  @relation("blocked")
+
 }
+
+
+// model Bookmark {
+//   id Int @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   title String
+//   description String?
+//   link String
+
+//   userId Int
+//   user User @relation(fields: [userId], references: [id])   //sets ManyToOne logic
+
+//   @@map("bookmark")
+//   }
+
