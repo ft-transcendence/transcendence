@@ -1,7 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Hamburger from './Hamburger';
 import { io } from "socket.io-client";
 import { getImpliedNodeFormatForFile } from 'typescript';
 import { ServerResponse } from 'http';
