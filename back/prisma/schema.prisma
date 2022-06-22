@@ -59,10 +59,6 @@ model Channel {
 }
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 4192415d22f77021ab0427ebaa28541401dfec9e
 // model Bookmark {
 //   id Int @id @default(autoincrement())
 //   createdAt DateTime @default(now())
@@ -76,9 +72,5 @@ model Channel {
 //   user User @relation(fields: [userId], references: [id])   //sets ManyToOne logic
 
 //   @@map("bookmark")
-<<<<<<< HEAD
 //   }
 
-=======
-//   }
->>>>>>> 4192415d22f77021ab0427ebaa28541401dfec9e
