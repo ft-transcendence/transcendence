@@ -25,18 +25,18 @@ export class AuthController {
 	 * @param dto data transfer object
 	 */
 	@Post('signup')
-	signup(@Body() dto: any) {
+	signup(@Body() dto: AuthDto) {
 		console.log(dto);
-		return this.authService.signup();
+		return this.authService.signup(dto);
 	}
 
 	/**
-	 * /login - sign in to API
+	 * /signin - sign in to API
 	 */
 
 	@Post('login')
-	login(@Body() dto: AuthDto) {
+	signin(@Body() dto: AuthDto) {
 		console.log(dto);
-		return this.authService.login();
+		return this.authService.signin(dto);
 	}
 }
