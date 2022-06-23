@@ -17,36 +17,8 @@ export default function Game() {
                 <div className='ball'>
 
                 </div>
-                <div className='Info-card'>
-                    <div className='Player-left'>
-                        <div className='Info-left'>
-                            <div className='photo'>
-                            
-                            </div>
-                            <div className='name'>
-                            
-                            </div>
-                        </div>
-                        <div className='Score'>
-                        
-                        </div>
-                    </div>
-                    <div className='Player-right'>
-                        <div className='Score'>
-                        
-                        </div>
-                        <div className='Info-right'>
-                            <div className='name'>
-                            
-                            </div>
-                            <div className='photo'>
-                            
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div className='Field'>
-                    <div className='Dead-zone'>
+                    <div className='Friend-zone'>
                     </div>
                     <div className='Pad-zone'>
                         <div className='Pad'></div>
@@ -65,7 +37,35 @@ export default function Game() {
                     <div className='Pad-zone'>
                     <div className='Pad'></div>
                     </div>
-                    <div className='Dead-zone'>
+                    <div className='Friend-zone'>
+                    </div>
+                </div>
+                <div className='Info-card'>
+                    <div className='Player-left'>
+                        <div className='Info-left'>
+                            <div className='photo'>
+                            
+                            </div>
+                            <div className='name'>
+                            
+                            </div>
+                        </div>
+                        <div className='Score'>
+                        
+                        </div>
+                    </div>
+                    <div className='Player-right'>
+                        <div className='Info-right'>
+                            <div className='Score'>
+                            
+                            </div>
+                            <div className='name'>
+                            
+                            </div>
+                            <div className='photo'>
+                            
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

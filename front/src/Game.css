@@ -3,73 +3,120 @@
     background-image: radial-gradient(circle at 50% 0%, rgba(192,69,69,0.90) 0%, rgba(57,80,127,0.90) 40%, rgba(25,48,49,0.90) 100%);
 }
 
-.Page-top {
-    height: 20%
-}
+    .Page-top {
+        height: 20%;
+    }
 
-.Page-mid {
-    margin: auto;
-}
+    .Page-mid {
+        margin: auto;
+        /* position: relative; */
+    }
 
-.Page-foot {
-    height: 20%
-}
+    .Page-foot {
+        height: 20%;
+    }
 
 .Info-card {
-    margin-top: 0%
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin:auto;
+    display: inline-flex;
+    height: 7vh;
+    width: 25%;
+    background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -180%, rgb(57,80,127) 270%);
+    border: 2px solid rgb(0, 255, 255);
+    border-radius: 15px;
+    box-shadow: 0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 4px rgb(0, 190, 255);
 }
 
+    .Player-left {
+        /* background-color:lawngreen; */
+        width: 50%;
+        height: 100%;
+    }
+
+    .Player-right {
+        /* background-color:ivory; */
+        width: 50%;
+        height: 100%;
+    }
+
+    /* .Info-left {
+
+    }
+
+    .Info-right {
+
+    }
+
+    .Photo {
+
+    }
+
+    .Name {
+
+    }
+
+    .Score {
+
+    } */
+
 .Field {
-    margin: auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 2% auto;
     display: inline-flex;
-    height: 50vh;
-    width: 50%;
+    height: 45vh;
+    width: 45%;
     background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -10%, rgb(57,80,127) 65%, rgb(25,48,49) 184%);
     border: 2px solid rgb(0, 255, 255);
     border-radius: 20px;
     box-shadow: 0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 4px rgb(0, 190, 255);
 }
 
-.Dead-zone {
-    width: 2vmax;
-    /* background-color:lawngreen; */
-}
+    .Friend-zone {
+        width: 1vmax;
+        /* background-color:lawngreen; */
+    }
 
-.Pad-zone {
-    /* background-color:ivory; */
-    margin-top: 1%;
-    margin-bottom: 1%;
-}
+    .Pad-zone {
+        /* background-color:ivory; */
+        margin-top: 1%;
+        margin-bottom: 1%;
+    }
 
-.Pad {
+    .Pad {
 
-    height: 15%;
-    width: 0;
-    background-color: rgb(93,210,204);
-    border: .2vh solid rgb(93,210,204);
-    box-shadow: 1px 0 2px 2px rgb(93,210,204);
-}
+        height: 10%;
+        width: 0;
+        background-color: rgb(93,210,204);
+        border: .2vh solid rgb(93,210,204);
+        box-shadow: 1px 0 2px 2px rgb(93,210,204);
+    }
 
-.Center-zone {
-    margin: auto;
-    height: 100%;
-    /* background-color:lightseagreen; */
-}
+    .Center-zone {
+        margin: auto;
+        height: 100%;
+        margin-top: 3.7vh;
+        /* background-color:lightseagreen; */
+    }
 
-.Middle-line {
-    margin: auto auto;
-    height: 42%;
-    width: 0;
-    background-color: rgb(0, 255, 255);
-    border: 1px solid rgb(0, 255, 255);
-    box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);
-}
+    .Middle-line {
+        margin: auto auto;
+        height: 36%;
+        width: 0;
+        background-color: rgb(0, 255, 255);
+        border: 1px solid rgb(0, 255, 255);
+        box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);
+    }
 
-.Center-circle {
-    margin: auto auto;
-    height: 7vh;
-    width: 7vh;
-    border: 2px solid rgb(0, 255, 255);
-    border-radius: 50%;
-    box-shadow: 0px 0px 8px 4px rgb(0, 190, 255), inset 0 0px 8px 6px rgb(0, 190, 255);
-}
+    .Center-circle {
+        margin: auto auto;
+        height: 8vh;
+        width: 8vh;
+        border: 2px solid rgb(0, 255, 255);
+        border-radius: 50%;
+        box-shadow: 0px 0px 8px 4px rgb(0, 190, 255), inset 0 0px 8px 6px rgb(0, 190, 255);
+    }
