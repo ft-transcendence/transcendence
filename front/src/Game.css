@@ -1,37 +1,75 @@
 .Radial-background {
     height: 100vh;
     /* opacity: 90%; */
+    /* margin: auto auto; */
     background-image: radial-gradient(circle at 50% 0%,#c04545 0%, #39507f 50%, #193031 100%);
 }
+
 .Page-top {
-    height: 25%
+    height: 20%
 }
 
-.Game-board {
+.Page-mid {
+    margin: auto;
+}
 
- margin-top:0%
+.Page-foot {
+    height: 20%
 }
 
 .Info-card {
-
-    margin-top:0%
+    margin-top: 0%
 }
 
 .Field {
     margin: auto;
+    display: inline-flex;
     height: 40vh;
     width: 40%;
-    opacity: revert-layer;
     background-image: radial-gradient(circle at 50% -36%, #c04545 -30%, #39507f 94%, #193031 184%);
     border: 3px solid #6de5f2;
     border-radius: 30px;
-    box-shadow: 20px 20px 10px 1px #00d6ff, inset 8px 8px 12px 5px #00d6ff;
+    box-shadow: 5px 5px 12px 2px #00d6ff, inset 0 0 12px 2px #00d6ff;
+}
 
+.Dead-zone {
+    width:2vmax;
+    /* background-color:lawngreen; */
+}
+
+.Pad-zone {
+    /* background-color:ivory; */
+    margin-top: 1%;
+    margin-bottom: 1%;
 }
 
 .Pad {
-    height: 30px;
-    width:3px;
-    border: 1px solid #5dbccc;
-    box-shadow: 0 0 2px 2px #5dbccc;
+
+    height: 15%;
+    width: 0;
+    border: .2vh solid #5dbccc;
+    box-shadow: 1px 0 2px 2px #5dbccc;
+}
+
+.Center-zone {
+    margin: auto;
+    /* background-color:lightseagreen; */
+}
+
+.Middle-line {
+    margin: auto auto;
+    height: 16vh;
+    width: 0;
+    background-color: #6de5f2;
+    border: .5px solid #6de5f2;
+    box-shadow: 0 0 5px 2px #00d6ff;
+}
+
+.Center-circle {
+    margin: auto auto;
+    height: 7vh;
+    width: 7vh;
+    border: 2px solid #6DE5F2;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 2px #00D6FF, inset 0 1px 10px 5px #00D6FF;
 }

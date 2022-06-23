@@ -13,7 +13,7 @@ export default function Game() {
             <div className='Page-top'>
 
             </div>
-            <div className='Game-board'>
+            <div className='Page-mid'>
                 <div className='ball'>
 
                 </div>
@@ -46,24 +46,33 @@ export default function Game() {
                     </div>
                 </div>
                 <div className='Field'>
-                    <div className='Pad'>
-                    <style>pedding-left: 30px;</style>
+                    <div className='Dead-zone'>
                     </div>
-                    <div className='Center-line'>
-
+                    <div className='Pad-zone'>
+                        <div className='Pad'></div>
                     </div>
-                    <div className='Center-circle'>
+                    <div className='Center-zone'>
+                        <div className='Middle-line'>
 
+                        </div>
+                        <div className='Center-circle'>
+
+                        </div>
+                        <div className='Middle-line'>
+
+                        </div>
                     </div>
-                    <div className='Pad'>
-
+                    <div className='Pad-zone'>
+                    <div className='Pad'></div>
+                    </div>
+                    <div className='Dead-zone'>
                     </div>
                 </div>
             </div>
-            <div className='buttons'>
-
+            <div className='Page-foot'>
+                <div className='buttons'>
+                </div>
             </div>
-            
         </div>
     )
 }
