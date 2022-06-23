@@ -1,18 +1,24 @@
 /* GLOBAL MODULES */
 import { ForbiddenException, Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 /* PRISMA */
 import { PrismaService } from "src/prisma/prisma.service";
 /* AUTH Modules */
 import { AuthDto } from './dto'
 import * as argon from 'argon2'
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
-
+/* JASON WEB TOKEN */
+import { JwtService } from "@nestjs/jwt";
 /**
  * AUTHENTIFICATION SERVICE
  */
 @Injectable()
 export class AuthService{
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		private jwtService: JwtService,
+		private config: ConfigService,
+		) {} 
 
 	// basic test route
 	test_route() {
@@ -32,10 +38,8 @@ export class AuthService{
 					hash
 			},
 			});
-
-			// temp security fix
-			delete user.hash;
-			return user;
+			// return a hashed user
+			return this.signin_jwt(user.id, user.email);
 		} catch (error) {
 		// duplicate user email
 			if (error instanceof PrismaClientKnownRequestError) {
@@ -65,8 +69,23 @@ export class AuthService{
 			'Invalid Credentials'
 			);
 		
-		// temp security fix
-		delete user.hash;
-		return user;
+		return this.signin_jwt(user.id, user.email);
 	}
+
+	async signin_jwt(
+		userId: number,
+		email: string,
+		): Promise<string> {
+		// get login data
+		const login_data = {
+			sub: userId,
+			email
+		}
+		// generate jwt secret
+		const secret = this.config.get('JWT_SECRET');
+		// set JWT params (basic)
+		return this.jwtService.signAsync(login_data, {
+			expiresIn: '15m',
+			secret: secret,});
+		}
 }
