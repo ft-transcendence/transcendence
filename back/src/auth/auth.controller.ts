@@ -1,12 +1,15 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
-import { Request } from "express";
-import { AuthService } from "./auth.service";
-import { AuthDto } from "./dto"
 
 /**
  * AUTHENTIFICATION CONTROLLER
  */
 
+/* GLOBAL MODULES */
+import { Body, Controller, Get, Post } from "@nestjs/common";
+/* AUTH MODULES */
+import { AuthService } from "./auth.service";
+import { AuthDto } from "./dto"
+
+// AUTH CONTROLLER
 @Controller('auth')
 export class AuthController {
 	constructor(private authService: AuthService) {}
@@ -34,7 +37,7 @@ export class AuthController {
 	 * /signin - sign in to API
 	 */
 
-	@Post('login')
+	@Post('signin')
 	signin(@Body() dto: AuthDto) {
 		console.log(dto);
 		return this.authService.signin(dto);
