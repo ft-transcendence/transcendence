@@ -14,9 +14,6 @@ export default function Game() {
 
             </div>
             <div className='Page-mid'>
-                <div className='ball'>
-
-                </div>
                 <div className='Field'>
                     <div className='Friend-zone'>
                     </div>
@@ -40,29 +37,33 @@ export default function Game() {
                     <div className='Friend-zone'>
                     </div>
                 </div>
+                <div className='Ball'>
+                    
+                </div>
                 <div className='Info-card'>
                     <div className='Player-left'>
-                        <div className='Info-left'>
-                            <div className='photo'>
+                        <div className='Info'>
+                            <div className='Photo'>
                             
                             </div>
-                            <div className='name'>
-                            
+                            <div className='Login' style={{textAlign: 'left'}}>
+                            shlu
                             </div>
                         </div>
                         <div className='Score'>
-                        
+                        4
                         </div>
                     </div>
                     <div className='Player-right'>
-                        <div className='Info-right'>
-                            <div className='Score'>
+                        <div className='Score'>
+                            3
+                        </div>
+                        <div className='Info'>
                             
+                            <div className='Login' style={{textAlign: 'right'}}>
+                            lrgergfde
                             </div>
-                            <div className='name'>
-                            
-                            </div>
-                            <div className='photo'>
+                            <div className='Photo'>
                             
                             </div>
                         </div>

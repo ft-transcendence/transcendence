@@ -34,33 +34,50 @@
         /* background-color:lawngreen; */
         width: 50%;
         height: 100%;
+        display: inline-flex;
     }
 
     .Player-right {
         /* background-color:ivory; */
         width: 50%;
         height: 100%;
+        display: inline-flex;
     }
+    
+        .Score {
+            /* background-color: green; */
+            margin: 4% auto;
+            width: 20%;
+            height: 70%;
+            font-size: 4.5vh;
+            color: white;
+        }
 
-    /* .Info-left {
+        .Info {
+            /* background-color: orange; */
+            margin: auto;
+            width: 70%;
+            height: 80%;
+            display: inline-flex;
+        }
 
-    }
+            .Photo {
+                /* background-color: black; */
+                margin: auto;
+                width: 3vh;
+                height: 3vh;
+                border: 2px solid #F9F9F9;
+                border-radius: 50%;
+                /* background: #D8D8D8; */
+            }
 
-    .Info-right {
-
-    }
-
-    .Photo {
-
-    }
-
-    .Name {
-
-    }
-
-    .Score {
-
-    } */
+            .Login {
+                /* background-color: navy; */
+                margin: auto;
+                width: 40%;
+                font-size: 1.5vh;
+                color: white;
+            }
 
 .Field {
     position: absolute;
@@ -87,14 +104,13 @@
         margin-bottom: 1%;
     }
 
-    .Pad {
-
-        height: 10%;
-        width: 0;
-        background-color: rgb(93,210,204);
-        border: .2vh solid rgb(93,210,204);
-        box-shadow: 1px 0 2px 2px rgb(93,210,204);
-    }
+        .Pad {
+            height: 10%;
+            width: 0;
+            background-color: rgb(93,210,204);
+            border: .2vh solid rgb(93,210,204);
+            box-shadow: 1px 0 2px 2px rgb(93,210,204);
+        }
 
     .Center-zone {
         margin: auto;
@@ -103,20 +119,39 @@
         /* background-color:lightseagreen; */
     }
 
-    .Middle-line {
-        margin: auto auto;
-        height: 36%;
-        width: 0;
-        background-color: rgb(0, 255, 255);
-        border: 1px solid rgb(0, 255, 255);
-        box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);
-    }
+        .Middle-line {
+            margin: auto auto;
+            height: 36%;
+            width: 0;
+            background-color: rgb(0, 255, 255);
+            border: 1px solid rgb(0, 255, 255);
+            box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);
+        }
 
-    .Center-circle {
-        margin: auto auto;
-        height: 8vh;
-        width: 8vh;
-        border: 2px solid rgb(0, 255, 255);
-        border-radius: 50%;
-        box-shadow: 0px 0px 8px 4px rgb(0, 190, 255), inset 0 0px 8px 6px rgb(0, 190, 255);
-    }
+        .Center-circle {
+            margin: auto auto;
+            height: 8vh;
+            width: 8vh;
+            border: 2px solid rgb(0, 255, 255);
+            border-radius: 50%;
+            box-shadow: 0px 0px 8px 4px rgb(0, 190, 255), inset 0 0px 8px 6px rgb(0, 190, 255);
+        }
+
+.Ball {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 3%;
+    margin: auto auto;
+    height: 2vh;
+    width: 2vh;
+    border-radius: 50%;
+    /* border: 1px rgb(204, 203, 203); */
+    box-shadow: 0 0 5px 4px rgb(143,72,89), inset 0 0 10px 5px rgb(143,72,89);
+}
+/* rgb(143,72,89) 
+
+
+
+*/
