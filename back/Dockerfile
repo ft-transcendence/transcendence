@@ -8,6 +8,6 @@ COPY ./     /app/
 
 WORKDIR /app
 
-RUN npm install
+RUN  yarn install
 
-CMD ["npm", "run", "start:dev"]
+CMD ["yarn", "run", "start"]

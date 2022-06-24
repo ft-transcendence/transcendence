@@ -75,7 +75,7 @@ export class AuthService{
 	async signin_jwt(
 		userId: number,
 		email: string,
-		): Promise<string> {
+		): Promise<{access_token : string}> {
 		// get login data
 		const login_data = {
 			sub: userId,
@@ -84,8 +84,13 @@ export class AuthService{
 		// generate jwt secret
 		const secret = this.config.get('JWT_SECRET');
 		// set JWT params (basic)
-		return this.jwtService.signAsync(login_data, {
+		
+		const token = await this.jwtService.signAsync(login_data, {
 			expiresIn: '15m',
 			secret: secret,});
-		}
+		
+		return {
+			access_token: token,
+		};
+	}
 }
