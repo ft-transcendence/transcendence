@@ -1,19 +1,23 @@
 .Radial-background {
+    margin: auto autp;
     height: 100vh;
-    background-image: radial-gradient(circle at 50% 0%, rgba(192,69,69,0.90) 0%, rgba(57,80,127,0.90) 40%, rgba(25,48,49,0.90) 100%);
+    background-image: radial-gradient(circle at 50% 0%, rgba(192,69,69,1) 0%, rgba(57,80,127,0.85) 40%, rgba(25,48,49,1) 100%);
 }
-
     .Page-top {
         height: 20%;
     }
 
     .Page-mid {
         margin: auto;
-        /* position: relative; */
+        height: 60%;
     }
 
     .Page-foot {
-        height: 20%;
+        /* background-color: black; */
+        margin: auto auto;
+        width: 30%;
+        height: 8%;
+        display: inline-flex;
     }
 
 .Info-card {
@@ -121,7 +125,7 @@
 
         .Middle-line {
             margin: auto auto;
-            height: 36%;
+            height: 36.00%;
             width: 0;
             background-color: rgb(0, 255, 255);
             border: 1px solid rgb(0, 255, 255);
@@ -147,11 +151,23 @@
     height: 2vh;
     width: 2vh;
     border-radius: 50%;
-    /* border: 1px rgb(204, 203, 203); */
     box-shadow: 0 0 5px 4px rgb(143,72,89), inset 0 0 10px 5px rgb(143,72,89);
 }
-/* rgb(143,72,89) 
 
+.Button {
+    /* background-color: tomato; */
+    margin: 5% 2%;
+    /* padding-left: 10%; */
+    height:50%;
+    width: 80%;
+    padding: 2%;
+    font-size: 2.5vh;
+    font-weight: 300;
+    color: white;
+    text-decoration: rgba(25,48,49,1) underline;
+}
+/* rgb(143,72,89) 
+text-decoration: rgb(106, 204, 199) underline;
 
 
 */

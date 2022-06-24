@@ -71,7 +71,17 @@ export default function Game() {
                 </div>
             </div>
             <div className='Page-foot'>
-                <div className='buttons'>
+                <div className='Button'>
+                    game
+                </div>
+                <div className='Button'>
+                    ranking
+                </div>
+                <div className='Button'>
+                    chat
+                </div>
+                <div className='Button'>
+                    setting
                 </div>
             </div>
         </div>
