@@ -16,6 +16,14 @@ root.render(
           <Route path="Game" element={<Game />} />
           <Route path="LandingPage" element={<LandingPage />} />
           <Route path="Leaderboard" element={<Leaderboard />} >
+            <Route
+              index
+              element={
+                <main style={{ padding: "1rem" }}>
+                  <p>Select a user</p>
+                </main>
+              }
+            />
             <Route path=":userId" element={<User/>} />
             </Route>
           <Route
