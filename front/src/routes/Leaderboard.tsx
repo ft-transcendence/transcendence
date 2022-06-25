@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { getUsers } from "../Data";
 
 export default function Leaderboard() {
@@ -15,12 +15,18 @@ export default function Leaderboard() {
           <>
           <p style={{ display: "block", margin: "1rem 0" }}>
             <b >rank #{user.rank} - </b>
-            <Link
+            <NavLink
+              style={({ isActive }) => {
+                return {
+                  margin: "1rem 0",
+                  color: isActive ? "red" : "",
+                };
+              }}
               to={`/Leaderboard/${user.id}`}
               key={user.rank}
             >
             {user.username}
-            </Link>
+            </NavLink>
           </p>
           </>))}
       </nav>

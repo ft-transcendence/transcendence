@@ -37,3 +37,9 @@ let users = [
       (user) => user.id === id
     );
   }
+
+  export function deleteUser(id: number) {
+    users = users.filter(
+      (user) => user.id !== id
+    );
+  }
