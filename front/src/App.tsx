@@ -1,32 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Hamburger from './Hamburger';
-import { io } from "socket.io-client";
-import { getImpliedNodeFormatForFile } from 'typescript';
-import { ServerResponse } from 'http';
+import { Link, Outlet } from "react-router-dom";
 
-const socket = io("ws://localhost:4000");
-
-
-function App() {
-  socket.emit("game", {}, (data: string) => {console.log(data);}); // for testing purpose, must be removed
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Hamburger numberOfHamburgers={5}/>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Reacto
-        </a>
-      </header>
+    <div>
+      <h1>Transcendence</h1>
+      <nav
+        style={{
+          borderBottom: "solid 1px",
+          paddingBottom: "1rem",
+        }}
+      >
+        <Link to="/game">Game</Link> |{" "}
+        <Link to="/LandingPage">LandingPage</Link> |{" "}
+        <Link to="/Leaderboard">Leaderboard</Link>
+      </nav>
+      <Outlet />
     </div>
   );
 }
-
-export default App;
