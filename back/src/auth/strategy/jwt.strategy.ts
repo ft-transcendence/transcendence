@@ -33,7 +33,7 @@ export class jwtStrategy extends PassportStrategy(
         console.log({
             data,
         })
-        return data;
+        return 'hi';
     }
 
 }
