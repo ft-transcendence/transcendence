@@ -1,7 +1,7 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { getUsers } from "../Data";
+import { getUsers } from "../data";
 
-export default function Leaderboard() {
+export default function leaderboard() {
   let users = getUsers();
   return (
     <div style={{ display: "flex" }}>
@@ -22,7 +22,7 @@ export default function Leaderboard() {
                   color: isActive ? "red" : "",
                 };
               }}
-              to={`/Leaderboard/${user.id}`}
+              to={`/leaderboard/${user.id}`}
               key={user.rank}
             >
             {user.username}

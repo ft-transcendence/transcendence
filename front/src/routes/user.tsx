@@ -1,7 +1,7 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { getUser, deleteUser } from "../Data";
+import { getUser, deleteUser } from "../data";
 
-export default function User() {
+export default function user() {
     let params = useParams();
     let navigate = useNavigate();
     let location = useLocation();

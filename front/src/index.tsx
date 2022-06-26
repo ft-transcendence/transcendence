@@ -1,10 +1,11 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import App from "./App";
-import Game from "./routes/Game";
-import LandingPage from "./routes/LandingPage"
-import Leaderboard from "./routes/Leaderboard"
-import User from "./routes/User";
+import App from "./app";
+import Game from "./routes/game";
+import LandingPage from "./routes/landingPage"
+import Leaderboard from "./routes/leaderboard"
+import User from "./routes/user";
+import CustomPage from "./routes/customPage"
 
 const root = ReactDOM.createRoot(
   document.getElementById('root')!
@@ -13,9 +14,9 @@ root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />} >
-          <Route path="Game" element={<Game />} />
-          <Route path="LandingPage" element={<LandingPage />} />
-          <Route path="Leaderboard" element={<Leaderboard />} >
+          <Route path="game" element={<Game />} />
+          <Route path="landing-page" element={<LandingPage />} />
+          <Route path="leaderboard" element={<Leaderboard />} >
             <Route
               index
               element={
@@ -26,6 +27,7 @@ root.render(
             />
             <Route path=":userId" element={<User/>} />
             </Route>
+          <Route path="custom-page" element={<CustomPage />} ></Route>
           <Route
             path="*"
             element={
