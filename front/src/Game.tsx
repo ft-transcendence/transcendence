@@ -1,15 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
 import { io } from "socket.io-client";
 import { getImpliedNodeFormatForFile } from 'typescript';
 import { ServerResponse } from 'http';
 import "./Game.css";
+import {Particles} from "react-tsparticles";
+import { loadFull } from "tsparticles";
+import type { Container } from "tsparticles-engine";
 
 const socket = io("ws://localhost:4000");
 
 export default function Game() {
+
+
+    const particlesInit = async (main: any) => {
+        console.log(main);
+        await loadFull(main);
+    };
+
+    const particlesLoaded = async (container?: Container | undefined) => {
+        console.log(container);
+    };
+
     return (
         <div className='Radial-background'>
+            <Particles id="tsparticles" url="particlesjs-config.json" init={particlesInit} loaded={particlesLoaded} />
+
             <div className='Page-top'>
 
             </div>
@@ -71,17 +86,21 @@ export default function Game() {
                 </div>
             </div>
             <div className='Page-foot'>
-                <div className='Button'>
-                    game
+                <div className='bar'>
                 </div>
-                <div className='Button'>
-                    ranking
-                </div>
-                <div className='Button'>
-                    chat
-                </div>
-                <div className='Button'>
-                    setting
+                <div className='innerFoot'>
+                    <div className='Button'>
+                        game
+                    </div>
+                    <div className='Button'>
+                        ranking
+                    </div>
+                    <div className='Button'>
+                        chat
+                    </div>
+                    <div className='Button'>
+                        setting
+                    </div>
                 </div>
             </div>
         </div>

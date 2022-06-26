@@ -17,8 +17,26 @@
         margin: auto auto;
         width: 30%;
         height: 8%;
-        display: inline-flex;
+        position: relative;
     }
+
+.innerFoot
+{
+    display: inline-flex;
+    width: 100%;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.5s ease;
+}
+
+.Page-foot:hover .innerFoot
+{
+    opacity: 1;
+    transform: scale(1);
+
+}
+
+
 
 .Info-card {
     position: absolute;
@@ -156,16 +174,48 @@
 
 .Button {
     /* background-color: tomato; */
-    margin: 5% 2%;
     /* padding-left: 10%; */
     height:50%;
     width: 80%;
-    padding: 2%;
+    padding: 18px;
     font-size: 2.5vh;
     font-weight: 300;
     color: white;
     text-decoration: rgba(25,48,49,1) underline;
+    transition: all 0.7s cubic-bezier(.45,1.71,.41,.97);
+    cursor: pointer;
+    user-select: none;
 }
+
+.Button:hover {
+    transform: scale(1.2);
+}
+
+.Button:active
+{
+    transform: scale(0.9);
+    transition: all 0.2s cubic-bezier(.45,1.71,.41,.97);
+}
+
+.bar
+{
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 40px;
+    height: 2px;
+    background: white;
+    transition: all 0.5s ease-out;
+}
+
+.Page-foot:hover .bar
+{
+    transform: rotateZ(360deg) scale(1);
+    opacity: 0;
+}
+
 /* rgb(143,72,89) 
 text-decoration: rgb(106, 204, 199) underline;
 
