@@ -1,11 +1,11 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import App from "./app";
-import Game from "./routes/game";
-import LandingPage from "./routes/landingPage"
-import Leaderboard from "./routes/leaderboard"
-import User from "./routes/user";
-import CustomPage from "./routes/customPage"
+import App from "./App";
+import Game from "./routes/Game";
+import LandingPage from "./routes/LandingPage"
+import Leaderboard from "./routes/Leaderboard"
+import User from "./routes/User";
+import CustomPage from "./routes/CustomPage"
 
 const root = ReactDOM.createRoot(
   document.getElementById('root')!

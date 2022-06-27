@@ -1,8 +1,8 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { getUsers } from "../data";
+import { GetUsers } from "../Data";
 
-export default function leaderboard() {
-  let users = getUsers();
+export default function Leaderboard() {
+  let users = GetUsers();
   return (
     <div style={{ display: "flex" }}>
       <nav
