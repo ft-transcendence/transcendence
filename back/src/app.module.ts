@@ -2,8 +2,10 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { GameGateway } from './game/game.gateway';
 import { ConfigModule } from '@nestjs/config';
+import { GameModule } from './game/game.module';
+import { GameService } from './game/game.service';
+import { GameGateway } from './game/game.gateway';
 
 /* Modules are classes, here app.module, annotated with the module decorator.
 * Like any decorator, this adds metadata to a class or function.
@@ -16,9 +18,9 @@ import { ConfigModule } from '@nestjs/config';
 	imports: [AuthModule, 
 						UserModule, 
 						PrismaModule, 
-						ConfigModule.forRoot({isGlobal: true}),	//for integration of the .env + global so available all around
+						ConfigModule.forRoot({isGlobal: true}), GameModule,	//for integration of the .env + global so available all around
 					],
-	providers: [GameGateway],		
+	providers: [GameService, GameGateway],		
 //greg- imports: [UsersModule, DatabaseModule],
 	// controllers: [AppController],                  //useless as we deleted these files
 	// providers: [AppService],                       //useless as we deleted these files
