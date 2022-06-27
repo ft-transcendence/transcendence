@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { GetUsers } from "../Data";
+import { GetUsers } from "../data";
 
 export default function Leaderboard() {
   let users = GetUsers();
