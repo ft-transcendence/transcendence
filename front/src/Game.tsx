@@ -1,11 +1,9 @@
-import React from 'react';
 import { io } from "socket.io-client";
-import { getImpliedNodeFormatForFile } from 'typescript';
-import { ServerResponse } from 'http';
 import "./Game.css";
 import {Particles} from "react-tsparticles";
 import { loadFull } from "tsparticles";
 import type { Container } from "tsparticles-engine";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 const socket = io("ws://localhost:4000");
 
@@ -89,12 +87,12 @@ export default function Game() {
                 <div className='bar'>
                 </div>
                 <div className='innerFoot'>
-                    <div className='Button'>
-                        game
-                    </div>
-                    <div className='Button'>
-                        ranking
-                    </div>
+                    <Link to="/" className='Button'>
+                        home
+                    </Link>
+                    <Link to="/leaderboard" className='Button'>
+                        leaderboard
+                    </Link>
                     <div className='Button'>
                         chat
                     </div>

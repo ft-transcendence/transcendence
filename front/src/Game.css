@@ -14,8 +14,8 @@
 
     .Page-foot {
         /* background-color: black; */
-        margin: auto auto;
-        width: 30%;
+        margin: auto;
+        width: 40%;
         height: 8%;
         position: relative;
     }
@@ -23,6 +23,7 @@
 .innerFoot
 {
     display: inline-flex;
+    margin: auto -5%;
     width: 100%;
     opacity: 0;
     transform: scale(0.8);
@@ -174,9 +175,8 @@
 
 .Button {
     /* background-color: tomato; */
-    /* padding-left: 10%; */
-    height:50%;
-    width: 80%;
+    margin: auto;
+    height: 50%;
     padding: 18px;
     font-size: 2.5vh;
     font-weight: 300;
