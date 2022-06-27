@@ -28,17 +28,17 @@ let users = [
     },
   ];
   
-  export function getUsers() {
+  export function GetUsers() {
     return users;
   }
 
-  export function getUser(id: number) {
+  export function GetUser(id: number) {
     return users.find(
       (user) => user.id === id
     );
   }
 
-  export function deleteUser(id: number) {
+  export function DeleteUser(id: number) {
     users = users.filter(
       (user) => user.id !== id
     );

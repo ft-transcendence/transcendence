@@ -1,6 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 
-export default function app() {
+export default function App() {
   return (
     <div>
       <h1>Transcendence</h1>
@@ -10,10 +10,10 @@ export default function app() {
           paddingBottom: "1rem",
         }}
       >
-        <Link to="/game">Game</Link> |{" "}
-        <Link to="/landing-page">Landing page</Link> |{" "}
-        <Link to="/leaderboard">Leaderboard example</Link> |{" "}
-        <Link to="/custom-page">Custom page</Link>
+        <Link to="/Game">Game</Link> |{" "}
+        <Link to="/Landing-page">Landing page</Link> |{" "}
+        <Link to="/Leaderboard">Leaderboard example</Link> |{" "}
+        <Link to="/Custom-page">Custom page</Link>
       </nav>
       <Outlet />
     </div>

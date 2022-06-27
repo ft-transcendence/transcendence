@@ -1,14 +1,14 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { getUser, deleteUser } from "../data";
+import { GetUser, DeleteUser } from "../Data";
 
-export default function user() {
+export default function User() {
     let params = useParams();
     let navigate = useNavigate();
     let location = useLocation();
 
     if (typeof params.userId === 'string')
     {
-        let user = getUser(parseInt(params.userId));
+        let user = GetUser(parseInt(params.userId));
         return (
             <main style={{ padding: "1rem" }}>
             <p> Username: {user!.username} </p>

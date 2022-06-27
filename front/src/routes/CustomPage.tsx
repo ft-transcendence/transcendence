@@ -1,4 +1,4 @@
-export default function customPage() {
+export default function CustomPage() {
     return (
       <main style={{ padding: "1rem 0" }}>
         <h2>Create your custom page here</h2>
