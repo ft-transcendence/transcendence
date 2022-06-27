@@ -10,9 +10,10 @@ export class UserController {
     @UseGuards(AuthGuard('jwt'))
     @Get('me') 
     getMe(@Req() req: Request) {
+        // log in console
         console.log({
             user: req.user,
         })
-        return 'user info here';
+        return req.user;
     }
 }

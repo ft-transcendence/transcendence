@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from "@nestjs/passport";
 /* AUTH JWT */
 import { ExtractJwt, Strategy } from "passport-jwt";
+import { PrismaService } from 'src/prisma/prisma.service';
 
 /**
  * Creating a JWT strategy
@@ -19,7 +20,10 @@ export class jwtStrategy extends PassportStrategy(
     /**
      * JWT strategy object constructor
      */
-    constructor(config: ConfigService) {
+    constructor(
+        config: ConfigService,
+        private prisma: PrismaService
+        ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             secretOrKey: config.get('JWT_SECRET'),
@@ -29,11 +33,19 @@ export class jwtStrategy extends PassportStrategy(
     /**
      * Validate function used by Passport Module
      */
-    validate(data: any) {
+    async validate(data: {
+        sub: number,
+        email: string
+    }) {
+        // log in console
         console.log({
             data,
         })
-        return 'hi';
+        const user = await this.prisma.user.findUnique({
+            where: {
+                id: data.sub,
+            }
+        });
+        return user;
     }
-
 }
