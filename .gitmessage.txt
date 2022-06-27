@@ -1,6 +1,4 @@
-Why :
 
-*
 
 # Description
 
@@ -11,3 +9,18 @@ Why :
 #
 # 72 char wrapped description
 
+#
+# Emoji cheat sheet:
+#
+#   🚧    (:construction:)       -> work in progress
+#   ➕    (:heavy_plus_sign:)    -> added a subfeature
+#   🐛    (:bug:)                -> bug fix
+#   🚀    (:rocket:)             -> launch new feature
+#   🎨    (:art:)                -> style
+#   🔨    (:hammer:)             -> refactoring
+#   🧪    (:test_tube:)          -> testing
+#   📝    (:memo:)               -> documentation
+#   🧹    (:broom:)              -> code maintenance
+#   🗑️    (:wastebasket:)        -> deleted files
+#   📦️    (:package:)            -> package change
+#
