@@ -13,21 +13,7 @@ function App() {
   socket.emit("game", {}, (data: string) => {console.log(data);}); // for testing purpose, must be removed
   return (
     <div className="App">
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Hamburger numberOfHamburgers={5}/>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Reacto
-        </a>
-      </header> */}
-      <a>
-        <Game />
-      </a>
+     
     </div>
   );
 }
