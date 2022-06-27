@@ -22,10 +22,10 @@ export default function App() {
           paddingBottom: "1rem",
         }}
       >
-        <Link to="/game">Game</Link> |{" "}
-        <Link to="/landing-page">Landing page</Link> |{" "}
-        <Link to="/leaderboard">Leaderboard example</Link> |{" "}
-        <Link to="/custom-page">Custom page</Link>
+        <Link to="/Game">Game</Link> |{" "}
+        <Link to="/Landing-page">Landing page</Link> |{" "}
+        <Link to="/Leaderboard">Leaderboard example</Link> |{" "}
+        <Link to="/Custom-page">Custom page</Link>
       </nav>
       <Outlet />
     </div>
