@@ -1,19 +1,44 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import App from "./App";
+import GamePage from "./routes/GamePage";
+import LandingPage from "./routes/LandingPage"
+import Leaderboard from "./routes/Leaderboard"
+import User from "./routes/User";
+import CustomPage from "./routes/CustomPage"
+import "./index.css";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById('root')!
 );
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<App />} >
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+          <Route path="game" element={<GamePage />} />
+          <Route path="landing-page" element={<LandingPage />} />
+          <Route path="leaderboard" element={<Leaderboard />} >
+            <Route
+              index
+              element={
+                <main style={{ padding: "1rem" }}>
+                  <p>Select a user</p>
+                </main>
+              }
+            />
+            <Route path=":userId" element={<User/>} />
+            </Route>
+          <Route path="custom-page" element={<CustomPage />} ></Route>
+          <Route
+            path="*"
+            element={
+              <main style={{ padding: "1rem" }}>
+                <p>There's nothing here!</p>
+              </main>
+              }
+          />
+      </Route>
+    </Routes>
+  </BrowserRouter>
+);

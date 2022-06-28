@@ -1,32 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Hamburger from './Hamburger';
-import { io } from "socket.io-client";
-import { getImpliedNodeFormatForFile } from 'typescript';
-import { ServerResponse } from 'http';
+// import React from 'react';
+// import { io } from "socket.io-client";
+// import { getImpliedNodeFormatForFile } from 'typescript';
+// import { ServerResponse } from 'http';
+import { Link, Outlet, useLocation } from "react-router-dom";
 
-const socket = io("ws://localhost:4000");
+export default function App() {
+
+  const location = useLocation();
 
 
-function App() {
-  socket.emit("game", {}, (data: string) => {console.log(data);}); // for testing purpose, must be removed
+  if (location.pathname === "/game")
+    return <Outlet />;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Hamburger numberOfHamburgers={5}/>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Reacto
-        </a>
-      </header>
+    <div style={{margin: "8px"}}>
+      <h1>Transcendence</h1>
+      <nav
+
+        style={{
+          borderBottom: "solid 1px",
+          paddingBottom: "1rem",
+        }}
+      >
+        <Link to="/game">Game</Link> |{" "}
+        <Link to="/landing-page">Landing page</Link> |{" "}
+        <Link to="/leaderboard">Leaderboard example</Link> |{" "}
+        <Link to="/custom-page">Custom page</Link>
+      </nav>
+      <Outlet />
     </div>
   );
 }
-
-export default App;
