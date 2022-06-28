@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { GetUsers } from "../Data";
+import { GetUsers } from "../data";
 
 export default function Leaderboard() {
   let users = GetUsers();
@@ -11,7 +11,7 @@ export default function Leaderboard() {
           padding: "1rem",
         }}
       >
-        {users.map((user) => (
+        {users.map((user:any) => (
           <>
           <p style={{ display: "block", margin: "1rem 0" }}>
             <b >rank #{user.rank} - </b>
