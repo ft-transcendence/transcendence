@@ -1,18 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./Chat.css";
 import { io } from 'socket.io-client';
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { createSocket } from "dgram";
 
-const socket = io('http://localhost:3000');
+
+const socket = io('http://localhost:4000/chat');
 
 export default function Chat() {
     
-    socket.emit('msg', {name: 'Nest' }, (data: string) => console.log(data));
+    const [ msg, setNewMsg ] = React.useState("");
+
+    // socket.emit('msg', {name: 'Nest' }, (data: string) => console.log(data));
     // socket.on('msg', (data: string) => console.log(data));
     
     useEffect(() => {
-        socket.on('connect', function() {
+        socket.on('connect', () => {
             console.log('Connected');
 
             socket.emit('msg', {test: 'test'});
@@ -26,7 +28,7 @@ export default function Chat() {
             console.log('msg', data);
         });
 
-        socket.on('disconnect', function(data) {
+        socket.on('disconnect', () => {
             console.log('Disconnected');
         });
 
@@ -39,11 +41,32 @@ export default function Chat() {
 
     }, []);
 
-    
+    const handleMsgInput = (event: any) => {
+        setNewMsg(event.target.value);
+    }
+
+    const sendMsg = (msg: string) => {
+        socket.emit('msg', msg);
+    }
+
+    const handleSendMsg = () => {
+
+        sendMsg(msg);
+        setNewMsg("");
+    }
 
     return (
         <div>
             this is chat hehehe
+            <textarea
+                value={msg}
+                onChange={handleMsgInput}
+                placeholder="Write msg...."
+                className="msg-input-field"
+            />
+            <button onClick={handleSendMsg} className="send-msg-button">
+                send
+            </button>
         </div>
     )
 }

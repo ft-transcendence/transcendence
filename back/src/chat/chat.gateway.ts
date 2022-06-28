@@ -1,9 +1,16 @@
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
+import {
+  ConnectedSocket,
+  MessageBody,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+  WsResponse
+  } from '@nestjs/websockets';
 import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway(
-  {cors: {origin: "http://localhost:3000" } }
+  {cors: {origin: "http://localhost:3000" }, namespace: 'chat' }
 )
     
 export class ChatGateway {
@@ -11,11 +18,19 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
+  handleConnection(client: Socket)
+  {
+    console.log("connected");
+  }
+
   @SubscribeMessage('msg')
-  handleMsg(@MessageBody() data: string, 
-  @ConnectedSocket() client: Socket): string {
-    return data;
+  handleMsg(
+    @MessageBody() data: string, 
+    @ConnectedSocket() client: Socket
+  ): string {
     client.emit('sent!')
+    console.log(data)
+    return data;
   }
 
   @SubscribeMessage('msg')
