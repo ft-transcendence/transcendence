@@ -46,6 +46,10 @@ export class jwtStrategy extends PassportStrategy(
                 id: data.sub,
             }
         });
+        // remove sensitive data
+        delete user.hash;
+        // if the user is not found user == NULL
+        // 401 forbidden is returned.
         return user;
     }
 }
