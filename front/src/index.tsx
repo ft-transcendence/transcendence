@@ -4,6 +4,7 @@ import App from "./App";
 import GamePage from "./routes/GamePage";
 import LandingPage from "./routes/LandingPage"
 import Leaderboard from "./routes/Leaderboard"
+import ChatPage from "./routes/ChatPage"
 import User from "./routes/User";
 import CustomPage from "./routes/CustomPage"
 import "./index.css";
@@ -28,7 +29,8 @@ root.render(
               }
             />
             <Route path=":userId" element={<User/>} />
-            </Route>
+          </Route>
+          <Route path="chat" element={<ChatPage />} />
           <Route path="custom-page" element={<CustomPage />} ></Route>
           <Route
             path="*"

@@ -9,7 +9,7 @@ export default function App() {
   const location = useLocation();
 
 
-  if (location.pathname === "/game")
+  if (location.pathname === "/game" || location.pathname==="/chat")
     return <Outlet />;
 
   return (
@@ -25,6 +25,7 @@ export default function App() {
         <Link to="/game">Game</Link> |{" "}
         <Link to="/landing-page">Landing page</Link> |{" "}
         <Link to="/leaderboard">Leaderboard example</Link> |{" "}
+        <Link to="/chat">chat</Link> |{" "}
         <Link to="/custom-page">Custom page</Link>
       </nav>
       <Outlet />
