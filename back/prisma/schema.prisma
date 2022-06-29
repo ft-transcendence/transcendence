@@ -33,9 +33,9 @@ model User {
 //game history ? Une partie = 2 id, un score
 
 	friends		User[]		@relation(name: "relationships", references: [id])  //array of friends based on their id 
-	blocked		User[]		@relation(name: "relationships", references: [id])
+	blocked		User[]		@relation(name: "relationships", references: [id])  // it's blocked or blocking
 
-  admin       Channel[] @relation("admin")
+  admin       Channel[] @relation("admin")  /* the following three line i dont understand well. */
   member      Channel[] @relation("member")
   chanBlocked Channel[] @relation("blocked")
 
@@ -46,6 +46,7 @@ model Channel {
   id    Int     @id @default(autoincrement())
 
   name  String
+  picture String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -56,6 +57,20 @@ model Channel {
   members   User[]  @relation("member")
   blocked   User[]  @relation("blocked")
 
+}
+
+model Message {
+  id    Int     @id @default(autoincrement())
+
+  data  String
+  history String[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  owner     User    @relation("id")
+  Channel   Channel @relation("id")
+  receiver  Channel @relation("member")
 }
 
 
