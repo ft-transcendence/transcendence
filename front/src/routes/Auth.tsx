@@ -51,7 +51,7 @@ function AuthForm() {
             Your password must be 8-20 characters long.
           </Form.Text>
           <div className="d-grid gap-2 mt-3">
-            <button type="submit" className="btn btn-primary">
+            <button as="input" type="submit">
               Submit
             </button>
           </div>

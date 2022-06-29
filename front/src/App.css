@@ -1,6 +1,32 @@
+:root {
+    /* Text */
+    --text-color-white: #DADADA;
+    --text-color-blue: #B9C5FF;
+    /* Basic */
+    --basic-color-background: #292D32;
+    --basic-color-green: #33FF00;
+    --basic-color-yellow: #FEE440;
+    --basic-color-red: #FF0000;
+    /* Cards */
+    --cards-color-gray: #31353C;
+    --cards-color-blue: #4361EE;
+    /* Buttons */
+    --buttons-color-icons: #F2F2F2;
+    --buttons-color-pink: #F72585;
+    --buttons-color-blue: #5D76EC;
+    --buttons-color-blue-selected: #3C58DD;
+    --buttons-color-blue-disabled: #506DF3;
+    --buttons-color-gray-disabled: #3B4048;
+    /* Styles */
+    --styles-halo-blue: radial-gradient(100% 110.77% at 0% 2.02%, #4361EE 0%, rgba(41, 45, 50, 0) 100%);
+    --styles-halo-linear-blue: linear-gradient(358.71deg, rgba(22, 23, 27, 0.5) 0%, rgba(0, 0, 0, 0.1) 0.01%, rgba(67, 97, 238, 0.5) 100%);
+    --styles-linear-blue: linear-gradient(135deg, #4361EE 0%, #6982F5 100%);
+    --styles-linear-transp-blue: linear-gradient(135deg, rgba(60, 88, 221, 0) 0%, #3C58DD 100%);
+    --styles-linear-light-blue: linear-gradient(180deg, #50CAFF -11.53%, #4361EE 100%);
+  }
 
 .App {
-    background-color: white;
+    background-color: var(--basic-color-background);
   }
   
   .Auth-form-container {
@@ -17,7 +43,7 @@
     padding-top: 30px;
     padding-bottom: 20px;
     border-radius: 8px;
-    background-color: white;
+    background-color: #2E3238;
   }
   
   .Auth-form-content {
@@ -26,15 +52,27 @@
   }
   
   .Auth-form-title {
-    text-align: center;
-    margin-bottom: 1em;
-    font-size: 24px;
-    color: rgb(34, 34, 34);
-    font-weight: 800;
+    text-align: left;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 20px;
+    letter-spacing: -0.4px;
+    color: var(--text-color-white);
+  }
+
+  .text-center{
+    text-align: left;
+    color: var(--text-color-white);
   }
   
   label {
     font-size: 14px;
     font-weight: 600;
     color: rgb(34, 34, 34);
-  } 
+  }
+  .mb-3 {
+    font-family: 'Roboto';
+    color: var(--text-color-white);
+  }
