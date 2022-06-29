@@ -2,11 +2,12 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
 import GamePage from "./routes/GamePage";
-import LandingPage from "./routes/LandingPage"
-import Leaderboard from "./routes/Leaderboard"
+import LandingPage from "./routes/LandingPage";
+import Leaderboard from "./routes/Leaderboard";
 import User from "./routes/User";
-import CustomPage from "./routes/CustomPage"
+import CustomPage from "./routes/CustomPage";
 import "./index.css";
+import Auth from "./routes/Auth";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root')!
@@ -15,7 +16,7 @@ root.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />} >
-
+          <Route path="/signin" element={<Auth />} />
           <Route path="game" element={<GamePage />} />
           <Route path="landing-page" element={<LandingPage />} />
           <Route path="leaderboard" element={<Leaderboard />} >

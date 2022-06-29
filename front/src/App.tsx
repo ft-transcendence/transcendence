@@ -3,6 +3,8 @@
 // import { getImpliedNodeFormatForFile } from 'typescript';
 // import { ServerResponse } from 'http';
 import { Link, Outlet, useLocation } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css"
+import "./App.css"
 
 export default function App() {
 
@@ -13,7 +15,7 @@ export default function App() {
     return <Outlet />;
 
   return (
-    <div style={{margin: "8px"}}>
+    <div className="App" style={{margin: "8px"}}>
       <h1>Transcendence</h1>
       <nav
 
@@ -22,6 +24,7 @@ export default function App() {
           paddingBottom: "1rem",
         }}
       >
+        <Link to="/signin">Sign in</Link> |{" "}
         <Link to="/game">Game</Link> |{" "}
         <Link to="/landing-page">Landing page</Link> |{" "}
         <Link to="/leaderboard">Leaderboard example</Link> |{" "}
