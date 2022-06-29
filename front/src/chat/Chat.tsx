@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./Chat.css";
 import { io } from 'socket.io-client';
-import { Link, Outlet, useLocation } from "react-router-dom";
+// import { Link, Outlet, useLocation } from "react-router-dom";
 
 
-const socket = io('http://localhost:4000/chat');
+const socket = io('ws://localhost:4000');
 
 export default function Chat() {
     
@@ -15,7 +15,7 @@ export default function Chat() {
     
     useEffect(() => {
         socket.on('connect', () => {
-            console.log('Connected');
+            console.log('front Connected');
 
             socket.emit('msg', {test: 'test'});
         });
@@ -46,6 +46,7 @@ export default function Chat() {
     }
 
     const sendMsg = (msg: string) => {
+        console.log(msg);
         socket.emit('msg', msg);
     }
 

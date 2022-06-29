@@ -9,9 +9,7 @@ import {
 import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway(
-  {cors: {origin: "http://localhost:3000" }, namespace: 'chat' }
-)
+@WebSocketGateway()
     
 export class ChatGateway {
   
@@ -20,7 +18,7 @@ export class ChatGateway {
 
   handleConnection(client: Socket)
   {
-    console.log("connected");
+    console.log("back connected");
   }
 
   @SubscribeMessage('msg')
