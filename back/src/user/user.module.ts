@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
-//from the YT tuto, to be used
+import { UserService } from './user.service';
+
 @Module({
+  providers: [UserService],
   controllers: [UserController]
 })
 export class UserModule {}
