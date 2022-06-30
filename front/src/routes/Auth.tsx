@@ -22,7 +22,7 @@ const  AuthForm = () => {
           <div className="text-secondary">
             {authMode === "signin" ? "Don't have an account yet?" : "Already registered?"}
             &nbsp;&nbsp;&nbsp;
-            <a href="#" className="stretched-link" onClick={changeAuthMode}>
+            <a href="#" onClick={changeAuthMode}>
               {authMode === "signin" ? "Sign up.": "Sign in."}
             </a>
           </div>
