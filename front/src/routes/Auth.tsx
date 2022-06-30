@@ -6,6 +6,13 @@ export default function Auth(props:any) {
   return (AuthForm());
 }
 
+const submitForm= (e:any) => {
+  e.preventDefault()
+  const formData = new FormData(e.target),
+  formDataObj = Object.fromEntries(formData.entries())
+  console.log(formData)
+}
+
 const  AuthForm = () => {
 
   let [authMode, setAuthMode] = useState("signin")
@@ -16,7 +23,7 @@ const  AuthForm = () => {
 
   return (
     <div className="Auth-form-container">
-      <form className="Auth-form">
+      <form className="Auth-form" onSubmit={submitForm}>
         <div className="Auth-form-content">
           <h3 className="Auth-form-title">{authMode === "signin" ? "Sign in.": "Sign up."}</h3>
           <div className="text-secondary">
