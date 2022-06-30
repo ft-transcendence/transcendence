@@ -5,7 +5,7 @@ import { IsEmail, IsNotEmpty, IsString, IsNumber } from 'class-validator'
 *	watch for changes in the user model depending on Shu Yen's work :)
 */
 
-export class AuthDto {      //Data transfer object
+export class UserDto {      //Data transfer object
 	@IsNumber()
 	@IsNotEmpty()
 	id: number;  
@@ -30,6 +30,8 @@ export class AuthDto {      //Data transfer object
 	@IsNotEmpty()
 	gamesPlayed: number; 
 
+
+	
 
 //   game history
 

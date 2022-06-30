@@ -15,8 +15,11 @@ export class UserService {
 //   }
 
 //should have the getMe, the getAll
-
-
+    constructor(
+        private prisma: PrismaService,
+        private jwtService: JwtService,
+        private config: ConfigService,
+        ) {} 
 }
 
 /* gremit code : (will be deleted)

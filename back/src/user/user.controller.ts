@@ -29,4 +29,10 @@ export class UserController {
         })
         return req.user;
     }
+
+    @Get()
+    getAllUsers() {
+        console.log('Going through getAllUsers in user.controller');
+        return this.
+    }
 }
