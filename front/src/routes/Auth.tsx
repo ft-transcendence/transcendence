@@ -57,9 +57,7 @@ const  AuthForm = () => {
           </Form.Group >
           
           <div className="d-grid gap-2 mt-3">
-            <button type="submit">
-              Submit
-            </button>
+          <button type="button" className="btn btn-primary">Primary</button>
           </div>
           <p className="text-center mt-2">
             Forgot your &nbsp; <a href="#">password?</a>

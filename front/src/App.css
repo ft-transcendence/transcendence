@@ -130,3 +130,17 @@
     font-weight: 600;
     color: rgb(34, 34, 34);
   }
+
+.submit-button {
+
+  width: 82px;
+  height: 25px;
+  left: 353px;
+  top: 493px;
+
+  /* Buttons/back/blue */
+
+  background: #5D76EC;
+  box-shadow: 2px 3.5px 15px #1F2427, -2px -3.5px 15px #485057;
+  border-radius: 12.5px;
+}
