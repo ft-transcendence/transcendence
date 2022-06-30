@@ -1,39 +1,37 @@
-import { Injectable } from '@nestjs/common';
+/* GLOBAL MODULES */
+import { Injectable } from "@nestjs/common";
+/* PRISMA */
+import { PrismaService } from "src/prisma/prisma.service";
+/* USER Modules */
+import { UserDto } from './dto';
+
 
 @Injectable()
 export class UserService {
 
-//from nestjs tutorial :
-//   private readonly cats: Cat[] = [];
+//should have the getMe too
 
-//   create(cat: Cat) {
-//     this.cats.push(cat);
-//   }
+	constructor(
+		private prisma: PrismaService,
+		) {}
 
-//   findAll(): Cat[] {
-//     return this.cats;
-//   }
+		
+	async getAllUsers() {
+		//returns a record of all the users, ordered by id in acending order
+		const users = await this.prisma.user.findMany({orderBy : {id: 'asc'}});
 
-//should have the getMe, the getAll
-    constructor(
-        private prisma: PrismaService,
-        private jwtService: JwtService,
-        private config: ConfigService,
-        ) {} 
+		console.log("All Users:");  //debug
+		console.log(users);         //debug
+		return (users);
+	}
+	
+	
+	async getLeaderboard() {
+		//returns a record of all the users, ordered by gamesWon in descending order
+		const users = await this.prisma.user.findMany({orderBy : {gamesWon: 'desc'}});
+
+		console.log("Best Users:");  //debug
+		console.log(users);         //debug
+		return (users);
+	}
 }
-
-/* gremit code : (will be deleted)
-    constructor(
-        @Inject('USER_REPO')
-        private userRepo: Repository<UserEntity>,
-    ) {}
-    async findAll() {
-        const users = await this.userRepo.find();
-        return users;
-    }
-
-    async createUser(username: string, password: string) {
-        const user = this.userRepo.create({username, password});
-        return await (await this.userRepo.save(user)).toResponseObject();
-    }
-*/
