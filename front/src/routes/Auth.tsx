@@ -1,5 +1,6 @@
 import { useState } from "react"
 import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 
 export default function Auth(props:any) {
   return (AuthForm());
@@ -17,12 +18,13 @@ const  AuthForm = () => {
     <div className="Auth-form-container">
       <form className="Auth-form">
         <div className="Auth-form-content">
-          <h3 className="Auth-form-title">{authMode === "signin" ? "Sign Up": "Sign In"}</h3>
-          <div className="text-center">
-            Already registered?&nbsp;
-            <span className="link-primary" onClick={changeAuthMode}>
-              {authMode === "signin" ? "Sign in.": "Sign up."}
-            </span>
+          <h3 className="Auth-form-title">{authMode === "signin" ? "Sign in.": "Sign up."}</h3>
+          <div className="text-secondary">
+            {authMode === "signin" ? "Don't have an account yet?" : "Already registered?"}
+            &nbsp;&nbsp;&nbsp;
+            <a href="#" className="stretched-link" onClick={changeAuthMode}>
+              {authMode === "signin" ? "Sign up.": "Sign in."}
+            </a>
           </div>
 
           {authMode == "signup" &&
@@ -36,7 +38,7 @@ const  AuthForm = () => {
           }
 
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-            <Form.Label className="form-test">EMAIL</Form.Label>
+            <Form.Label className="form-test ">EMAIL</Form.Label>
             <Form.Control
             type="email"
             placeholder="name@example.com"
@@ -55,11 +57,12 @@ const  AuthForm = () => {
               Your password must be 8-20 characters long.
             </Form.Text>
           </Form.Group >
-          
-          <div className="d-grid gap-2 mt-3">
-          <button type="button" className="btn btn-primary">Primary</button>
-          </div>
-          <p className="text-center mt-2">
+
+            <Button variant="secondary" className="submit-button" size="sm">Sign in with 42</Button>
+            <Button variant="primary" type="submit" className="submit-button" size="sm" >
+              Submit
+            </Button>
+          <p className="text-secondary mt-2">
             Forgot your &nbsp; <a href="#">password?</a>
           </p>
         </div>
