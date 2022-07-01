@@ -1,79 +1,93 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
-export default function Auth(props:any) {
-  return (AuthForm());
+
+const handleSubmit = (event:any, userInputsRefs:any) => {
+  event.preventDefault();
+  if (userInputsRefs.username.current?.value)
+    console.log(userInputsRefs.username.current.value!);
+  if (userInputsRefs.email.current?.value)
+    console.log(userInputsRefs.email.current.value!);
+  if (userInputsRefs.password.current?.value)
+    console.log(userInputsRefs.password.current.value!);
 }
 
-const submitForm= (e:any) => {
-  e.preventDefault()
-  const formData = new FormData(e.target),
-  formDataObj = Object.fromEntries(formData.entries())
-  console.log(formData)
-}
+export default function Auth () {
 
-const  AuthForm = () => {
+  let [authMode, setAuthMode] = useState("signin");
 
-  let [authMode, setAuthMode] = useState("signin")
-
-  let changeAuthMode = () => {
+  const changeAuthMode = () => {
     setAuthMode(authMode === "signin" ? "signup" : "signin")
   }
+  
+  let userInputsRefs: {
+    username: React.RefObject<HTMLInputElement>,
+    email: React.RefObject<HTMLInputElement>,
+    password: React.RefObject<HTMLInputElement>
+  } = {
+    username: React.createRef(),
+    email: React.createRef(),
+    password: React.createRef(),
+  };
 
   return (
-    <div className="Auth-form-container">
-      <form className="Auth-form" onSubmit={submitForm}>
-        <div className="Auth-form-content">
-          <h3 className="Auth-form-title">{authMode === "signin" ? "Sign in.": "Sign up."}</h3>
-          <div className="text-secondary">
-            {authMode === "signin" ? "Don't have an account yet?" : "Already registered?"}
-            &nbsp;&nbsp;&nbsp;
-            <a href="#" onClick={changeAuthMode}>
-              {authMode === "signin" ? "Sign up.": "Sign in."}
-            </a>
-          </div>
-
-          {authMode == "signup" &&
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label className="form-test" >USERNAME</Form.Label>
-              <Form.Control
-              type="text"
-              placeholder="JaneDoe"
-              />
-            </Form.Group>
-          }
-
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-            <Form.Label className="form-test ">EMAIL</Form.Label>
-            <Form.Control
-            type="email"
-            placeholder="name@example.com"
-            />
-          </Form.Group >
-          
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
-            <Form.Label className="form-test" htmlFor="inputPassword1">PASSWORD</Form.Label>
-            <Form.Control
-              type="password"
-              id="inputPassword5"
-              aria-describedby="passwordHelpBlock"
-              placeholder="****"
-            />
-            <Form.Text className="form-help-block" id="passwordHelpBlock" muted>
-              Your password must be 8-20 characters long.
-            </Form.Text>
-          </Form.Group >
-
-            <Button variant="secondary" className="submit-button" size="sm">Sign in with 42</Button>
-            <Button variant="primary" type="submit" className="submit-button" size="sm" >
-              Submit
-            </Button>
-          <p className="text-secondary mt-2">
-            Forgot your &nbsp; <a href="#">password?</a>
-          </p>
+  <div className="Auth-form-container">
+    <form className="Auth-form" onSubmit={event => handleSubmit(event, userInputsRefs)}>
+      <div className="Auth-form-content">
+        <h3 className="Auth-form-title">{authMode === "signin" ? "Sign in.": "Sign up."}</h3>
+        <div className="text-secondary">
+          {authMode === "signin" ? "Don't have an account yet?" : "Already registered?"}
+          &nbsp;&nbsp;&nbsp;
+          <a href="#" onClick={changeAuthMode}>
+            {authMode === "signin" ? "Sign up.": "Sign in."}
+          </a>
         </div>
-      </form>
-    </div>
+
+        {authMode == "signup" &&
+            <Form.Group className="mb-3">
+            <Form.Label className="form-test" >USERNAME</Form.Label>
+            <Form.Control
+            ref={userInputsRefs.username}
+            type="text"
+            placeholder="JaneDoe"
+            />
+          </Form.Group>
+        }
+
+        <Form.Group className="mb-3">
+          <Form.Label className="form-test ">EMAIL</Form.Label>
+          <Form.Control
+          ref={userInputsRefs.email}
+          type="email"
+          placeholder="name@example.com"
+          />
+        </Form.Group >
+        
+        <Form.Group className="mb-3">
+          <Form.Label className="form-test" htmlFor="inputPassword1">PASSWORD</Form.Label>
+          <Form.Control
+          ref={userInputsRefs.password}
+            type="password"
+            id="inputPassword5"
+            aria-describedby="passwordHelpBlock"
+            placeholder="****"
+          />
+          <Form.Text className="form-help-block" id="passwordHelpBlock" muted>
+            Your password must be 8-20 characters long.
+          </Form.Text>
+        </Form.Group >
+
+          <Button variant="secondary" className="submit-button" size="sm">Sign in with 42</Button>
+          <Button variant="primary" type="submit" className="submit-button" size="sm" >
+            Submit
+          </Button>
+        <p className="text-secondary mt-2">
+          Forgot your &nbsp; <a href="#">password?</a>
+        </p>
+      </div>
+    </form>
+  </div>
   )
 }
+
