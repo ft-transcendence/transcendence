@@ -1,5 +1,6 @@
 import { Body, Controller,
 	Get,
+	Post,
 	Req,
 	UseGuards
 } from '@nestjs/common';
@@ -48,11 +49,19 @@ export class UserController {
 
 	//UPDATE
 
-//	@UseGuards(JwtGuard)
-	@Get('win')
-	hasWon(@Req() req: Request) {
-		console.log('Going through hasWon in user.controller');
-		return this.userService.hasWon(req.user);
+//this is not a request - it comes from the back, called by the game
+	hasWon(id: number) {
+		console.log('Going through hasWon in user.controller for');
+		return (this.userService.hasWon(id));
 	}
 
+	hasLost(id: number) {
+		console.log('Going through hasLost in user.controller for');
+		return (this.userService.hasLost(id));
+	}
+
+	hadADraw(id: number) {
+		console.log('Going through hasWon in user.controller for');
+		return (this.userService.hadADraw(id));
+	}
 }

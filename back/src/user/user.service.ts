@@ -1,10 +1,14 @@
 /* GLOBAL MODULES */
 import { Injectable } from "@nestjs/common";
 import { use } from "passport";
+import { Request } from 'express';
+
 /* PRISMA */
 import { PrismaService } from "src/prisma/prisma.service";
 /* USER Modules */
 import { UserDto } from './dto';
+import { userInfo } from "os";
+import { User } from "@prisma/client";
 
 
 
@@ -41,11 +45,11 @@ export class UserService {
 
 	//UPDATE
 
-	async hasWon(user) {
+	async hasWon(id: number) {
 		//increments the number of won and played games by one
 		const updateUser = await this.prisma.user.updateMany({
 			where: {
-			  id: user.id,
+			  id: id,
 			},
 			data: {
 				gamesWon: {
@@ -56,7 +60,34 @@ export class UserService {
 				},
 			  },
 		  })
-		  //should it return the dto ?
 	}
-
+	async hasLost(id: number) {
+		//increments the number of won and played games by one
+		const updateUser = await this.prisma.user.updateMany({
+			where: {
+			  id: id,
+			},
+			data: {
+				gamesLost: {
+				  increment: 1,
+				},
+				gamesPlayed: {
+				  increment: 1,
+				},
+			  },
+		  })
+	}
+	async hadADraw(id: number) {
+		//increments the number of won and played games by one
+		const updateUser = await this.prisma.user.update({
+			where: {
+			  id: id,
+			},
+			data: {
+				gamesPlayed: {
+				  increment: 1,
+				},
+			  },
+		  })
+	}	
 }
