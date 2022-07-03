@@ -7,6 +7,8 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 
 const socket = io("ws://localhost:4000");
 
+
+
 export default function Game() {
 
 
@@ -49,9 +51,9 @@ export default function Game() {
                     </div>
                     <div className='Friend-zone'>
                     </div>
-                </div>
-                <div className='Ball'>
-                    
+                
+                    <div className='Ball'>
+                    </div>
                 </div>
                 <div className='Info-card'>
                     <div className='Player-left'>

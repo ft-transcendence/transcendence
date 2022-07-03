@@ -50,11 +50,7 @@
     "typeorm": "^0.3.6"
   },
   "devDependencies": {
-<<<<<<< HEAD
-    "@nestjs/cli": "^8.2.8",
-=======
     "@nestjs/cli": "^8.2.7",
->>>>>>> main
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
     "@types/bcrypt": "^5.0.0",

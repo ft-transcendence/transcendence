@@ -22,27 +22,6 @@
     rxjs "6.6.7"
     source-map "0.7.3"
 
-<<<<<<< HEAD
-"@angular-devkit/core@13.3.6":
-  version "13.3.6"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-13.3.6.tgz#656284327d6f84a866a8d3cc8625895fe740602d"
-  integrity sha512-ZmD586B+RnM2CG5+jbXh2NVfIydTc/yKSjppYDDOv4I530YBm6vpfZMwClpiNk6XLbMv7KqX4Tlr4wfxlPYYbA==
-  dependencies:
-    ajv "8.9.0"
-    ajv-formats "2.1.1"
-    fast-json-stable-stringify "2.1.0"
-    magic-string "0.25.7"
-    rxjs "6.6.7"
-    source-map "0.7.3"
-
-"@angular-devkit/schematics-cli@13.3.6":
-  version "13.3.6"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics-cli/-/schematics-cli-13.3.6.tgz#5246c112b6b837a9d0a348cb6b79a8c4948e90c8"
-  integrity sha512-5tTuu9gbXM0bMk0sin4phmWA3U1Qz53zT/rpEfzQ/+c/s8CoqZ5N1qOnYtemRct3Jxsz1kn4TBpHeriR4r5hHg==
-  dependencies:
-    "@angular-devkit/core" "13.3.6"
-    "@angular-devkit/schematics" "13.3.6"
-=======
 "@angular-devkit/core@14.0.2":
   version "14.0.2"
   resolved "https://registry.yarnpkg.com/@angular-devkit/core/-/core-14.0.2.tgz#47f62a57cf36a2e102188a89ae00f5e5a05d837d"
@@ -61,7 +40,6 @@
   dependencies:
     "@angular-devkit/core" "14.0.2"
     "@angular-devkit/schematics" "14.0.2"
->>>>>>> main
     ansi-colors "4.1.1"
     inquirer "8.2.4"
     symbol-observable "4.0.0"
@@ -78,16 +56,6 @@
     ora "5.4.1"
     rxjs "6.6.7"
 
-<<<<<<< HEAD
-"@angular-devkit/schematics@13.3.6":
-  version "13.3.6"
-  resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-13.3.6.tgz#b02e1eff714c2cf44a54de92410d07cc8cefbb0e"
-  integrity sha512-yLh5xc92C/FiaAp27coPiKWpSUmwoXF7vMxbJYJTyOXlt0mUITAEAwtrZQNr4yAxW/yvgTdyg7PhXaveQNTUuQ==
-  dependencies:
-    "@angular-devkit/core" "13.3.6"
-    jsonc-parser "3.0.0"
-    magic-string "0.25.7"
-=======
 "@angular-devkit/schematics@14.0.2":
   version "14.0.2"
   resolved "https://registry.yarnpkg.com/@angular-devkit/schematics/-/schematics-14.0.2.tgz#8d878bcdb9d8ad876c254ebec55b7da6773e05df"
@@ -96,7 +64,6 @@
     "@angular-devkit/core" "14.0.2"
     jsonc-parser "3.0.0"
     magic-string "0.26.1"
->>>>>>> main
     ora "5.4.1"
     rxjs "6.6.7"
 
@@ -695,16 +662,6 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
-<<<<<<< HEAD
-"@nestjs/cli@^8.2.8":
-  version "8.2.8"
-  resolved "https://registry.yarnpkg.com/@nestjs/cli/-/cli-8.2.8.tgz#63e5b477f90e6d0238365dcc6236b95bf4f0c807"
-  integrity sha512-y5Imcw1EY0OxD3POAM7SLUB1rFdn5FjbfSsyJrokjKmXY+i6KcBdbRrv3Ox7aeJ4W7wXuckIXZEUlK6lC52dnA==
-  dependencies:
-    "@angular-devkit/core" "13.3.6"
-    "@angular-devkit/schematics" "13.3.6"
-    "@angular-devkit/schematics-cli" "13.3.6"
-=======
 "@nestjs/cli@^8.2.7":
   version "8.2.7"
   resolved "https://registry.yarnpkg.com/@nestjs/cli/-/cli-8.2.7.tgz#0eda805f2b4d636b37184a522160a4b6a8c65cfb"
@@ -713,7 +670,6 @@
     "@angular-devkit/core" "14.0.2"
     "@angular-devkit/schematics" "14.0.2"
     "@angular-devkit/schematics-cli" "14.0.2"
->>>>>>> main
     "@nestjs/schematics" "^8.0.3"
     chalk "3.0.0"
     chokidar "3.5.3"
