@@ -28,7 +28,7 @@ services:
     image: node:lts-alpine
     container_name: backend
     working_dir: /app
-    command: sh -c "yarn install && yarn add @nestjs/cli && npx prisma migrate dev && yarn run start:dev" 
+    command: sh -c "yarn install && yarn global add @nestjs/cli && npx prisma migrate dev && yarn run start:dev" 
 #    build: ./back
     volumes:
       - ./back:/app
@@ -55,8 +55,6 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     networks:
       - backend
-    depends_on:
-      - nginx
 # NGINX
   nginx:
     image: nginx:stable-alpine
@@ -72,6 +70,8 @@ services:
     restart: unless-stopped
     networks:
     - backend
+    depends_on:
+      - back
 # PGADMIN  - commented as prisma studio does the same thing as pgAdmin
 #  pgadmin:
 #    container_name: pgadmin4
