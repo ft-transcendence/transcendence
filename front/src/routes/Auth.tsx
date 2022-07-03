@@ -1,16 +1,34 @@
 import React, { useState } from "react"
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
+import { createLessThan } from "typescript";
 
 
 const handleSubmit = (event:any, userInputsRefs:any) => {
   event.preventDefault();
   if (userInputsRefs.username.current?.value)
     console.log(userInputsRefs.username.current.value!);
-  if (userInputsRefs.email.current?.value)
-    console.log(userInputsRefs.email.current.value!);
-  if (userInputsRefs.password.current?.value)
-    console.log(userInputsRefs.password.current.value!);
+  if (userInputsRefs.email.current?.value && userInputsRefs.password.current?.value)
+  { 
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    
+    let raw = JSON.stringify({
+      "email": "test4@gmail.com",
+      "password": "oui"
+    });
+    
+    fetch("http://localhost:4000/auth/signup", {
+      // mode: 'no-cors',
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    })
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+  }
 }
 
 export default function Auth () {
