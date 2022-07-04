@@ -3,3 +3,4 @@
 ./**/dist/
 .nfs*
 *.swp
+migrations/
