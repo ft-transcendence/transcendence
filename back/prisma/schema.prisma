@@ -64,7 +64,7 @@ model Channel {
 model Message {
   id    Int     @id  @default(autoincrement())
 
-  data  String
+  msg  String
   history String[]
 
   createdAt DateTime  @default(now())
