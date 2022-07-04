@@ -1,10 +1,8 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { GetUser, DeleteUser } from "../data";
+import { GetUser } from "../data";
 
 export default function User() {
     let params = useParams();
-    let navigate = useNavigate();
-    let location = useLocation();
 
     if (typeof params.userId === 'string')
     {
