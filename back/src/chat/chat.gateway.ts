@@ -29,6 +29,17 @@ export class ChatGateway {
     this.chatClients.push(client);
   }
 
+  handleDisconnect(client: Socket)
+  {
+    for (let i = 0; i < this.chatClients.length; i++) {
+      if (this.chatClients[i] === client) {
+        this.chatClients.splice(i, 1);
+        break;
+      }
+    }
+    this.broadcast('leave',{});
+  }
+
   private broadcast(event: string, message: any){
     for (const client of this.chatClients) {
       console.log('id: ', client.id)
