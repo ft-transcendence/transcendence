@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Chat.css";
 import { io } from 'socket.io-client';
 // import { Link, Outlet, useLocation } from "react-router-dom";
-
-
-const socket = io('ws://localhost:4000');
+import { socket } from "../App";
 
 export default function Chat() {
     
@@ -28,7 +26,7 @@ export default function Chat() {
         });
 /////
         socket.on('msg sent:', function(data: string) {
-            console.log('msg sent ', data);
+            console.log('msg sent:', data);
         });
         // socket.on('id sent', function(data: string) {
         //     console.log('id sent ', data);
@@ -42,18 +40,18 @@ export default function Chat() {
             console.log('msg', data);
         });
 
-        socket.on('disconnect', () => {
+        socket.on('leave', () => {
             console.log('Disconnected');
         });
 
         return () => {
-            socket.off('connect');
+            socket.off('join');
             socket.off('msg');
             socket.off('msg sent');
             // socket.off('id sent');
             // socket.off('pass sent');
             socket.off('exception');
-            socket.off('disconnect');
+            socket.off('leave');
         }
 
     }, []);

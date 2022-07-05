@@ -1,8 +1,10 @@
 // import React from 'react';
-// import { io } from "socket.io-client";
+import { io } from "socket.io-client";
 // import { getImpliedNodeFormatForFile } from 'typescript';
 // import { ServerResponse } from 'http';
 import { Link, Outlet, useLocation } from "react-router-dom";
+
+export const socket = io('ws://localhost:4000');
 
 export default function App() {
 

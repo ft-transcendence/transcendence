@@ -4,8 +4,7 @@ import {Particles} from "react-tsparticles";
 import { loadFull } from "tsparticles";
 import type { Container } from "tsparticles-engine";
 import { Link, Outlet, useLocation } from "react-router-dom";
-
-const socket = io("ws://localhost:4000");
+import { socket } from "../App";
 
 export default function Game() {
 
