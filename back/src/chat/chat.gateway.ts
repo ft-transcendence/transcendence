@@ -22,21 +22,32 @@ export class ChatGateway {
   
   constructor(private readonly chatservice: ChatService) {}
 
+  chatClients=[];
   handleConnection(client: Socket)
   {
-    console.log("back connected");
+    console.log('client connected: ', this.server.engine.clientsCount);
+    this.chatClients.push(client);
+  }
+
+  private broadcast(event: string, message: any){
+    for (const client of this.chatClients) {
+      console.log('id: ', client.id)
+      client.emit(event, message)
+    }
   }
 
   @SubscribeMessage('msg')
-  handleNewMsg(@MessageBody() data: NewMsgDto,
+  async handleNewMsg(@MessageBody() data: NewMsgDto,
   @ConnectedSocket() client: Socket
-  ):Observable <WsResponse<number>> {
+  ):Promise<Observable<WsResponse<number>>> {
     const event = 'msg';
     const response = [1];
 
-    console.log("msg  ", data)
+    console.log("dto  ", data)
     const message = this.chatservice.newMsg(data)
-    client.emit('msg sent', message)
+    this.broadcast('broadcast', data)
+
+    client.emit('msg sent:', (await message).msg)
     return from(response).pipe(
       map(data => ({ event, data })),
     )
