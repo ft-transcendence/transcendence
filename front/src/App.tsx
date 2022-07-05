@@ -2,6 +2,7 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
 import { createContext } from "react";
+import { AuthStatus } from ".";
 
 let LoginStatus = {
   islogged: false,
@@ -20,6 +21,7 @@ export default function App() {
   return (
       <div className="App" style={{margin: "8px"}}>
         <UsernameCxt.Provider value={LoginStatus}>
+        <AuthStatus />
           <h1>Transcendence</h1>
           <nav
             style={{
@@ -28,6 +30,7 @@ export default function App() {
             }}
           >
             <Link to="/auth">Auth</Link> |{" "}
+            <Link to="/home">Home(sign in protected)</Link> |{" "}
             <Link to="/game">Game</Link> |{" "}
             <Link to="/landing-page">Landing page</Link> |{" "}
             <Link to="/custom-page">Custom page</Link>
