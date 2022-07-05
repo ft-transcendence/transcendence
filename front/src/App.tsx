@@ -20,7 +20,6 @@ export default function App() {
           <Link to="/auth">Auth</Link> |{" "}
           <Link to="/game">Game</Link> |{" "}
           <Link to="/landing-page">Landing page</Link> |{" "}
-          <Link to="/leaderboard">Leaderboard example</Link> |{" "}
           <Link to="/custom-page">Custom page</Link>
         </nav>
         <Outlet />

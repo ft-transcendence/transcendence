@@ -1,10 +1,8 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import App from "./App";
-import GamePage from "./routes/GamePage";
+import Game from "./routes/Game";
 import LandingPage from "./routes/LandingPage";
-import Leaderboard from "./routes/Leaderboard";
-import User from "./routes/User";
 import CustomPage from "./routes/CustomPage";
 import Auth from "./routes/Auth";
 import SignIn from "./routes/auth_modes/SignIn";
@@ -28,19 +26,8 @@ root.render(
               <Route path="signup" element={<SignUp/>} />
               <Route path="*" element={<Navigate to="/auth/signin" />} />
             </Route>
-            <Route path="game" element={<GamePage />} />
+            <Route path="game" element={<Game />} />
             <Route path="landing-page" element={<LandingPage />} />
-            <Route path="leaderboard" element={<Leaderboard />} >
-              <Route
-                index
-                element={
-                  <main style={{ padding: "1rem" }}>
-                    <p>Select a user</p>
-                  </main>
-                }
-              />
-              <Route path=":userId" element={<User/>} />
-              </Route>
             <Route path="custom-page" element={<CustomPage />} ></Route>
             <Route
               path="*"
