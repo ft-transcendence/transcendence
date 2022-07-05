@@ -14,7 +14,7 @@ export default function Chat() {
         socket.on('connect', () => {
             console.log('front Connected');
 
-            socket.emit('msg', {userId: 1, channelId:1, msg: 'a test' });
+            socket.emit('test', {userId: 1, channelId:1, msg: 'a test' });
         });
 
         socket.on('msg', function(data) {

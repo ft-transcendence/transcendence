@@ -1,4 +1,5 @@
 import { UseGuards } from '@nestjs/common';
+// import { JwtGuard } from '../auth/guard'
 import {
   ConnectedSocket,
   MessageBody,
@@ -13,7 +14,7 @@ import { ChatService } from './chat.service';
 import { NewMsgDto, NewUserDto } from './dto';
 // import { Module } from '../auth/auth.module'
 
-@UseGuards()
+// @UseGuards(JwtGuard)
 @WebSocketGateway()
 
 export class ChatGateway {
@@ -23,6 +24,7 @@ export class ChatGateway {
   constructor(private readonly chatservice: ChatService) {}
 
   chatClients=[];
+
   handleConnection(client: Socket)
   {
     console.log('client connected: ', this.server.engine.clientsCount);
@@ -37,14 +39,23 @@ export class ChatGateway {
         break;
       }
     }
-    this.broadcast('leave',{});
+    this.broadcast('leave',{}, client.id);
+    console.log('a client disconnect, client connected: ', this.chatClients.length);
   }
 
-  private broadcast(event: string, message: any){
+  private broadcast(event: string, data: any, clientId){
     for (const client of this.chatClients) {
-      console.log('id: ', client.id)
-      client.emit(event, message)
+      if (client.id != clientId)
+        client.emit('msg sent:', data);
+      else
+        client.emit(event, data)
     }
+  }
+
+  @SubscribeMessage('test')
+  async handleTest(@MessageBody() data: NewMsgDto,
+  @ConnectedSocket() client: Socket) {
+    console.log("test  ", data)
   }
 
   @SubscribeMessage('msg')
@@ -56,9 +67,7 @@ export class ChatGateway {
 
     console.log("dto  ", data)
     const message = this.chatservice.newMsg(data)
-    this.broadcast('broadcast', data)
-
-    client.emit('msg sent:', (await message).msg)
+    this.broadcast('broadcast', data, client.id)
     return from(response).pipe(
       map(data => ({ event, data })),
     )
