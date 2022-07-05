@@ -1,7 +1,8 @@
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { Outlet } from "react-router-dom";
+import { UsernameCxt } from "../App";
 
 export const userInputsRefs: {
   username: React.RefObject<HTMLInputElement>,
@@ -13,34 +14,47 @@ export const userInputsRefs: {
   password: React.createRef(),
 };
 
+const signUp = () => {
+  let userInfo: {username:string, email:string, password:string} = {
+    username: userInputsRefs!.username!.current!.value,
+    email: userInputsRefs!.email!.current!.value,
+    password: userInputsRefs!.password!.current!.value
+  }
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  
+  let raw = JSON.stringify({
+    "email": userInfo.email,
+    "password": userInfo.password,
+    "username": userInfo.username
+  });
+
+  fetch("http://localhost:4000/auth/signup", {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  })
+    .then(response => response.text())
+    .then(result => storeUserInfo(userInfo, result))
+    .then(test => console.log('SIGNUP'))
+    .then(test => console.log('UserToken: '+ localStorage.getItem('UserToken')) )
+    .catch(error => console.log('error', error));
+}
+
+const storeUserInfo = (userInfo: any, token:any) => {
+  localStorage.setItem('userToken', token);
+  localStorage.setItem('userName', userInfo.username);
+  localStorage.setItem('userEmail', userInfo.email);
+  localStorage.setItem('userPassword', userInfo.password);
+}
+
 const handleSubmit = (event:any) => {
   event.preventDefault();
-  if (userInputsRefs.username.current?.value && userInputsRefs.email.current?.value && userInputsRefs.password.current?.value)
-  {
-    console.log('username:' + userInputsRefs.username.current?.value);
-    let myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    
-    let raw = JSON.stringify({
-      "email": userInputsRefs.email.current.value,
-      "password": userInputsRefs.password.current.value,
-      "username": userInputsRefs.username.current.value
-    });
-
-    console.log('password: ' + userInputsRefs.password.current.value);
-    
-    fetch("http://localhost:4000/auth/signup", {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow'
-    })
-      .then(response => response.text())
-      .then(result => localStorage.setItem('UserToken', result))
-      .then(test => console.log('UserToken: '+ localStorage.getItem('UserToken')) )
-      .catch(error => console.log('error', error));
-  }
-  
+  if (userInputsRefs.username.current?.value
+    && userInputsRefs.email.current?.value
+    && userInputsRefs.password.current?.value)
+    signUp();
 }
 
 export default function Auth () {

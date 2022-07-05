@@ -1,6 +1,15 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
+import { createContext } from "react";
+
+let LoginStatus = {
+  islogged: false,
+  setUserName: () => {},
+}
+
+export const UsernameCxt = createContext(LoginStatus);
+
 export default function App() {
 
   const location = useLocation();
@@ -10,19 +19,21 @@ export default function App() {
 
   return (
       <div className="App" style={{margin: "8px"}}>
-        <h1>Transcendence</h1>
-        <nav
-          style={{
-            borderBottom: "solid 1px",
-            paddingBottom: "1rem",
-          }}
-        >
-          <Link to="/auth">Auth</Link> |{" "}
-          <Link to="/game">Game</Link> |{" "}
-          <Link to="/landing-page">Landing page</Link> |{" "}
-          <Link to="/custom-page">Custom page</Link>
-        </nav>
-        <Outlet />
+        <UsernameCxt.Provider value={LoginStatus}>
+          <h1>Transcendence</h1>
+          <nav
+            style={{
+              borderBottom: "solid 1px",
+              paddingBottom: "1rem",
+            }}
+          >
+            <Link to="/auth">Auth</Link> |{" "}
+            <Link to="/game">Game</Link> |{" "}
+            <Link to="/landing-page">Landing page</Link> |{" "}
+            <Link to="/custom-page">Custom page</Link>
+          </nav>
+          <Outlet />
+        </UsernameCxt.Provider>
       </div>
   );
 }
