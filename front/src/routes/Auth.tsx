@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import { Outlet } from "react-router-dom";
 import { UsernameCxt } from "../App";
+import SignIn from "./auth_modes/SignIn";
 
 export const userInputsRefs: {
   username: React.RefObject<HTMLInputElement>,
@@ -14,12 +15,31 @@ export const userInputsRefs: {
   password: React.createRef(),
 };
 
-const signUp = () => {
-  let userInfo: {username:string, email:string, password:string} = {
-    username: userInputsRefs!.username!.current!.value,
-    email: userInputsRefs!.email!.current!.value,
-    password: userInputsRefs!.password!.current!.value
-  }
+const signIn = (userInfo:any) => {
+
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  
+  let raw = JSON.stringify({
+    "email": userInfo.email,
+    "password": userInfo.password,
+  });
+
+  fetch("http://localhost:4000/auth/signin", {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  })
+    .then(response => response.text())
+    .then(result => storeUserInfo(userInfo, result))
+    .then(test => console.log('SIGNIN'))
+    .then(test => console.log('userToken: '+ localStorage.getItem('userToken')) )
+    .catch(error => console.log('error', error));
+}
+
+const signUp = (userInfo:any) => {
+
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   
@@ -38,24 +58,40 @@ const signUp = () => {
     .then(response => response.text())
     .then(result => storeUserInfo(userInfo, result))
     .then(test => console.log('SIGNUP'))
-    .then(test => console.log('UserToken: '+ localStorage.getItem('UserToken')) )
+    .then(test => console.log('userToken: '+ localStorage.getItem('userToken')) )
     .catch(error => console.log('error', error));
+
 }
 
-const storeUserInfo = (userInfo: any, token:any) => {
-  localStorage.setItem('userToken', token);
-  localStorage.setItem('userName', userInfo.username);
+const storeUserInfo = (userInfo: any, token:string) => {
+  if (token !== "{\"statusCode\":403,\"message\":\"Credentials already exist\",\"error\":\"Forbidden\"}")
+    localStorage.setItem('userToken', token);
+  if (userInfo.username)
+    localStorage.setItem('userName', userInfo.username);
   localStorage.setItem('userEmail', userInfo.email);
   localStorage.setItem('userPassword', userInfo.password);
 }
 
 const handleSubmit = (event:any) => {
   event.preventDefault();
-  if (userInputsRefs.username.current?.value
-    && userInputsRefs.email.current?.value
-    && userInputsRefs.password.current?.value)
-    signUp();
+
+  let userInfo: {username:string | null , email:string | null, password:string | null}  =
+  {
+    username: null,
+    email: null,
+    password: null
+  }
+  if (userInputsRefs.username.current?.value)
+    userInfo.username = userInputsRefs.username.current.value;
+  userInfo.email = userInputsRefs!.email!.current!.value;
+  userInfo.password = userInputsRefs!.password!.current!.value;
+
+  if (userInfo.username && userInfo.email && userInfo.password)
+    signUp(userInfo);
+  else
+    signIn(userInfo);
 }
+
 
 export default function Auth () {
 
