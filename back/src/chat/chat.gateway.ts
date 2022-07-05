@@ -11,7 +11,7 @@ import {
 import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { NewMsgDto, NewUserDto } from './dto';
+import { NewMsgDto, UserDto } from './dto';
 // import { Module } from '../auth/auth.module'
 
 // @UseGuards(JwtGuard)
@@ -30,7 +30,7 @@ export class ChatGateway {
     console.log('client connected: ', this.server.engine.clientsCount);
     this.chatClients.push(client);
   }
-
+  
   handleDisconnect(client: Socket)
   {
     for (let i = 0; i < this.chatClients.length; i++) {
@@ -40,20 +40,38 @@ export class ChatGateway {
       }
     }
     this.broadcast('leave',{}, client.id);
-    console.log('a client disconnect, client connected: ', this.chatClients.length);
+    console.log('a client disconnect, client connected:', this.chatClients.length);
   }
 
-  private broadcast(event: string, data: any, clientId){
+  private broadcast(event: string, data: any, clientId: string){
     for (const client of this.chatClients) {
-      if (client.id != clientId)
+      if (client.id == clientId)
         client.emit('msg sent:', data);
       else
-        client.emit(event, data)
+        client.to(data.channelId).emit(event, data)
     }
   }
-
+  @SubscribeMessage('signup')
+  handleSignup(@MessageBody() data: UserDto) {
+    this.chatservice.Signup(data);
+    console.log("new user:", data)
+  }
+  @SubscribeMessage('signin')
+  handleSignin(@MessageBody() data: UserDto) {
+    this.chatservice.Signin(data);
+    console.log("signin:", data)
+  }
+  // @SubscribeMessage('email')
+  // handleEmail(@MessageBody() data: NewUserDto) {
+  //   this.chatservice.newUser(data);
+  // }
+  // @SubscribeMessage('id')
+  // handleId(@MessageBody() data: NewUserDto) {
+  //   this.chatservice.newUser(data);
+  // }
+  
   @SubscribeMessage('test')
-  async handleTest(@MessageBody() data: NewMsgDto,
+  handleTest(@MessageBody() data: NewMsgDto,
   @ConnectedSocket() client: Socket) {
     console.log("test  ", data)
   }

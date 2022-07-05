@@ -24,7 +24,7 @@ model User {
 
   email		 	String 		@unique
 	username	String?   
-  hash			String
+  hash			String?
 	picture		String?
 
 	gamesWon		Int?
@@ -39,7 +39,7 @@ model User {
   member      Channel[] @relation("member")
   chanBlocked Channel[] @relation("blocked")
 
-  // messages    Message[]
+  messages    Message[]
 
   @@map("users")    //mapped to another name
 }
@@ -58,7 +58,7 @@ model Channel {
   admins    User[]    @relation("admin")
   members   User[]    @relation("member")
   blocked   User[]    @relation("blocked")
-  // messages  Message[]
+  messages  Message[]
 }
 
 model Message {
@@ -70,10 +70,10 @@ model Message {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  // owner     User      @relation(fields: [userId], references: [id])
-  // userId    Int
-  // channel   Channel   @relation(fields: [cid], references: [id])
-  // cid       Int
+  owner     User      @relation(fields: [userId], references: [id])
+  userId    Int
+  channel   Channel   @relation(fields: [cid], references: [id])
+  cid       Int
 }
 
 
