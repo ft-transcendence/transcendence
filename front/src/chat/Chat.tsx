@@ -9,21 +9,31 @@ const socket = io('ws://localhost:4000');
 export default function Chat() {
     
     const [ msg, setNewMsg ] = React.useState("");
-
-    // socket.emit('msg', {name: 'Nest' }, (data: string) => console.log(data));
-    // socket.on('msg', (data: string) => console.log(data));
+    const [ id, setNewId ] = React.useState("");
+    const [ password, setNewPass ] = React.useState("");
     
     useEffect(() => {
         socket.on('connect', () => {
             console.log('front Connected');
 
-            socket.emit('msg', {test: 'test'});
+            socket.emit('msg', {userId: 1, channelId:1, msg: 'a test' });
         });
 
         socket.on('msg', function(data) {
             console.log('msg', data);
         });
+/////
+        socket.on('msg sent', function(data: string) {
+            console.log('msg sent ', data);
+        });
+        socket.on('id sent', function(data: string) {
+            console.log('id sent ', data);
+        });
+        socket.on('pass sent', function(data: string) {
+            console.log('pass sent ', data);
+        });
 
+/////
         socket.on('exception', function(data) {
             console.log('msg', data);
         });
@@ -35,19 +45,22 @@ export default function Chat() {
         return () => {
             socket.off('connect');
             socket.off('msg');
+            socket.off('msg sent');
+            socket.off('id sent');
+            socket.off('pass sent');
             socket.off('exception');
             socket.off('disconnect');
         }
 
     }, []);
 
-    const handleMsgInput = (event: any) => {
+    const handleMsg = (event: any) => {
         setNewMsg(event.target.value);
     }
 
     const sendMsg = (msg: string) => {
         console.log(msg);
-        socket.emit('msg', msg);
+        socket.emit('msg', {userId: 1, channelId:1, msg: msg});
     }
 
     const handleSendMsg = () => {
@@ -55,19 +68,76 @@ export default function Chat() {
         sendMsg(msg);
         setNewMsg("");
     }
+/////////////////////////
+
+    const handleId = (event: any) => {
+        setNewId(event.target.value);
+    }
+
+    const sendId = (id: string) => {
+        console.log(id);
+        socket.emit('id', id);
+    }
+
+    const handleSendId = () => {
+
+        sendId(id);
+        setNewId("");
+    }
+
+    
+/////////////////////////
+    const handlePass = (event: any) => {
+        setNewPass(event.target.value);
+    }
+
+    const sendPass = (pass: string) => {
+        console.log(pass);
+        socket.emit('pass', pass);
+    }
+
+    const handleSendPass = () => {
+
+        sendPass(password);
+        setNewPass("");
+    }
 
     return (
+        
+        <>
         <div>
-            this is chat hehehe
+            login<br/>
+            <textarea
+                value={id}
+                onChange={handleId}
+                placeholder="channel"
+                className="msg-input-field" />
+            <button onClick={handleSendId} className="send-msg-button">
+                send
+            </button>
+        </div>
+        <div>
+            password<br/>
+            <textarea
+                value={password}
+                onChange={handlePass}
+                placeholder="password"
+                className="msg-input-field" />
+            <button onClick={handleSendPass} className="send-msg-button">
+                send
+            </button>
+        </div>
+        <div>
+            Chat<br/>
             <textarea
                 value={msg}
-                onChange={handleMsgInput}
+                onChange={handleMsg}
                 placeholder="Write msg...."
-                className="msg-input-field"
-            />
+                className="msg-input-field" />
             <button onClick={handleSendMsg} className="send-msg-button">
                 send
             </button>
         </div>
+        </>
     )
 }

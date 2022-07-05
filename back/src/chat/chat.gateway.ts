@@ -9,7 +9,8 @@ import {
   } from '@nestjs/websockets';
 import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
-import { FormDto } from './dto';
+import { ChatService } from './chat.service';
+import { NewMsgDto, NewUserDto } from './dto';
 // import { Module } from '../auth/auth.module'
 
 @UseGuards()
@@ -19,41 +20,23 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
   
+  constructor(private readonly chatservice: ChatService) {}
+
   handleConnection(client: Socket)
   {
     console.log("back connected");
   }
 
-
-
-  // @SubscribeMessage('id')
-  // handleId(
-  //   @MessageBody() data: FormDto, 
-  //   @ConnectedSocket() client: Socket
-  // ): string {
-  //   client.emit('id sent')
-  //   console.log("id   ", data)
-  //   return data;
-  // }
-  // @SubscribeMessage('pass')
-  // handlePass(
-  //   @MessageBody() data: string, 
-  //   @ConnectedSocket() client: Socket
-  // ): string {
-  //   client.emit('pass sent')
-  //   console.log("pass ", data)
-  //   return data;
-  // }
-
   @SubscribeMessage('msg')
-  handleMsg(@MessageBody() data: FormDto,
+  handleNewMsg(@MessageBody() data: NewMsgDto,
   @ConnectedSocket() client: Socket
   ):Observable <WsResponse<number>> {
     const event = 'msg';
-    const response = [1, 2, 3];
+    const response = [1];
 
-    client.emit('msg sent')
     console.log("msg  ", data)
+    const message = this.chatservice.newMsg(data)
+    client.emit('msg sent', message)
     return from(response).pipe(
       map(data => ({ event, data })),
     )

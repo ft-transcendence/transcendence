@@ -1,17 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { prisma, PrismaClient } from '@prisma/client';
+import { Message, Prisma, PrismaClient } from '@prisma/client';
 import { async } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { MsgDto } from './dto';
+import { NewMsgDto, NewUserDto } from './dto';
 
 @Injectable()
 export class ChatService {
 
-    constructor(private prisma: PrismaService) {}
+    constructor(private readonly prismaService: PrismaClient) {}
 
-    async updater(data: MsgDto) {
-        const newMsg = await this.prisma.message.create({ data })
+    // async newUser(data: Prisma.UserCreateInput)
+    // {
+    //     const nUser =  await this.prismaService.user.create({
+    //         data
+    //         })
+    //     return (nUser);
+    // }
 
+    async newMsg(data: NewMsgDto)
+    {
+        const message =  await this.prismaService.message.create({
+            data: {
+                msg: data.msg,
+                history: [""],
+                // userId: data.userId, 
+                // cid: data.channelId,
+            }
+        })
+        return (message);
     }
-    
 }

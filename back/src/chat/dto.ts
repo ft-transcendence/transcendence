@@ -1,14 +1,25 @@
-import { ArrayMinSize, IsArray, IsBoolean, isInt, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsIn, isInt, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class MsgDto {
+export class NewUserDto {
 
-    @IsString()
+    @IsEmail()
     @IsNotEmpty()
-    public owner: string;
+    email: string;
 
-    @IsString()
+    // @IsString()
+    // @IsNotEmpty()
+    // password: string;
+}
+
+export class NewMsgDto {
+
+    @IsInt()
     @IsNotEmpty()
-    public channel: string;
+    public userId: number;
+
+    @IsInt()
+    @IsNotEmpty()
+    public channelId: number;
 
     @IsString()
     @IsNotEmpty()
