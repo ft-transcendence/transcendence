@@ -28,6 +28,7 @@ console.log(`Running on port ` + process.env.PORT );
 				AuthModule, 
 				UserModule, 
 				PrismaModule,
+				ChatModule,
 				ConfigModule.forRoot({
 					// set path to .env file
 					envFilePath,
