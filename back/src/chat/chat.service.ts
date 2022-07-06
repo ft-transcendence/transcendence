@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Message, Prisma, PrismaClient } from '@prisma/client';
-import { async } from 'rxjs';
+// import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { NewMsgDto, UserDto } from './dto';
+import { NewChannelDto, NewMsgDto, UserDto } from './dto';
 
 @Injectable()
 export class ChatService {
@@ -11,14 +10,18 @@ export class ChatService {
 
     async Signup(data: UserDto)
     {
-        const user =  await this.prismaService.user.create({
+        try {
+            const user =  await this.prismaService.user.create({
             data : {
-                email: data.email,
-                hash: data.hash,
-                // channel: data.channel,
-            }
-        })
-        return (user);
+                    email: data.email,
+                    hash: data.hash,
+                    // channel: data.channel,
+                }
+            })
+            return (user);
+        } catch (error) {
+            // reportError({message: error.message})
+        }
     }
 
     async Signin(data: UserDto)
@@ -31,17 +34,34 @@ export class ChatService {
         return (user);
     }
 
+    async newChannel(data: NewChannelDto)
+    {
+        console.log(data)
+        try {
+            const channel =  await this.prismaService.channel.create({
+                data: {
+                    name: data.name,
+                    private: data.private,
+                    password: data.password,
+                }
+            })
+            return (channel);
+        } catch (error) {} 
+    }
+
     async newMsg(data: NewMsgDto)
     {
         console.log(data)
-        const message =  await this.prismaService.message.create({
-            data: {
-                msg: data.msg,
-                history: [""],
-                userId: data.userId, 
-                cid: data.channelId,
-            }
-        })
-        return (message);
+        try {
+            const message =  await this.prismaService.message.create({
+                data: {
+                    msg: data.msg,
+                    history: [""],
+                    userId: data.userId.valueOf, 
+                    cid: data.channelId,
+                }
+            })
+            return (message);
+        } catch (error) {} 
     }
 }

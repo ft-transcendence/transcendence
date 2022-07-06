@@ -28,6 +28,7 @@ export class ChatGateway {
   handleConnection(client: Socket)
   {
     console.log('client connected: ', this.server.engine.clientsCount);
+    client.emit('id', this.chatClients.length)
     this.chatClients.push(client);
   }
   
@@ -51,24 +52,18 @@ export class ChatGateway {
         client.to(data.channelId).emit(event, data)
     }
   }
+
   @SubscribeMessage('signup')
   handleSignup(@MessageBody() data: UserDto) {
     this.chatservice.Signup(data);
     console.log("new user:", data)
   }
+
   @SubscribeMessage('signin')
   handleSignin(@MessageBody() data: UserDto) {
     this.chatservice.Signin(data);
     console.log("signin:", data)
   }
-  // @SubscribeMessage('email')
-  // handleEmail(@MessageBody() data: NewUserDto) {
-  //   this.chatservice.newUser(data);
-  // }
-  // @SubscribeMessage('id')
-  // handleId(@MessageBody() data: NewUserDto) {
-  //   this.chatservice.newUser(data);
-  // }
   
   @SubscribeMessage('test')
   handleTest(@MessageBody() data: NewMsgDto,
