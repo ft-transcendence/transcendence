@@ -18,20 +18,25 @@ export class ChatService {
                     // channel: data.channel,
                 }
             })
-            return (user);
+            return user;
         } catch (error) {
             // reportError({message: error.message})
+            return null;
         }
     }
 
     async Signin(data: UserDto)
     {
-        const user =  await this.prismaService.user.findUnique({
-            where: {
-                email: data.email,
-            }
-        })
-        return (user);
+        try {
+            const user =  await this.prismaService.user.findUnique({
+                where: {
+                    email: data.email,
+                }
+            })
+            return (user);
+        } catch (error) {
+            return null;
+        }
     }
 
     async newChannel(data: NewChannelDto)
