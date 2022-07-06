@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsHash, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UserDto {
 
@@ -13,6 +13,23 @@ export class UserDto {
     @IsInt()
     @IsNotEmpty()
     channel: number;
+}
+
+export class NewChannelDto {
+
+    @IsString()
+    @IsNotEmpty()
+    name: string;
+
+    @IsBoolean()
+    @IsNotEmpty()
+    private: boolean;
+
+    // @IsHash()
+    @IsString()
+    @IsNotEmpty()
+    password: string;
+
 }
 
 export class NewMsgDto {
