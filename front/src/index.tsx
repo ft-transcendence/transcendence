@@ -9,7 +9,6 @@ import SignIn from "./routes/auth_modes/SignIn";
 import SignUp from "./routes/auth_modes/SignUp";
 import Home from "./routes/Home";
 import "./index.css";
-import { createContext, useState } from "react";
 import React from "react";
 
 const root = ReactDOM.createRoot(
@@ -52,17 +51,17 @@ const fakeAuthProvider = {
   isAuthenticated: false,
   signin(callback: VoidFunction) {
     fakeAuthProvider.isAuthenticated = true;
-    setTimeout(callback, 100); // fake async
+    setTimeout(callback, 1); // fake async
   },
   signout(callback: VoidFunction) {
     fakeAuthProvider.isAuthenticated = false;
-    setTimeout(callback, 100);
+    setTimeout(callback, 1);
   },
 };
 
 interface AuthContextType {
-  user: string;
-  signin: (user: string, callback: VoidFunction) => void;
+  user: string | null;
+  signin: (user: string | null, callback: VoidFunction) => void;
   signout: (callback: VoidFunction) => void;
 }
 
@@ -72,7 +71,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   
   let [user, setUser] = React.useState<any>(null);
 
-  let signin = (newUser: string, callback: VoidFunction) => {
+  let signin = (newUser: string | null, callback: VoidFunction) => {
     return fakeAuthProvider.signin(() => {
       setUser(newUser);
       callback();
@@ -82,6 +81,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   let signout = (callback: VoidFunction) => {
     return fakeAuthProvider.signout(() => {
       setUser(null);
+      localStorage.clear();
       callback();
     });
   };
@@ -100,7 +100,7 @@ export function AuthStatus() {
   let navigate = useNavigate();
 
   if (!auth.user) {
-    return <p>You are not logged in.</p>;
+    return <p>Please, login.</p>;
   }
 
   return (
@@ -122,11 +122,7 @@ function RequireAuth({ children }: { children: JSX.Element }) {
   let location = useLocation(); // returns the current location object
 
   if (!auth.user) {
-    // Redirect them to the /login page, but save the current location they were
-    // trying to go to when they were redirected. This allows us to send them
-    // along to that page after they login, which is a nicer user experience
-    // than dropping them off on the home page.
-    return <Navigate to="/auth" state={{ from: location }} replace />; //  to replace the /login   
+    return <Navigate to="/auth/signin" state={{ from: location }} replace />; //  to replace the /login   
     // route in the history stack so the user doesn't return to the login page when clicking the 
     // back button after logging in
   }

@@ -17,85 +17,110 @@ export const userInputsRefs: {
   password: React.createRef(),
 };
 
-const signIn = (userInfo:any) => {
-
-  let myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  
-  let raw = JSON.stringify({
-    "email": userInfo.email,
-    "password": userInfo.password,
-  });
-
-  fetch("http://localhost:4000/auth/signin", {
-    method: 'POST',
-    headers: myHeaders,
-    body: raw,
-    redirect: 'follow'
-  })
-    .then(response => response.text())
-    .then(result => storeUserInfo(userInfo, result))
-    .then(test => console.log('SIGNIN'))
-    .then(test => console.log('userToken: '+ localStorage.getItem('userToken')) )
-    .catch(error => console.log('error', error));
+let userInfo: {username:string | null , email:string | null, password:string | null}  =
+{
+  username: null,
+  email: null,
+  password: null
 }
 
-const signUp = (userInfo:any) => {
-
-  let myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  
-  let raw = JSON.stringify({
-    "email": userInfo.email,
-    "password": userInfo.password,
-    "username": userInfo.username
-  });
-
-  fetch("http://localhost:4000/auth/signup", {
-    method: 'POST',
-    headers: myHeaders,
-    body: raw,
-    redirect: 'follow'
-  })
-    .then(response => response.text())
-    .then(result => storeUserInfo(userInfo, result))
-    .then(test => console.log('SIGNUP'))
-    .then(test => console.log('userToken: '+ localStorage.getItem('userToken')) )
-    .catch(error => console.log('error', error));
-
+interface LocationState {
+  from: {
+    pathname: string;
+  };
 }
 
 const storeUserInfo = (userInfo: any, token:string) => {
-  if (token !== "{\"statusCode\":403,\"message\":\"Credentials already exist\",\"error\":\"Forbidden\"}")
-    localStorage.setItem('userToken', token);
-  if (userInfo.username)
-    localStorage.setItem('userName', userInfo.username);
-  localStorage.setItem('userEmail', userInfo.email);
-  localStorage.setItem('userPassword', userInfo.password);
-}
-
-const handleSubmit = (event:any) => {
-  event.preventDefault();
-
-  let userInfo: {username:string | null , email:string | null, password:string | null}  =
+  if (token !== "{\"statusCode\":403,\"message\":\"Credentials already exist\",\"error\":\"Forbidden\"}"  &&
+  token !== "{\"statusCode\":403,\"message\":\"Invalid Credentials\",\"error\":\"Forbidden\"}")
   {
-    username: null,
-    email: null,
-    password: null
-  }
-  if (userInputsRefs.username.current?.value)
-    userInfo.username = userInputsRefs.username.current.value;
-  userInfo.email = userInputsRefs!.email!.current!.value;
-  userInfo.password = userInputsRefs!.password!.current!.value;
+    localStorage.setItem('userToken', token);
+    if (userInfo.username)
+      localStorage.setItem('userName', userInfo.username);
+    localStorage.setItem('userEmail', userInfo.email);
+    localStorage.setItem('userPassword', userInfo.password);
 
-  if (userInfo.username && userInfo.email && userInfo.password)
-    signUp(userInfo);
-  else
-    signIn(userInfo);
+    console.log('token: ' + localStorage.getItem('userToken'));
+    console.log('userEmail: ' + localStorage.getItem('userEmail'));
+    console.log('userPassword: ' + localStorage.getItem('userPassword'));
+  }
 }
 
 
 export default function Auth () {
+
+  let navigate = useNavigate();
+  let location = useLocation();
+  let auth = useAuth(); // subscribe to Auth context
+
+  function userSignIn() {
+    const { from } = location.state as LocationState || { from: { pathname: "/" } };
+    let email = localStorage.getItem('userEmail');
+    if (email)
+      auth.signin(email, () => { navigate(from, { replace: true });});
+  }
+
+  const handleSubmit = (event:any) => {
+    event.preventDefault();
+
+    if (userInputsRefs.username.current?.value)
+      userInfo.username = userInputsRefs.username.current.value;
+    userInfo.email = userInputsRefs!.email!.current!.value;
+    userInfo.password = userInputsRefs!.password!.current!.value;
+  
+    if (userInfo.username && userInfo.email && userInfo.password)
+      signUp();
+    else
+      signIn();
+  }
+  
+  const signIn = () => {
+
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    
+    let raw = JSON.stringify({
+      "email": userInfo.email,
+      "password": userInfo.password,
+    });
+  
+    fetch("http://localhost:4000/auth/signin", {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    })
+      .then(response => response.text())
+      .then(result => storeUserInfo(userInfo, result))
+      .then(() => console.log('<= SIGNIN'))
+      .then(() => userSignIn())
+      .catch(error => console.log('error', error));
+  }
+  
+  const signUp = () => {
+  
+    let myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    
+    let raw = JSON.stringify({
+      "email": userInfo.email,
+      "password": userInfo.password,
+      "username": userInfo.username
+    });
+  
+    fetch("http://localhost:4000/auth/signup", {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    })
+      .then(response => response.text())
+      .then(result => storeUserInfo(userInfo, result))
+      .then(() => console.log('<= SIGNUP'))
+      .then(() => userSignIn())
+      .catch(error => console.log('error', error));
+  
+  }
 
   return (
   <div className="Auth-form-container">
@@ -135,48 +160,6 @@ export default function Auth () {
         </p>
       </div>
     </form>
-    <LoginPage></LoginPage>
   </div>
   )
-}
-
-interface LocationState {
-  from: {
-    pathname: string;
-  };
-}
-
-function LoginPage() {
-  let navigate = useNavigate();
-  let location = useLocation();
-  let auth = useAuth(); // subscribe to Auth context
-
-  const { from } = location.state as LocationState || { from: { pathname: "/" } };
-
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    let formData = new FormData(event.currentTarget);
-    let username = formData.get("username") as string;
-    auth.signin(username, () => {
-      // Send them back to the page they tried to visit when they were
-      // redirected to the login page. Use { replace: true } so we don't create
-      // another entry in the history stack for the login page.  This means that
-      // when they get to the protected page and click the back button, they
-      // won't end up back on the login page, which is also really nice for the
-      // user experience.
-      navigate(from, { replace: true });
-    });
-  }
-
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username: <input name="username" type="text" />
-        </label>{" "}
-        <button type="submit">Login</button>
-      </form>
-    </div>
-  );
 }
