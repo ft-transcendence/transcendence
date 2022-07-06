@@ -9,29 +9,32 @@ import { GameGateway } from './game/game.gateway';
 import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
 
-/* Modules are classes, here app.module, annotated with the module decorator.
-* Like any decorator, this adds metadata to a class or function.
-* Modules can import other mmodules - here, UsersModule, DbModule, etc.
-* They import controllers and providers too (see in users controllers and providers for defs)
+require('dotenv').config();
+
+let envFilePath = 'env.development';
+
+console.log(`Running in ${process.env.ENVIRONMENT} mode`);
+
+/*
 * This one is the main module, it will import all the others.
 */
 
 @Module({
-	imports:
-	[
-		AuthModule, 
-		UserModule, 
-		PrismaModule,
-		ChatModule,
-		ConfigModule.forRoot
-		({
-			isGlobal: true
-		}), 
-		GameModule,	
-	],
-
-	providers: [GameService, GameGateway],		
-
+	imports: [	
+				AuthModule, 
+				UserModule, 
+				PrismaModule,
+				ConfigModule.forRoot({
+					// set path to .env file
+					envFilePath,
+					// global import
+					isGlobal: true
+				}),
+			],
+	providers: [GameGateway],
+	
+	// NOT USED AS OF YET
+	// controllers: [AppController],
 })
-// export to enable globally
+
 export class AppModule {}
