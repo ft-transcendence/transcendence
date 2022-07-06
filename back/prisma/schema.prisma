@@ -47,13 +47,13 @@ model User {
 model Channel {
   id    Int     @id  @default(autoincrement())
 
-  name  String
+  cname  String  @unique
   picture String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
   private   Boolean
-  password  String
+  password  String?
 
   admins    User[]    @relation("admin")
   members   User[]    @relation("member")
