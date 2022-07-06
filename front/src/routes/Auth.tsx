@@ -6,6 +6,7 @@ import { Outlet } from "react-router-dom";
 import { UsernameCxt } from "../App";
 import SignIn from "./auth_modes/SignIn";
 import { useAuth } from "..";
+import { clear } from "console";
 
 export const userInputsRefs: {
   username: React.RefObject<HTMLInputElement>,
@@ -17,11 +18,16 @@ export const userInputsRefs: {
   password: React.createRef(),
 };
 
-let userInfo: {username:string | null , email:string | null, password:string | null}  =
+let userInfo: {username:string | null , email:string | null, password:string | null, clear:any}  =
 {
   username: null,
   email: null,
-  password: null
+  password: null,
+  clear: function(){
+    this.username = null;
+    this.email = null;
+    this.password = null;
+  }
 }
 
 interface LocationState {
@@ -44,6 +50,7 @@ const storeUserInfo = (userInfo: any, token:string) => {
     console.log('userEmail: ' + localStorage.getItem('userEmail'));
     console.log('userPassword: ' + localStorage.getItem('userPassword'));
   }
+  userInfo.clear();
 }
 
 
@@ -67,7 +74,6 @@ export default function Auth () {
       userInfo.username = userInputsRefs.username.current.value;
     userInfo.email = userInputsRefs!.email!.current!.value;
     userInfo.password = userInputsRefs!.password!.current!.value;
-  
     if (userInfo.username && userInfo.email && userInfo.password)
       signUp();
     else
