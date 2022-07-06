@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { count } from 'console';
-// import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { usersProviders } from 'src/users/users.providers';
 import { ChannelDto, NewMsgDto, UserDto } from './dto';
 
 @Injectable()
@@ -10,7 +7,7 @@ export class ChatService {
 
     constructor(private readonly prismaService: PrismaService) {}
 
-    async Signup(data: UserDto)
+    async signup(data: UserDto)
     {
         try {
             const user =  await this.prismaService.user.create({
@@ -26,7 +23,7 @@ export class ChatService {
         }
     }
 
-    async Signin(data: UserDto)
+    async signin(data: UserDto)
     {
         try {
             const user =  await this.prismaService.user.findUnique({

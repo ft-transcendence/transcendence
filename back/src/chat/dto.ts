@@ -34,13 +34,13 @@ export class NewMsgDto {
 
     @IsEmail()
     @IsNotEmpty()
-    public userId: number;
+    userId: number;
 
     @IsNumber()
     @IsNotEmpty()
-    public channelId: number;
+    channelId: number;
 
     @IsString()
     @IsNotEmpty()
-    public msg: string;
+    msg: string;
 }

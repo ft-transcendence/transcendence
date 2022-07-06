@@ -7,7 +7,7 @@ import {
   WebSocketGateway,
   WebSocketServer,
   WsResponse
-  } from '@nestjs/websockets';
+} from '@nestjs/websockets';
 import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
@@ -20,10 +20,10 @@ import { NewMsgDto, UserDto, ChannelDto } from './dto';
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
-  
+
   constructor(private readonly chatservice: ChatService) {}
 
-  chatClients=[];
+  chatClients = [];
 
   handleConnection(client: Socket)
   {
@@ -31,7 +31,7 @@ export class ChatGateway {
     this.chatClients.push(client);
     this.chatservice.listUser();
   }
-  
+
   handleDisconnect(client: Socket)
   {
     for (let i = 0; i < this.chatClients.length; i++) {
@@ -57,8 +57,8 @@ export class ChatGateway {
   async handleSignup(
     @MessageBody() data: UserDto,
     @ConnectedSocket() client: Socket) {
-    const cli = await this.chatservice.Signup(data);
-    const clientId = await (await this.chatservice.Signup(data)).id;
+    const cli = await this.chatservice.signup(data);
+    const clientId = await (await this.chatservice.signin(data)).id;
     console.log("user id:", clientId)
     console.log("user info:", cli)
     client.emit('id', clientId)
@@ -68,19 +68,18 @@ export class ChatGateway {
   async handleSignin(
     @MessageBody() data: UserDto,
     @ConnectedSocket() client: Socket) {
-    const cli = await this.chatservice.Signin(data);
-    const clientId = await (await this.chatservice.Signin(data)).id;
+    const cli = await this.chatservice.signin(data);
+    const clientId = await (await this.chatservice.signin(data)).id;
     console.log("user id:", clientId)
     console.log("user info:", cli)
     client.emit('id', clientId)
   }
-  
+
   @SubscribeMessage('channel')
   async handleChannel(@MessageBody() data: ChannelDto,
   @ConnectedSocket() client: Socket) {
     const channelId = await (await this.chatservice.newChannel(data)).id;
     client.emit('channel', channelId)
-    // console.log("test  ", data)
   }
 
   @SubscribeMessage('test')
