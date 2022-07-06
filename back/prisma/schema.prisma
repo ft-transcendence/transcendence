@@ -47,7 +47,7 @@ model User {
 model Channel {
   id    Int     @id  @default(autoincrement())
 
-  cname  String  @unique
+  name  String  @unique
   picture String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
