@@ -7,7 +7,8 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 /* AUTH MODULES */
 import { AuthService } from "./auth.service";
-import { AuthDto } from "./dto"
+import { SignUpDto } from "./dto"
+import { SignInDto } from "./dto"
 
 // AUTH CONTROLLER
 @Controller('auth')
@@ -28,7 +29,7 @@ export class AuthController {
 	 * @param dto data transfer object
 	 */
 	@Post('signup')
-	signup(@Body() dto: AuthDto) {
+	signup(@Body() dto: SignUpDto) {
 		console.log(dto);
 		return this.authService.signup(dto);
 	}
@@ -38,7 +39,7 @@ export class AuthController {
 	 */
 
 	@Post('signin')
-	signin(@Body() dto: AuthDto) {
+	signin(@Body() dto: SignInDto) {
 		console.log(dto);
 		return this.authService.signin(dto);
 	}

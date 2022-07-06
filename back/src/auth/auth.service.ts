@@ -4,7 +4,8 @@ import { ConfigService } from "@nestjs/config";
 /* PRISMA */
 import { PrismaService } from "src/prisma/prisma.service";
 /* AUTH Modules */
-import { AuthDto } from './dto'
+import { SignUpDto } from './dto'
+import { SignInDto } from './dto'
 import * as argon from 'argon2'
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 /* JASON WEB TOKEN */
@@ -26,7 +27,7 @@ export class AuthService{
 	}
 
 	/* SIGNUP */
-	async signup(dto: AuthDto) {
+	async signup(dto: SignUpDto) {
 
 		// hash password using argon2
 		const hash = await argon.hash(dto.password);
@@ -35,6 +36,7 @@ export class AuthService{
 			const user = await this.prisma.user.create({ 
 				data: { 
 					email: dto.email,
+					username: dto.username,
 					hash
 			},
 			});
@@ -51,12 +53,12 @@ export class AuthService{
 	}
 
 	/* SIGNIN */
-	async signin(dto: AuthDto) {
+	async signin(dto: SignInDto) {
+		// destructure dto (rafa tips :D)
+		const { username } = dto;
 		// find user
-		const user = await this.prisma.user.findUnique({
-			where: {
-				email: dto.email,
-			},
+		const [user] = await this.prisma.user.findMany({
+			where: { OR: [{ email : username } , { username : username }] },
 		});
 		// if !unique throw error
 		if (!user) throw new ForbiddenException(
@@ -68,9 +70,9 @@ export class AuthService{
 		if (!pwMatches) throw new ForbiddenException(
 			'Invalid Credentials'
 			);
-		
 		return this.signin_jwt(user.id, user.email);
 	}
+
 
 	async signin_jwt(
 		userId: number,
