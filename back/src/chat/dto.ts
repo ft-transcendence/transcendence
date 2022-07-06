@@ -9,13 +9,9 @@ export class UserDto {
     @IsString()
     @IsNotEmpty()
     hash: string;
-
-    @IsInt()
-    @IsNotEmpty()
-    channel: number;
 }
 
-export class NewChannelDto {
+export class ChannelDto {
 
     @IsString()
     @IsNotEmpty()
@@ -23,11 +19,13 @@ export class NewChannelDto {
 
     @IsBoolean()
     @IsNotEmpty()
+    @IsOptional()
     private: boolean;
 
     // @IsHash()
     @IsString()
     @IsNotEmpty()
+    @IsOptional()
     password: string;
 
 }

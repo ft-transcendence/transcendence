@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { count } from 'console';
 // import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { NewChannelDto, NewMsgDto, UserDto } from './dto';
+import { usersProviders } from 'src/users/users.providers';
+import { ChannelDto, NewMsgDto, UserDto } from './dto';
 
 @Injectable()
 export class ChatService {
@@ -15,7 +17,6 @@ export class ChatService {
             data : {
                     email: data.email,
                     hash: data.hash,
-                    // channel: data.channel,
                 }
             })
             return user;
@@ -39,7 +40,16 @@ export class ChatService {
         }
     }
 
-    async newChannel(data: NewChannelDto)
+    async listUser()
+    {
+        const users = await this.prismaService.user.findMany()
+        let i = 0;
+        for (let user = users.at(i); user != null; user = users[i++])
+            console.log('user %d: %s', i, user)
+        return ;
+    }
+
+    async newChannel(data: ChannelDto)
     {
         console.log(data)
         try {
@@ -51,7 +61,24 @@ export class ChatService {
                 }
             })
             return (channel);
-        } catch (error) {} 
+        } catch (error) {
+            return null;
+        } 
+    }
+
+    async findChannel(data: ChannelDto)
+    {
+        console.log(data)
+        try {
+            const channel =  await this.prismaService.channel.findFirst({
+                where: {
+                    name: data.name,
+                }
+            })
+            return (channel.id);
+        } catch (error) {
+            return null;
+        } 
     }
 
     async newMsg(data: NewMsgDto)

@@ -11,7 +11,7 @@ import {
 import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { NewMsgDto, UserDto } from './dto';
+import { NewMsgDto, UserDto, ChannelDto } from './dto';
 // import { Module } from '../auth/auth.module'
 
 // @UseGuards(JwtGuard)
@@ -29,6 +29,7 @@ export class ChatGateway {
   {
     console.log('client connected: ', this.server.engine.clientsCount);
     this.chatClients.push(client);
+    this.chatservice.listUser();
   }
   
   handleDisconnect(client: Socket)
@@ -56,8 +57,10 @@ export class ChatGateway {
   async handleSignup(
     @MessageBody() data: UserDto,
     @ConnectedSocket() client: Socket) {
+    const cli = await this.chatservice.Signup(data);
     const clientId = await (await this.chatservice.Signup(data)).id;
-    console.log("new user id:", clientId)
+    console.log("user id:", clientId)
+    console.log("user info:", cli)
     client.emit('id', clientId)
   }
 
@@ -65,11 +68,21 @@ export class ChatGateway {
   async handleSignin(
     @MessageBody() data: UserDto,
     @ConnectedSocket() client: Socket) {
+    const cli = await this.chatservice.Signin(data);
     const clientId = await (await this.chatservice.Signin(data)).id;
-    console.log("new user id:", clientId)
+    console.log("user id:", clientId)
+    console.log("user info:", cli)
     client.emit('id', clientId)
   }
   
+  @SubscribeMessage('channel')
+  async handleChannel(@MessageBody() data: ChannelDto,
+  @ConnectedSocket() client: Socket) {
+    const channelId = await (await this.chatservice.newChannel(data)).id;
+    client.emit('channel', channelId)
+    // console.log("test  ", data)
+  }
+
   @SubscribeMessage('test')
   handleTest(@MessageBody() data: NewMsgDto,
   @ConnectedSocket() client: Socket) {
