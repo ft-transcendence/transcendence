@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Chat.css";
 // import { Link, Outlet, useLocation } from "react-router-dom";
 import { socket } from "../App";
 
 export default function Chat() {
     
-    let id: number;
+    const id = useRef(0);
     const [ msg, setNewMsg ] = useState("");
     const [ email, setNewEmail ] = useState("");
     const [ cid, setNewCid ] = useState(0);
@@ -27,8 +27,9 @@ export default function Chat() {
         socket.on('msg sent:', function(data: string) {
             console.log('msg sent:', data);
         });
-        socket.on('id sent', function(data: string) {
-            console.log('id sent ', data);
+        socket.on('id', function(data: number) {
+            id.current = data;
+            console.log('id:', data);
         });
         socket.on('cid sent', function(data: string) {
             console.log('cid sent ', data);
@@ -60,7 +61,7 @@ export default function Chat() {
 
     const sendMsg = (msg: string) => {
         console.log(msg);
-        socket.emit('msg', {userId: id, channelId: cid, msg: msg});
+        socket.emit('msg', {msg: msg, userId: id.current, channelId: cid, });
     }
 
     const handleSendMsg = () => {
