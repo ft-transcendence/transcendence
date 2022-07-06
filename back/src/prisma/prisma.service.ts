@@ -3,7 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
-export class PrismaService extends PrismaClient {      //prismaClient is an existing class allowing to connect to a db, it has some basic functions already
+export class PrismaService extends PrismaClient {
+    message: any;      //prismaClient is an existing class allowing to connect to a db, it has some basic functions already
 	constructor(config: ConfigService) {               //from dotenv module
 		super({                                        //calls the constructor of the class being extended
 			datasources: {
