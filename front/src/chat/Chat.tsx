@@ -6,10 +6,13 @@ import { socket } from "../App";
 export default function Chat() {
     
     const id = useRef(0);
+    const cid = useRef(0);
     const [ msg, setNewMsg ] = useState("");
     const [ email, setNewEmail ] = useState("");
-    const [ cid, setNewCid ] = useState(0);
-    
+    const [ cname, setNewCname ] = useState("");
+    const [ cprivate, setNewCprivate ] = useState(0);
+    const [ cpassword, setNewCpassword ] = useState("");
+
     useEffect(() => {
         socket.on('connect', () => {
             console.log('front Connected');
@@ -23,7 +26,6 @@ export default function Chat() {
             console.log('broadcast', data);
         });
 /////
-
         socket.on('msg sent:', function(data: string) {
             console.log('msg sent:', data);
         });
@@ -31,13 +33,14 @@ export default function Chat() {
             id.current = data;
             console.log('id:', data);
         });
-        socket.on('cid sent', function(data: string) {
-            console.log('cid sent ', data);
+        socket.on('cid', function(data: number) {
+            cid.current = data;
+            console.log('cid:', data);
         });
 
 /////
-        socket.on('exception', function(data) {
-            console.log('msg', data);
+        socket.on('exception', function(data: any) {
+            console.log('error:', data.error);
         });
 
         socket.on('leave', () => {
@@ -74,14 +77,25 @@ const handleEmail = (event: any) => {
     setNewEmail(event.target.value);
 }
 /////////////////////////
-    // const handleId = (event: any) => {
-    //     setNewId(event.target.value);
-    // }
-/////////////////////////
-    const handleCid = (event: any) => {
-        // setNewCid(cid + 1);
-        setNewCid(event.target.value);
+    const handleCname = (event: any) => {
+        setNewCname(event.target.value);
     }
+
+    const handleCprivate = (event: any) => {
+        setNewCprivate(event.target.value);
+    }
+
+    const handleCpassword = (event: any) => {
+        setNewCpassword(event.target.value);
+    }
+    const handleNewChannel = (event: any) => {
+        socket.emit('new channel', {name: cname, private: cprivate, password: cpassword});
+    }
+    const enterChannel = (event: any) => {
+        socket.emit('enter channel', {name: cname});
+    }
+
+
 /////////////////////////
 const signup = () => {
     // console.log("data:", data);
@@ -93,39 +107,56 @@ const signin = () => {
     socket.emit('signin', {email:email, hash:email, channel:cid});
 }
 
-const handleSignup = () => {
-    signup();
-}
-const handleSignin = () => {
-    signin();
-}   
 /////////////////////////
     return (
         
         <>
         <div>
-            email<br/>
-            <textarea
-                value={email}
-                onChange={handleEmail}
-                placeholder="email..."
-                className="msg-input-field" />
-            {/* <button onClick={handleSendEmail} className="send-msg-button">
-                send
-            </button> */}
-        </div>
-        <div>
-            cid<br/>
-            <textarea
-                value={cid}
-                onChange={handleCid}
-                placeholder="channel id"
-                className="msg-input-field" />
-            <button onClick={handleSignup} className="send-msg-button">
+            <div>
+                email<br/>
+                <textarea
+                    value={email}
+                    onChange={handleEmail}
+                    placeholder="email..."
+                    className="msg-input-field" />
+            </div>
+            <button onClick={signup} className="send-msg-button">
                 signup
             </button>
-            <button onClick={handleSignin} className="send-msg-button">
+            <button onClick={signin} className="send-msg-button">
                 signin
+            </button>
+        </div>
+        <div>
+            <div>
+                channel name<br/>
+                <textarea
+                    value={cname}
+                    onChange={handleCname}
+                    placeholder="channel id"
+                    className="msg-input-field" />
+            </div>
+            <div>
+                private<br/>
+                <textarea
+                    value={cprivate}
+                    onChange={handleCprivate}
+                    placeholder="private? 1 or 0 ..."
+                    className="msg-input-field" />
+            </div>
+            <div>
+                channel password<br/>
+                <textarea
+                    value={cpassword}
+                    onChange={handleCpassword}
+                    placeholder="password if needed..."
+                    className="msg-input-field" />
+            </div>
+            <button onClick={handleNewChannel} className="send-msg-button">
+                create channel
+            </button>
+            <button onClick={enterChannel} className="send-msg-button">
+                enter channel
             </button>
         </div>
         <div>
