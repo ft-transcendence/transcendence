@@ -23,14 +23,14 @@ model User {
   updatedAt	DateTime	@updatedAt
 
   email		 	String 		@unique
-	username	String?   
+	username	String    @unique   
   hash			String
 	picture		String?
 
 	gamesWon		Int?
 	gamesLost		Int?
 	gamesPlayed	Int?
-//game history ? Une partie = 2 id, un score
+//game history ?
 
 	friends		User[]		@relation(name: "relationships")
 	blocked		User[]		@relation(name: "relationships")
@@ -41,6 +41,7 @@ model User {
 
   @@map("users")    //mapped to another name
 }
+
 
 model Channel {
   id    Int     @id @default(autoincrement())
