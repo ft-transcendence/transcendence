@@ -9,15 +9,15 @@ import { GameGateway } from './game/game.gateway';
 import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
 
-// Allows us to use environment variables
-require('dotenv').config();
-
 // Set the env file path
 let envFilePath = '.env.development';
 
-// Log
-console.log(`Running in ` + process.env.ENVIRONMENT + ` mode`);
-console.log(`Running on port ` + process.env.PORT );
+console.log(`Running in ${process.env.ENVIRONMENT} mode`);
+if (process.env.ENVIRONMENT === 'PRODUCTION') {
+	envFilePath = '.env.production';
+} else if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
+	envFilePath = '.env.development';
+}
 
 /*
 * This one is the main module, it will import all the others.
