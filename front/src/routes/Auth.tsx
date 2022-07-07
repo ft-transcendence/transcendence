@@ -86,7 +86,7 @@ export default function Auth () {
     myHeaders.append("Content-Type", "application/json");
     
     let raw = JSON.stringify({
-      "email": userInfo.email,
+      "username": userInfo.email,
       "password": userInfo.password,
     });
   
