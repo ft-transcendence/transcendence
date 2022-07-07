@@ -23,21 +23,22 @@ export default function App() {
     <div className="App" style={{ margin: "8px" }}>
       <UsernameCxt.Provider value={LoginStatus}>
         <AuthStatus />
-        <h1>Transcendence</h1>
-        <nav
-          style={{
-            borderBottom: "solid 1px",
-            paddingBottom: "1rem",
-          }}
-        >
-          <Link to="/auth">Auth</Link> |{" "}
-          <Link to="/home">Home(sign in protected)</Link> |{" "}
-          <Link to="/game">Game</Link> | <Link to="/chat">chat</Link> |{" "}
-          <Link to="/landing-page">Landing page</Link> |{" "}
-          <Link to="/custom-page">Custom page</Link>
-        </nav>
-        <Outlet />
-      </UsernameCxt.Provider>
-    </div>
+          <h1>Transcendence</h1>
+          <nav
+            style={{
+              borderBottom: "solid 1px",
+              paddingBottom: "1rem",
+            }}
+          >
+            <Link to="/auth">Auth</Link> |{" "}
+            <Link to="/app">App</Link> |{" "}
+            <Link to="/game">Game</Link> |{" "}
+            <Link to="/chat">chat</Link> |{" "}
+            <Link to="/landing-page">Landing page</Link> |{" "}
+            <Link to="/custom-page">Custom page</Link>
+          </nav>
+          <Outlet />
+        </UsernameCxt.Provider>
+      </div>
   );
 }

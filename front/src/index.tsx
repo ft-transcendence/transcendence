@@ -18,6 +18,7 @@ import Home from "./routes/Home";
 import Chat from "./routes/Chat";
 import "./index.css";
 import React from "react";
+import UserPrivateProfile from "./routes/profile_types/UserPrivateProfile";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
@@ -39,11 +40,25 @@ root.render(
               </RequireAuth>
             }
           />
-          <Route path="game" element={<Game />} />
-          <Route path="chat" element={<Chat />} />
-          <Route path="landing-page" element={<LandingPage />} />
-          <Route path="custom-page" element={<CustomPage />}></Route>
-          <Route path="*" element={<Navigate to="/landing-page" />} />
+          <Route path="signin" element={<SignIn/>} />
+          <Route path="signup" element={<SignUp/>} />
+          <Route path="*" element={<Navigate to="/auth/signin" />} />
+        </Route>
+
+        <Route path="app" element={<RequireAuth><Home /></RequireAuth>} >
+          <Route path="private-profile" element={<UserPrivateProfile/>} />
+          <Route path="home" element={<Home/>} />
+          <Route path="*" element={<Navigate to="/app" />} />
+        </Route>
+
+        <Route path="game" element={<Game />} />
+        <Route path="chat" element={<Chat />} />
+        <Route path="landing-page" element={<LandingPage />} />
+        <Route path="custom-page" element={<CustomPage />} ></Route>
+        <Route
+          path="*"
+          element={<Navigate to="/landing-page" />}
+        />
         </Route>
       </Routes>
     </BrowserRouter>
