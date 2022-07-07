@@ -1,14 +1,21 @@
-import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+/* GLOBAL MODULES */
 import { AppModule } from './app.module';
+import { NestFactory } from '@nestjs/core';
 
+/* Validation pipes for DTO's */
+import { ValidationPipe } from '@nestjs/common';
+
+/* Start the app */
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule/*, { cors: true }*/);  //instantiating the app + enabling CORS (Access-Control-Allow-Origin) 
+  const app = await NestFactory.create(AppModule);
+  // Enable CORS
   // app.enableCors();
-
-  app.useGlobalPipes(new ValidationPipe({           //instantiating the use of Pipes (converts or validates types)
-    whitelist: true                                 //only allows data defined in the dto to be received (security)
-  }));         
-  await app.listen(4000);                           //launching server
+  
+  // setup app to use validation pipe 
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true
+  }));
+  // start api to listen on port 4000
+  await app.listen(4000);
 }
 bootstrap();
