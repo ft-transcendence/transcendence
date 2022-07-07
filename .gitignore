@@ -1,6 +1,6 @@
 # node modules
-./**/node_modules/
-./**/dist/
+node_modules/
+dist/
 .nfs*
 *.swp
 migrations/
