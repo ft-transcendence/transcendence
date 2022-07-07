@@ -7,21 +7,6 @@ export class ChatService {
 
     constructor(private readonly prismaService: PrismaService) {}
 
-    async signup(data: UserDto)
-    {
-        try {
-            const user =  await this.prismaService.user.create({
-            data : {
-                    email: data.email,
-                    hash: data.hash,
-                }
-            })
-            return user;
-        } catch (error) {
-            return null;
-        }
-    }
-
     async readId(email: string)
     {
         try {
@@ -109,7 +94,7 @@ export class ChatService {
                 data: {
                     msg: data.msg,
                     history: [""],
-                    userId: data.userId.valueOf, 
+                    userId: data.userId,
                     cid: data.channelId,
                 }
             })

@@ -92,13 +92,13 @@ export class ChatGateway {
     const response = [1];
 
     await this.chatservice.newMsg(data);
-    this.broadcast('broadcast', data, client);
+    this.broadcast('broadcast', data);
     return from(response).pipe(
       map(data => ({ event, data })),
     )
   }
 
-  async broadcast(event: string, data: any, client: Socket) {
+  async broadcast(event: string, data: any) {
     const cName = await this.chatservice.findCnameByCId(data.channelId);
     this.server.in(cName).emit(event, data)
   }
