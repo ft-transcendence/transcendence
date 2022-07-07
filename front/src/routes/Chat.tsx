@@ -1,19 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Chat.css";
 import { socket } from "../App";
+import { useAuth } from "..";
 
 export default function Chat() {
     
     const id = useRef(0);
     const cid = useRef(0);
-    const [ msg, setNewMsg ] = useState("");
-    const [ email, setNewEmail ] = useState("");
-    const [ cname, setNewCname ] = useState("");
+    const email = useAuth().user;
     let cprivate = "false";
     let cprivateRet = false;
+    const [ msg, setNewMsg ] = useState("");
+    const [ cname, setNewCname ] = useState("");
     const [ cpassword, setNewCpassword ] = useState("");
 
     useEffect(() => {
+
+        readId();
+
         socket.on('connect', () => {
             console.log('front Connected');
         });
@@ -40,6 +44,10 @@ export default function Chat() {
 
 /////
         socket.on('exception', function(data: any) {
+            console.log('exception', data);
+        });
+
+        socket.on('error:', function(data: any) {
             console.log('error:', data.error);
         });
 
@@ -58,6 +66,10 @@ export default function Chat() {
         }
     }, []);
 
+    const readId = () => {
+        socket.emit('readId', email)
+    }
+
     const handleMsg = (event: any) => {
         setNewMsg(event.target.value);
     }
@@ -68,14 +80,9 @@ export default function Chat() {
     }
 
     const handleSendMsg = () => {
-
         sendMsg(msg);
         setNewMsg("");
     }
-/////////////////////////
-const handleEmail = (event: any) => {
-    setNewEmail(event.target.value);
-}
 /////////////////////////
     const handleCname = (event: any) => {
         setNewCname(event.target.value);
@@ -98,45 +105,16 @@ const handleEmail = (event: any) => {
         socket.emit('enter channel', {name: cname});
     }
 
-
-/////////////////////////
-const signup = () => {
-    // console.log("data:", data);
-    socket.emit('signup', {email:email, hash:email});
-}
-
-const signin = () => {
-    // console.log("data:", data);
-    socket.emit('signin', {email:email, hash:email});
-}
-
 /////////////////////////
     return (
-        
         <>
-        <div>
-            <div>
-                email<br/>
-                <textarea
-                    value={email}
-                    onChange={handleEmail}
-                    placeholder="email..."
-                    className="msg-input-field" />
-            </div>
-            <button onClick={signup} className="send-msg-button">
-                signup
-            </button>
-            <button onClick={signin} className="send-msg-button">
-                signin
-            </button>
-        </div>
         <div>
             <div>
                 channel name<br/>
                 <textarea
                     value={cname}
                     onChange={handleCname}
-                    placeholder="channel id"
+                    placeholder="channel name"
                     className="msg-input-field" />
             </div>
             <div>
@@ -151,7 +129,7 @@ const signin = () => {
                 <textarea
                     value={cpassword}
                     onChange={handleCpassword}
-                    placeholder="password if needed..."
+                    placeholder="if needed..."
                     className="msg-input-field" />
             </div>
             <button onClick={handleNewChannel} className="send-msg-button">

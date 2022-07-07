@@ -22,15 +22,15 @@ export class ChatService {
         }
     }
 
-    async signin(data: UserDto)
+    async readId(email: string)
     {
         try {
             const user =  await this.prismaService.user.findUnique({
                 where: {
-                    email: data.email,
+                    email: email,
                 }
             })
-            return (user);
+            return (user.id);
         } catch (error) {
             return null;
         }

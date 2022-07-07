@@ -1,5 +1,4 @@
-import { UseGuards } from '@nestjs/common';
-// import { JwtGuard } from '../auth/guard'
+import { UseFilters, UseGuards, WsExceptionFilter } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -12,9 +11,13 @@ import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { NewMsgDto, UserDto, ChannelDto } from './dto';
-// import { Module } from '../auth/auth.module'
+import { ValidationPipe, UsePipes } from '@nestjs/common';
+import { JwtGuard } from 'src/auth/guard';
+import { ArgumentsHost, Catch, HttpException } from '@nestjs/common';
+import { WsException } from '@nestjs/websockets';
 
 // @UseGuards(JwtGuard)
+@UseFilters()
 @WebSocketGateway()
 
 export class ChatGateway {
@@ -29,8 +32,8 @@ export class ChatGateway {
   {
     console.log('client connected: ', this.server.engine.clientsCount);
     this.chatClients.push(client);
-    this.chatservice.listUser();
-    this.chatservice.listChannel()
+    // this.chatservice.listUser();
+    // this.chatservice.listChannel()
   }
 
   handleDisconnect(client: Socket)
@@ -44,32 +47,13 @@ export class ChatGateway {
     console.log('a client disconnect, client connected:', this.chatClients.length);
   }
 
-  @SubscribeMessage('signup')
-  async handleSignup(
-    @MessageBody() data: UserDto,
+  @SubscribeMessage('readId')
+  async handleReadId(
+    @MessageBody() email: string,
     @ConnectedSocket() client: Socket) {
-    const cli = await this.chatservice.signup(data);
-    const clientId = await (await this.chatservice.signin(data)).id;
-    console.log("user id:", clientId)
-    console.log("user info:", cli)
-    if (clientId == null)
-      client.emit('exception', {error:"user exists, pls use another email to sign up"})
-    else
-      client.emit('id', clientId)
-  }
-
-  @SubscribeMessage('signin')
-  async handleSignin(
-    @MessageBody() data: UserDto,
-    @ConnectedSocket() client: Socket) {
-    const cli = await this.chatservice.signin(data);
-    const clientId = await (await this.chatservice.signin(data)).id;
-    console.log("user id:", clientId)
-    console.log("user info:", cli)
-    if (clientId == null)
-      client.emit('exception', {error:"user doesn't exist, signin failed"})
-    else
-      client.emit('id', clientId)
+    const id = await this.chatservice.readId(email);
+    console.log("user id:", id)
+    client.emit('id', id)
   }
 
   @SubscribeMessage('new channel')
