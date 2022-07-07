@@ -8,7 +8,6 @@ import {
   WebSocketServer,
   WsResponse
 } from '@nestjs/websockets';
-import { exists } from 'fs';
 import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
@@ -42,17 +41,7 @@ export class ChatGateway {
         break;
       }
     }
-    this.broadcast('leave',{}, client.id);
     console.log('a client disconnect, client connected:', this.chatClients.length);
-  }
-
-  private broadcast(event: string, data: any, clientId: string){
-    for (const client of this.chatClients) {
-      if (client.id == clientId)
-        client.emit('msg sent:', data);
-      else
-        client.to(data.channelId).emit(event, data)
-    }
   }
 
   @SubscribeMessage('signup')
@@ -90,8 +79,6 @@ export class ChatGateway {
     const channelId = await this.chatservice.findChannel(data);
     if (channelId == null)
       client.emit('exception', {error: "channel exist, try another channel name!"})
-    else
-      client.emit('cid', channelId)
   }
 
   @SubscribeMessage('enter channel')
@@ -101,7 +88,10 @@ export class ChatGateway {
     if (channelId == null)
       client.emit('exception', {error: "channel not found"})
     else
-      client.emit('cid', channelId)
+    {
+      client.join(data.name)
+      client.emit('cid', channelId);
+    }
   }
 
   @SubscribeMessage('test')
@@ -117,11 +107,15 @@ export class ChatGateway {
     const event = 'msg';
     const response = [1];
 
-    console.log("dto  ", data)
-    const message = this.chatservice.newMsg(data)
-    this.broadcast('broadcast', data, client.id)
+    await this.chatservice.newMsg(data);
+    this.broadcast('broadcast', data, client);
     return from(response).pipe(
       map(data => ({ event, data })),
     )
+  }
+
+  async broadcast(event: string, data: any, client: Socket) {
+    const cName = await this.chatservice.findCnameByCId(data.channelId);
+    this.server.in(cName).emit(event, data)
   }
 }

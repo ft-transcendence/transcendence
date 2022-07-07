@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Chat.css";
-// import { Link, Outlet, useLocation } from "react-router-dom";
 import { socket } from "../App";
 
 export default function Chat() {
@@ -10,7 +9,8 @@ export default function Chat() {
     const [ msg, setNewMsg ] = useState("");
     const [ email, setNewEmail ] = useState("");
     const [ cname, setNewCname ] = useState("");
-    const [ cprivate, setNewCprivate ] = useState(0);
+    let cprivate = "false";
+    let cprivateRet = false;
     const [ cpassword, setNewCpassword ] = useState("");
 
     useEffect(() => {
@@ -64,7 +64,7 @@ export default function Chat() {
 
     const sendMsg = (msg: string) => {
         console.log(msg);
-        socket.emit('msg', {msg: msg, userId: id.current, channelId: cid, });
+        socket.emit('msg', { msg: msg, userId: id.current, channelId: cid.current });
     }
 
     const handleSendMsg = () => {
@@ -81,15 +81,18 @@ const handleEmail = (event: any) => {
         setNewCname(event.target.value);
     }
 
-    const handleCprivate = (event: any) => {
-        setNewCprivate(event.target.value);
+    const HandleCprivate = (event: any) => {
+        if (cprivate === 'true')
+            cprivateRet = true;
+        else
+            cprivateRet = false;
     }
 
     const handleCpassword = (event: any) => {
         setNewCpassword(event.target.value);
     }
     const handleNewChannel = (event: any) => {
-        socket.emit('new channel', {name: cname, private: cprivate, password: cpassword});
+        socket.emit('new channel', {name: cname, private: cprivateRet, password: cpassword});
     }
     const enterChannel = (event: any) => {
         socket.emit('enter channel', {name: cname});
@@ -99,12 +102,12 @@ const handleEmail = (event: any) => {
 /////////////////////////
 const signup = () => {
     // console.log("data:", data);
-    socket.emit('signup', {email:email, hash:email, channel:cid});
+    socket.emit('signup', {email:email, hash:email});
 }
 
 const signin = () => {
     // console.log("data:", data);
-    socket.emit('signin', {email:email, hash:email, channel:cid});
+    socket.emit('signin', {email:email, hash:email});
 }
 
 /////////////////////////
@@ -137,12 +140,11 @@ const signin = () => {
                     className="msg-input-field" />
             </div>
             <div>
-                private<br/>
-                <textarea
-                    value={cprivate}
-                    onChange={handleCprivate}
-                    placeholder="private? 1 or 0 ..."
-                    className="msg-input-field" />
+                private channel<br/>
+                <div onChange={HandleCprivate}>
+                    <input type="radio" value="true" name="cprivate"/> yes
+                    <input type="radio" value="false" name="cprivate"/> no
+                </div>
             </div>
             <div>
                 channel password<br/>

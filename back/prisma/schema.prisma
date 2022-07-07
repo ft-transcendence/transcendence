@@ -22,7 +22,7 @@ model User {
   createdAt	DateTime	@default(now())
   updatedAt	DateTime	@updatedAt
 
-  email		 	String 		@unique
+  email		 	String
 	username	String?   
   hash			String?
 	picture		String?
@@ -41,24 +41,27 @@ model User {
 
   messages    Message[]
 
+  @@unique([id, email])
   @@map("users")    //mapped to another name
 }
 
 model Channel {
   id    Int     @id  @default(autoincrement())
 
-  name  String  @unique
+  name  String
   picture String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  private   Boolean
+  private   Boolean   @default(false)
   password  String?
 
   admins    User[]    @relation("admin")
   members   User[]    @relation("member")
   blocked   User[]    @relation("blocked")
   messages  Message[]
+
+  @@unique([id, name])
 }
 
 model Message {
@@ -74,6 +77,8 @@ model Message {
   userId    Int
   channel   Channel   @relation(fields: [cid], references: [id])
   cid       Int
+
+  @@unique([id])
 }
 
 
