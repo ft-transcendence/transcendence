@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsHash, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsHash, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, maxLength } from 'class-validator';
 
 export class UserDto {
 
@@ -40,6 +40,7 @@ export class NewMsgDto {
     @IsNotEmpty()
     channelId: number;
 
+    @MaxLength(3)
     @IsString()
     @IsNotEmpty()
     msg: string;

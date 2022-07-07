@@ -13,11 +13,12 @@ import { ChatService } from './chat.service';
 import { NewMsgDto, UserDto, ChannelDto } from './dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
-import { ArgumentsHost, Catch, HttpException } from '@nestjs/common';
-import { WsException } from '@nestjs/websockets';
+import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
 
 // @UseGuards(JwtGuard)
-@UseFilters()
+@UsePipes(new ValidationPipe())
+@UseFilters(new HttpToWsFilter())
+@UseFilters(new ProperWsFilter())
 @WebSocketGateway()
 
 export class ChatGateway {
@@ -52,7 +53,6 @@ export class ChatGateway {
     @MessageBody() email: string,
     @ConnectedSocket() client: Socket) {
     const id = await this.chatservice.readId(email);
-    console.log("user id:", id)
     client.emit('id', id)
   }
 

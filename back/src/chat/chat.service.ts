@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { WsException } from '@nestjs/websockets';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChannelDto, NewMsgDto, UserDto } from './dto';
 
@@ -17,6 +18,7 @@ export class ChatService {
             })
             return (user.id);
         } catch (error) {
+            console.log('readId error:', error);
             return null;
         }
     }
@@ -54,7 +56,7 @@ export class ChatService {
             return (channel);
         } catch (error) {
             console.log('new channel error:', error)
-            return null;
+            throw new WsException(error)
         } 
     }
 
@@ -69,7 +71,7 @@ export class ChatService {
             return (channel.id);
         } catch (error) {
             console.log('find channel error:', error);
-            return null;
+            throw new WsException(error.message)
         } 
     }
 
@@ -83,12 +85,12 @@ export class ChatService {
             return channel.name;
         } catch (error) {
             console.log('findCnameByCid error:', error);
+            throw new WsException(error)
         }
     }
 
     async newMsg(data: NewMsgDto)
     {
-        console.log(data)
         try {
             const message =  await this.prismaService.message.create({
                 data: {
@@ -99,6 +101,9 @@ export class ChatService {
                 }
             })
             return (message);
-        } catch (error) {} 
+        } catch (error) {
+            console.log('newMsg error:', error);
+            throw new WsException(error)
+        } 
     }
 }
