@@ -1,6 +1,11 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator'
 
-export class AuthDto {      //Data transfer object
+/**
+ * DTO - Data Transfer Object
+ * Used to create a new user
+ */
+
+export class SignUpDto {
     @IsEmail()
     @IsNotEmpty()
     email: string;
@@ -8,4 +13,18 @@ export class AuthDto {      //Data transfer object
     @IsString()
     @IsNotEmpty()
     password: string;
+
+    @IsString()
+    @IsNotEmpty()
+    username: string;
+}
+
+export class SignInDto {
+    @IsString()
+    @IsNotEmpty()
+    password: string;
+
+    @IsString()
+    @IsNotEmpty()
+    username: string;
 }

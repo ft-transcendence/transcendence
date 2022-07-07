@@ -1,10 +1,15 @@
 import { Module } from "@nestjs/common";
+
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
+/* JASON WEB TOKEN AUTH MODULE */
+import { JwtModule } from "@nestjs/jwt";
+import { jwtStrategy } from "./strategy";
 
 @Module({
-    // imports: [PrismaModule],         //useless as we set the PrismaModule as global
-    controllers: [AuthController],      //handles requests and returns responses to the client
-    providers: [AuthService]            //used to create relationships between objects
+    imports: [JwtModule.register({})],
+    controllers: [AuthController],
+    providers: [AuthService, jwtStrategy],
 })
+
 export class AuthModule {}

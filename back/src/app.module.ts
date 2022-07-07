@@ -27,9 +27,7 @@ import { ChatModule } from './chat/chat.module';
 	[
 		GameGateway,
 	],
-//greg- imports: [UsersModule, DatabaseModule],
-	// controllers: [AppController],                  //useless as we deleted these files
-	// providers: [AppService],                       //useless as we deleted these files
 })
-export class AppModule {}   //exporting means this class will be available for all other ones in the project
+// export to enable globally
+export class AppModule {}
 
