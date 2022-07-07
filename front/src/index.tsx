@@ -9,7 +9,6 @@ import {
 } from "react-router-dom";
 import App from "./App";
 import Game from "./routes/Game";
-import LandingPage from "./routes/LandingPage";
 import CustomPage from "./routes/CustomPage";
 import Auth from "./routes/Auth";
 import SignIn from "./routes/auth_modes/SignIn";
@@ -25,13 +24,8 @@ root.render(
   <AuthProvider>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />}>
-          <Route path="/auth" element={<Auth />}>
-            <Route index element={<Navigate to="/auth/signin" />} />
-            <Route path="signin" element={<SignIn />} />
-            <Route path="signup" element={<SignUp />} />
-            <Route path="*" element={<Navigate to="/auth/signin" />} />
-          </Route>
+        <Route path="/" element={<App /> } >
+        <Route path="/auth" element={<Auth />} >
           <Route
             path="home"
             element={

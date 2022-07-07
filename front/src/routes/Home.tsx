@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 
 export default function Home() {
     return (
@@ -12,6 +12,7 @@ export default function Home() {
           >
             <Link to="/app/private-profile">Private profile</Link> |{" "}
           </nav>
+          <Outlet></Outlet>
       </main>
     );
   }
