@@ -5,12 +5,12 @@ import { PrismaModule } from './prisma/prisma.module';
 import { GameGateway } from './game/game.gateway';
 import { ConfigModule } from '@nestjs/config';
 
-let envFilePath = 'env.development';
+let envFilePath = '.env.development';
 console.log(`Running in ${process.env.ENVIRONMENT} mode`);
 if (process.env.ENVIRONMENT === 'PRODUCTION') {
-	envFilePath = 'env.production';
+	envFilePath = '.env.production';
 } else if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
-	envFilePath = 'env.development';
+	envFilePath = '.env.development';
 }
 
 /*
