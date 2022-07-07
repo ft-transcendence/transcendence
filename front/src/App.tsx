@@ -19,7 +19,7 @@ export default function App() {
   const location = useLocation();
 
 
-  if (location.pathname === "/game" || location.pathname==="/chat")
+  if (location.pathname === "/game")
     return <Outlet />;
 
   return (
