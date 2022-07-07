@@ -32,8 +32,8 @@ model User {
 	gamesPlayed	Int?
 //game history ? Une partie = 2 id, un score
 
-	friends		User[]		@relation(name: "relationships", references: [id])  //array of friends based on their id 
-	blocked		User[]		@relation(name: "relationships", references: [id])
+	friends		User[]		@relation(name: "relationships")
+	blocked		User[]		@relation(name: "relationships")
 
   admin       Channel[] @relation("admin")
   member      Channel[] @relation("member")
@@ -58,19 +58,4 @@ model Channel {
 
 }
 
-
-// model Bookmark {
-//   id Int @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   title String
-//   description String?
-//   link String
-
-//   userId Int
-//   user User @relation(fields: [userId], references: [id])   //sets ManyToOne logic
-
-//   @@map("bookmark")
-//   }
 
