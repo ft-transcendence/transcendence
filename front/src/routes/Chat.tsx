@@ -16,6 +16,7 @@ export default function Chat() {
 
     useEffect(() => {
 
+        console.log('email:', email)
         readId();
 
         socket.on('connect', () => {

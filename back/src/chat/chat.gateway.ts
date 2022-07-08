@@ -10,7 +10,7 @@ import {
 import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { NewMsgDto, UserDto, ChannelDto } from './dto';
+import { NewMsgDto, ChannelDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
@@ -18,7 +18,7 @@ import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
 // @UseGuards(JwtGuard)
 @UsePipes(new ValidationPipe())
 @UseFilters(new HttpToWsFilter())
-@UseFilters(new ProperWsFilter())
+// @UseFilters(new ProperWsFilter())
 @WebSocketGateway()
 
 export class ChatGateway {
@@ -53,6 +53,7 @@ export class ChatGateway {
     @MessageBody() email: string,
     @ConnectedSocket() client: Socket) {
     const id = await this.chatservice.readId(email);
+    console.log('handle read id:', id)
     client.emit('id', id)
   }
 

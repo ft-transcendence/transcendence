@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ChannelDto, NewMsgDto, UserDto } from './dto';
+import { ChannelDto, NewMsgDto} from './dto/chat.dto';
 
 @Injectable()
 export class ChatService {
 
     constructor(private readonly prismaService: PrismaService) {}
 
-    async readId(email: string)
+    async readId(email: string): Promise<number>
     {
         try {
             const user =  await this.prismaService.user.findUnique({
@@ -16,6 +16,7 @@ export class ChatService {
                     email: email,
                 }
             })
+            this.listUser()
             return (user.id);
         } catch (error) {
             console.log('readId error:', error);
@@ -43,7 +44,7 @@ export class ChatService {
         return ;
     }
 
-    async newChannel(data: ChannelDto)
+    async newChannel(data: ChannelDto): Promise<ChannelDto>
     {
         try {
             const channel =  await this.prismaService.channel.create({
@@ -60,7 +61,7 @@ export class ChatService {
         } 
     }
 
-    async findChannel(data: ChannelDto)
+    async findChannel(data: ChannelDto): Promise<number>
     {
         try {
             const channel =  await this.prismaService.channel.findFirst({
@@ -75,9 +76,10 @@ export class ChatService {
         } 
     }
 
-    async findCnameByCId(cid: number) {
+    async findCnameByCId(cid: number): Promise<string>
+    {
         try{
-            const channel = await this.prismaService.channel.findFirst ({
+            const channel = await this.prismaService.channel.findFirst({
                 where: {
                     id: cid,
                 }
@@ -89,7 +91,7 @@ export class ChatService {
         }
     }
 
-    async newMsg(data: NewMsgDto)
+    async newMsg(data: NewMsgDto): Promise<NewMsgDto>
     {
         try {
             const message =  await this.prismaService.message.create({

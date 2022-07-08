@@ -1,16 +1,5 @@
 import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsHash, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, maxLength } from 'class-validator';
 
-export class UserDto {
-
-    @IsEmail()
-    @IsNotEmpty()
-    email: string;
-
-    @IsString()
-    @IsNotEmpty()
-    hash: string;
-}
-
 export class ChannelDto {
 
     @IsString()
@@ -18,21 +7,18 @@ export class ChannelDto {
     name: string;
 
     @IsBoolean()
-    @IsNotEmpty()
     @IsOptional()
     private: boolean;
 
-    // @IsHash()
-    @IsString()
-    @IsNotEmpty()
     @IsOptional()
+    @IsString()
     password: string;
 
 }
 
 export class NewMsgDto {
 
-    @IsEmail()
+    @IsNumber()
     @IsNotEmpty()
     userId: number;
 
@@ -40,7 +26,6 @@ export class NewMsgDto {
     @IsNotEmpty()
     channelId: number;
 
-    @MaxLength(3)
     @IsString()
     @IsNotEmpty()
     msg: string;
