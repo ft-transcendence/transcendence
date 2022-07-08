@@ -30,11 +30,10 @@ export default function Game() {
             </div>
             <div className='Page-mid'>
                 <div className='Field'>
-                    <div className='Friend-zone'>
-                    </div>
-                    <div className='Pad-zone'>
-                        <div className='Pad'></div>
-                    </div>
+               
+                  
+                        <div className='Pad-left'></div>
+                 
                     <div className='Center-zone'>
                         <div className='Middle-line'>
 
@@ -46,11 +45,10 @@ export default function Game() {
 
                         </div>
                     </div>
-                    <div className='Pad-zone'>
-                    <div className='Pad'></div>
-                    </div>
-                    <div className='Friend-zone'>
-                    </div>
+                  
+                    <div className='Pad-right'></div>
+                 
+                   
                 
                     <div className='Ball'>
                     </div>
