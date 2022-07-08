@@ -16,12 +16,15 @@ export default function Chat() {
 
     useEffect(() => {
 
+        console.log(socket.id);
+
         console.log('email:', email)
         readId();
 
         socket.on('connect', () => {
             console.log('front Connected');
         });
+        
 
         socket.on('msg', function(data) {
             console.log('msg', data);
@@ -57,13 +60,15 @@ export default function Chat() {
         });
 
         return () => {
-            socket.off('join');
+            socket.off('connect');
             socket.off('msg');
             socket.off('msg sent');
-            socket.off('id sent');
-            socket.off('cid sent');
+            socket.off('broadcast');
+            socket.off('id');
+            socket.off('cid');
             socket.off('exception');
             socket.off('leave');
+            socket.off('error:');
         }
     }, []);
 
