@@ -6,10 +6,11 @@ import { GameGateway } from './game/game.gateway';
 import { ConfigModule } from '@nestjs/config';
 
 require('dotenv').config();
+// console.log(process.env);
 
-let envFilePath = 'env.development';
+let envFilePath = '.env';
 
-console.log(`Running in ${process.env.ENVIRONMENT} mode`);
+console.log(`Running in ` + process.env.ENVIRONMENT + ` mode`);
 
 /*
 * This one is the main module, it will import all the others.
