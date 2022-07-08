@@ -2,6 +2,9 @@
 /dist
 /node_modules
 
+# prisma migrations
+/prisma/migrations/*
+
 # Logs
 logs
 *.log
