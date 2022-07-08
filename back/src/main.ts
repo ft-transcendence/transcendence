@@ -17,7 +17,7 @@ async function bootstrap() {
     }),
   );
   // start api to listen on port 4000
-  await app.listen(4000);
+  await app.listen(process.env.PORT);
 }
 
 // eslint-disable-next-line unicorn/prefer-top-level-await
