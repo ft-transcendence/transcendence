@@ -7,11 +7,12 @@ import { ConfigModule } from '@nestjs/config';
 import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
 
-// Allows us to use environment variables
-require('dotenv').config();
 
 // Set the env file path
 let envFilePath = '.env.development';
+
+// Allows us to use environment variables
+require('dotenv').config();
 
 // Log
 console.log(`Running in ` + process.env.ENVIRONMENT + ` mode`);
