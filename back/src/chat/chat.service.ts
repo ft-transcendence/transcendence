@@ -6,12 +6,12 @@ import { ChannelDto, NewMsgDto} from './dto/chat.dto';
 @Injectable()
 export class ChatService {
 
-    constructor(private readonly prismaService: PrismaService) {}
+    constructor(private readonly prisma: PrismaService) {}
 
     async readId(email: string): Promise<number>
     {
         try {
-            const user =  await this.prismaService.user.findUnique({
+            const user =  await this.prisma.user.findUnique({
                 where: {
                     email: email,
                 }
@@ -26,7 +26,7 @@ export class ChatService {
 
     async listUser()
     {
-        const users = await this.prismaService.user.findMany()
+        const users = await this.prisma.user.findMany()
         let i = 0;
         for (let user = users.at(i); user != null; user = users[i++])
             console.log('   user %d: %s', i, user.email);
@@ -36,7 +36,7 @@ export class ChatService {
 
     async listChannel()
     {
-        const channels = await this.prismaService.channel.findMany()
+        const channels = await this.prisma.channel.findMany()
         let i = 0;
         for (let channel = channels.at(i); channel != null; channel = channels[i++])
             console.log('   channel %d: %s', i, channel.name);
@@ -47,7 +47,7 @@ export class ChatService {
     async newChannel(data: ChannelDto): Promise<ChannelDto>
     {
         try {
-            const channel =  await this.prismaService.channel.create({
+            const channel =  await this.prisma.channel.create({
                 data: {
                     name: data.name,
                     private: data.private,
@@ -64,7 +64,7 @@ export class ChatService {
     async findChannel(data: ChannelDto): Promise<number>
     {
         try {
-            const channel =  await this.prismaService.channel.findFirst({
+            const channel =  await this.prisma.channel.findFirst({
                 where: {
                     name: data.name,
                 }
@@ -79,7 +79,7 @@ export class ChatService {
     async findCnameByCId(cid: number): Promise<string>
     {
         try{
-            const channel = await this.prismaService.channel.findFirst({
+            const channel = await this.prisma.channel.findFirst({
                 where: {
                     id: cid,
                 }
@@ -91,18 +91,18 @@ export class ChatService {
         }
     }
 
-    async newMsg(data: NewMsgDto): Promise<NewMsgDto>
+    async newMsg(data: NewMsgDto)
     {
         try {
-            const message =  await this.prismaService.message.create({
+            const msg =  await this.prisma.msg.create({
                 data: {
                     msg: data.msg,
-                    history: [""],
+                    // history: [""],
                     userId: data.userId,
                     cid: data.channelId,
                 }
             })
-            return (message);
+            return msg;
         } catch (error) {
             console.log('newMsg error:', error);
             throw new WsException(error)

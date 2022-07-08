@@ -18,7 +18,7 @@ import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
 // @UseGuards(JwtGuard)
 @UsePipes(new ValidationPipe())
 @UseFilters(new HttpToWsFilter())
-// @UseFilters(new ProperWsFilter())
+@UseFilters(new ProperWsFilter())
 @WebSocketGateway()
 
 export class ChatGateway {

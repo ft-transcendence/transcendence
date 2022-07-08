@@ -39,7 +39,7 @@ model User {
   member      Channel[] @relation("member")
   chanBlocked Channel[] @relation("blocked")
 
-  messages    Message[]
+  messages    Msg[]
 
   @@unique([id, email])
   @@map("users")    //mapped to another name
@@ -59,12 +59,12 @@ model Channel {
   admins    User[]    @relation("admin")
   members   User[]    @relation("member")
   blocked   User[]    @relation("blocked")
-  messages  Message[]
+  messages  Msg[]
 
   @@unique([id, name])
 }
 
-model Message {
+model Msg {
   id    Int     @id  @default(autoincrement())
 
   msg  String
