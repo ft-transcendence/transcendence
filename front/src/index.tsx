@@ -8,6 +8,7 @@ import Auth from "./routes/Auth";
 import SignIn from "./routes/auth_modes/SignIn";
 import SignUp from "./routes/auth_modes/SignUp";
 import Home from "./routes/Home";
+import Chat from "./routes/Chat"
 import "./index.css";
 import React from "react";
 
@@ -35,6 +36,7 @@ root.render(
           }
         />
         <Route path="game" element={<Game />} />
+        <Route path="chat" element={<Chat />} />
         <Route path="landing-page" element={<LandingPage />} />
         <Route path="custom-page" element={<CustomPage />} ></Route>
         <Route

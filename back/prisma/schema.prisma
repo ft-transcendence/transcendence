@@ -22,9 +22,9 @@ model User {
   createdAt	DateTime	@default(now())
   updatedAt	DateTime	@updatedAt
 
-  email		 	String 		@unique
+  email		 	String    @unique
 	username	String?   
-  hash			String
+  hash			String?
 	picture		String?
 
 	gamesWon		Int?
@@ -32,30 +32,53 @@ model User {
 	gamesPlayed	Int?
 //game history ? Une partie = 2 id, un score
 
-	friends		User[]		@relation(name: "relationships", references: [id])  //array of friends based on their id 
-	blocked		User[]		@relation(name: "relationships", references: [id])
+	friends		User[]		@relation(name: "relationships")  //array of friends based on their id 
+	blocked		User[]		@relation(name: "relationships")  // it's blocked or blocking
 
-  admin       Channel[] @relation("admin")
+  admin       Channel[] @relation("admin")  // the following three line i dont understand well. 
   member      Channel[] @relation("member")
   chanBlocked Channel[] @relation("blocked")
 
+  messages    Msg[]
+
+  @@unique([id, email])
   @@map("users")    //mapped to another name
 }
 
 model Channel {
-  id    Int     @id @default(autoincrement())
+  id    Int           @id  @default(autoincrement())
 
-  name  String
+  name  String        @unique
+  picture String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  private   Boolean
-  password  String
+  private   Boolean   @default(false)
+  password  String?
 
-  admins    User[]  @relation("admin")
-  members   User[]  @relation("member")
-  blocked   User[]  @relation("blocked")
+  admins    User[]    @relation("admin")
+  members   User[]    @relation("member")
+  blocked   User[]    @relation("blocked")
+  messages  Msg[]
 
+  @@unique([id, name])
+}
+
+model Msg {
+  id    Int     @id  @default(autoincrement())
+
+  msg  String
+  history String[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  owner     User      @relation(fields: [userId], references: [id])
+  userId    Int
+  channel   Channel   @relation(fields: [cid], references: [id])
+  cid       Int
+
+  @@unique([id])
 }
 
 

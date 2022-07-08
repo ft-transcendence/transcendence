@@ -1,3 +1,4 @@
+import { io } from "socket.io-client";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./App.css"
@@ -11,9 +12,12 @@ let LoginStatus = {
 
 export const UsernameCxt = createContext(LoginStatus);
 
+export const socket = io('ws://localhost:4000');
+
 export default function App() {
 
   const location = useLocation();
+
 
   if (location.pathname === "/game")
     return <Outlet />;
@@ -32,6 +36,7 @@ export default function App() {
             <Link to="/auth">Auth</Link> |{" "}
             <Link to="/home">Home(sign in protected)</Link> |{" "}
             <Link to="/game">Game</Link> |{" "}
+            <Link to="/chat">chat</Link> |{" "}
             <Link to="/landing-page">Landing page</Link> |{" "}
             <Link to="/custom-page">Custom page</Link>
           </nav>

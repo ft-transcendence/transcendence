@@ -1,9 +1,7 @@
-/* GLOBAL MODULES */
-import { AppModule } from './app.module';
-import { NestFactory } from '@nestjs/core';
-
-/* Validation pipes for DTO's */
 import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { PrismaService } from './prisma/prisma.service';
 
 /* Start the app */
 async function bootstrap() {
@@ -11,6 +9,7 @@ async function bootstrap() {
   // Enable CORS
   app.enableCors();
   
+  const prismaService = app.get(PrismaService);
   // setup app to use validation pipe 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true
@@ -18,4 +17,6 @@ async function bootstrap() {
   // start api to listen on port 4000
   await app.listen(4000);
 }
+
 bootstrap();
+
