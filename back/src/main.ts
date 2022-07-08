@@ -15,7 +15,7 @@ async function bootstrap() {
     whitelist: true
   }));
   // start api to listen on port 4000
-  await app.listen(4000);
+  await app.listen(process.env.PORT);
 }
 
 bootstrap();
