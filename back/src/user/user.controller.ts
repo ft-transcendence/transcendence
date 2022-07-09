@@ -24,7 +24,7 @@ export class UserController {
 
 	constructor(private userService: UserService) {}    
 
-	//READ
+	/*	READ	*/
 
 	@UseGuards(JwtGuard)
 	@Get('me') 
@@ -93,6 +93,16 @@ export class UserController {
 		throw new ForbiddenException('Email already exists');
 	}
 	}
+
+
+	//RELATIONSHIP RELATED FUNCTIONS
+
+	//getfriends
+	//addfriend
+	//rmfriend
+	//blockuser
+	//unblock user
+
 
 	//GAME RELATED FUNCTIONS
 

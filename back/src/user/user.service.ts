@@ -91,6 +91,15 @@ export class UserService {
 	}	
 
 
+	//RELATIONSHIP RELATED FUNCTIONS
+
+	//getfriends
+	//addfriend
+	//rmfriend
+	//blockuser
+	//unblock user
+
+
 	//GAME RELATED FUNCTIONS
 
 	async hasWon(UserDto: UserDto) {
