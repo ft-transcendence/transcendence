@@ -23,8 +23,13 @@ model User {
   updatedAt	DateTime	@updatedAt
 
   email		 	String    @unique
+<<<<<<< HEAD
 	username	String?    @unique  
   hash			String
+=======
+	username	String    @unique 
+  hash			String?
+>>>>>>> 000e08b5c8049470bd3f6fd73c598a50ab31876f
 	picture		String?
 
 	gamesWon		Int     @default(0)
@@ -80,20 +85,3 @@ model Msg {
 
   @@unique([id])
 }
-
-
-// model Bookmark {
-//   id Int @id @default(autoincrement())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   title String
-//   description String?
-//   link String
-
-//   userId Int
-//   user User @relation(fields: [userId], references: [id])   //sets ManyToOne logic
-
-//   @@map("bookmark")
-//   }
-
