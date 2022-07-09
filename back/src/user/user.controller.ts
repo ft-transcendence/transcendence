@@ -64,34 +64,22 @@ export class UserController {
 	@UseGuards(JwtGuard)
 	@Post('/update_username')
 	async updateUsername(@Body('username') newUsername: string, @Req() req) {
-	console.log('Going through updateUsername in user.controller');
-	try {
+		console.log('Going through updateUsername in user.controller');
 		const res = await this.userService.updateUsername(req.user.id, newUsername);
-	} catch (e) {
-		throw new ForbiddenException('Username already exists');
-	}
 	}
 
 	@UseGuards(JwtGuard)
 	@Post('/update_avatar')
 	async updateAvatar(@Body('avatar') newAvatar: string, @Req() req) {
-	console.log('Going through updateAvatar in user.controller');
-	try {
+		console.log('Going through updateAvatar in user.controller');
 		const res = await this.userService.updateAvatar(req.user.id, newAvatar);
-	} catch (e) {
-		throw new ForbiddenException('Invalid file ?');		//to handle
-	}
 	}
 
 	@UseGuards(JwtGuard)
 	@Post('/update_email')
 	async updateEmail(@Body('email') newEmail: string, @Req() req) {
-	console.log('Going through updateEmail in user.controller');
-	try {
+		console.log('Going through updateEmail in user.controller');
 		const res = await this.userService.updateEmail(req.user.id, newEmail);
-	} catch (e) {
-		throw new ForbiddenException('Email already exists');
-	}
 	}
 
 

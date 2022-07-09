@@ -58,46 +58,77 @@ export class UserService {
 	//USER PROFILE RELATED FUNCTIONS
 
 	async updateUsername(id: number, newUsername: string) {
-		const updateUser = await this.prisma.user.update({
-			where: {
-			  id: id,
-			},
-			data: {
-				username: newUsername,
-			},
-		})
+		try {
+			const updateUser = await this.prisma.user.update({
+				where: {
+				id: id,
+				},
+				data: {
+					username: newUsername,
+				},
+			})
+		} catch (e) {
+			throw new ForbiddenException('Username already exists');
+		}
 	}
 
 	async updateAvatar(id: number, newAvatar: string) {
-		const updateUser = await this.prisma.user.update({
-			where: {
-				id: id,
-			},
-			data: {
-				avatar: newAvatar,
-			},
-		})
+		try {	
+			const updateUser = await this.prisma.user.update({
+				where: {
+					id: id,
+				},
+				data: {
+					avatar: newAvatar,
+				},
+			})
+		} catch (e) {
+			throw new ForbiddenException('Invalid file ?');		//to handle
+		}
 	}
 
 	async updateEmail(id: number, newEmail: string) {
-		const updateUser = await this.prisma.user.update({
-			where: {
-				id: id,
-			},
-			data: {
-				email: newEmail,
-			},
-		})
+		try {
+			const updateUser = await this.prisma.user.update({
+				where: {
+					id: id,
+				},
+				data: {
+					email: newEmail,
+				},
+			})
+		} catch (e) {
+			throw new ForbiddenException('Email already exists');
+		}
 	}	
 
 
 	//RELATIONSHIP RELATED FUNCTIONS
 
-	//getfriends
-	//addfriend
-	//rmfriend
-	//blockuser
-	//unblock user
+	async getFriends(id: number){
+		//error: no friends ?
+	}
+
+	async addFriend(id: number, otherId: number){
+		//error: same id ?
+		//error: already friend ?
+	}
+
+	async rmFriend(id: number, otherId: number){
+		//error: same id ?
+		//error: not a friend ?
+	}	
+	
+	async blockUser(id: number, otherId: number){
+		//todo : rm from friends
+		//error: same id ?
+		//error: already blocked ?		
+	}	
+	
+	async unblockUser(id: number, otherId: number){
+		//error: same id ?
+		//error: not blocked ?		
+	}	
 
 
 	//GAME RELATED FUNCTIONS
@@ -118,6 +149,7 @@ export class UserService {
 			  },
 		  })
 	}
+
 	async hasLost(UserDto: UserDto) {
 		//increments the number of lost and played games by one
 		const updateUser = await this.prisma.user.updateMany({
