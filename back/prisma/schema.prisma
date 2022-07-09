@@ -23,7 +23,7 @@ model User {
   updatedAt	DateTime	@updatedAt
 
   email		 	String    @unique
-	username	String    @unique  
+	username	String?    @unique  
   hash			String
 	picture		String?
 
