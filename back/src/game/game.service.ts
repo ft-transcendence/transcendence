@@ -2,9 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { identity } from 'rxjs';
 import { Ball } from './interfaces/ball.interface';
 
+const refreshRate = 10;
+
 @Injectable()
 export class GameService {
     balls: Ball[] = [];
+    gameLoops: ReturnType<typeof setInterval>[] = [];
     
     createBall(Roomid: string) :number {
         var ball: Ball = {
@@ -29,4 +32,13 @@ export class GameService {
             this.balls[id].xSpeed *= -1;
     }
 
+    startGame() {
+        var id = this.gameLoops.length;
+        new_interval = setInterval(gameLoop(id), refreshRate);
+
+    }
+
+    gameLoop(id: number) {
+        return;
+    }
 }

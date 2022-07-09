@@ -37,6 +37,7 @@ export class GameGateway {
     client.join(this.rooms[this.rooms.length - 1].name);
     this.rooms[this.rooms.length - 1].ballId = this.gameService.createBall(this.rooms[this.rooms.length - 1].name);
     console.log(this.rooms[this.rooms.length - 1].ballId);
+    this.server.to(this.rooms[this.rooms.length - 1].name).emit("game_started", {});
     return this.rooms[this.rooms.length - 1].id;
   }
   }
