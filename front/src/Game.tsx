@@ -15,7 +15,7 @@ interface Game_data {
     paddleLeft: number;
     paddleRight: number;
     xBall: number;
-    YBall: number;
+    yBall: number;
 }
 
 interface Player 
@@ -199,7 +199,7 @@ export default class Game extends React.Component < {}, StatePong > {
         socket.on("game_started", () =>
             this.setState({gameStarted: true}));
         socket.on("update", (info: Game_data) =>
-            this.setState({ballX: info.xBall, ballY: info.YBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight}));
+            this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight}));
     }
 
     particlesInit = async (main: any) => {
@@ -232,6 +232,7 @@ export default class Game extends React.Component < {}, StatePong > {
     render() {
     const shoWField = this.state.gameStarted ? 'unset': 'none';
     const showBorder = this.state.gameStarted ? '2px solid rgb(0, 255, 255)' : '0px solid rgb(0, 255, 255)';
+    const showShadow = this.state.gameStarted ? '0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 5px rgb(0, 190, 255)' : '0';
     return (
         <div className='Radial-background'>
             <Particles id="tsparticles" url="particlesjs-config.json" init={this.particlesInit} loaded={this.particlesLoaded} />
@@ -240,7 +241,8 @@ export default class Game extends React.Component < {}, StatePong > {
 
             </div>
             <div className='Page-mid'>
-                <div style={{border: `${showBorder}`,}} className='Field'>
+                <div style={{   border: `${showBorder}`, 
+                                boxShadow: `${showShadow}`,}} className='Field'>
                
                   
                     <Paddle show={this.state.gameStarted} side={"left"} y={this.state.paddleLeftY} ystart={this.state.paddleLeftY} />

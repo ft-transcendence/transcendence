@@ -59,10 +59,5 @@ handlemove(@MessageBody('room') rid: number, @MessageBody('player') pid: number,
   this.gameService.updateRoom(pid, rid, dir);
 }
 
-@SubscribeMessage('getUpdate')
-handleUpdate(@MessageBody('rid') rid: number) : any{
-  console.log(rid);
-  this.gameService.updateBall(this.gameService.rooms[rid].ballId);
-  this.server.to(this.gameService.rooms[rid].name).emit("update", this.gameService.balls[rid]);
-}
+
 }

@@ -27,18 +27,34 @@ export class GameService {
         status: true, // true = in progress
         x: 50,
         y: Math.random() * 98,
-        xSpeed: Math.random(),
-        ySpeed: Math.random(),
+        xSpeed: Math.random() * 1,
+        ySpeed: Math.random() * 1,
         };
         this.balls.push(ball);
         return ball.id;
     }
 
-    updateBall(id: number) {
+    updateBall(id: number, roomID: number) {
         this.balls[id].x += this.balls[id].xSpeed;
         this.balls[id].y += this.balls[id].ySpeed;
         if (this.balls[id].y >= 98 || this.balls[id].y <= 2)
             this.balls[id].ySpeed *= -1;
+        if (this.balls[id].x >= (97 - (2 / 1.77)))
+        {
+            if (this.balls[id].y >= this.rooms[roomID].paddleRight && this.balls[id].y <= this.rooms[roomID].paddleRight + 10)
+            {
+                this.balls[id].x = (97 - (2 / 1.77));
+                this.balls[id].xSpeed *= -1;
+            }
+        }
+        if (this.balls[id].x <= (3 + (2 / 1.77)))
+        {
+            if (this.balls[id].y >= this.rooms[roomID].paddleLeft && this.balls[id].y <= this.rooms[roomID].paddleLeft + 10)
+            {
+                this.balls[id].x = (3 + (2 / 1.77));
+                this.balls[id].xSpeed *= -1;
+            }
+        }
         if (this.balls[id].x >= (100 - (2 / 1.77)) || this.balls[id].x <= (0 + (2 / 1.77)))
             this.balls[id].xSpeed *= -1;
     }
@@ -94,7 +110,7 @@ export class GameService {
     gameLoop(rid: number, server: Server, game_data: GameData) {
         if (this.rooms[rid].ballId == -1)
             this.rooms[rid].ballId = this.createBall(this.rooms[rid].name);
-        this.updateBall(this.rooms[rid].ballId);
+        this.updateBall(this.rooms[rid].ballId, rid);
         this.updatePaddles(rid);
         game_data.yBall = this.balls[this.rooms[rid].ballId].y;
         game_data.xBall = this.balls[this.rooms[rid].ballId].x;
