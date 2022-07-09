@@ -2,6 +2,8 @@ import { SubscribeMessage, WebSocketGateway, MessageBody, ConnectedSocket, WebSo
 import { Socket, Server } from 'socket.io';
 import { Room } from './interfaces/room.interface';
 import { GameService } from './game.service';
+import { Player } from './interfaces/player.interface';
+import { PlainObjectToNewEntityTransformer } from 'typeorm/query-builder/transformer/PlainObjectToNewEntityTransformer';
 
 
 @WebSocketGateway({cors: {
@@ -9,7 +11,7 @@ import { GameService } from './game.service';
 
 export class GameGateway {
   constructor(private gameService: GameService) {}
-  rooms: Room[] = [];
+  
 
   @WebSocketServer()
   server: Server;
@@ -21,31 +23,46 @@ export class GameGateway {
   }
   
   @SubscribeMessage('start')
-  handleStart(@ConnectedSocket() client: Socket) : number {
-    if (this.rooms.length == 0 || this.rooms[this.rooms.length - 1].player2){
+  handleStart(@ConnectedSocket() client: Socket) : Player {
+    var player: Player = {
+      playerNb: 0,
+      roomId: 0,
+    }
+    if (this.gameService.rooms.length == 0 || this.gameService.rooms[this.gameService.rooms.length - 1].player2){
       var newRoom: Room = {
-        id: this.rooms.length,
-        name: this.rooms.length.toString(),
+        id: this.gameService.rooms.length,
+        name: this.gameService.rooms.length.toString(),
         player1: client,
+        ballId: -1,
+        paddleLeft: 45,
+        paddleRight: 45,
+        paddleLeftDir: 0,
+        paddleRightDir: 0,
       } 
-      this.rooms.push(newRoom);
-      client.join(this.rooms[this.rooms.length - 1].name);
-    return -1;
-  }
+      this.gameService.rooms.push(newRoom);
+      client.join(this.gameService.rooms[this.gameService.rooms.length - 1].name);
+      player.playerNb = 1;
+    }
   else {
-    this.rooms[this.rooms.length - 1].player2 = client;
-    client.join(this.rooms[this.rooms.length - 1].name);
-    this.rooms[this.rooms.length - 1].ballId = this.gameService.createBall(this.rooms[this.rooms.length - 1].name);
-    console.log(this.rooms[this.rooms.length - 1].ballId);
-    this.server.to(this.rooms[this.rooms.length - 1].name).emit("game_started", {});
-    return this.rooms[this.rooms.length - 1].id;
+    this.gameService.rooms[this.gameService.rooms.length - 1].player2 = client;
+    client.join(this.gameService.rooms[this.gameService.rooms.length - 1].name);
+    this.server.to(this.gameService.rooms[this.gameService.rooms.length - 1].name).emit("game_started", {});
+    this.gameService.startGame(this.gameService.rooms.length - 1, this.server);
+    player.playerNb = 2;
   }
+  player.roomId = this.gameService.rooms[this.gameService.rooms.length - 1].id;
+  return player;
   }
+
+@SubscribeMessage('move')
+handlemove(@MessageBody('room') rid: number, @MessageBody('player') pid: number, @MessageBody('dir') dir: number) : any{
+  this.gameService.updateRoom(pid, rid, dir);
+}
 
 @SubscribeMessage('getUpdate')
 handleUpdate(@MessageBody('rid') rid: number) : any{
   console.log(rid);
-  this.gameService.updateBall(this.rooms[rid].ballId);
-  this.server.to(this.rooms[rid].name).emit("update", this.gameService.balls[rid]);
+  this.gameService.updateBall(this.gameService.rooms[rid].ballId);
+  this.server.to(this.gameService.rooms[rid].name).emit("update", this.gameService.balls[rid]);
 }
 }

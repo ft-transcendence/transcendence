@@ -112,7 +112,7 @@
     /*background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -10%, rgb(57,80,127) 65%, rgb(25,48,49) 184%);*/
     border: 0px solid rgb(0, 255, 255);
     border-radius: 20px;
-    /*box-shadow: 0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 5px rgb(0, 190, 255);*/
+    box-shadow: 0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 5px rgb(0, 190, 255);
 }
 
         .Pad-left {
@@ -145,7 +145,7 @@
             width: 0;
             background-color: rgb(0, 255, 255);
             border: 1px solid rgb(0, 255, 255);
-            /*box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);*/
+            box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);
             display: none;
         }
 
@@ -157,7 +157,7 @@
             width: 0;
             background-color: rgb(0, 255, 255);
             border: 1px solid rgb(0, 255, 255);
-            /*box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);*/
+            box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);
             display: none;
         }
         .Center-circle {
@@ -166,7 +166,7 @@
             width: 8vh;
             border: 1px solid rgb(0, 255, 255);
             border-radius: 50%;
-           /*box-shadow: 0px 0px 8px 4px rgb(0, 190, 255), inset 0 0px 8px 6px rgb(0, 190, 255);*/
+           box-shadow: 0px 0px 8px 4px rgb(0, 190, 255), inset 0 0px 8px 6px rgb(0, 190, 255);
            display: none;
         }
 
@@ -192,7 +192,8 @@
         height: 2vh;
         width: 2vh;
         border-radius: 50%;
-        box-shadow: 0 0 5px 4px rgb(143,72,89), inset 0 0 10px 5px rgb(143,72,89);
+        /*box-shadow: 0 0 5px 4px rgb(143,72,89), inset 0 0 10px 5px rgb(143,72,89);*/
+        background-color: rgb(93,210,204);
         display: none;
     }
 

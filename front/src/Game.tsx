@@ -11,6 +11,19 @@ const socket = io("ws://localhost:4000");
 const MOVE_UP   = "ArrowUp";  
 const MOVE_DOWN = "ArrowDown";  
 
+interface Game_data {
+    paddleLeft: number;
+    paddleRight: number;
+    xBall: number;
+    YBall: number;
+}
+
+interface Player 
+{
+    roomId: number;
+    playerNb: number;
+}
+
 interface Ball 
 {
     id: number;
@@ -36,6 +49,7 @@ interface StatePong {
     gameStarted: boolean,
     roomId: number,
     showStartButton: boolean,
+    playerNumber: number,
   }
 
 interface Button {
@@ -174,7 +188,9 @@ export default class Game extends React.Component < {}, StatePong > {
                         ballY: 50,
                         gameStarted: false,
                         showStartButton: true,
-                        roomId: 0};
+                        roomId: 0,
+                        playerNumber: 0,
+                    };
     }
 
     componentDidMount() {
@@ -182,8 +198,8 @@ export default class Game extends React.Component < {}, StatePong > {
         document.onkeyup = this.keyUpInput;
         socket.on("game_started", () =>
             this.setState({gameStarted: true}));
-        socket.on("update", (info: Ball) =>
-            this.setState({ballX: info.x, ballY:info.y}));
+        socket.on("update", (info: Game_data) =>
+            this.setState({ballX: info.xBall, ballY: info.YBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight}));
     }
 
     particlesInit = async (main: any) => {
@@ -196,27 +212,21 @@ export default class Game extends React.Component < {}, StatePong > {
     };
 
     startButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-        socket.emit("start", {}, (rid: number) => 
-        {if (rid >= 0) {
-          this.setState({gameStarted: true, roomId: rid, showStartButton: false});  
+        socket.emit("start", {}, (player: Player) => 
+          this.setState({roomId: player.roomId, playerNumber: player.playerNb, showStartButton: false}));  
         }
-        else {
-          this.setState({roomId: rid, showStartButton: false});  
-        }
-      }
-      )
-      }
+     
    
     keyDownInput = (e: KeyboardEvent) => {
     if (e.key == MOVE_UP && this.state.gameStarted)
-        socket.emit("move", {dir: 1});
+        socket.emit("move", {dir: 1, room: this.state.roomId, player: this.state.playerNumber});
     if (e.key == MOVE_DOWN)
-        socket.emit("move", {dir: 2});
+        socket.emit("move", {dir: 2, room: this.state.roomId, player: this.state.playerNumber});
     }
     
     keyUpInput = (e: KeyboardEvent) => {
         if ((e.key == MOVE_UP || e.key == MOVE_DOWN) && this.state.gameStarted)
-            socket.emit("move", {dir: 0});
+            socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
     }
 
     render() {

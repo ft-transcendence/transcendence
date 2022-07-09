@@ -1,5 +1,4 @@
 import { Socket } from "dgram";
-import { Game } from "./game.interface";
 
 export interface Ball 
 {
