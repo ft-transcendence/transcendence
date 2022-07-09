@@ -13,7 +13,7 @@ import { UserDto } from "./dto"
 /*
 *	CRUD :
 *	- Create : Satch is doing the base user creation, maybe Flo has to initialize each var
-*	- Read : Flo's stuff, are getAll and getMe enough ?
+*	- Read : Flo's stuff, are getAll and getMe enough ? No, getUser should be made too to get a specific user and access his profile
 *	- Update : Flo's ugly stuff, has to understand how often and when an update happens
 *	- Delete : Necessary ? In which case would we delete just a user ?
 */

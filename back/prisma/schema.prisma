@@ -23,13 +23,13 @@ model User {
   updatedAt	DateTime	@updatedAt
 
   email		 	String    @unique
-	username	String?   
-  hash			String?
+	username	String    @unique  
+  hash			String
 	picture		String?
 
-	gamesWon		Int?
-	gamesLost		Int?
-	gamesPlayed	Int?
+	gamesWon		Int     @default(0)
+	gamesLost		Int     @default(0)
+  gamesPlayed	Int     @default(0)
 //game history ? Une partie = 2 id, un score
 
 	friends		User[]		@relation(name: "relationships")  //array of friends based on their id 
