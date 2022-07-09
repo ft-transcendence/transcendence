@@ -2,7 +2,8 @@ import { Body, Controller,
 	Get,
 	Post,
 	Req,
-	UseGuards
+	UseGuards,
+	ForbiddenException
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtGuard } from 'src/auth/guard';
@@ -32,7 +33,7 @@ export class UserController {
 		console.log({
 			user: req.user,
 		})
-		return req.user;
+		return (req.user)
 	}
 
 	@Get('/')	//default testing route, localhost:4000/users/
@@ -48,6 +49,17 @@ export class UserController {
 	}
 
 	//UPDATE
+
+	@UseGuards(JwtGuard)
+	@Post('/update_username')
+	async updateUsername(@Body('username') newUsername: string, @Req() req) {
+	console.log('Going through getLeaderboard in user.controller');
+	try {
+		const res = await this.userService.updateUsername(req.user.id, newUsername);
+	} catch (e) {
+		throw new ForbiddenException('Username already exist');
+	}
+	}
 
 //this is not a request - it comes from the back, called by the game, no need to protect
 	hasWon(UserDto: UserDto) {

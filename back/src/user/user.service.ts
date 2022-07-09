@@ -20,9 +20,8 @@ export class UserService {
 		private prisma: PrismaService,
 		) {}
 
-	//READ
-	
-	//async getMe(request?)
+
+	/*	READ	*/
 	
 	async getAllUsers() {
 		//returns a record of all the users, ordered by id in acending order
@@ -43,7 +42,24 @@ export class UserService {
 		return (users);
 	}
 
-	//UPDATE
+
+	
+	/*	UPDATE	*/
+
+	//USER PROFILE RELATED FUNCTIONS
+
+	async updateUsername(id: number, newUsername: string) {
+		const updateUser = await this.prisma.user.update({
+			where: {
+			  id: id,
+			},
+			data: {
+				username: newUsername,
+			},
+		  })
+		}	
+
+	//GAME RELATED FUNCTIONS
 
 	async hasWon(UserDto: UserDto) {
 		//increments the number of won and played games by one
@@ -62,7 +78,7 @@ export class UserService {
 		  })
 	}
 	async hasLost(UserDto: UserDto) {
-		//increments the number of won and played games by one
+		//increments the number of lost and played games by one
 		const updateUser = await this.prisma.user.updateMany({
 			where: {
 			 	username: UserDto.username,
