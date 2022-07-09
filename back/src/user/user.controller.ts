@@ -50,18 +50,18 @@ export class UserController {
 	//UPDATE
 
 //this is not a request - it comes from the back, called by the game
-	hasWon(id: number) {
+	hasWon(UserDto) {
 		console.log('Going through hasWon in user.controller for');
-		return (this.userService.hasWon(id));
+		return (this.userService.hasWon(UserDto));
 	}
 
-	hasLost(id: number) {
+	hasLost(UserDto) {
 		console.log('Going through hasLost in user.controller for');
-		return (this.userService.hasLost(id));
+		return (this.userService.hasLost(UserDto));
 	}
 
-	hadADraw(id: number) {
+	hadADraw(UserDto) {
 		console.log('Going through hasWon in user.controller for');
-		return (this.userService.hadADraw(id));
+		return (this.userService.hadADraw(UserDto));
 	}
 }
