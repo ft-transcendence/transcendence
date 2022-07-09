@@ -40,18 +40,15 @@ root.render(
         </Route>
 
         <Route path="app" element={<RequireAuth><Home /></RequireAuth>} >
-          <Route path="private-profile" element={<UserPrivateProfile/>} />
           <Route path="home" element={<Home/>} />
+          <Route path="private-profile" element={<UserPrivateProfile/>} />
+          <Route path="chat" element={<Chat />} />
+          <Route path="game" element={<Game />} />
           <Route path="*" element={<Navigate to="/app" />} />
         </Route>
-
-        <Route path="game" element={<Game />} />
-        <Route path="chat" element={<Chat />} />
-        <Route path="landing-page" element={<LandingPage />} />
-        <Route path="custom-page" element={<CustomPage />} ></Route>
         <Route
           path="*"
-          element={<Navigate to="/landing-page" />}
+          element={<Navigate to="/auth/signin" />}
         />
         </Route>
       </Routes>

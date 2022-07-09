@@ -47,23 +47,6 @@ interface LocationState {
   };
 }
 
-<<<<<<< HEAD
-const storeUserInfo = (userInfo: any, token: string) => {
-  if (
-    token !==
-      '{"statusCode":403,"message":"Credentials already exist","error":"Forbidden"}' &&
-    token !==
-      '{"statusCode":403,"message":"Invalid Credentials","error":"Forbidden"}'
-  ) {
-    localStorage.setItem("userToken", token);
-    if (userInfo.username) localStorage.setItem("userName", userInfo.username);
-    localStorage.setItem("userEmail", userInfo.email);
-    localStorage.setItem("userPassword", userInfo.password);
-
-    console.log("token: " + localStorage.getItem("userToken"));
-    console.log("userEmail: " + localStorage.getItem("userEmail"));
-    console.log("userPassword: " + localStorage.getItem("userPassword"));
-=======
 const storeUserInfo = (userInfo: any, token:string) => {
   if (token !== "{\"statusCode\":403,\"message\":\"Credentials already exist\",\"error\":\"Forbidden\"}"  &&
   token !== "{\"statusCode\":403,\"message\":\"Invalid Credentials\",\"error\":\"Forbidden\"}")
@@ -78,7 +61,6 @@ const storeUserInfo = (userInfo: any, token:string) => {
     console.log('token: ' + localStorage.getItem('userToken'));
     console.log('userEmail: ' + localStorage.getItem('userEmail'));
     console.log('userPassword: ' + localStorage.getItem('userPassword'));
->>>>>>> ➕ flow from route/route from landing to frst login
   }
   userInfo.clear();
 };
