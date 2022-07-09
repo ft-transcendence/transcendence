@@ -33,15 +33,24 @@ export class UserController {
 		console.log({
 			user: req.user,
 		})
-		return (req.user)
+		return req.user
 	}
 
+	@UseGuards(JwtGuard)
+	@Get('him') //to change
+	getUser(id: number) {
+		console.log('Going through getUser in user.controller');
+		return this.userService.getUser(id);
+	}	
+
+	@UseGuards(JwtGuard)
 	@Get('/')	//default testing route, localhost:4000/users/
 	getAllUsers() {
 		console.log('Going through getAllUsers in user.controller');
 		return this.userService.getAllUsers();
 	}
 	
+	@UseGuards(JwtGuard)
 	@Get()
 	getLeaderboard() {
 		console.log('Going through getLeaderboard in user.controller');
@@ -55,7 +64,7 @@ export class UserController {
 	@UseGuards(JwtGuard)
 	@Post('/update_username')
 	async updateUsername(@Body('username') newUsername: string, @Req() req) {
-	console.log('Going through getLeaderboard in user.controller');
+	console.log('Going through updateUsername in user.controller');
 	try {
 		const res = await this.userService.updateUsername(req.user.id, newUsername);
 	} catch (e) {
@@ -66,7 +75,7 @@ export class UserController {
 	@UseGuards(JwtGuard)
 	@Post('/update_avatar')
 	async updateAvatar(@Body('avatar') newAvatar: string, @Req() req) {
-	console.log('Going through getLeaderboard in user.controller');
+	console.log('Going through updateAvatar in user.controller');
 	try {
 		const res = await this.userService.updateAvatar(req.user.id, newAvatar);
 	} catch (e) {
@@ -77,7 +86,7 @@ export class UserController {
 	@UseGuards(JwtGuard)
 	@Post('/update_email')
 	async updateEmail(@Body('email') newEmail: string, @Req() req) {
-	console.log('Going through getLeaderboard in user.controller');
+	console.log('Going through updateEmail in user.controller');
 	try {
 		const res = await this.userService.updateEmail(req.user.id, newEmail);
 	} catch (e) {

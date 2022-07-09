@@ -1,5 +1,5 @@
 /* GLOBAL MODULES */
-import { Injectable } from "@nestjs/common";
+import { Injectable, ForbiddenException } from "@nestjs/common";
 import { use } from "passport";
 import { Request } from 'express';
 
@@ -42,6 +42,15 @@ export class UserService {
 		return (users);
 	}
 
+	async getUser(id: number){
+		try{
+			const user = await this.prisma.user.findFirst({where: {id: id}});
+			return (user);
+		} catch (e) {
+            console.log('getUser error:', e);
+            throw new ForbiddenException('getUser error')
+		}
+	}
 
 	
 	/*	UPDATE	*/
