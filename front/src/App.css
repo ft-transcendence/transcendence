@@ -55,17 +55,15 @@
     height: 100vh;
   }
   
+  .app-title {
 
-  .profile-card {
-
-    padding-top: 30px;
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-bottom: 30px;
-
-    background: #31353C;
-    box-shadow: -10px -5px 30px 5px #34373C, 10px 5px 30px 5px #24282D;
-    border-radius: 10px;
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 20px;
+  letter-spacing: -0.4px;
+  color: var(--text-color-white);
   }
 
   .profile-card {
@@ -79,8 +77,35 @@
     box-shadow: -10px -5px 30px 5px #34373C, 10px 5px 30px 5px #24282D;
     border-radius: 10px;
   }
-/* 
-  .profile-card {
+
+  .profile-pic-round {
+    display: flex;
+    height: 150px;
+    width: 150px;
+    display: inline-block;
+    border-radius: 50%;
+    background: var(--buttons-color-gray-disabled);
+    /* Buttons/dark - outside - medium */
+    box-shadow: 7px 7px 30px #1F2427, -7px -7px 30px #485057;
+  }
+
+  .profile-username-text {
+
+  display: flex;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 20px;
+  /* identical to box height, or 67% */
+
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.4px;
+  color: var(--text-color-white);
+  }
+
+  /* .profile-card {
 
     padding-top: 30px;
     padding-left: 30px;
