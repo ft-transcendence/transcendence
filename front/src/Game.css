@@ -39,6 +39,7 @@
 
 .Info-card {
     position: absolute;
+    top: 10%;
     left: 0;
     right: 0;
     margin:auto;
@@ -49,7 +50,7 @@
     border: 2px solid rgb(0, 255, 255);
     border-radius: 15px;
     box-shadow: 0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 4px rgb(0, 190, 255);
-    display: none;
+    display: unset;
 }
 
     .Player-left {

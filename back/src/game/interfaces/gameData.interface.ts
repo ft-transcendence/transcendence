@@ -6,5 +6,7 @@ export interface GameData {
     paddleRight: number;
     xBall: number;
     yBall: number;
+    player1Score: number,
+    player2Score: number,
    }
 

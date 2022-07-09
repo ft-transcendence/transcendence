@@ -10,4 +10,6 @@ export interface Room {
     paddleLeftDir: number,
     paddleRight: number,
     paddleRightDir: number,
+    player1Score: number,
+    player2Score: number,
 }

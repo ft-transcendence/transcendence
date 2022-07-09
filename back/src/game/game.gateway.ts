@@ -38,6 +38,8 @@ export class GameGateway {
         paddleRight: 45,
         paddleLeftDir: 0,
         paddleRightDir: 0,
+        player1Score: 0,
+        player2Score: 0,
       } 
       this.gameService.rooms.push(newRoom);
       client.join(this.gameService.rooms[this.gameService.rooms.length - 1].name);

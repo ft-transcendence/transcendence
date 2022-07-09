@@ -55,8 +55,16 @@ export class GameService {
                 this.balls[id].xSpeed *= -1;
             }
         }
-        if (this.balls[id].x >= (100 - (2 / 1.77)) || this.balls[id].x <= (0 + (2 / 1.77)))
-            this.balls[id].xSpeed *= -1;
+        if (this.balls[id].x >= (100 + (2 / 1.77)))
+        {
+            this.rooms[roomID].player1Score += 1;
+            this.rooms[roomID].ballId = this.createBall(this.rooms[roomID].name);
+        }
+        if (this.balls[id].x <= (0 - (2 / 1.77)))
+        {
+            this.rooms[roomID].player2Score += 1;
+            this.rooms[roomID].ballId = this.createBall(this.rooms[roomID].name);
+        }
     }
 
     updateRoom(player:number, room: number, dir: number)
@@ -101,6 +109,8 @@ export class GameService {
             paddleRight: 45,
             xBall: 50,
             yBall: 50,
+            player1Score: 0,
+            player2Score: 0,
         }
         var t = this;
         const interval = setInterval(function() { t.gameLoop(rid, server, game_data); }, refreshRate);
@@ -116,6 +126,8 @@ export class GameService {
         game_data.xBall = this.balls[this.rooms[rid].ballId].x;
         game_data.paddleLeft = this.rooms[rid].paddleLeft;
         game_data.paddleRight = this.rooms[rid].paddleRight;
+        game_data.player1Score = this.rooms[rid].player1Score;
+        game_data.player2Score = this.rooms[rid].player2Score;
         server.to(this.rooms[rid].name).emit("update", game_data);
         return;
     }

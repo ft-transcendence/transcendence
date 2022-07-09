@@ -16,6 +16,8 @@ interface Game_data {
     paddleRight: number;
     xBall: number;
     yBall: number;
+    player1Score: number,
+    player2Score: number,
 }
 
 interface Player 
@@ -50,6 +52,8 @@ interface StatePong {
     roomId: number,
     showStartButton: boolean,
     playerNumber: number,
+    player1Score: number,
+    player2Score: number,
   }
 
 interface Button {
@@ -190,6 +194,8 @@ export default class Game extends React.Component < {}, StatePong > {
                         showStartButton: true,
                         roomId: 0,
                         playerNumber: 0,
+                        player1Score: 0,
+                        player2Score: 0,
                     };
     }
 
@@ -199,7 +205,7 @@ export default class Game extends React.Component < {}, StatePong > {
         socket.on("game_started", () =>
             this.setState({gameStarted: true}));
         socket.on("update", (info: Game_data) =>
-            this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight}));
+            this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score}));
     }
 
     particlesInit = async (main: any) => {
@@ -233,12 +239,52 @@ export default class Game extends React.Component < {}, StatePong > {
     const shoWField = this.state.gameStarted ? 'unset': 'none';
     const showBorder = this.state.gameStarted ? '2px solid rgb(0, 255, 255)' : '0px solid rgb(0, 255, 255)';
     const showShadow = this.state.gameStarted ? '0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 5px rgb(0, 190, 255)' : '0';
+    var leftName;
+    var rightName;
+    if (this.state.playerNumber == 1)
+    {    
+        leftName = "you";
+        rightName = "opponent";
+    }
+    else
+    {    
+        rightName = "you";
+        leftName = "opponent";
+    }
     return (
         <div className='Radial-background'>
             <Particles id="tsparticles" url="particlesjs-config.json" init={this.particlesInit} loaded={this.particlesLoaded} />
 
             <div className='Page-top'>
-
+            <div style={{display: `${shoWField}`,}} className='Info-card'>
+                    <div className='Player-left'>
+                        <div className='Info'>
+                            <div className='Photo'>
+                            
+                            </div>
+                            <div className='Login' style={{textAlign: 'left'}}>
+                            {leftName}
+                            </div>
+                        </div>
+                        <div className='Score'>
+                        {this.state.player1Score}
+                        </div>
+                    </div>
+                    <div className='Player-right'>
+                        <div className='Score'>
+                        {this.state.player2Score}
+                        </div>
+                        <div className='Info'>
+                            
+                            <div className='Login' style={{textAlign: 'right'}}>
+                            {rightName}
+                            </div>
+                            <div className='Photo'>
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div className='Page-mid'>
                 <div style={{   border: `${showBorder}`, 
@@ -272,35 +318,7 @@ export default class Game extends React.Component < {}, StatePong > {
                     <Ball showBall={this.state.gameStarted} x={this.state.ballX} y={this.state.ballY} />
                     
                 </div>
-                <div className='Info-card'>
-                    <div className='Player-left'>
-                        <div className='Info'>
-                            <div className='Photo'>
-                            
-                            </div>
-                            <div className='Login' style={{textAlign: 'left'}}>
-                            shlu
-                            </div>
-                        </div>
-                        <div className='Score'>
-                        4
-                        </div>
-                    </div>
-                    <div className='Player-right'>
-                        <div className='Score'>
-                            3
-                        </div>
-                        <div className='Info'>
-                            
-                            <div className='Login' style={{textAlign: 'right'}}>
-                            lrgergfde
-                            </div>
-                            <div className='Photo'>
-                            
-                            </div>
-                        </div>
-                    </div>
-                </div>
+         
             </div>
             <div className='Page-foot'>
                 <div className='bar'>
