@@ -5,43 +5,43 @@ export default function UserPrivateProfile() {
       <Container>
         <Row flex>
           <Col>
-            <Card className="Auth-form">
+            <Card className="profile-card">
               <Card.Body>
                   <div>
                     <Row>
                       <Col>
-                        <h3 className="Auth-form-title" style={{fontSize: "15px"}}> USERNAME </h3>
+                        <span className="Auth-form-title" style={{fontSize: "15px"}}> USERNAME </span>
                         <span className="form-test" style={{fontSize: "12px"}}>Looloose</span>
                       </Col>
                       <Col></Col>
-                      <Col style={{marginLeft: "auto", marginRight: "0"}}>
-                        <Button variant="secondary" className="submit-button" size="sm">Edit</Button>
+                      <Col className="text-right">
+                        <Button variant="secondary" className="submit-button float-end" size="sm">Edit</Button>
                       </Col>
                     </Row>
                   </div>
                   <div>
                     <Row>
                       <Col>
-                        <h3 className="Auth-form-title" style={{fontSize: "15px"}}> EMAIL </h3>
+                        <span className="Auth-form-title"> EMAIL </span>
                         <span className="form-test" style={{fontSize: "12px"}}>mvaldes@student.42.fr</span>
                       </Col>
                       <Col></Col>
-                      <Col style={{marginLeft: "auto", marginRight: "0"}}>
-                        <Button variant="secondary" className="submit-button" size="sm">Edit</Button>
+                      <Col>
+                        <Button variant="secondary" className="submit-button float-end" size="sm">Edit</Button>
                       </Col>
                     </Row>
                   </div>
                   <div>
                     <Row>
                       <Col>
-                        <h3 className="Auth-form-title" style={{fontSize: "15px"}}> PHONE NUMBER </h3>
+                        <span className="Auth-form-title" style={{fontSize: "15px"}}> PHONE NUMBER </span>
                         <span className="form-test" style={{fontSize: "12px"}}>******7535</span>
                       </Col>
-                      <Col style={{marginLeft: "auto", marginRight: "0"}}>
-                        <Button variant="secondary" className="submit-button" size="sm">Remove</Button>
+                      <Col>
+                        <Button variant="secondary" className="submit-button float-end" size="sm">Remove</Button>
                       </Col>
                       <Col>
-                        <Button variant="secondary" className="submit-button" size="sm">Edit</Button>
+                        <Button variant="secondary" className="submit-button float-end" size="sm">Edit</Button>
                       </Col>
                     </Row>
                   </div>
