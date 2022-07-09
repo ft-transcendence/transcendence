@@ -48,7 +48,9 @@ export class UserController {
 		return this.userService.getLeaderboard();        
 	}
 
-	//UPDATE
+	/*	UPDATE	*/
+
+	//USER PROFILE RELATED FUNCTIONS
 
 	@UseGuards(JwtGuard)
 	@Post('/update_username')
@@ -57,9 +59,33 @@ export class UserController {
 	try {
 		const res = await this.userService.updateUsername(req.user.id, newUsername);
 	} catch (e) {
-		throw new ForbiddenException('Username already exist');
+		throw new ForbiddenException('Username already exists');
 	}
 	}
+
+	@UseGuards(JwtGuard)
+	@Post('/update_avatar')
+	async updateAvatar(@Body('avatar') newAvatar: string, @Req() req) {
+	console.log('Going through getLeaderboard in user.controller');
+	try {
+		const res = await this.userService.updateAvatar(req.user.id, newAvatar);
+	} catch (e) {
+		throw new ForbiddenException('Invalid file ?');		//to handle
+	}
+	}
+
+	@UseGuards(JwtGuard)
+	@Post('/update_email')
+	async updateEmail(@Body('email') newEmail: string, @Req() req) {
+	console.log('Going through getLeaderboard in user.controller');
+	try {
+		const res = await this.userService.updateEmail(req.user.id, newEmail);
+	} catch (e) {
+		throw new ForbiddenException('Email already exists');
+	}
+	}
+
+	//GAME RELATED FUNCTIONS
 
 //this is not a request - it comes from the back, called by the game, no need to protect
 	hasWon(UserDto: UserDto) {

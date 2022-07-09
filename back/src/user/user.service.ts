@@ -56,8 +56,31 @@ export class UserService {
 			data: {
 				username: newUsername,
 			},
-		  })
-		}	
+		})
+	}
+
+	async updateAvatar(id: number, newAvatar: string) {
+		const updateUser = await this.prisma.user.update({
+			where: {
+				id: id,
+			},
+			data: {
+				avatar: newAvatar,
+			},
+		})
+	}
+
+	async updateEmail(id: number, newEmail: string) {
+		const updateUser = await this.prisma.user.update({
+			where: {
+				id: id,
+			},
+			data: {
+				email: newEmail,
+			},
+		})
+	}	
+
 
 	//GAME RELATED FUNCTIONS
 

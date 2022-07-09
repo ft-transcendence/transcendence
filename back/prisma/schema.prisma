@@ -23,14 +23,9 @@ model User {
   updatedAt	DateTime	@updatedAt
 
   email		 	String    @unique
-<<<<<<< HEAD
 	username	String?    @unique  
   hash			String
-=======
-	username	String    @unique 
-  hash			String?
->>>>>>> 000e08b5c8049470bd3f6fd73c598a50ab31876f
-	picture		String?
+	avatar		String?
 
 	gamesWon		Int     @default(0)
 	gamesLost		Int     @default(0)
