@@ -10,14 +10,17 @@ import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
 
 // Set the env file path
-let envFilePath = '.env.development';
+let envFilePath = '.env';
 
-console.log(`Running in ${process.env.ENVIRONMENT} mode`);
 if (process.env.ENVIRONMENT === 'PRODUCTION') {
 	envFilePath = '.env.production';
 } else if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
 	envFilePath = '.env.development';
 }
+
+// Log
+console.log(`Running in ` + process.env.ENVIRONMENT + ` mode`);
+console.log(`Running on port ` + process.env.PORT );
 
 /*
 * This one is the main module, it will import all the others.
@@ -43,3 +46,7 @@ if (process.env.ENVIRONMENT === 'PRODUCTION') {
 })
 
 export class AppModule {}
+
+console.log(`API KEY: ` + process.env.FORTYTWO_SECRET);
+console.log(`API UID: ` + process.env.FORTYTWO_ID);
+console.log(`API CALLBACK: ` + process.env.FORTYTWO_CALLBACK);
