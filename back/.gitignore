@@ -1,4 +1,4 @@
-# ignore env file
+# environment variables
 .env.prod
 
 # compiled output
