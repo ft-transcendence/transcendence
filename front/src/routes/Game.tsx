@@ -5,86 +5,13 @@ import {Particles} from "react-tsparticles";
 import { loadFull } from "tsparticles";
 import type { Container } from "tsparticles-engine";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle } from './game.interfaces';
 
 const socket = io("ws://localhost:4000");
 
 const MOVE_UP   = "ArrowUp";  
 const MOVE_DOWN = "ArrowDown";  
 
-interface Game_data {
-    paddleLeft: number;
-    paddleRight: number;
-    xBall: number;
-    yBall: number;
-    player1Score: number,
-    player2Score: number,
-}
-
-interface Player 
-{
-    roomId: number;
-    playerNb: number;
-}
-
-interface Ball 
-{
-    id: number;
-    roomId: string;
-    status: boolean; // true = in progress
-    x: number;
-    y: number;
-    xSpeed: number;
-    ySpeed: number;
-}
-
-interface Coordinates {
-    x: number,
-    y: number,
-    showBall: boolean,
-  }
-
-interface StatePong {
-    ballX: number,
-    ballY: number,
-    paddleLeftY: number,
-    paddleRightY: number,
-    gameStarted: boolean,
-    roomId: number,
-    showStartButton: boolean,
-    playerNumber: number,
-    player1Score: number,
-    player2Score: number,
-  }
-
-interface Button {
-    clickHandler: any;
-    showButton: boolean;
-  }
-  
-interface ButtonState {
-  showButton: boolean;
-}
-
-interface Msg {
-    showMsg: boolean;
-}
-  
-interface MsgState {
-    showMsg: boolean;
-}
-
-interface PaddleProps {
-    ystart: number,
-    y: number,
-    side: string,
-    show: boolean,
-  }
-  
-  interface StatePaddle {
-    y: number,
-    side: string,
-    show: boolean,
-  }
 
 class StartButton extends React.Component< Button, ButtonState > {
 
