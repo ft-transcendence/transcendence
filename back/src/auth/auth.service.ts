@@ -3,13 +3,15 @@ import { ForbiddenException, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 /* PRISMA */
 import { PrismaService } from "src/prisma/prisma.service";
-/* AUTH Modules */
-import { SignUpDto } from './dto'
-import { SignInDto } from './dto'
-import * as argon from 'argon2'
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+/* AUTH Modules */
+import { Auth42Dto, SignUpDto } from './dto'
+import { SignInDto } from './dto'
+/* Password Hash module */
+import * as argon from 'argon2'
 /* JASON WEB TOKEN */
 import { JwtService } from "@nestjs/jwt";
+
 /**
  * AUTHENTIFICATION SERVICE
  */
@@ -73,7 +75,7 @@ export class AuthService{
 		return this.signin_jwt(user.id, user.email);
 	}
 
-
+	/* SIGNIN JASON WEB TOKEN */
 	async signin_jwt(
 		userId: number,
 		email: string,
@@ -94,5 +96,13 @@ export class AuthService{
 		return {
 			access_token: token,
 		};
+	}
+
+	/* SIGNOUT */
+
+	/* SIGNIN USING 42 API */
+	async signin_42(dto: Auth42Dto) {
+		
+
 	}
 }
