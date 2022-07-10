@@ -8,7 +8,7 @@ import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
 
 // Set the env file path
-let envFilePath = '.env.development';
+let envFilePath = '.env';
 
 // Allows us to use environment variables
 require('dotenv').config();
