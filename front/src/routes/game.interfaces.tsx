@@ -1,3 +1,5 @@
+import { NumericLiteral } from "typescript";
+
 export interface Game_data {
     paddleLeft: number;
     paddleRight: number;
@@ -30,6 +32,7 @@ export interface StatePong {
     playerNumber: number,
     player1Score: number,
     player2Score: number,
+    msgType: number,
 }
 
 export interface Button {
@@ -43,10 +46,12 @@ export interface ButtonState {
 
 export interface Msg {
     showMsg: boolean;
+    type: number;
 }
   
 export interface MsgState {
     showMsg: boolean;
+    type: number;
 }
 
 export interface PaddleProps {

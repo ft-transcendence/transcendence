@@ -5,6 +5,7 @@
 }
     .Page-top {
         height: 20%;
+        display: inline-flex;
     }
 
     .Page-mid {
@@ -46,7 +47,7 @@
     display: inline-flex;
     height: 7vh;
     width: 25%;
-    background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -180%, rgb(57,80,127) 270%);
+    /*background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -180%, rgb(57,80,127) 270%);*/
     border: 2px solid rgb(0, 255, 255);
     border-radius: 15px;
     box-shadow: 0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 4px rgb(0, 190, 255);
@@ -58,6 +59,7 @@
         width: 50%;
         height: 100%;
         display: inline-flex;
+        vertical-align: top;
     }
 
     .Player-right {
@@ -65,15 +67,18 @@
         width: 50%;
         height: 100%;
         display: inline-flex;
+        vertical-align: top;
     }
     
         .Score {
             /* background-color: green; */
-            margin: 4% auto;
+            /*margin: 4% auto;*/
             width: 20%;
             height: 70%;
             font-size: 4.5vh;
             color: white;
+            display: inline-flex;
+            vertical-align: top;
         }
 
         .Info {
@@ -214,7 +219,7 @@
         display: unset;
     }
 
-    .Wait_message {
+    .Message {
         margin: auto;
         font-size: 2.5vh;
         font-weight: 300;

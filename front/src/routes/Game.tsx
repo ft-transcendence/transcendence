@@ -4,7 +4,7 @@ import "./Game.css";
 import {Particles} from "react-tsparticles";
 import { loadFull } from "tsparticles";
 import type { Container } from "tsparticles-engine";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle } from './game.interfaces';
 
 const socket = io("ws://localhost:4000");
@@ -53,23 +53,39 @@ class Ball extends React.Component< Coordinates, {} >
    }
 }
 
-class WaitMessage extends React.Component< Msg, MsgState > {
+class Message extends React.Component< Msg, MsgState > {
 
     constructor(props: Msg){
         super(props);
-        this.state = {showMsg: false};
+        this.state = {showMsg: false,
+                      type: 0};
         }
       
         static getDerivedStateFromProps(props: Msg, state: MsgState){
           return {
-            showMsg: props.showMsg
+            showMsg: props.showMsg,
+            type: props.type
           };
         }
       
         render() {
              const disp = this.state.showMsg ? 'unset': 'none';
+             var message: string;
+             switch(this.state.type) {
+                case 1:
+                    message = "Please wait for another player";
+                    break;
+                case 2:
+                    message = "You win :)";
+                    break;
+                case 3:
+                    message = "You loose :(";
+                    break;
+                default:
+                    message = "error";
+             }
           return (
-                <div style={{display: `${disp}`,}} className="Wait_message">Please wait for another player</div>
+                <div style={{display: `${disp}`,}} className="Message">{message}</div>
             )
         }
         } 
@@ -123,6 +139,7 @@ export default class Game extends React.Component < {}, StatePong > {
                         playerNumber: 0,
                         player1Score: 0,
                         player2Score: 0,
+                        msgType: 0,
                     };
     }
 
@@ -133,6 +150,8 @@ export default class Game extends React.Component < {}, StatePong > {
             this.setState({gameStarted: true}));
         socket.on("update", (info: Game_data) =>
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score}));
+        socket.on("end_game", (winner: number) => 
+            winner == this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false}) : this.setState({msgType: 3, gameStarted: false}));
     }
 
     particlesInit = async (main: any) => {
@@ -146,7 +165,7 @@ export default class Game extends React.Component < {}, StatePong > {
 
     startButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
         socket.emit("start", {}, (player: Player) => 
-          this.setState({roomId: player.roomId, playerNumber: player.playerNb, showStartButton: false}));  
+          this.setState({roomId: player.roomId, playerNumber: player.playerNb, showStartButton: false, msgType: 1}));  
         }
      
    
@@ -223,7 +242,7 @@ export default class Game extends React.Component < {}, StatePong > {
 
                     <div className='Center-zone'>
                     <StartButton showButton={this.state.showStartButton} clickHandler={this.startButtonHandler} />
-                    <WaitMessage showMsg={!this.state.showStartButton && !this.state.gameStarted} />
+                    <Message showMsg={!this.state.showStartButton && !this.state.gameStarted} type={this.state.msgType} />
 
                 
                         

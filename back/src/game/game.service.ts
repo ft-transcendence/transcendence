@@ -159,8 +159,15 @@ export class GameService {
         game_data.paddleRight = this.rooms[rid].paddleRight;
         game_data.player1Score = this.rooms[rid].player1Score;
         game_data.player2Score = this.rooms[rid].player2Score;
-        
+
         server.to(this.rooms[rid].name).emit("update", game_data);
+
+        if (this.rooms[rid].player1Score == 11 || this.rooms[rid].player2Score == 11)
+        {   
+            const winner = this.rooms[rid].player1Score > this.rooms[rid].player2Score ? 1 : 2;
+            this.schedulerRegistry.deleteInterval(String(rid));
+            server.to(this.rooms[rid].name).emit("end_game", winner);
+        }
         return;
     }
 }
