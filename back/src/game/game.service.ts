@@ -22,7 +22,7 @@ export class GameService {
     initBall(roomId: number)  {
         this.rooms[roomId].xball = 50;
         this.rooms[roomId].yball = 50;
-        this.rooms[roomId].xSpeed = 0.15 + Math.random() * ballSpeed;
+        this.rooms[roomId].xSpeed = ballSpeed;
         this.rooms[roomId].ySpeed = 0.15 + Math.random() * ballSpeed;
         let dir = Math.round(Math.random());
         if (dir)
@@ -41,18 +41,20 @@ export class GameService {
             this.rooms[roomId].ySpeed *= -1;
         if (this.rooms[roomId].xball >= (97 - (2 / 1.77)))
         {
-            if (this.rooms[roomId].yball >= this.rooms[roomId].paddleRight && this.rooms[roomId].yball <= this.rooms[roomId].paddleRight + 10)
+            if (this.rooms[roomId].yball >= this.rooms[roomId].paddleRight - 1 && this.rooms[roomId].yball <= this.rooms[roomId].paddleRight + 11)
             {
                 this.rooms[roomId].xball = (97 - (2 / 1.77));
                 this.rooms[roomId].xSpeed *= -1;
+                this.rooms[roomId].ySpeed = ((this.rooms[roomId].yball - this.rooms[roomId].paddleRight) - 5) / 6 * ballSpeed;
             }
         }
         if (this.rooms[roomId].xball <= (3 + (2 / 1.77)))
         {
-            if (this.rooms[roomId].yball >= this.rooms[roomId].paddleLeft && this.rooms[roomId].yball <= this.rooms[roomId].paddleLeft + 10)
+            if (this.rooms[roomId].yball >= this.rooms[roomId].paddleLeft - 1 && this.rooms[roomId].yball <= this.rooms[roomId].paddleLeft + 11)
             {
                 this.rooms[roomId].xball = (3 + (2 / 1.77));
                 this.rooms[roomId].xSpeed *= -1;
+                this.rooms[roomId].ySpeed = ((this.rooms[roomId].yball - this.rooms[roomId].paddleLeft) - 5) / 6 * ballSpeed;
             }
         }
         if (this.rooms[roomId].xball >= (100 + (2 / 1.77)))
