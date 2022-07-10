@@ -7,12 +7,12 @@
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 import { stringify } from "querystring";
+import { Public } from "src/decorators";
 /* AUTH MODULES */
 import { AuthService } from "./auth.service";
 
 import { SignUpDto } from "./dto"
 import { SignInDto } from "./dto"
-import { Auth42Dto } from "./dto"
 import { FortyTwoAuthGuard } from "./guard/42auth.guard";
 
 // AUTH CONTROLLER
@@ -52,6 +52,7 @@ export class AuthController {
 	 *	/signup - create account 
 	 * @param dto data transfer object
 	 */
+	@Public()
 	@Post('signup')
 	signup(@Body() dto: SignUpDto) {
 		console.log(dto);
@@ -61,7 +62,7 @@ export class AuthController {
 	/**
 	 * /signin - sign in to API
 	 */
-
+	@Public()
 	@Post('signin')
 	signin(@Body() dto: SignInDto) {
 		console.log(dto);
