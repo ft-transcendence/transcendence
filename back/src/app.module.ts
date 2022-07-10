@@ -11,11 +11,17 @@ import { ChatModule } from './chat/chat.module';
 let envFilePath = '.env';
 
 // Allows us to use environment variables
-require('dotenv').config();
 
 // Log
 console.log(`Running in ` + process.env.ENVIRONMENT + ` mode`);
+
 console.log(`Running on port ` + process.env.PORT );
+
+if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
+  envFilePath = '.env.dev';
+} else if (process.env.ENVIRONMENT === 'PRODUCTION') {
+	envFilePath = '.env.prod';
+}
 
 /*
 * This one is the main module, it will import all the others.
@@ -41,3 +47,7 @@ console.log(`Running on port ` + process.env.PORT );
 })
 
 export class AppModule {}
+
+console.log(`API KEY: ` + process.env.FORTYTWO_SECRET);
+console.log(`API UID: ` + process.env.FORTYTWO_ID);
+console.log(`API CALLBACK: ` + process.env.FORTYTWO_CALLBACK);
