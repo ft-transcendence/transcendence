@@ -1,19 +1,9 @@
-import React, { useContext, useState } from "react";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Outlet } from "react-router-dom";
-import { UsernameCxt } from "../App";
-import SignIn from "./auth_modes/SignIn";
 import { useAuth } from "..";
-import { clear } from "console";
 
 export const userInputsRefs: {
   username: React.RefObject<HTMLInputElement>;
@@ -41,11 +31,11 @@ let userInfo: {
   },
 };
 
-interface LocationState {
-  from: {
-    pathname: string;
-  };
-}
+// interface LocationState {
+//   from: {
+//     pathname: string;
+//   };
+// }
 
 const storeUserInfo = (userInfo: any, token:string) => {
   if (token !== "{\"statusCode\":403,\"message\":\"Credentials already exist\",\"error\":\"Forbidden\"}"  &&
@@ -67,13 +57,13 @@ const storeUserInfo = (userInfo: any, token:string) => {
 
 export default function Auth() {
   let navigate = useNavigate();
-  let location = useLocation();
+  // let location = useLocation();
   let auth = useAuth(); // subscribe to Auth context
 
   function userSignIn() {
-    const { from } = (location.state as LocationState) || {
-      from: { pathname: "/" },
-    };
+    // const { from } = (location.state as LocationState) || {
+    //   from: { pathname: "/" },
+    // };
     let email = localStorage.getItem("userEmail");
     if (email)
       auth.signin(email, () => { navigate('/app/private-profile', { replace: true });});
