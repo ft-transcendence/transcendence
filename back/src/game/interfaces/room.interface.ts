@@ -5,11 +5,14 @@ export interface Room {
     name: string,
     player1: Socket,
     player2?: Socket,
-    ballId?: number,
     paddleLeft: number,
     paddleLeftDir: number,
     paddleRight: number,
     paddleRightDir: number,
     player1Score: number,
     player2Score: number,
+    xball?: number;
+    yball?: number;
+    xSpeed?: number;
+    ySpeed?: number;
 }

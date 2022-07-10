@@ -33,7 +33,6 @@ export class GameGateway {
         id: this.gameService.rooms.length,
         name: this.gameService.rooms.length.toString(),
         player1: client,
-        ballId: -1,
         paddleLeft: 45,
         paddleRight: 45,
         paddleLeftDir: 0,

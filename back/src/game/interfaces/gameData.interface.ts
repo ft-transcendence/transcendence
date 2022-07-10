@@ -1,5 +1,4 @@
-import { Ball } from "./ball.interface";
-import { Room } from "./room.interface";
+
 
 export interface GameData {
     paddleLeft: number;
