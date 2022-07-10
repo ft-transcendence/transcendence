@@ -28,3 +28,17 @@ export class SignInDto {
     @IsNotEmpty()
     username: string;
 }
+
+export class Auth42Dto {
+    @IsEmail()
+    @IsNotEmpty()
+    email: string;
+
+    @IsString()
+    @IsNotEmpty()
+    username: string;
+
+    @IsString()
+    @IsNotEmpty()
+    avatar: string;
+}
