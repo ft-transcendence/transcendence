@@ -4,7 +4,7 @@ export default function UserPrivateProfile() {
     return (
       <main>
         <h1 className="app-title">My account</h1>
-        <Container fluid style={{backgroundColor: "blue"}}>
+        <Container className= "p-5 border h-100">
           <span className="profile-pic-round"></span>
           <span className="profile-username-text">@Looloose</span>
         </Container>
