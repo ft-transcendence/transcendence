@@ -47,6 +47,44 @@
   );
 }
 
+.IBM-text {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  letter-spacing: -0.4px;
+  /* align-self: flex-end; */
+}
+
+.ROBOTO-text {
+  font-family: 'Roboto'sans-serif;
+  font-style: normal;
+  letter-spacing: -0.4px;
+  /* align-self: flex-end; */
+}
+
+.text-wrapper {
+  /* display: flex; */
+}
+
+.wrapper {
+  align-items: center;
+  display: flex;
+}
+
+.content {
+  font-family: 'Roboto'sans-serif;
+  font-style: normal;
+  padding-left: 20px;
+  letter-spacing: -0.4px;
+}
+
+.caption {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  padding-top: 5px;
+  font-size: 12px;
+  letter-spacing: -0.4px;
+}
+
 .App {
     background-color: var(--basic-color-background);
     font-family: 'Roboto'sans-serif;
@@ -79,10 +117,10 @@
   }
 
   .profile-pic-round {
-    display: flex;
+    /* display: flex; */
     height: 150px;
     width: 150px;
-    display: inline-block;
+    /* display: inline-block; */
     border-radius: 50%;
     background: var(--buttons-color-gray-disabled);
     /* Buttons/dark - outside - medium */
@@ -95,7 +133,7 @@
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 500;
-  font-size: 30px;
+  font-size: 25px;
   line-height: 20px;
   /* identical to box height, or 67% */
 

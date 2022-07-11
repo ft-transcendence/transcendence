@@ -4,57 +4,64 @@ export default function UserPrivateProfile() {
     return (
       <main>
         <h1 className="app-title">My account</h1>
-        <Container className= "p-5 border h-100">
-          <span className="profile-pic-round"></span>
-          <span className="profile-username-text">@Looloose</span>
+        <Container className= "p-5 border h-100 wrapper">
+          <Row className="border wrapper">
+            <Col className="border">
+              <div className="profile-pic-round"></div>
+            </Col>
+            <Col className="border content">
+              <div className="profile-username-text">@Looloose</div>
+              <div className="caption"> See Public Profile</div>
+            </Col>
+          </Row>
         </Container>
-        {/* <Container>
-          <Row flex>
-            <Col>
+        <Container className="p-5 border">
+          <Row flex className="p-4 border">
+            <Col className="p-3 border">
               <Card className="profile-card">
                 <Card.Body>
                     <div>
-                      <Row>
-                        <Col>
-                          <span className="Auth-form-title" style={{fontSize: "15px"}}> USERNAME </span>
-                          <span className="form-test" style={{fontSize: "12px"}}>Looloose</span>
+                      <Row className="wrapper">
+                        <Col className="text-wrapper p-2">
+                          <div className="IBM-text" style={{fontSize: "20px"}}> USERNAME </div>
+                          <div className="ROBOTO-text" style={{fontSize: "15px"}}>Looloose</div>
                         </Col>
-                        <Col></Col>
-                        <Col className="text-right">
-                          <Button variant="secondary" className="submit-button float-end" size="sm">Edit</Button>
-                        </Col>
-                      </Row>
-                    </div>
-                    <div>
-                      <Row>
-                        <Col>
-                          <span className="Auth-form-title"> EMAIL </span>
-                          <span className="form-test" style={{fontSize: "12px"}}>mvaldes@student.42.fr</span>
-                        </Col>
-                        <Col></Col>
-                        <Col>
-                          <Button variant="secondary" className="submit-button float-end" size="sm">Edit</Button>
+                        <Col className="" ></Col>
+                        <Col className=" text-right">
+                          <Button variant="secondary" className=" submit-button float-end" size="sm">Edit</Button>
                         </Col>
                       </Row>
                     </div>
                     <div>
-                      <Row>
-                        <Col>
-                          <span className="Auth-form-title" style={{fontSize: "15px"}}> PHONE NUMBER </span>
-                          <span className="form-test" style={{fontSize: "12px"}}>******7535</span>
+                      <Row className="wrapper">
+                        <Col className="text-wrapper p-2">
+                          <div className="IBM-text" style={{fontSize: "20px"}}> USERNAME </div>
+                          <div className="ROBOTO-text" style={{fontSize: "15px"}}>Looloose</div>
                         </Col>
-                        <Col>
-                          <Button variant="secondary" className="submit-button float-end" size="sm">Remove</Button>
+                        <Col className="" ></Col>
+                        <Col className=" text-right">
+                          <Button variant="secondary" className=" submit-button float-end" size="sm">Edit</Button>
                         </Col>
-                        <Col>
-                          <Button variant="secondary" className="submit-button float-end" size="sm">Edit</Button>
+                      </Row>
+                    </div>
+                    <div>
+                      <Row className="wrapper">
+                        <Col className="text-wrapper p-2">
+                          <div className="IBM-text" style={{fontSize: "20px"}}> USERNAME </div>
+                          <div className="ROBOTO-text" style={{fontSize: "15px"}}>Looloose</div>
+                        </Col>
+                        <Col className="" >
+                        <Button variant="secondary" className=" submit-button float-end" size="sm">Edit</Button>
+                        </Col>
+                        <Col className=" text-right">
+                          <Button variant="secondary" className=" submit-button float-end" size="sm">Edit</Button>
                         </Col>
                       </Row>
                     </div>
                 </Card.Body>
               </Card>
             </Col>
-            <Col>
+            <Col className="p-3 border">
               <Card className="Auth-form">
                 <Card.Body>
                   <Card.Title className="Auth-form-title">Card title</Card.Title>
@@ -66,7 +73,7 @@ export default function UserPrivateProfile() {
               </Card>
             </Col>
           </Row>
-        </Container> */}
+        </Container>
       </main>
     );
   }
