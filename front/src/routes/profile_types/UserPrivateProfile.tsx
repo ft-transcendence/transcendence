@@ -21,47 +21,60 @@ export default function UserPrivateProfile() {
               <Card className="profile-card">
                 <Card.Body>
                     <div>
-                      <Row className="wrapper">
-                        <Col className="text-wrapper p-2">
+                      <Row className="wrapper p-3">
+                        <Col className="text-wrapper">
                           <div className="IBM-text" style={{fontSize: "20px"}}> USERNAME </div>
                           <div className="ROBOTO-text" style={{fontSize: "15px"}}>Looloose</div>
                         </Col>
-                        <Col className="" ></Col>
                         <Col className=" text-right">
                           <Button variant="secondary" className=" submit-button float-end" size="sm">Edit</Button>
                         </Col>
                       </Row>
                     </div>
                     <div>
-                      <Row className="wrapper">
-                        <Col className="text-wrapper p-2">
-                          <div className="IBM-text" style={{fontSize: "20px"}}> USERNAME </div>
-                          <div className="ROBOTO-text" style={{fontSize: "15px"}}>Looloose</div>
+                      <Row className="wrapper p-3">
+                        <Col className="text-wrapper">
+                          <div className="IBM-text" style={{fontSize: "20px"}}> EMAIL </div>
+                          <div className="ROBOTO-text" style={{fontSize: "15px"}}>mvaldes@student.42.fr</div>
                         </Col>
-                        <Col className="" ></Col>
                         <Col className=" text-right">
                           <Button variant="secondary" className=" submit-button float-end" size="sm">Edit</Button>
                         </Col>
                       </Row>
                     </div>
                     <div>
-                      <Row className="wrapper">
-                        <Col className="text-wrapper p-2">
-                          <div className="IBM-text" style={{fontSize: "20px"}}> USERNAME </div>
-                          <div className="ROBOTO-text" style={{fontSize: "15px"}}>Looloose</div>
+                      <Row className="wrapper p-3">
+                        <Col className="text-wrapper">
+                          <div className="IBM-text" style={{fontSize: "20px"}}> PHONE </div>
+                          <div className="ROBOTO-text" style={{fontSize: "15px"}}>******7535</div>
                         </Col>
-                        <Col className="" >
-                        <Button variant="secondary" className=" submit-button float-end" size="sm">Edit</Button>
+                        <Col>
+                          <Button variant="secondary" className=" submit-button float-end" size="sm">Remove</Button>
                         </Col>
-                        <Col className=" text-right">
+                        <Col>
                           <Button variant="secondary" className=" submit-button float-end" size="sm">Edit</Button>
+                        </Col>
+                      </Row>
+                    </div>
+                    <div>
+                      <Row className="wrapper p-3"> 
+                      <button type="button" className="col-5 btn btn-outline-primary btn-sm">Change Password</button>
+                      </Row>
+                    </div>
+                    <div>
+                      <Row className="wrapper p-3"> 
+                        <Col className="text-wrapper col-8">
+                          <div className="IBM-text" style={{fontSize: "15px"}}> Two Factor authentifcation enabled </div>
+                        </Col>
+                        <Col>
+                          <Button variant="secondary" className=" submit-button float-end" size="sm">Remove 2FA</Button>
                         </Col>
                       </Row>
                     </div>
                 </Card.Body>
               </Card>
             </Col>
-            <Col className="p-3 border">
+            <Col className="p-3">
               <Card className="Auth-form">
                 <Card.Body>
                   <Card.Title className="Auth-form-title">Card title</Card.Title>
