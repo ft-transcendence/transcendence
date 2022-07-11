@@ -14,6 +14,7 @@ import { NewMsgDto, ChannelDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
+import { isEmail } from 'class-validator';
 
 // @UseGuards(JwtGuard)
 @UsePipes(new ValidationPipe())
@@ -33,6 +34,7 @@ export class ChatGateway {
   {
     console.log('client connected: ', this.server.engine.clientsCount);
     this.chatClients.push(client);
+
     // this.chatservice.listUser();
     // this.chatservice.listChannel()
   }
@@ -54,28 +56,44 @@ export class ChatGateway {
     @ConnectedSocket() client: Socket) {
     const id = await this.chatservice.readId(email);
     console.log('handle read id:', id)
-    client.emit('id', id)
+    client.emit('setId', id)
   }
 
-  @SubscribeMessage('new channel')
-  async handleNewChannel(@MessageBody() data: ChannelDto,
+  @SubscribeMessage('readPreview')
+  async handleReadPreview(
+    @MessageBody() email: string,
+    @ConnectedSocket() client: Socket) {
+    const data = await this.chatservice.readPreview(email);
+    console.log('handle read Preview:', data)
+    client.emit('setPreview', data)
+  }
+
+  @SubscribeMessage('newChannel')
+  async handleNewChannel(
+  @MessageBody() data: ChannelDto,
   @ConnectedSocket() client: Socket) {
-    await this.chatservice.newChannel(data);
-    const channelId = await this.chatservice.findChannel(data);
+    const channelId = await this.chatservice.newChannel(data);
     if (channelId == null)
       client.emit('exception', {error: "channel exist, try another channel name!"})
+    else
+    {
+      const ret = await this.chatservice.readPreview(data.email);
+      client.emit('updatePreview', ret)
+    }
   }
 
-  @SubscribeMessage('enter channel')
+  @SubscribeMessage('joinChannel')
   async enterChannel(@MessageBody() data: ChannelDto,
   @ConnectedSocket() client: Socket) {
-    const channelId = await this.chatservice.findChannel(data);
+    
+    const channelId = await this.chatservice.joinChannel(data);
     if (channelId == null)
       client.emit('exception', {error: "channel not found"})
     else
     {
+      const ret = await this.chatservice.readPreview(data.email);
       client.join(data.name)
-      client.emit('cid', channelId);
+      client.emit('cid', ret);
     }
   }
 

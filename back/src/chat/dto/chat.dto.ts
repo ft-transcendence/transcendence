@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsHash, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, maxLength } from 'class-validator';
+import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsHash, IsInt, isNotEmpty, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, maxLength } from 'class-validator';
 
 export class ChannelDto {
 
@@ -13,6 +13,9 @@ export class ChannelDto {
     @IsOptional()
     @IsString()
     password: string;
+
+    @IsNotEmpty()
+    email: string
 
 }
 

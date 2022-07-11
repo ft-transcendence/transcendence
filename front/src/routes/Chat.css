@@ -1,4 +1,5 @@
 .zone-diff {
-    display: inline-flex;
+    display: flex;
+    height: 100%;
 }
 

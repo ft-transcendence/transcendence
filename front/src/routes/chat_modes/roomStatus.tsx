@@ -2,6 +2,6 @@ import "./roomStatus.css";
 
 export default function RoomStatus() {
     return(
-        <div></div>
+        <div className="chat-status">room status</div>
     )
 }

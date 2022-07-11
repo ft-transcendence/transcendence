@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
+import { isEmail } from 'class-validator';
+import { elementAt } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ChannelDto, NewMsgDto} from './dto/chat.dto';
+import { ChannelDto, NewMsgDto } from './dto/chat.dto';
+import { chatPreview } from './type/chat.type';
 
 @Injectable()
 export class ChatService {
@@ -24,6 +27,63 @@ export class ChatService {
         }
     }
 
+    async readPreview(email: string): Promise<chatPreview[]>
+    {
+        console.log("in readPreview")
+        try {
+            const source = await this.getChatList(email);
+            const data = this.getPreview(source);
+            return (data);
+        } catch (error) {
+            console.log('readPreview error:', error);
+            return null;
+        }
+    }
+
+    getPreview(source: any) {
+        let data = [];
+        for (let i = 0; i < source.member.length; i++)
+        {   
+            let element: chatPreview = {
+                name: source.member[i].name,
+                picture: source.member[i].picture,
+                updateAt: source.member[i].picture,
+                lastMsg: source.member[i].messages[0],
+            };
+            data.push(element);
+        }
+        return data;
+    }
+
+    async getChatList(email: string) {
+        
+            const ret = await this.prisma.user.findUnique({
+                where:
+                {
+                    email: email,
+                },
+                select:
+                {
+                    member: {
+                        select: 
+                        {
+                            name: true,
+                            picture: true,
+                            updatedAt: true,
+                            messages:
+                            {
+                                select:
+                                {
+                                    msg: true,
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+        return ret;
+    }
+
     async listUser()
     {
         const users = await this.prisma.user.findMany()
@@ -44,29 +104,57 @@ export class ChatService {
         return ;
     }
 
-    async newChannel(data: ChannelDto): Promise<ChannelDto>
+    async newChannel(data: ChannelDto)
     {
+        console.log("newchannel: ", data.email)
         try {
+            console.log("newchannel: ", data.email)
             const channel =  await this.prisma.channel.create({
-                data: {
+                data:
+                {
                     name: data.name,
                     private: data.private,
                     password: data.password,
+                    admins:
+                    {
+                        connect:
+                        {
+                            email: data.email
+                        }
+                    },
+                    members:
+                    {
+                        connect: 
+                        {
+                            email: data.email
+                        }
+                    }
                 }
             })
-            return (channel);
+            return channel.id;
         } catch (error) {
             console.log('new channel error:', error)
             throw new WsException(error)
         } 
     }
 
-    async findChannel(data: ChannelDto): Promise<number>
+    async joinChannel(data: ChannelDto): Promise<number>
     {
         try {
-            const channel =  await this.prisma.channel.findFirst({
-                where: {
-                    name: data.name,
+            const channel =  await this.prisma.channel.update ({
+                where:
+                {
+                    name: data.name
+                },
+                data:
+                {
+                    members:
+                    {
+                        connect:
+                        {
+                            email: data.email,
+                        }
+                    }
                 }
             })
             return (channel.id);
