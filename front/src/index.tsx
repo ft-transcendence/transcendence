@@ -40,7 +40,13 @@ root.render(
             }
           />
           <Route path="game" element={<Game />} />
-          <Route path="chat" element={<Chat />} />
+          <Route path="chat" 
+            element={
+              <RequireAuth>
+                <Chat />
+              </RequireAuth>
+            }
+          />
           <Route path="landing-page" element={<LandingPage />} />
           <Route path="custom-page" element={<CustomPage />}></Route>
           <Route path="*" element={<Navigate to="/landing-page" />} />
