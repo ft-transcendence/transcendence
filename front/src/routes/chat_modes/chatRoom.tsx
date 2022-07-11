@@ -2,6 +2,6 @@ import "./chatRoom.css";
 
 export default function ChatRoom() {
     return(
-        <div></div>
+        <div className="chat-room">chat room</div>
     )
 }

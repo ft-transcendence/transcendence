@@ -1,0 +1,75 @@
+
+.preview-zone {
+    background-color: red;
+    flex: 1;
+}
+
+.preview-chat-search {
+    background-color: blue;
+    height: 5%;
+}
+
+.preview-list {
+    background-color: orange;
+
+}
+
+.preview-chat
+{
+    background: black;
+    display: flex;
+    padding: 10px;
+
+}
+
+.preview-chat-img
+{
+    background-color: white;
+    /* margin: auto; */
+    border-radius: 50%;
+    height: 45px;
+    width: 45px;
+}
+
+.preview-chat-info {
+    background: grey;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 80%;
+    display: flex;
+
+}
+
+.preview-chat-info-1 {
+    background: yellow;
+    flex: 4;
+    width: 80%;
+
+}
+
+.preview-chat-info-2 {
+    background: orange;
+    flex: 1;
+    width: 80%;
+
+}
+
+.preview-chat-name {
+    background: pink;
+    color: black;
+}
+
+
+.preview-chat-msg {
+    background: white;
+}
+
+
+.preview-chat-time {
+    background: greenyellow;
+}
+
+
+.preview-chat-unread {
+    background: purple;
+}

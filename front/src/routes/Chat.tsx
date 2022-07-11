@@ -1,8 +1,11 @@
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { useAuth } from "../globals/contexts";
 import "./Chat.css";
-import ChatList from "./chat_modes/chatList";
+import Preview from "./chat_modes/chatPreview";
 import ChatRoom from "./chat_modes/chatRoom";
 import RoomStatus from "./chat_modes/roomStatus";
+import { chatPreview } from "./chat_modes/type/chat.type";
 
 const socketOptions = {
   transportOptions: {
@@ -18,9 +21,31 @@ const socketOptions = {
 const socket = io("ws://localhost:4000", socketOptions);
 
 export default function Chat() {
+    const [previewData, setPreview] = useState<chatPreview[]>([]);
+    const email = useAuth().user;
+
+    useEffect(() => {
+
+        init();
+
+        socket.on("setPreview", function(data: never[]) {
+            console.log("chatPreview", data);
+            setPreview(data);
+            
+        })
+        return (() => {
+            socket.off("setPreview");
+        })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const init = () => {
+        socket.emit("readPreview", email);
+    }
+
     return (
         <div className="zone-diff">
-        <ChatList/>
+        <Preview data={previewData}/>
         <ChatRoom/>
         <RoomStatus/>
         </div>
