@@ -92,6 +92,28 @@ export default function Auth() {
     if (userInfo.username && userInfo.email && userInfo.password) signUp();
     else signIn();
   };
+  
+  const handleClick = (event: any) => {
+    event.preventDefault();
+    signIn42();
+  }
+
+  const signIn42 = () => {
+    let myHeaders = new Headers();
+
+    fetch("http://localhost:4000/auth/42", {
+      method: "GET",
+      headers: myHeaders,
+      body: null,
+      redirect: "follow",
+    })
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      // .then((result) => storeUserInfo(userInfo, result))
+      .then(() => console.log("<= SIGNIN 42"))
+      // .then(() => userSignIn())
+      .catch((error) => console.log("error", error));
+  };
 
   const signIn = () => {
     let myHeaders = new Headers();
@@ -169,7 +191,7 @@ export default function Auth() {
             </Form.Text>
           </Form.Group>
 
-          <Button variant="secondary" className="submit-button" size="sm">
+          <Button variant="secondary" className="submit-button" size="sm" onClick={handleClick}>
             Sign in with 42
           </Button>
           <Button
