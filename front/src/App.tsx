@@ -17,7 +17,7 @@ export const socket = io("ws://localhost:4000");
 export default function App() {
   const location = useLocation();
 
-  if (location.pathname === "/game") return <Outlet />;
+  if (location.pathname === "/game" || location.pathname === "/chat") return <Outlet />;
 
   return (
     <div className="App" style={{ margin: "8px" }}>
