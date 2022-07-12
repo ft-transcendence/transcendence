@@ -2,8 +2,10 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { GameGateway } from './game/game.gateway';
 import { ConfigModule } from '@nestjs/config';
+import { GameModule } from './game/game.module';
+import { GameService } from './game/game.service';
+import { GameGateway } from './game/game.gateway';
 import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
 
@@ -40,10 +42,10 @@ if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
 					isGlobal: true
 				}),
 			],
-	providers: [GameGateway],
-	
+	providers: [GameService, GameGateway],		
 	// NOT USED AS OF YET
 	// controllers: [AppController],
+
 })
 
 export class AppModule {}
