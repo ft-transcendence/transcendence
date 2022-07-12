@@ -1,4 +1,19 @@
-.chat-room {
+.chat-room-zone {
     background-color: green;
     flex: 2;
+}
+
+.brief-info {
+    background-color: white;
+    height: 5.5vh;
+}
+
+.msg-stream {
+    background-color: tan;
+    height: 90vh;
+}
+
+.msg-input-area {
+    background-color: teal;
+    height: 5vh;
 }

@@ -38,7 +38,7 @@ export default function Chat() {
             setSelectedChat(chat)
         }}/>
         <ChatRoom current={selectedChat}/>
-        <RoomStatus/>
+        <RoomStatus current={selectedChat}/>
         </div>
     )
 }

@@ -1,4 +1,14 @@
-.chat-status {
+.chat-status-zone {
     background-color: grey;
     flex: 1;
 }
+
+.in-room-search {
+    background-color: lightgray;
+    height: 5.5vh;
+}
+
+.member-status {
+    background-color: orange;
+}
+
