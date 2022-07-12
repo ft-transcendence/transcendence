@@ -81,8 +81,4 @@ model Msg {
 	@@unique([id])
 }
 
-// model Relation {
-// 	id		Int		@id   @default(autoincrement())
 
-// 	user1	User	@relation(fields: [userId])
-// }
