@@ -32,6 +32,7 @@ export class UserService {
 		});
 	}
 
+
 	/*	READ	*/
 	
 	async getAllUsers() {
@@ -48,7 +49,7 @@ export class UserService {
 		//returns a record of all the users, ordered by gamesWon in descending order
 		const users = await this.prisma.user.findMany({orderBy : {gamesWon: 'desc'}});
 
-		console.log("Best Users:");  //debug
+		console.log("Best Users:");	//debug
 		console.log(users);			//debug
 		return (users);
 	}
@@ -58,12 +59,25 @@ export class UserService {
 			const user = await this.prisma.user.findFirst({where: {id: id}});
 			return (user);
 		} catch (e) {
-            console.log('getUser error:', e);
-            throw new ForbiddenException('getUser error')
+			console.log('getUser error:', e);
+			throw new ForbiddenException('getUser error')
 		}
 	}
 
 	
+	async getFriends(id: number){
+		try{
+			const getFriends = await this.prisma.user.findUnique({
+				where:		{id: id},
+				include:	{friends: true}});
+		} catch(e) {
+			console.log('getFriends error:', e);
+			throw new ForbiddenException('getFriends error')			
+		}
+		//error: no friends ? should be handled by the catch(e)
+	}
+
+
 	/*	UPDATE	*/
 
 	//USER PROFILE RELATED FUNCTIONS
@@ -115,10 +129,6 @@ export class UserService {
 
 
 	//RELATIONSHIP RELATED FUNCTIONS
-
-	async getFriends(id: number){
-		//error: no friends ?
-	}
 
 	async addFriend(id: number, otherId: number){
 		//error: same id ?
