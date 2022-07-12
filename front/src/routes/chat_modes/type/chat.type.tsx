@@ -11,3 +11,17 @@ export type newChannel = {
     private: boolean;
     password: string;
 }
+
+export type newMsg = {
+    email: string | null;
+    channel: string | undefined;
+    msg: string;
+}
+
+export type Msg = {
+    email: string;
+    username: string;
+    msg: string;
+    createAt: string;
+    updateAt: string;
+}

@@ -10,10 +10,52 @@
 
 .msg-stream {
     background-color: tan;
-    height: 90vh;
+    height: 89vh;
+}
+
+.msg-owner {
+    background-color: teal;
+    text-align: right;
+}
+
+.msg-other {
+    background-color: mediumaquamarine;
+    text-align: left;
+}
+
+.msg-string {
+    
+    /* height: 100%; */
+    color: black;
+}
+
+.msg-sender {
+    margin-bottom: auto;
+    font-size: 12px;
+}
+
+
+.msg-sent-time {
+    background-color: mediumaquamarine;
+    color: black;
+}
+
+.input-zone {
+    /* padding-bottom: 5px;
+    margin-bottom: 5px; */
+    display: flex;
+    background-color: teal;
+    height: 5.5vh;
+    width: 100%;
 }
 
 .msg-input-area {
+    margin: auto;
     background-color: teal;
     height: 5vh;
+    width: 70%;
+}
+
+.send-msg-button {
+    background-color: saddlebrown;
 }

@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
+import { Msg } from '@prisma/client';
 import { isEmail } from 'class-validator';
 import { elementAt } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChannelDto, NewMsgDto } from './dto/chat.dto';
-import { chatPreview } from './type/chat.type';
+import { chatPreview, oneMsg } from './type/chat.type';
 
 @Injectable()
 export class ChatService {
 
     constructor(private readonly prisma: PrismaService) {}
 
-    async readId(email: string): Promise<number>
+    async readId(email: string)
     {
         try {
             const user =  await this.prisma.user.findUnique({
@@ -27,9 +28,45 @@ export class ChatService {
         }
     }
 
+    async readCid(name: string)
+    {
+        try {
+            const channel =  await this.prisma.channel.findUnique({
+                where: {
+                    name: name,
+                }
+            })
+            return (channel.id);
+        } catch (error) {
+            console.log('readCid error:', error);
+            return null;
+        }
+    }
+
+    async getChannels(email: string)
+    {
+        try {
+            const channels = this.prisma.user.findMany({
+                where:
+                {
+                    email: email
+                },
+                select:
+                {
+                    member: true
+                    
+                }
+            })
+            return channels;
+        } catch (error) {
+            console.log('get Channels error:', error);
+            return null;
+        }
+        
+    }
+
     async readPreview(email: string): Promise<chatPreview[]>
     {
-        console.log("in readPreview")
         try {
             const source = await this.getChatList(email);
             const data = this.getPreview(source);
@@ -42,16 +79,17 @@ export class ChatService {
 
     getPreview(source: any) {
         let data = [];
-        for (let i = 0; i < source.member.length; i++)
-        {   
-            let element: chatPreview = {
-                name: source.member[i].name,
-                picture: source.member[i].picture,
-                updateAt: source.member[i].picture,
-                lastMsg: source.member[i].messages[0],
-            };
-            data.push(element);
-        }
+        if (source.member.length)
+            for (let i = 0; i < source.member.length; i++)
+            {   
+                let element: chatPreview = {
+                    name: source.member[i].name,
+                    picture: source.member[i].picture,
+                    updateAt: source.member[i].picture,
+                    lastMsg: source.member[i].messages[0].msg,
+                };
+                data.push(element);
+            }
         return data;
     }
 
@@ -92,6 +130,7 @@ export class ChatService {
             console.log('   user %d: %s', i, user.email);
         console.log('total %d users', i);
         return ;
+        
     }
 
     async listChannel()
@@ -106,9 +145,7 @@ export class ChatService {
 
     async newChannel(data: ChannelDto)
     {
-        console.log("newchannel: ", data.email)
         try {
-            console.log("newchannel: ", data.email)
             const channel =  await this.prisma.channel.create({
                 data:
                 {
@@ -166,7 +203,8 @@ export class ChatService {
 
     async findCnameByCId(cid: number): Promise<string>
     {
-        try{
+        try
+        {
             const channel = await this.prisma.channel.findFirst({
                 where: {
                     id: cid,
@@ -179,15 +217,105 @@ export class ChatService {
         }
     }
 
+    async fetchMsgs(channelName: string): Promise<oneMsg[]>
+    {
+        try
+        {
+            const source = await this.findMsgs(channelName);
+            const data = await this.organizeMsgs(source);
+            return data;
+        } catch (error) {
+            console.log('fetchMsgs error:', error);
+            throw new WsException(error);
+        }
+    }
+
+   
+
+    async findMsgs(channelName: string)
+    {
+        try
+        {
+            const source = this.prisma.channel.findUnique({
+                where:
+                {
+                    name: channelName,
+                },
+                select:
+                {
+                    messages:
+                    {
+                        select:
+                        {
+                            msg: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            owner:
+                            {
+                                select:
+                                {
+                                    email: true,
+                                    username: true,
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+            return source;
+        } catch (error) {
+            console.log('findMsgs error:', error);
+            throw new WsException(error);
+        }
+    }
+    
+    async organizeMsgs(source: any): Promise<oneMsg[]>
+    {
+        try
+        {
+            let data = [];
+            if (source.messages.length)
+                for (let i = 0; i < source.messages.length; i++)
+                {   
+                    let element: oneMsg = {
+                        email: source.messages[i].owner.email,
+                        username: source.messages[i].owner.username,
+                        msg: source.messages[i].msg,
+                        createAt: source.messages[i].createdAt,
+                        updateAt: source.messages[i].updateAt,
+                    };
+                    console.log(element.email)
+                    data.push(element);
+                }
+            return data;
+        } catch (error) {
+            console.log('organizeMsgs error:', error);
+            throw new WsException(error);
+        }
+    }
+
     async newMsg(data: NewMsgDto)
     {
         try {
+            const id = await this.readId(data.email);
+            const cid = await this.readCid(data.channel);
             const msg =  await this.prisma.msg.create({
-                data: {
+                data:
+                {
                     msg: data.msg,
-                    // history: [""],
-                    userId: data.userId,
-                    cid: data.channelId,
+                    history: [data.msg],
+                    userId: id,
+                    cid: cid,
+                }
+            })
+            await this.prisma.msg.update({
+                where:
+                {
+                    id: msg.id,
+                },
+                data:
+                {
+                    updatedAt: msg.createdAt,
                 }
             })
             return msg;

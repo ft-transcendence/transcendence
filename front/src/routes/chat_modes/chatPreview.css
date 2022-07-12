@@ -6,21 +6,30 @@
 
 .preview-chat-search {
     background-color: palevioletred;
+    display: flex;
     height: 5.5vh;
 }
 
-.search {
+
+.input-search {
+    /* background-color: goldenrod; */
+    margin: auto;
+    height: 100%;
+    width: 70%;
+}
+
+.search-button {
     background-color: transparent;
 }
 
-.preview-list {
-    background-color: orange;
-    height: 50%;
+.preview-chat-list {
+    background-color: midnightblue;
+    /* height: 50%; */
 }
 
 .preview-chat
 {
-    background: black;
+    background: orange;
     display: flex;
     padding: 10px;
 
@@ -47,13 +56,7 @@
 .preview-chat-info-1 {
     background: yellow;
     flex: 4;
-    width: 80%;
-
-}
-
-.preview-chat-info-2 {
-    background: orange;
-    flex: 1;
+    height: 100%;
     width: 80%;
 
 }
@@ -63,16 +66,22 @@
     color: black;
 }
 
-
 .preview-chat-msg {
     background: white;
+    width: 100%;
+    color: black;
 }
 
+.preview-chat-info-2 {
+    background: orange;
+    flex: 1;
+    width: 80%;
+
+}
 
 .preview-chat-time {
     background: greenyellow;
 }
-
 
 .preview-chat-unread {
     background: purple;
