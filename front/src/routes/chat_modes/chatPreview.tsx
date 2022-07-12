@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { ClassificationTypeNames } from "typescript";
 import { useAuth } from "../..";
 import { socket } from "../../App";
 import "./chatPreview.css";
 import { chatPreview, newChannel } from "./type/chat.type";
 
-export default function Preview({data}: {data:chatPreview[]}) {
+export default function Preview({data, onSelect, current}
+    : {data:chatPreview[], onSelect: (chatPreview:chatPreview) => void, current: chatPreview | undefined}) {
     const [items, setItems] = useState<chatPreview[]>([])
     const email = useAuth().user;
 
@@ -27,11 +29,16 @@ export default function Preview({data}: {data:chatPreview[]}) {
 
     return(
         <div className="preview-zone">
-            <div className="preview-chat-search"></div>
+            <div className="preview-chat-search">
+                <ChatSearch/>
+            </div>
             <div className="preview-chat-list">
                 {items.map((value, index) => {
-                    return (<div key={index}>
-                        <PreviewChat data={value}/>
+                    return (
+                    <div key={index}>
+                        <PreviewChat data={value} onClick={()=>{
+                            onSelect(value);
+                        }} selected={value == current}/>
                     </div>);
                 })}
             </div>
@@ -41,12 +48,33 @@ export default function Preview({data}: {data:chatPreview[]}) {
     )
 }
 
+function ChatSearch() {
+    const [keyWord, setKey] = useState("");
 
+    const handleKeyWord = (event:any) => {
+        setKey(event.target.value);
+    }
 
-function PreviewChat({data}: {data:chatPreview}) {
+    const handleChatSearch = (event:any) => {
+        socket.emit("chatSearch", keyWord);
+        setKey("");
+    }
+    return (
+        <>
+        <textarea 
+        value={keyWord}
+        onChange={handleKeyWord}
+        className="input-bar"/>
+
+        <button onClick={handleChatSearch} className="search">🔍</button>
+        </>
+    );
+}
+
+function PreviewChat({data, onClick, selected}: {data:chatPreview, onClick?: ()=>void, selected: boolean}) {
     
     return (
-        <div className="preview-chat">
+        <div className="preview-chat" onMouseUp={onClick} style={{opacity: selected ? 0.7 : 1}}>
             <p className="preview-chat-img">{data.picture}</p>
             <div className="preview-chat-info">
                 <div className="preview-chat-info-1">
