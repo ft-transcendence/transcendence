@@ -2,8 +2,10 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { GameGateway } from './game/game.gateway';
 import { ConfigModule } from '@nestjs/config';
+import { GameModule } from './game/game.module';
+import { GameService } from './game/game.service';
+import { GameGateway } from './game/game.gateway';
 import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
 
@@ -15,18 +17,15 @@ import { ChatModule } from './chat/chat.module';
 */
 
 @Module({
-	imports:
-	[
-		AuthModule, 
-		UserModule, 
-		PrismaModule,
-		ChatModule,
-		ConfigModule.forRoot({isGlobal: true}),	//for integration of the .env + global so available all around
-	],
-	providers:
-	[
-		GameGateway,
-	],
+	imports: [AuthModule, 
+						UserModule, 
+						PrismaModule,
+						ChatModule,
+						ConfigModule.forRoot({isGlobal: true}), 
+						GameModule,	
+					],
+	providers: [GameService, GameGateway],		
+
 })
 // export to enable globally
 export class AppModule {}

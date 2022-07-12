@@ -5,6 +5,7 @@
 }
     .Page-top {
         height: 20%;
+        display: inline-flex;
     }
 
     .Page-mid {
@@ -37,20 +38,20 @@
 
 }
 
-
-
 .Info-card {
     position: absolute;
+    top: 10%;
     left: 0;
     right: 0;
     margin:auto;
     display: inline-flex;
     height: 7vh;
     width: 25%;
-    background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -180%, rgb(57,80,127) 270%);
+    /*background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -180%, rgb(57,80,127) 270%);*/
     border: 2px solid rgb(0, 255, 255);
     border-radius: 15px;
     box-shadow: 0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 4px rgb(0, 190, 255);
+    display: unset;
 }
 
     .Player-left {
@@ -58,6 +59,7 @@
         width: 50%;
         height: 100%;
         display: inline-flex;
+        vertical-align: top;
     }
 
     .Player-right {
@@ -65,15 +67,18 @@
         width: 50%;
         height: 100%;
         display: inline-flex;
+        vertical-align: top;
     }
     
         .Score {
             /* background-color: green; */
-            margin: 4% auto;
+            /*margin: 4% auto;*/
             width: 20%;
             height: 70%;
             font-size: 4.5vh;
             color: white;
+            display: inline-flex;
+            vertical-align: top;
         }
 
         .Info {
@@ -106,72 +111,122 @@
     position: absolute;
     left: 0;
     right: 0;
-    margin: 2% auto;
-    display: inline-flex;
-    height: 45vh;
-    width: 45%;
-    background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -10%, rgb(57,80,127) 65%, rgb(25,48,49) 184%);
-    border: 2px solid rgb(0, 255, 255);
+    margin: auto;
+    /*display: inline-flex;*/
+    height: 45%;
+    width: calc(177vh * 0.45);
+    /*background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -10%, rgb(57,80,127) 65%, rgb(25,48,49) 184%);*/
+    border: 0px solid rgb(0, 255, 255);
     border-radius: 20px;
-    box-shadow: 0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 4px rgb(0, 190, 255);
+    box-shadow: 0;
 }
 
-    .Friend-zone {
-        width: 1vmax;
-        /* background-color:lawngreen; */
+    .Pad-left {
+        position: absolute;
+        left: 3%;
+        top: 50%;
+        height: 10%;
+        width: 0;
+        background-color: rgb(93,210,204);
+        border: .2vh solid rgb(93,210,204);
+        box-shadow: 1px 0 2px 2px rgb(93,210,204);
+        display: none;
     }
-
-    .Pad-zone {
-        /* background-color:ivory; */
-        margin-top: 1%;
-        margin-bottom: 1%;
-    }
-
-        .Pad {
-            height: 10%;
-            width: 0;
-            background-color: rgb(93,210,204);
-            border: .2vh solid rgb(93,210,204);
-            box-shadow: 1px 0 2px 2px rgb(93,210,204);
-        }
 
     .Center-zone {
         margin: auto;
         height: 100%;
-        margin-top: 3.7vh;
+        display: flex;
+        justify-content: center;
+        align-items: center
+       
         /* background-color:lightseagreen; */
     }
 
-        .Middle-line {
-            margin: auto auto;
-            height: 36.00%;
+        .Middle-line-top {
+            /*margin: auto auto;*/
+            position: absolute;
+            top: 0%;
+            height: calc(49.00% - 4vh);
             width: 0;
             background-color: rgb(0, 255, 255);
             border: 1px solid rgb(0, 255, 255);
             box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);
+            display: none;
         }
 
+        .Middle-line-bottom {
+            /*margin: auto auto;*/
+            position: absolute;
+            bottom: 0%;
+            height: calc(49.00% - 4vh);
+            width: 0;
+            background-color: rgb(0, 255, 255);
+            border: 1px solid rgb(0, 255, 255);
+            box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);
+            display: none;
+        }
         .Center-circle {
-            margin: auto auto;
+            margin: 0 0;
             height: 8vh;
             width: 8vh;
-            border: 2px solid rgb(0, 255, 255);
+            border: 1px solid rgb(0, 255, 255);
             border-radius: 50%;
-            box-shadow: 0px 0px 8px 4px rgb(0, 190, 255), inset 0 0px 8px 6px rgb(0, 190, 255);
+           box-shadow: 0px 0px 8px 4px rgb(0, 190, 255), inset 0 0px 8px 6px rgb(0, 190, 255);
+           display: none;
         }
 
-.Ball {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 3%;
-    margin: auto auto;
-    height: 2vh;
-    width: 2vh;
-    border-radius: 50%;
-    box-shadow: 0 0 5px 4px rgb(143,72,89), inset 0 0 10px 5px rgb(143,72,89);
-}
+    .Pad-right {
+        position: absolute;
+        right: 3%;
+        top: 50%;
+        height: 10%;
+        width: 0;
+        background-color: rgb(93,210,204);
+        border: .2vh solid rgb(93,210,204);
+        box-shadow: 1px 0 2px 2px rgb(93,210,204);
+        display: none;
+    }
+    
+        
+    .Ball {
+        position: absolute;
+        left: calc(50% - 1vh);
+        right: 0;
+        top: calc(50% - 1vh);
+        bottom: 0;
+        height: 2vh;
+        width: 2vh;
+        border-radius: 50%;
+        /*box-shadow: 0 0 5px 4px rgb(143,72,89), inset 0 0 10px 5px rgb(143,72,89);*/
+        background-color: rgb(93,210,204);
+        box-shadow: 1px 0 2px 2px rgb(93,210,204);
+        display: none;
+    }
+
+    .Start_button {
+        background-color: Transparent;
+        margin: auto;
+        min-height: 50px;
+        width: 10em;
+        cursor: pointer;
+        border: 1px solid rgb(93,210,204);
+        color: white;
+        opacity: 1;
+        height: 2.3em;
+        border-radius: 5px;
+        transition: opacity 1s;
+        display: unset;
+    }
+
+    .Message {
+        margin: auto;
+        font-size: 2.5vh;
+        font-weight: 300;
+        background-color: Transparent;
+        color: white;
+        display: none;
+    }
 
 .Button {
     /* background-color: tomato; */
@@ -221,3 +276,4 @@ text-decoration: rgb(106, 204, 199) underline;
 
 
 */
+
