@@ -35,6 +35,7 @@ if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
 				UserModule, 
 				PrismaModule,
 				ChatModule,
+				GameModule,
 				ConfigModule.forRoot({
 					// set path to .env file
 					envFilePath,
