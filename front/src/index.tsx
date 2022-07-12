@@ -19,35 +19,34 @@ import "./index.css";
 import React from "react";
 import UserPrivateProfile from "./routes/profile_types/UserPrivateProfile";
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root')!
-);
+const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
   <AuthProvider>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App /> } >
-          <Route path="/auth" element={<Auth />} >
-            <Route
-                index
-                element={<Navigate to="/auth/signin" />}
-            />
-            <Route path="signin" element={<SignIn/>} />
-            <Route path="signup" element={<SignUp/>} />
+        <Route path="/" element={<App />}>
+          <Route path="/auth" element={<Auth />}>
+            <Route index element={<Navigate to="/auth/signin" />} />
+            <Route path="signin" element={<SignIn />} />
+            <Route path="signup" element={<SignUp />} />
             <Route path="*" element={<Navigate to="/auth/signin" />} />
           </Route>
 
-          <Route path="app" element={<RequireAuth><Home /></RequireAuth>} >
-            <Route path="home" element={<Home/>} />
-            <Route path="private-profile" element={<UserPrivateProfile/>} />
+          <Route
+            path="app"
+            element={
+              <RequireAuth>
+                <Home />
+              </RequireAuth>
+            }
+          >
+            <Route path="home" element={<Home />} />
+            <Route path="private-profile" element={<UserPrivateProfile />} />
             <Route path="chat" element={<Chat />} />
             <Route path="game" element={<Game />} />
             <Route path="*" element={<Navigate to="/app" />} />
           </Route>
-          <Route
-            path="*"
-            element={<Navigate to="/auth/signin" />}
-          />
+          <Route path="*" element={<Navigate to="/auth/signin" />} />
         </Route>
       </Routes>
     </BrowserRouter>
@@ -106,9 +105,7 @@ export function AuthStatus() {
   let navigate = useNavigate();
 
   if (!auth.user) {
-    return (
-      <Link to="/auth/signin">Sign in.</Link>
-    );
+    return <Link to="/auth/signin">Sign in.</Link>;
   }
 
   return (

@@ -15,13 +15,12 @@ export const UsernameCxt = createContext(LoginStatus);
 export const socket = io("ws://localhost:4000");
 
 export default function App() {
-
   return (
-      <div className="App">
-        <UsernameCxt.Provider value={LoginStatus}>
+    <div className="App">
+      <UsernameCxt.Provider value={LoginStatus}>
         <AuthStatus />
-          <Outlet />
-        </UsernameCxt.Provider>
-      </div>
+        <Outlet />
+      </UsernameCxt.Provider>
+    </div>
   );
 }

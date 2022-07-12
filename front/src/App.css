@@ -47,15 +47,21 @@
   );
 }
 
+.modify-card {
+  background: #2e3238;
+  box-shadow: inset 5px 4px 30px #23262b, inset -4px -5px 30px #434851;
+  border-radius: 10px;
+}
+
 .IBM-text {
-  font-family: 'IBM Plex Mono';
+  font-family: "IBM Plex Mono";
   font-style: normal;
   letter-spacing: -0.4px;
   /* align-self: flex-end; */
 }
 
 .ROBOTO-text {
-  font-family: 'Roboto'sans-serif;
+  font-family: "Roboto" sans-serif;
   font-style: normal;
   letter-spacing: -0.4px;
   /* align-self: flex-end; */
@@ -71,14 +77,14 @@
 }
 
 .content {
-  font-family: 'Roboto'sans-serif;
+  font-family: "Roboto" sans-serif;
   font-style: normal;
   padding-left: 20px;
   letter-spacing: -0.4px;
 }
 
 .caption {
-  font-family: 'IBM Plex Mono';
+  font-family: "IBM Plex Mono";
   font-style: normal;
   padding-top: 5px;
   font-size: 12px;
@@ -86,51 +92,43 @@
 }
 
 .App {
-    background-color: var(--basic-color-background);
-    font-family: 'Roboto'sans-serif;
-    color: var(--text-color-white);
-    width: 100vw;
-    height: 100vh;
-  }
-  
-  .app-title {
+  background-color: var(--basic-color-background);
+  font-family: "Roboto" sans-serif;
+  color: var(--text-color-white);
+  width: 100vw;
+  height: 100vh;
+}
 
-  font-family: 'IBM Plex Mono';
+.app-title {
+  font-family: "IBM Plex Mono";
   font-style: normal;
   font-weight: 400;
   font-size: 20px;
   line-height: 20px;
   letter-spacing: -0.4px;
   color: var(--text-color-white);
-  }
+}
 
-  .profile-card {
+.profile-card {
+  background: #31353c;
+  box-shadow: -10px -5px 30px 5px #34373c, 10px 5px 30px 5px #24282d;
+  border-radius: 10px;
+}
 
-    padding-top: 30px;
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-bottom: 30px;
+.profile-pic-round {
+  /* display: flex; */
+  height: 150px;
+  width: 150px;
+  /* display: inline-block; */
+  border-radius: 50%;
+  background: var(--buttons-color-gray-disabled);
+  /* Buttons/dark - outside - medium */
+  box-shadow: 7px 7px 30px #1f2427, -7px -7px 30px #485057;
+}
 
-    background: #31353C;
-    box-shadow: -10px -5px 30px 5px #34373C, 10px 5px 30px 5px #24282D;
-    border-radius: 10px;
-  }
-
-  .profile-pic-round {
-    /* display: flex; */
-    height: 150px;
-    width: 150px;
-    /* display: inline-block; */
-    border-radius: 50%;
-    background: var(--buttons-color-gray-disabled);
-    /* Buttons/dark - outside - medium */
-    box-shadow: 7px 7px 30px #1F2427, -7px -7px 30px #485057;
-  }
-
-  .profile-username-text {
-
+.profile-username-text {
   display: flex;
-  font-family: 'Roboto';
+  font-family: "Roboto";
   font-style: normal;
   font-weight: 500;
   font-size: 25px;
@@ -141,9 +139,9 @@
   align-items: center;
   letter-spacing: -0.4px;
   color: var(--text-color-white);
-  }
+}
 
-  /* .profile-card {
+/* .profile-card {
 
     padding-top: 30px;
     padding-left: 30px;
@@ -155,34 +153,34 @@
     border-radius: 10px;
   } */
 
-  .Auth-form-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-  }
+.Auth-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
 
-  .Auth-form-content {
-    padding-left: 12%;
-    padding-right: 12%;
-  }
+.Auth-form-content {
+  padding-left: 12%;
+  padding-right: 12%;
+}
 
-  .Auth-form {
-    justify-content: left;
-    align-items: left;
-    padding-top: 30px;
-    padding-bottom: 50px;
-    box-sizing: border-box;
+.Auth-form {
+  justify-content: left;
+  align-items: left;
+  padding-top: 30px;
+  padding-bottom: 50px;
+  box-sizing: border-box;
 
-    width: 30%;
-    min-width: 400px;
-    max-width: 400px;
-    
-    background: var(--cards-color-gray-up);
-    box-shadow: inset 5px 4px 30px #23262B, inset -4px -5px 30px #434851;
-    border-radius: 10px;
-  }
+  width: 30%;
+  min-width: 400px;
+  max-width: 400px;
+
+  background: var(--cards-color-gray-up);
+  box-shadow: inset 5px 4px 30px #23262b, inset -4px -5px 30px #434851;
+  border-radius: 10px;
+}
 
 .form-test {
   font-family: "IBM Plex Mono", monospace;
