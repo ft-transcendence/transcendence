@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
-import { Msg } from '@prisma/client';
-import { isEmail } from 'class-validator';
-import { elementAt } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChannelDto, NewMsgDto } from './dto/chat.dto';
 import { chatPreview, oneMsg } from './type/chat.type';
@@ -81,12 +78,13 @@ export class ChatService {
         let data = [];
         if (source.member.length)
             for (let i = 0; i < source.member.length; i++)
-            {   
+            {
                 let element: chatPreview = {
                     name: source.member[i].name,
                     picture: source.member[i].picture,
                     updateAt: source.member[i].picture,
-                    lastMsg: source.member[i].messages[0].msg,
+                    lastMsg: source.member[i].messages.length > 0 ?
+                        source.member[i].messages[0].msg : '',
                 };
                 data.push(element);
             }

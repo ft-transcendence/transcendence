@@ -12,16 +12,16 @@ export default function Preview({data, onSelect, current}
     useEffect(() => {
         setItems(data);
 
-        // socket.on("update preview", function(data) {
-        //     console.log("update preview")
-        //     setItems(data);
-        // })
+        socket.on("update preview", function(data) {
+            console.log("update preview")
+            setItems(data);
+        })
 
 
     }, [data]);
 
     const createNewChannel = (event: any) => {
-        socket.emit("new channel", {name: "meii", private: false, email:email});
+        socket.emit("new channel", {name: "merr", private: false, email:email});
         console.log("create channel");
     }
     const joinChannel = (event: any) => {
@@ -74,13 +74,14 @@ function ChatSearch() {
 }
 
 function PreviewChat({data, onClick, selected}: {data:chatPreview, onClick?: ()=>void, selected: boolean}) {
-    
+    console.log("lastmsg", data.lastMsg)
     return (
         <div className="preview-chat" onMouseUp={onClick} style={{opacity: selected ? 0.7 : 1}}>
              <p className="preview-chat-img">{data.picture? data.picture : null}</p>
             <div className="preview-chat-info">
                 <div className="preview-chat-info-1">
                     <p className="preview-chat-name">{data.name}</p>
+                    
                     <p className="preview-chat-msg">{data.lastMsg}</p>
                 </div>
                 {/* <div className="preview-chat-info-2">
