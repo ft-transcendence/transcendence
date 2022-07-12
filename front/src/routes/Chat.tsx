@@ -23,33 +23,49 @@ export const socket = io("ws://localhost:4000", socketOptions);
 export default function Chat() {
     const [previewData, setPreview] = useState<chatPreview[]>([]);
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
-
     const email = useAuth().user;
 
     useEffect(() => {
 
-        init();
+        socket.emit("read preview", email);
 
-        socket.on("setPreview", function(data: never[]) {
-            console.log("chatPreview", data);
-            setPreview(data);
+        socket.on("set preview", function(data: chatPreview[] | null) {
+            
+            if (data)
+            {   
+                console.log("chat preview", data);
+                setPreview(data);
+            }
+            else
+                console.log("no preview")
         })
-        return (() => {
-            socket.off("setPreview");
+
+        socket.on("connect", () => {
+            console.log("front Connected");
+        });
+
+        socket.on("exception", function(data) {
+            console.log("exception", data)
         })
+      
+      return (() => {
+        socket.off("set preview");
+        socket.off("connect");
+        socket.off("exception");
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    const init = () => {
-        socket.emit("readPreview", email);
-    }
+    }, [email])
 
     return (
         <div className="zone-diff">
-        <Preview data={previewData} current={selectedChat} onSelect={(chat) => {
-            console.log("Selected")
-            setSelectedChat(chat)
-        }}/>
+        <Preview
+            data={previewData}
+            current={selectedChat}
+            onSelect={(chat) => {
+                console.log("Selected")
+                setSelectedChat(chat)
+            }}
+        />
         <ChatRoom current={selectedChat}/>
         <RoomStatus current={selectedChat}/>
         </div>

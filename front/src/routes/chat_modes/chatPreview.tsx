@@ -1,3 +1,4 @@
+import "./chatPreview.css";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../globals/contexts";
 import "./chatPreview.css";
@@ -12,19 +13,20 @@ export default function Preview({data, onSelect, current}
     useEffect(() => {
         setItems(data);
 
-        socket.on("updatePreview", (data) => {
-            console.log("update preview")
-            setItems(data);
-        })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        // socket.on("update preview", function(data) {
+        //     console.log("update preview")
+        //     setItems(data);
+        // })
+
+
+    }, [data]);
 
     const createNewChannel = (event: any) => {
-        socket.emit("newChannel", {name: "meiiii", private: false, email:email});
+        socket.emit("new channel", {name: "meii", private: false, email:email});
         console.log("create channel");
     }
     const joinChannel = (event: any) => {
-        socket.emit("joinChannel", {name: "mei"})
+        socket.emit("join channel", {name: "meii", email:email})
     }
 
     return(
@@ -36,9 +38,10 @@ export default function Preview({data, onSelect, current}
                 {items.map((value, index) => {
                     return (
                     <div key={index}>
-                        <PreviewChat data={value} onClick={()=>{
-                            onSelect(value);
-                        }} selected={value === current}/>
+                        <PreviewChat
+                            data={value} 
+                            onClick={()=>{onSelect(value)}}
+                            selected={value === current}/>
                     </div>);
                 })}
             </div>
@@ -64,9 +67,9 @@ function ChatSearch() {
         <textarea 
         value={keyWord}
         onChange={handleKeyWord}
-        className="input-bar"/>
+        className="input-search"/>
 
-        <button onClick={handleChatSearch} className="search">🔍</button>
+        <button onClick={handleChatSearch} className="search-button">🔍</button>
         </>
     );
 }
@@ -75,16 +78,16 @@ function PreviewChat({data, onClick, selected}: {data:chatPreview, onClick?: ()=
     
     return (
         <div className="preview-chat" onMouseUp={onClick} style={{opacity: selected ? 0.7 : 1}}>
-            <p className="preview-chat-img">{data.picture}</p>
+             <p className="preview-chat-img">{data.picture? data.picture : null}</p>
             <div className="preview-chat-info">
                 <div className="preview-chat-info-1">
                     <p className="preview-chat-name">{data.name}</p>
                     <p className="preview-chat-msg">{data.lastMsg}</p>
                 </div>
-                <div className="preview-chat-info-2">
+                {/* <div className="preview-chat-info-2">
                     <p className="preview-chat-time">{data.updateAt}</p>
-                    {/* <p className="preview-chat-unread">{unreadCount}</p> */}
-                </div>
+                    <p className="preview-chat-unread">{unreadCount}</p>
+                </div> */}
             </div>
         </div>
     );

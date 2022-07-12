@@ -32,18 +32,25 @@ export class ChatGateway {
   async handleReadId(
     @MessageBody() email: string,
     @ConnectedSocket() client: Socket) {
-    const id = await this.chatservice.readId(email);
-    console.log('handle read id:', id)
-    client.emit('setId', id)
+    const channels = await this.chatservice.getChannels(email);
+    console.log(channels)
+    if (channels[0].member[0])
+    {
+      for (let i = 0; i < channels.length; i++)
+      {  
+        console.log(channels[i].member[0])
+        client.join(channels[i].member[0].name);
+      }
+    }
   }
 
-  @SubscribeMessage('readPreview')
+  @SubscribeMessage('read preview')
   async handleReadPreview(
     @MessageBody() email: string,
     @ConnectedSocket() client: Socket) {
+    // await this.handleFetchChannel(email, client);
     const data = await this.chatservice.readPreview(email);
-    console.log('handle read Preview:', data)
-    client.emit('setPreview', data)
+    client.emit('set preview', data)
   }
 
   // @SubscribeMessage('chatSearch')
@@ -53,7 +60,7 @@ export class ChatGateway {
 
   // }
 
-  @SubscribeMessage('newChannel')
+  @SubscribeMessage('new channel')
   async handleNewChannel(
   @MessageBody() data: ChannelDto,
   @ConnectedSocket() client: Socket) {
@@ -63,11 +70,11 @@ export class ChatGateway {
     else
     {
       const ret = await this.chatservice.readPreview(data.email);
-      client.emit('updatePreview', ret)
+      client.emit('update preview', ret)
     }
   }
 
-  @SubscribeMessage('joinChannel')
+  @SubscribeMessage('join channel')
   async enterChannel(@MessageBody() data: ChannelDto,
   @ConnectedSocket() client: Socket) {
     
@@ -83,9 +90,19 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('test')
-  handleTest(@MessageBody() data: NewMsgDto,
-  @ConnectedSocket() client: Socket) {
+  handleTest(
+    @MessageBody() data: NewMsgDto,
+    @ConnectedSocket() client: Socket) {
     console.log("test  ", data)
+  }
+
+  @SubscribeMessage('read msgs')
+  async handleFetchMsgs(
+    @MessageBody() channel: string,
+    @ConnectedSocket() client: Socket
+  ) {
+    const data = await this.chatservice.fetchMsgs(channel);
+    client.emit('fetch msgs', data);
   }
 
   @SubscribeMessage('msg')
@@ -97,6 +114,8 @@ export class ChatGateway {
 
     await this.chatservice.newMsg(data);
     this.broadcast('broadcast', data);
+    const fetch = await this.chatservice.fetchMsgs(data.channel);
+    client.emit('fetch msgs', fetch);
     return from(response).pipe(
       map(data => ({ event, data })),
     )

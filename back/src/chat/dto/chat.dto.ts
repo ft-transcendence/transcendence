@@ -14,6 +14,7 @@ export class ChannelDto {
     @IsString()
     password: string;
 
+    @IsEmail()
     @IsNotEmpty()
     email: string
 
@@ -21,13 +22,13 @@ export class ChannelDto {
 
 export class NewMsgDto {
 
-    @IsNumber()
+    @IsEmail()
     @IsNotEmpty()
-    userId: number;
+    email: string
 
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
-    channelId: number;
+    channel: string;
 
     @IsString()
     @IsNotEmpty()
