@@ -20,6 +20,17 @@ export class UserService {
 		private prisma: PrismaService,
 		) {}
 
+	/*	CREATE	*/
+
+	async createUser(email: string, username: string, hash: string) {
+		const user = await this.prisma.user.create({ 
+			data: { 
+				email,
+				username,
+				hash
+			}
+		});
+	}
 
 	/*	READ	*/
 	
@@ -28,7 +39,7 @@ export class UserService {
 		const users = await this.prisma.user.findMany({orderBy : {id: 'asc'}});
 
 		console.log("All Users:");  //debug
-		console.log(users);         //debug
+		console.log(users);			//debug
 		return (users);
 	}
 	
@@ -38,7 +49,7 @@ export class UserService {
 		const users = await this.prisma.user.findMany({orderBy : {gamesWon: 'desc'}});
 
 		console.log("Best Users:");  //debug
-		console.log(users);         //debug
+		console.log(users);			//debug
 		return (users);
 	}
 
