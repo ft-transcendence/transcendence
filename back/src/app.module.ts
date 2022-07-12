@@ -29,4 +29,3 @@ import { ChatModule } from './chat/chat.module';
 })
 // export to enable globally
 export class AppModule {}
-
