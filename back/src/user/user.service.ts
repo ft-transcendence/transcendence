@@ -66,15 +66,12 @@ export class UserService {
 
 	
 	async getFriends(id: number){
-		try{
-			const getFriends = await this.prisma.user.findUnique({
-				where:		{id: id},
-				include:	{friends: true}});
-		} catch(e) {
-			console.log('getFriends error:', e);
-			throw new ForbiddenException('getFriends error')			
-		}
-		//error: no friends ? should be handled by the catch(e)
+
+		//error: no friends ? 
+	}
+
+	async isFriend(id1: number, id2: number){
+
 	}
 
 
