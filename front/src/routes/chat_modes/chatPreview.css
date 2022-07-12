@@ -1,12 +1,12 @@
 
 .preview-zone {
-    background-color: red;
+    background-color: rosybrown;
     flex: 1;
 }
 
 .preview-chat-search {
-    background-color: blue;
-    height: 5%;
+    background-color: palevioletred;
+    height: 5.5vh;
 }
 
 .search {
@@ -15,7 +15,7 @@
 
 .preview-list {
     background-color: orange;
-    
+    height: 50%;
 }
 
 .preview-chat
