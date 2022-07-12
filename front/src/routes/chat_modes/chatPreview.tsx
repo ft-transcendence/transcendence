@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { socket } from "../../App";
 import { useAuth } from "../../globals/contexts";
 import "./chatPreview.css";
 import { chatPreview } from "./type/chat.type";
+import {socket} from "../Chat";
 
 export default function Preview({data, onSelect, current}
     : {data:chatPreview[], onSelect: (chatPreview:chatPreview) => void, current: chatPreview | undefined}) {
@@ -12,7 +12,7 @@ export default function Preview({data, onSelect, current}
     useEffect(() => {
         setItems(data);
 
-        socket.on("updatePreview", function(data) {
+        socket.on("updatePreview", (data) => {
             console.log("update preview")
             setItems(data);
         })

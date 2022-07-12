@@ -18,7 +18,7 @@ const socketOptions = {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const socket = io("ws://localhost:4000", socketOptions);
+export const socket = io("ws://localhost:4000", socketOptions);
 
 export default function Chat() {
     const [previewData, setPreview] = useState<chatPreview[]>([]);
