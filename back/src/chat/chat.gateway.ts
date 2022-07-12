@@ -46,6 +46,13 @@ export class ChatGateway {
     client.emit('setPreview', data)
   }
 
+  // @SubscribeMessage('chatSearch')
+  // async handleChatSearch(
+  //   @MessageBody() keyword:string,
+  //   @ConnectedSocket() client: Socket) {
+
+  // }
+
   @SubscribeMessage('newChannel')
   async handleNewChannel(
   @MessageBody() data: ChannelDto,

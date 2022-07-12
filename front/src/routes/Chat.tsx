@@ -22,6 +22,8 @@ const socket = io("ws://localhost:4000", socketOptions);
 
 export default function Chat() {
     const [previewData, setPreview] = useState<chatPreview[]>([]);
+    const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
+
     const email = useAuth().user;
 
     useEffect(() => {
@@ -31,7 +33,6 @@ export default function Chat() {
         socket.on("setPreview", function(data: never[]) {
             console.log("chatPreview", data);
             setPreview(data);
-            
         })
         return (() => {
             socket.off("setPreview");
@@ -45,8 +46,11 @@ export default function Chat() {
 
     return (
         <div className="zone-diff">
-        <Preview data={previewData}/>
-        <ChatRoom/>
+        <Preview data={previewData} current={selectedChat} onSelect={(chat) => {
+            console.log("Selected")
+            setSelectedChat(chat)
+        }}/>
+        <ChatRoom current={selectedChat}/>
         <RoomStatus/>
         </div>
     )
