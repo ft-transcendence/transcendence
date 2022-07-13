@@ -18,10 +18,16 @@ export type newMsg = {
     msg: string;
 }
 
-export type Msg = {
+export type oneMsg = {
     email: string;
     username: string;
     msg: string;
     createAt: string;
     updateAt: string;
+}
+
+export type oneUser = {
+    online: boolean;
+    username: string;
+    picture: string;
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChannelDto, NewMsgDto } from './dto/chat.dto';
-import { chatPreview, oneMsg } from './type/chat.type';
+import { chatPreview, oneMsg, oneUser } from './type/chat.type';
 
 @Injectable()
 export class ChatService {
@@ -229,8 +229,6 @@ export class ChatService {
         }
     }
 
-   
-
     async findMsgs(channelName: string)
     {
         try
@@ -322,5 +320,76 @@ export class ChatService {
             console.log('newMsg error:', error);
             throw new WsException(error)
         } 
+    }
+
+    async fetchAdmins(channelName: string)
+    {
+        try {
+            const source = await this.prisma.channel.findUnique({
+                where:
+                {
+                    name: channelName,
+                },
+                select:
+                {
+                    admins: true,
+                }
+            })
+            const admins = this.organizeAdmins(source);
+            return admins;
+        } catch (error) {
+            console.log('fetchAdmins error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    organizeAdmins(source: any)
+    {
+        let admins = [];
+        for (let i = 0; i < source.admins.length; i++)
+        {    
+            let admin: oneUser = {
+                online: false,
+                username: source.admins[i].username,
+                picture: source.admins[i].picture,
+            }
+            admins.push(admin)
+        }        
+        return admins;
+    }
+
+    async fetchMembers(channelName: string)
+    {
+        try {
+            const source = await this.prisma.channel.findUnique({
+                where:
+                {
+                    name: channelName,
+                },
+                select:
+                {
+                    members: true,
+                }
+            })
+            const members = this.organizeMembers(source);
+            return members;
+        } catch (error) {
+            console.log('fetchMembers error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    organizeMembers(source: any)
+    {
+        let members = [];
+        for (let i = 0; i < source.members.length; i++)
+        {    let member: oneUser = {
+                online: false,
+                username: source.members[i].username,
+                picture: source.members[i].picture,
+            }
+            members.push(member);
+        }
+        return members;
     }
 }
