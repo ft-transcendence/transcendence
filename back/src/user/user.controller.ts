@@ -3,7 +3,6 @@ import { Body, Controller,
 	Post,
 	Req,
 	UseGuards,
-	ForbiddenException
 } from '@nestjs/common';
 import { Request } from 'express';
 import { JwtGuard } from 'src/auth/guard';
@@ -27,12 +26,12 @@ export class UserController {
 	/*	READ	*/
 
 	@Get('me') 
-	getMe(@Req() req: Request) {
+	getMe(@Req() request: Request) {
 		// log in console
 		console.log({
-			user: req.user,
+			user: request.user,
 		})
-		return req.user
+		return request.user
 	}
 
 	@Get('him') //to change

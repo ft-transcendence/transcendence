@@ -60,8 +60,8 @@ export class UserService {
 		try{
 			const user = await this.prisma.user.findFirst({where: {id: id}});
 			return (user);
-		} catch (e) {
-			console.log('getUser error:', e);
+		} catch (error) {
+			console.log('getUser error:', error);
 			throw new ForbiddenException('getUser error')
 		}
 	}
@@ -106,7 +106,7 @@ export class UserService {
 					avatar: newAvatar,
 				},
 			})
-		} catch (e) {
+		} catch (error) {
 			throw new ForbiddenException('Invalid file ?');		//to handle
 		}
 	}
@@ -121,7 +121,7 @@ export class UserService {
 					email: newEmail,
 				},
 			})
-		} catch (e) {
+		} catch (error) {
 			throw new ForbiddenException('Email already exists');
 		}
 	}	
