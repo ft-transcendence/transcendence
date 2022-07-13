@@ -40,10 +40,10 @@ console.log(`Running on port ` + process.env.PORT );
 					isGlobal: true
 				}),
 			],
-	providers: [GameGateway],
-	
+	providers: [GameService, GameGateway],		
 	// NOT USED AS OF YET
 	// controllers: [AppController],
+
 })
 
 export class AppModule {}
