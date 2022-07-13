@@ -43,9 +43,10 @@ model User {
 	blocking	Int[]
 	blocked		Int[]
 
-	admin       Channel[] @relation("admin") 
-	member      Channel[] @relation("member")
-	chanBlocked Channel[] @relation("blocked")
+  owner       Channel[] @relation("owner")
+  admin       Channel[] @relation("admin")
+  member      Channel[] @relation("member")
+  chanBlocked Channel[] @relation("blocked")
 
 	messages    Msg[]
 
@@ -64,10 +65,12 @@ model Channel {
 	private   Boolean   @default(false)
 	password  String?
 
-	admins    User[]    @relation("admin")
-	members   User[]    @relation("member")
-	blocked   User[]    @relation("blocked")
-	messages  Msg[]
+  owner     User      @relation("owner", fields: [ownerId], references: [id])
+  ownerId   Int
+  admins    User[]    @relation("admin")
+  members   User[]    @relation("member")
+  blocked   User[]    @relation("blocked")
+  messages  Msg[]
 
 	@@unique([id, name])
 }

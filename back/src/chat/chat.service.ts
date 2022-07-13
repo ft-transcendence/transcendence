@@ -77,6 +77,18 @@ export class ChatService {
 
     getPreview(source: any) {
         let data = [];
+        if (source.admin.length)
+            for (let i = 0; i < source.admin.length; i++)
+            {
+                let element: chatPreview = {
+                    name: source.admin[i].name,
+                    picture: source.admin[i].picture,
+                    updateAt: source.admin[i].picture,
+                    lastMsg: source.admin[i].messages.length > 0 ?
+                        source.admin[i].messages[0].msg : '',
+                };
+                data.push(element);
+            }
         if (source.member.length)
             for (let i = 0; i < source.member.length; i++)
             {
@@ -101,6 +113,21 @@ export class ChatService {
                 },
                 select:
                 {
+                    admin: {
+                        select: 
+                        {
+                            name: true,
+                            picture: true,
+                            updatedAt: true,
+                            messages:
+                            {
+                                select:
+                                {
+                                    msg: true,
+                                }
+                            }
+                        }
+                    },
                     member: {
                         select: 
                         {
@@ -158,13 +185,6 @@ export class ChatService {
                             email: data.email
                         }
                     },
-                    members:
-                    {
-                        connect: 
-                        {
-                            email: data.email
-                        }
-                    }
                 }
             })
             return channel.id;
