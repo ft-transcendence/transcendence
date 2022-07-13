@@ -138,21 +138,25 @@ export class ChatGateway {
   @SubscribeMessage('msg')
   async handleNewMsg(@MessageBody() data: NewMsgDto,
   @ConnectedSocket() client: Socket
-  ):Promise<Observable<WsResponse<number>>> {
-    const event = 'msg';
-    const response = [1];
-
+  ) {
     await this.chatservice.newMsg(data);
-    this.broadcast('broadcast', data);
     const fetch = await this.chatservice.fetchMsgs(data.channel);
     client.emit('fetch msgs', fetch);
-    return from(response).pipe(
-      map(data => ({ event, data })),
-    )
   }
 
-  async broadcast(event: string, data: any) {
-    const cName = await this.chatservice.findCnameByCId(data.channelId);
-    this.server.in(cName).emit(event, data)
+  // async broadcast(event: string, data: any) {
+  //   const cName = await this.chatservice.findCnameByCId(data.channelId);
+  //   this.server.in(cName).emit(event, data)
+  // }
+
+  @SubscribeMessage('read room status')
+  async handleFetchStatus(
+    @MessageBody() channel: string,
+    @ConnectedSocket() client: Socket
+  ) {
+    const admins = await this.chatservice.fetchAdmins(channel);
+    client.emit('fetch admins', admins);
+    const members = await this.chatservice.fetchMembers(channel);
+    client.emit('fetch members', members);
   }
 }

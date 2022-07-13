@@ -13,3 +13,9 @@ export type oneMsg = {
     createAt: string;
     updateAt: string;
 }
+
+export type oneUser = {
+    online: boolean;
+    username: string;
+    picture: string;
+}

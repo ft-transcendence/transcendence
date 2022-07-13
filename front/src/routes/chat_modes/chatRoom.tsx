@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../..";
 import { socket } from "../../App";
 import "./chatRoom.css";
-import { chatPreview, Msg, newMsg } from "./type/chat.type";
+import { chatPreview, oneMsg, newMsg } from "./type/chat.type";
 
 export default function ChatRoom({current}:{current: chatPreview | undefined}) {
     const email = useAuth().user;
-    console.log("email", email);
-    // console.log(current);
+
     useEffect(()=> {
         if (current)
         {
@@ -19,7 +18,7 @@ export default function ChatRoom({current}:{current: chatPreview | undefined}) {
     return(
         <div className="chat-room-zone">
             <BriefInfo info = {current}/>
-            <MsgStream info = {current} email={email}/>
+            <MsgStream email={email}/>
             <InputArea email = {email} channel = {current?.name}/>
         </div>
     )
@@ -34,13 +33,13 @@ function BriefInfo({info}
     )
 }
 
-function MsgStream({info, email}
-    :{info: chatPreview | undefined, email: string | null}) {
-    const [msgs, setMsgs] = useState<Msg[]>([])
+function MsgStream({email}
+    :{email: string | null}) {
+    const [msgs, setMsgs] = useState<oneMsg[]>([]);
 
     useEffect( () => {
 
-        socket.on("fetch msgs", function(data){
+        socket.on("fetch msgs", function(data: oneMsg[]){
             console.log("got fetched msgs", data)
             setMsgs(data);
         })
@@ -61,9 +60,9 @@ function MsgStream({info, email}
         </div>
     )
 }
-// style={{opacity: selected ? 0.7 : 1}}
+
 function OneMessage({data, email}
-    : {data: Msg, email: string | null}) {
+    : {data: oneMsg, email: string | null}) {
     return (
         <div className={data.email === email? "msg-owner" : "msg-other"}>
             <div className="msg-block">
