@@ -17,13 +17,19 @@ import { ChatModule } from './chat/chat.module';
 */
 
 @Module({
-	imports: [AuthModule, 
-						UserModule, 
-						PrismaModule,
-						ChatModule,
-						ConfigModule.forRoot({isGlobal: true}), 
-						GameModule,	
-					],
+	imports:
+	[
+		AuthModule, 
+		UserModule, 
+		PrismaModule,
+		ChatModule,
+		ConfigModule.forRoot
+		({
+			isGlobal: true
+		}), 
+		GameModule,	
+	],
+
 	providers: [GameService, GameGateway],		
 
 })
