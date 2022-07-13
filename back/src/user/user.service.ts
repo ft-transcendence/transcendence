@@ -68,7 +68,15 @@ export class UserService {
 
 	
 	async getFriends(id: number){
-
+		const friendList = await this.prisma.user.findMany({
+			where: {
+				id: id,
+			},
+			select : {
+				friends: true,
+			}
+		})
+		return (friendList);
 		//error: no friends ? 
 	}
 
@@ -130,6 +138,17 @@ export class UserService {
 	//RELATIONSHIP RELATED FUNCTIONS
 
 	async addFriend(id: number, otherId: number){
+		const user = await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				friends : {
+					connect: { id: otherId },
+				}
+			}
+		})
+		return (user);
 		//error: same id ?
 		//error: already friend ?
 	}
