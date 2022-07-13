@@ -12,7 +12,6 @@ import { User } from "@prisma/client";
 
 
 
-
 @Injectable()
 export class UserService {
 
@@ -81,7 +80,9 @@ export class UserService {
 	}
 
 	async isFriend(id1: number, id2: number){
-
+		// if (this.getFriends(id1).find(id2))
+			return (true);
+		return (false);
 	}
 
 
@@ -90,48 +91,39 @@ export class UserService {
 	//USER PROFILE RELATED FUNCTIONS
 
 	async updateUsername(id: number, newUsername: string) {
-		try {
-			const updateUser = await this.prisma.user.update({
-				where: {
-				id: id,
-				},
-				data: {
-					username: newUsername,
-				},
-			})
-		} catch (e) {
-			throw new ForbiddenException('Username already exists');
-		}
+		const updateUser = await this.prisma.user.update({
+			where: {
+			id: id,
+			},
+			data: {
+				username: newUsername,
+			},
+		})
+		return (updateUser)
 	}
 
 	async updateAvatar(id: number, newAvatar: string) {
-		try {	
-			const updateUser = await this.prisma.user.update({
-				where: {
-					id: id,
-				},
-				data: {
-					avatar: newAvatar,
-				},
-			})
-		} catch (error) {
-			throw new ForbiddenException('Invalid file ?');		//to handle
-		}
+		const updateUser = await this.prisma.user.update({
+			where: {
+				id: id,
+			},
+			data: {
+				avatar: newAvatar,
+			},
+		})
+		return (updateUser)
 	}
 
 	async updateEmail(id: number, newEmail: string) {
-		try {
-			const updateUser = await this.prisma.user.update({
-				where: {
-					id: id,
-				},
-				data: {
-					email: newEmail,
-				},
-			})
-		} catch (error) {
-			throw new ForbiddenException('Email already exists');
-		}
+		const updateUser = await this.prisma.user.update({
+			where: {
+				id: id,
+			},
+			data: {
+				email: newEmail,
+			},
+		})
+		return (updateUser)
 	}	
 
 
