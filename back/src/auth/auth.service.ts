@@ -46,18 +46,16 @@ export class AuthService{
 			return this.signin_jwt(user.id, user.email);
 		} catch (error) {
 		// duplicate user email
-			if (error instanceof PrismaClientKnownRequestError) {
-				if (error.code === 'P2002') {
+			if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
 					throw new ForbiddenException('Credentials already exist')
 				}
-			}
 		}
 	}
 
 	/* SIGNIN */
 	async signin(dto: SignInDto) {
 		// destructure dto (rafa tips :D)
-		const { username } = dto;
+		const { username, password } = dto;
 		// find user
 		const [user] = await this.prisma.user.findMany({
 			where: { OR: [{ email : username } , { username : username }] },
@@ -67,7 +65,7 @@ export class AuthService{
 			'Invalid Credentials'
 			);
 		
-		const pwMatches = await argon.verify(user.hash, dto.password);
+		const pwMatches = await argon.verify(user.hash, password);
 		// Invalid password
 		if (!pwMatches) throw new ForbiddenException(
 			'Invalid Credentials'
