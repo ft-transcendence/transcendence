@@ -3,11 +3,24 @@ import { useAuth } from "../..";
 import { socket } from "../../App";
 import "./chatRoom.css";
 import { chatPreview, oneMsg, newMsg } from "./type/chat.type";
+import {
+    Menu,
+    Item,
+    Separator,
+    Submenu,
+    useContextMenu
+} from "react-contexify";
+import "react-contexify/dist/ReactContexify.css";
+import "./context.css";
 
-export default function ChatRoom({current}:{current: chatPreview | undefined}) {
+export default function ChatRoom({current, newRoomRequest}
+    : { current: chatPreview | undefined,
+        newRoomRequest: boolean}) {
+
     const email = useAuth().user;
 
     useEffect(()=> {
+        console.log("newRoomRequest",newRoomRequest)
         if (current)
         {
             const cName = current.name;
@@ -15,12 +28,29 @@ export default function ChatRoom({current}:{current: chatPreview | undefined}) {
             socket.emit("read msgs", cName);
         }
     }, [current])
+
+    if (newRoomRequest)
+        return (
+            <div className="chat-room-zone">
+                <NewRoom/>
+            </div>
+        );
+
     return(
-        <div className="chat-room-zone">
-            <BriefInfo info = {current}/>
-            <MsgStream email={email}/>
-            <InputArea email = {email} channel = {current?.name}/>
-        </div>
+        <>
+            <div className="chat-room-zone">
+                <BriefInfo info = {current}/>
+                <MsgStream email={email}/>
+                <InputArea email = {email} channel = {current?.name}/>
+            </div>
+        </>
+    )
+}
+
+function NewRoom() {
+    return (
+        <>
+        </>
     )
 }
 
@@ -104,7 +134,10 @@ function InputArea({channel, email}
             <textarea
                 value={msg}
                 onChange={handleSetMsg}
-                className="msg-input-area"/>
+                className="msg-input-area"
+                onKeyDown={(e) => {
+                    if (e.key === "Enter")
+                        sendMsg()}}/>
             <button
                 onClick={sendMsg}
                 className="send-msg-button">

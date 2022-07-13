@@ -7,14 +7,14 @@
 .preview-chat-search {
     background-color: palevioletred;
     display: flex;
-    height: 5.5vh;
+    height: 6vh;
 }
 
 
 .input-search {
-    /* background-color: goldenrod; */
-    margin: auto;
-    height: 100%;
+    /* background-color: goldenrod; 
+    /* margin: auto; */
+    height: 50%;
     width: 70%;
 }
 
@@ -22,9 +22,16 @@
     background-color: transparent;
 }
 
+.create-room-button {
+    background-color: brown;
+    height: 100%;
+    width: 20%;
+}
+
 .preview-chat-list {
     background-color: midnightblue;
-    /* height: 50%; */
+    overflow: overlay;
+    height: calc(100% - 100px);
 }
 
 .preview-chat

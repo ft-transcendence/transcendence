@@ -1,7 +1,19 @@
 import { useEffect, useState } from "react";
 import { socket } from "../../App";
 import "./roomStatus.css";
-import { chatPreview, oneUser } from "./type/chat.type";
+import { chatPreview, oneUser, updateUser } from "./type/chat.type";
+import {
+    Menu,
+    Item,
+    Separator,
+    Submenu,
+    useContextMenu
+} from "react-contexify";
+import "react-contexify/dist/ReactContexify.css";
+import "./context.css";
+import { useAuth } from "../..";
+
+const MENU_STATUS = "menu_status";
 
 export default function RoomStatus({current}:{current: chatPreview | undefined}) {
 
@@ -61,6 +73,9 @@ function MemberStatus() {
 
 function Status({users}
     : {users: oneUser[]}) {
+
+    
+
     return (
         <>
             {users.map((value, index) => {
@@ -76,11 +91,64 @@ function Status({users}
 
 function OneStatus({data}
     : {data: oneUser}) {
+
+    const email = useAuth().user;
+
+    const { show } = useContextMenu({
+        id: MENU_STATUS
+    });
+
+    function handleAddFriend(){
+        let update: updateUser = {
+            self: email,
+            other: data.username
+        }
+        socket.emit("add friend", update);
+    }
+
+    function handleInviteGame(){
+        let update: updateUser = {
+            self: email,
+            other: data.username
+        }
+        socket.emit("invite game", update);
+    }
+
+    function handleMute(){
+        let update: updateUser = {
+            self: email,
+            other: data.username
+        }
+        socket.emit("mute user", update);
+    }
+
+    function handleBlock(){
+        let update: updateUser = {
+            self: email,
+            other: data.username
+        }
+        socket.emit("block user", update);
+    }
         return (
-            <>
-            <div>
+            <div
+                onContextMenu={show}>
                 {data.username}
+
+                <Menu id={MENU_STATUS}>
+                    <Item onClick={handleAddFriend}>
+                        add friend
+                    </Item>
+                    <Item onClick={handleInviteGame}>
+                        invite to a game!
+                    </Item>
+                <Separator/>
+                    <Item onClick={handleMute}>
+                        mute
+                    </Item>
+                    <Item onClick={handleBlock}>
+                        block
+                    </Item>
+            </Menu>
             </div>
-            </>
         )
     }

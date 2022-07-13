@@ -11,6 +11,8 @@ import { chatPreview } from "./chat_modes/type/chat.type";
 export default function Chat() {
     const [previewData, setPreview] = useState<chatPreview[]>([]);
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
+    const [newRoomRequest, setNewRoomRequest] = useState(false); 
+
     const email = useAuth().user;
 
     useEffect(() => {
@@ -45,16 +47,21 @@ export default function Chat() {
 
     return (
         <div className="zone-diff">
-        <Preview
-            data={previewData}
-            current={selectedChat}
-            onSelect={(chat) => {
-                console.log("Selected")
-                setSelectedChat(chat)
-            }}
-        />
-        <ChatRoom current={selectedChat}/>
-        <RoomStatus current={selectedChat}/>
+            <Preview
+                data={previewData}
+                current={selectedChat}
+                onSelect={(chat) => {
+                    setSelectedChat(chat)
+                }}
+                newRoomRequest={newRoomRequest}
+                onNewRoomRequest={() => {
+                    setNewRoomRequest(true)
+                }}
+            />
+            <ChatRoom
+                current={selectedChat}
+                newRoomRequest={newRoomRequest}/>
+            <RoomStatus current={selectedChat}/>
         </div>
     )
 }

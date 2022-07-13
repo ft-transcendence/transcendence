@@ -12,6 +12,11 @@ export type newChannel = {
     password: string;
 }
 
+export type updateChannel = {
+    channel: string;
+    email: string | null;
+}
+
 export type newMsg = {
     email: string | null;
     channel: string | undefined;
@@ -30,4 +35,10 @@ export type oneUser = {
     online: boolean;
     username: string;
     picture: string;
+}
+
+export type updateUser = {
+    self: string | null;
+    other: string;
+
 }
