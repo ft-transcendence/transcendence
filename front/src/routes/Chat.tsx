@@ -7,6 +7,7 @@ import ChatRoom from "./chat_modes/chatRoom";
 import RoomStatus from "./chat_modes/roomStatus";
 import React from "react";
 import { chatPreview } from "./chat_modes/type/chat.type";
+import { NewRoom } from "./chat_modes/newRoom";
 
 export default function Chat() {
     const [previewData, setPreview] = useState<chatPreview[]>([]);
@@ -45,6 +46,7 @@ export default function Chat() {
         })
     }, [email])
 
+
     return (
         <div className="zone-diff">
             <Preview
@@ -55,13 +57,21 @@ export default function Chat() {
                 }}
                 newRoomRequest={newRoomRequest}
                 onNewRoomRequest={() => {
-                    setNewRoomRequest(true)
+                    setNewRoomRequest(old => {return !old})
                 }}
             />
             <ChatRoom
-                current={selectedChat}
-                newRoomRequest={newRoomRequest}/>
-            <RoomStatus current={selectedChat}/>
+                current={selectedChat}/>
+            <RoomStatus
+                current={selectedChat}/>
+            <div 
+                className="add-zone"
+                style={{display: newRoomRequest ? "" : "none"}}>
+                    <NewRoom
+                        onNewRoomRequest={() => {
+                            setNewRoomRequest(old => {return !old})
+                        }}/>
+            </div>
         </div>
     )
 }
