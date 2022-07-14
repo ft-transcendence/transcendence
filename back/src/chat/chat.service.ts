@@ -413,4 +413,57 @@ export class ChatService {
         // }
         // return members;
     }
+
+    async suggestUsers()
+    {
+        try {
+            const source = await this.prisma.user.findMany({
+                select:
+                {
+                    id: true,
+                    username: true,
+                    email: true,
+                    picture: true,
+                }
+            })
+            const users = this.organizeSuggestUsers(source);
+            return users;
+        } catch (error) {
+            console.log('suggestUsers error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    organizeSuggestUsers(source: any) {
+        let users = [];
+        if (source.length)
+        {
+            for (let i = 0; i < source.length; i++)
+            {
+                let user = {
+                    id: source[i].id,
+                    name: source[i].username,
+                }
+                users.push(user);
+            }
+        }
+        return users;
+    }
+    
+    async existedRooms()
+    {
+        try {
+            const rooms = await this.prisma.channel.findMany({
+                select:
+                {
+                    id: true,
+                    name: true,
+                }
+            })
+            return rooms;
+        } catch (error) {
+            console.log('existed rooms error:', error);
+            throw new WsException(error)
+        }
+    }
 }
