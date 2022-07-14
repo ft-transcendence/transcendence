@@ -10,7 +10,7 @@ import {
 import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { NewMsgDto, ChannelDto } from './dto/chat.dto';
+import { ChannelDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
@@ -28,9 +28,8 @@ export class ChatGateway {
 
   constructor(private readonly chatservice: ChatService) {}
 
-  @SubscribeMessage('readId')
-  async handleReadId(
-    @MessageBody() email: string,
+  async handleFetchChannel(
+    email: string,
     @ConnectedSocket() client: Socket) {
     const channels = await this.chatservice.getChannels(email);
     console.log(channels)
@@ -48,7 +47,7 @@ export class ChatGateway {
   async handleReadPreview(
     @MessageBody() email: string,
     @ConnectedSocket() client: Socket) {
-    // await this.handleFetchChannel(email, client);
+    await this.handleFetchChannel(email, client);
     const data = await this.chatservice.readPreview(email);
     client.emit('set preview', data)
   }
@@ -91,7 +90,7 @@ export class ChatGateway {
 
   @SubscribeMessage('test')
   handleTest(
-    @MessageBody() data: NewMsgDto,
+    @MessageBody() data: any,
     @ConnectedSocket() client: Socket) {
     console.log("test  ", data)
   }
@@ -106,12 +105,14 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('msg')
-  async handleNewMsg(@MessageBody() data: NewMsgDto,
+  async handleNewMsg(@MessageBody() data: any,
   @ConnectedSocket() client: Socket
   ) {
     await this.chatservice.newMsg(data);
     const fetch = await this.chatservice.fetchMsgs(data.channel);
     client.emit('fetch msgs', fetch);
+    const preview = await this.chatservice.readPreview(data.email);
+    client.emit('update preview', preview)
   }
 
   // async broadcast(event: string, data: any) {
@@ -129,4 +130,21 @@ export class ChatGateway {
     const members = await this.chatservice.fetchMembers(channel);
     client.emit('fetch members', members);
   }
+
+  @SubscribeMessage('get suggest users')
+  async handleSuggestUsers(
+    @ConnectedSocket() client: Socket
+  ) {
+    // const users = await this.chatservice.suggestUsers();
+    // client.emit('suggest users', users);
+  }
+
+  @SubscribeMessage('get existed rooms')
+  async handleExistedRooms(
+    @ConnectedSocket() client: Socket
+  ) {
+    // const rooms = await this.chatservice.existedRooms();
+    // client.emit('existed rooms', rooms);
+  }
+
 }

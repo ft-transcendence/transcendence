@@ -80,26 +80,26 @@ export class ChatService {
         if (source.admin.length)
             for (let i = 0; i < source.admin.length; i++)
             {
-                let element: chatPreview = {
-                    name: source.admin[i].name,
-                    picture: source.admin[i].picture,
-                    updateAt: source.admin[i].picture,
-                    lastMsg: source.admin[i].messages.length > 0 ?
-                        source.admin[i].messages[0].msg : '',
-                };
-                data.push(element);
+                // let element: chatPreview = {
+                //     name: source.admin[i].name,
+                //     picture: source.admin[i].picture,
+                //     updateAt: source.admin[i].picture,
+                //     lastMsg: source.admin[i].messages.length > 0 ?
+                //         source.admin[i].messages[0].msg : '',
+                // };
+                // data.push(element);
             }
         if (source.member.length)
             for (let i = 0; i < source.member.length; i++)
             {
-                let element: chatPreview = {
-                    name: source.member[i].name,
-                    picture: source.member[i].picture,
-                    updateAt: source.member[i].picture,
-                    lastMsg: source.member[i].messages.length > 0 ?
-                        source.member[i].messages[0].msg : '',
-                };
-                data.push(element);
+                // let element: chatPreview = {
+                //     name: source.member[i].name,
+                //     picture: source.member[i].picture,
+                //     updateAt: source.member[i].picture,
+                //     lastMsg: source.member[i].messages.length > 0 ?
+                //         source.member[i].messages[0].msg : '',
+                // };
+                // data.push(element);
             }
         return data;
     }
@@ -294,15 +294,15 @@ export class ChatService {
             if (source.messages.length)
                 for (let i = 0; i < source.messages.length; i++)
                 {   
-                    let element: oneMsg = {
-                        email: source.messages[i].owner.email,
-                        username: source.messages[i].owner.username,
-                        msg: source.messages[i].msg,
-                        createAt: source.messages[i].createdAt,
-                        updateAt: source.messages[i].updateAt,
-                    };
-                    console.log(element.email)
-                    data.push(element);
+                    // let element: oneMsg = {
+                    //     email: source.messages[i].owner.email,
+                    //     username: source.messages[i].owner.username,
+                    //     msg: source.messages[i].msg,
+                    //     createAt: source.messages[i].createdAt,
+                    //     updateAt: source.messages[i].updateAt,
+                    // };
+                    // console.log(element.email)
+                    // data.push(element);
                 }
             return data;
         } catch (error) {
@@ -368,12 +368,12 @@ export class ChatService {
         let admins = [];
         for (let i = 0; i < source.admins.length; i++)
         {    
-            let admin: oneUser = {
-                online: false,
-                username: source.admins[i].username,
-                picture: source.admins[i].picture,
-            }
-            admins.push(admin)
+            // let admin: oneUser = {
+            //     online: false,
+            //     username: source.admins[i].username,
+            //     picture: source.admins[i].picture,
+            // }
+            // admins.push(admin)
         }        
         return admins;
     }
@@ -402,14 +402,14 @@ export class ChatService {
     organizeMembers(source: any)
     {
         let members = [];
-        for (let i = 0; i < source.members.length; i++)
-        {    let member: oneUser = {
-                online: false,
-                username: source.members[i].username,
-                picture: source.members[i].picture,
-            }
-            members.push(member);
-        }
-        return members;
+        // for (let i = 0; i < source.members.length; i++)
+        // {    let member: oneUser = {
+        //         online: false,
+        //         username: source.members[i].username,
+        //         picture: source.members[i].picture,
+        //     }
+            // members.push(member);
+        // }
+        // return members;
     }
 }
