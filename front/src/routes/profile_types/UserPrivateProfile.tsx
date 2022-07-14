@@ -29,13 +29,13 @@ const SpecificEntry = (props: any) => {
         modifyInput={props.userInput.email}
       />
     );
-    if (props.toEdit === "USERNAME")
-      return (
-        <EntryIsUsername
-          setUserInput={props.setUserInput}
-          modifyInput={props.userInput.userName}
-        />
-      );
+  if (props.toEdit === "USERNAME")
+    return (
+      <EntryIsUsername
+        setUserInput={props.setUserInput}
+        modifyInput={props.userInput.userName}
+      />
+    );
   if (props.toEdit === "PHONE")
     return (
       <EntryIsPhone
@@ -129,6 +129,28 @@ const EntryIsPassword = (props: any) => {
   );
 };
 
+const updateUsernameQuery = (username: string) => {
+  let token = "bearer " + localStorage.getItem("userToken");
+  console.log("token", token);
+  let myHeaders = new Headers();
+  myHeaders.append("Authorization", token);
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify({
+    username: username,
+  });
+
+  fetch("http://localhost:4000/users/update_username", {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  })
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.log("error", error));
+};
+
 const ModifyEntry = (props: any) => {
   const initialValues = {
     email: "",
@@ -140,15 +162,6 @@ const ModifyEntry = (props: any) => {
 
   const [userInput, setUserInput] = useState(initialValues);
 
-  const handleSubmit = () => {
-    console.log("--------------");
-    console.log("userName 👉️", userInput.userName);
-    console.log("email 👉️", userInput.email);
-    console.log("phone 👉️", userInput.phone);
-    console.log("newPass 👉️", userInput.newPass);
-    console.log("password 👉️", userInput.pass);
-  };
-
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setUserInput({
@@ -157,6 +170,24 @@ const ModifyEntry = (props: any) => {
     });
   };
 
+  const handleSubmit = (changeUsernameHook: any) => {
+    console.log("--------------");
+    console.log("email 👉️", userInput.email);
+    console.log("phone 👉️", userInput.phone);
+    console.log("newPass 👉️", userInput.newPass);
+    console.log("password 👉️", userInput.pass);
+    if (userInput.userName) {
+      changeUsernameHook();
+      console.log("userName 👉️", userInput.userName);
+      updateUsernameQuery(userInput.userName);
+      const button = document.getElementById("handleChange");
+      if (button)
+      {
+        button.setAttribute("value", userInput.userName);
+        console.log("here");
+      }
+    }
+  };
   return (
     <Col className="p-3 col-6">
       <Card className="p-5 modify-card">
@@ -186,11 +217,14 @@ const ModifyEntry = (props: any) => {
                   </Col>
                   <Col>
                     <Button
+                      id="handleChange"
                       variant="primary"
                       type="button"
                       className="submit-button float-end"
                       size="sm"
-                      onClick={handleSubmit}
+                      onClick={props.changeUsernameHook}
+                      name="userName"
+                      value={userInput.userName}
                     >
                       Done
                     </Button>
@@ -222,6 +256,28 @@ export default function UserPrivateProfile() {
   const onClickEditPass = () => setShowPass((curent) => !curent);
   const hidePass = () => setShowPass(false);
 
+  const userInfoInit = {
+    email: "",
+    userName: "",
+    phone: "",
+    pass: "",
+  };
+
+  const [userInfo, setUserInfo] = useState(userInfoInit);
+
+  // const changeUsernameHook = (e: any) => {
+  //   const { name, value } = e.target;
+  //   setUserInfo({
+  //     ...userInfo,
+  //     [name]: value,
+  //   });
+  // };
+  const changeUsernameHook = (e: any) => {
+    setUserInfo((userInfo) => {
+      return { ...userInfo, [e.target.name]: e.target.value };
+    });
+  };
+
   return (
     <main>
       <h1 className="app-title">My account</h1>
@@ -231,14 +287,14 @@ export default function UserPrivateProfile() {
             <div className="profile-pic-round"></div>
           </Col>
           <Col className=" content">
-            <div className="profile-username-text">@Looloose</div>
+            <div className="profile-username-text">@{userInfo.userName}</div>
             <div className="caption"> See Public Profile</div>
           </Col>
         </Row>
       </Container>
 
       <Container className="p-5">
-        <Row flex className="p-4">
+        <Row className="flex p-4">
           <Col className="p-3 col-6">
             <Card className="p-5 profile-card">
               <Card.Body>
@@ -369,7 +425,11 @@ export default function UserPrivateProfile() {
             </Card>
           </Col>
           {showUsername ? (
-            <ModifyEntry toEdit="USERNAME" onClick={onClickEditUsername} />
+            <ModifyEntry
+              toEdit="USERNAME"
+              onClick={onClickEditUsername}
+              changeUsernameHook={changeUsernameHook}
+            />
           ) : null}
           {showEmail ? (
             <ModifyEntry toEdit="EMAIL" onClick={onClickEditEmail} />

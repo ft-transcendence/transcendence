@@ -45,12 +45,17 @@ const storeUserInfo = (userInfo: any, token: string) => {
       '{"statusCode":403,"message":"Invalid Credentials","error":"Forbidden"}'
   ) {
     console.log("HERE");
-    localStorage.setItem("userToken", token);
+    const subOne = token.replace('{"access_token":"', "");
+    const subTwo = subOne.replace('"}', "");
+    localStorage.setItem("userToken", subTwo);
     if (userInfo.username) localStorage.setItem("userName", userInfo.username);
+    else localStorage.setItem("userName", "not-found");
+
     localStorage.setItem("userEmail", userInfo.email);
     localStorage.setItem("userPassword", userInfo.password);
 
     console.log("token: " + localStorage.getItem("userToken"));
+    console.log("userName: " + localStorage.getItem("userName"));
     console.log("userEmail: " + localStorage.getItem("userEmail"));
     console.log("userPassword: " + localStorage.getItem("userPassword"));
   }
