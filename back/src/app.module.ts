@@ -13,9 +13,9 @@ import { ChatModule } from './chat/chat.module';
 let envFilePath = '.env';
 
 if (process.env.ENVIRONMENT === 'PRODUCTION') {
-	envFilePath = '.env.production';
+	envFilePath = '.env.prod';
 } else if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
-	envFilePath = '.env.development';
+	envFilePath = '.env.dev';
 }
 
 // Log
@@ -27,19 +27,20 @@ console.log(`Running on port ` + process.env.PORT );
 */
 
 @Module({
-	imports: [	
-				AuthModule, 
-				UserModule, 
-				PrismaModule,
-				ChatModule,
-				GameModule,
-				ConfigModule.forRoot({
-					// set path to .env file
-					envFilePath,
-					// global import
-					isGlobal: true
-				}),
-			],
+	imports: 
+	[	
+		AuthModule, 
+		UserModule, 
+		PrismaModule,
+		ChatModule,
+		GameModule,
+		ConfigModule.forRoot({
+			// set path to .env file
+			envFilePath,
+			// global import
+			isGlobal: true
+		}),
+	],
 	providers: [GameService, GameGateway],		
 	// NOT USED AS OF YET
 	// controllers: [AppController],

@@ -34,6 +34,7 @@ export class FortyTwoStrategy extends PassportStrategy(
     refreshToken: string,
     profile: Auth42Dto,
   ) : Auth42Dto {
+    //console.log('profile', profile);
     return profile;
   }
 }

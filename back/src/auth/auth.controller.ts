@@ -7,6 +7,7 @@
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 import { stringify } from "querystring";
+//import { Response } from "@nestjs/common";
 import { Public } from "src/decorators";
 /* AUTH MODULES */
 import { AuthService } from "./auth.service";
@@ -32,20 +33,19 @@ export class AuthController {
 	/**
 	 * Signin using 42 API
 	 */
+	@Public()
 	@UseGuards(FortyTwoAuthGuard)
 	@Get('42')
-	async signin_42(@Req() req: any, @Res() response: Response) : Promise<void> {
-		// LOG REQUEST
-		console.log(response);
+	async signin_42(@Req() request: any, @Res() response: Response) {
 		
-		const token = await this.authService.signin_jwt(req.user.id, req.user.email);
+		const token = await this.authService.signin_42(request, response);
 
-		const url = new URL(`${req.protocol}:${req.hostname}`);
+		const url = new URL(`${request.protocol}:${request.hostname}`);
 		url.port = process.env.FRONT_PORT;
-		url.pathname = 'login';
-		url.searchParams.set('code', stringify(token));
+		url.pathname = '/';
+		url.searchParams.set('token', stringify(token));
 
-		response.status(302).send(url.href);
+		response.status(302).send(url.href);	
 	}
 
 	/**

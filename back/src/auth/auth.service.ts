@@ -5,12 +5,15 @@ import { ConfigService } from "@nestjs/config";
 import { PrismaService } from "src/prisma/prisma.service";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 /* AUTH Modules */
-import { Auth42Dto, SignUpDto } from './dto'
+import { SignUpDto } from './dto'
 import { SignInDto } from './dto'
 /* Password Hash module */
 import * as argon from 'argon2'
 /* JASON WEB TOKEN */
 import { JwtService } from "@nestjs/jwt";
+import { Response } from "express";
+/* USER Modules */
+import { UserService } from "src/user/user.service";
 
 /**
  * AUTHENTIFICATION SERVICE
@@ -21,6 +24,7 @@ export class AuthService{
 		private prisma: PrismaService,
 		private jwtService: JwtService,
 		private config: ConfigService,
+		private userService: UserService,
 		) {} 
 
 	// basic test route
@@ -86,11 +90,10 @@ export class AuthService{
 		// generate jwt secret
 		const secret = this.config.get('JWT_SECRET');
 		// set JWT params (basic)
-		
 		const token = await this.jwtService.signAsync(login_data, {
 			expiresIn: '15m',
 			secret: secret,});
-		
+		// return token
 		return {
 			access_token: token,
 		};
@@ -98,9 +101,45 @@ export class AuthService{
 
 	/* SIGNOUT */
 
-	/* SIGNIN USING 42 API */
-	async signin_42(dto: Auth42Dto) {
-		
+	/* GENERATE A RADNOM PASSWORD */
+	generate_random_password() {
+		const password = Math.random().toString(36).slice(2, 15) + Math.random().toString(36).slice(2, 15);
+		return password;
+	}
 
+	/* SIGNIN USING 42 API */
+	async signin_42(request: any, response: Response) {
+		console.log('signin_42');
+		console.log(request.user.emails[0].value);
+		//console.log(request);
+		//console.log(response);
+		// check if user exists
+		
+		const user = await this.prisma.user.findUnique({
+			where: { 
+				email: request.user.emails[0].value,
+			},
+		});
+		
+		// if user does not exist, create it	
+		if (!user) {
+			// generate random password
+			const rdm_string = this.generate_random_password();
+			// LOG generate random password
+			console.log(rdm_string);
+			// hash password using argon2
+			const hash = await argon.hash(rdm_string);
+			//create new user
+			const new_user = await this.userService.createUser(request.user.emails[0].value, request.user.username, hash);
+			// return new user token
+			return this.signin_jwt(new_user.id, new_user.email);
+		}
+		else
+		{
+			// LOG
+			console.log('user exists');
+			// return token
+			return this.signin_jwt(user.id, user.email);
+		}
 	}
 }

@@ -30,6 +30,8 @@ export class UserService {
 				hash
 			}
 		});
+		console.log(user);
+		return user;
 	}
 
 
