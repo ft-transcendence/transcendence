@@ -44,3 +44,16 @@ export type updateUser = {
     other: string;
 
 }
+
+export type userSuggest = {
+    id: number;
+    username: string;
+    email: string;
+    picture: string;
+}
+
+export type roomExist = {
+    id: number;
+    name: string;
+    picture: string;
+}
