@@ -343,6 +343,46 @@ export class ChatService {
         } 
     }
 
+    async deleteMsg(data: UseMsgDto) {
+        try {
+            await this.prisma.msg.update({
+                where:
+                {
+                    id: data.msgId
+                },
+                data:
+                {
+                    unsent: true,
+                }
+            })
+        } catch (error) {
+            console.log('deleteMsg error:', error);
+            throw new WsException(error)
+        }
+
+    }
+
+    async editMsg(data: UseMsgDto) {
+        try {
+            await this.prisma.msg.update({
+                where:
+                {
+                    id: data.msgId,
+                },
+                data:
+                {
+                    msg: data.msg,
+                    history: [data.msg],
+                    updatedAt: new Date(),
+                }
+            })
+        } catch (error) {
+            console.log('deleteMsg error:', error);
+            throw new WsException(error)
+        }
+
+    }
+
     async fetchAdmins(channelName: string)
     {
         try {
