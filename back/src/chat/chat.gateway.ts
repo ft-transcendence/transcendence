@@ -147,4 +147,28 @@ export class ChatGateway {
     // client.emit('existed rooms', rooms);
   }
 
+  @SubscribeMessage('delete msg')
+  async handleDeleteMsg(
+    @MessageBody() data: UseMsgDto,
+    @ConnectedSocket() client: Socket
+  ) {
+    await this.chatservice.deleteMsg(data);
+    const fetch = await this.chatservice.fetchMsgs(data.channel);
+    client.emit('fetch msgs', fetch);
+    const preview = await this.chatservice.readPreview(data.email);
+    client.emit('update preview', preview)
+  }
+
+  @SubscribeMessage('edit msg')
+  async handleEditMsg(
+    @MessageBody() data: UseMsgDto,
+    @ConnectedSocket() client: Socket
+  ) {
+    await this.chatservice.editMsg(data);
+    const fetch = await this.chatservice.fetchMsgs(data.channel);
+    client.emit('fetch msgs', fetch);
+    const preview = await this.chatservice.readPreview(data.email);
+    client.emit('update preview', preview)
+  }
+
 }
