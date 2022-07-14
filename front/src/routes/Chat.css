@@ -20,5 +20,25 @@
     from {transform: translateX(-50%) translateY(-50%) scale(0.95); opacity: 0;}
     to {transform: translateX(-50%) translateY(-50%) scale(1); opacity: 1;}
 }
-}
 
+/* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: none;
+    scrollbar-color: #C3CEDA #071330;
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #2c3447;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #C3CEDA;
+    border-radius: 10px;
+    border: 3px solid #2c3447;
+  }
