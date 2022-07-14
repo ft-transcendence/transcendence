@@ -75,8 +75,13 @@ export class UserController {
 	}
 
 
-	//RELATIONSHIP RELATED FUNCTIONS
 
+	//RELATIONSHIP RELATED FUNCTIONS
+	@Post('/add_friend')
+	async addFriend(@Body('friendId') otherId: number, @Req() req){
+		console.log('Going through addFriend in user.controller: ' + '1' + ' ' + otherId);
+		const res = await this.userService.addFriend(4, 5/*req.user.id, otherId*/);
+	}
 	//getfriends
 	//addfriend
 	//rmfriend

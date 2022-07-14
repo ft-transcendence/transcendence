@@ -140,6 +140,16 @@ export class UserService {
 				}
 			}
 		})
+		const user2 = await this.prisma.user.update({
+			where: {
+				id: otherId
+			},
+			data: {
+				friends : {
+					connect: { id: id },
+				}
+			}
+		})
 		return (user);
 		//error: same id ?
 		//error: already friend ?
