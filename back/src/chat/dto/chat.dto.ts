@@ -20,7 +20,7 @@ export class ChannelDto {
 
 }
 
-export class NewMsgDto {
+export class UseMsgDto {
 
     @IsEmail()
     @IsNotEmpty()
@@ -33,4 +33,8 @@ export class NewMsgDto {
     @IsString()
     @IsNotEmpty()
     msg: string;
+
+    @IsNumber()
+    @IsOptional()
+    msgId: number;
 }
