@@ -67,15 +67,15 @@ export class UserService {
 
 	
 	async getFriends(id: number){
-		const friendList = await this.prisma.user.findMany({
-			where: {
-				id: id,
-			},
-			select : {
-				friends: true,
-			}
-		})
-		return (friendList);
+		// const friendList = await this.prisma.user.findMany({
+		// 	where: {
+		// 		id: id,
+		// 	},
+		// 	select : {
+		// 		friends: true,
+		// 	}
+		// })
+		// return (friendList);
 		//error: no friends ? 
 	}
 
@@ -135,38 +135,71 @@ export class UserService {
 				id: id
 			},
 			data: {
-				friends : {
+				addedFriends : {
 					connect: { id: otherId },
 				}
 			}
 		})
-		const user2 = await this.prisma.user.update({
-			where: {
-				id: otherId
-			},
-			data: {
-				friends : {
-					connect: { id: id },
-				}
-			}
-		})
+ 		// const user2 = await this.prisma.user.update({
+		// 	where: {
+		// 		id: id
+		// 	},
+		// 	data: {
+		// 		friends : {
+		// 			push: otherId,
+		// 		}
+		// 	}
+		// }) 
 		return (user);
 		//error: same id ?
 		//error: already friend ?
 	}
 
 	async rmFriend(id: number, otherId: number){
+ 		// const user = await this.prisma.user.update({
+		// 	where: {
+		// 		id: id
+		// 	},
+		// 	data: {
+		// 		friends : {
+		// 			delete: otherId,
+		// 		}
+		// 	}
+		// })
+		// return (user) 
 		//error: same id ?
 		//error: not a friend ?
 	}	
 	
 	async blockUser(id: number, otherId: number){
+ 		// const user = await this.prisma.user.update({
+		// 	where: {
+		// 		id: id
+		// 	},
+		// 	data: {
+		// 		blocked : {
+		// 			push: otherId,
+		// 		}
+		// 	}
+		// })
+		// return (user) 		
 		//todo : rm from friends
 		//error: same id ?
 		//error: already blocked ?		
 	}	
 	
 	async unblockUser(id: number, otherId: number){
+ 		// const user = await this.prisma.user.update({
+		// 	where: {
+		// 		id: id
+		// 	},
+		// 	data: {
+		// 		blocked : {
+		// 			delete: otherId,
+		// 		}
+		// 	}
+		// })
+		// return (user) 		
 		//error: same id ?
 		//error: not blocked ?		
 	}	

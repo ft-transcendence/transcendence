@@ -34,8 +34,10 @@ model User {
 	gamesPlayed	Int     @default(0)
 //game history ? Une partie = 2 id, un score
 
-	friends		User[]		@relation(name: "relationships")  //array of friends based on their id 
-	blocked		User[]		@relation(name: "relationships")  // it's blocked or blocking
+	adding		User[]		@relation("friendships")
+	added		User[]		@relation("friendships")
+	blocking	User[]		@relation("blockships") 
+	blocked		User[]		@relation("blockships")
 
 	admin       Channel[] @relation("admin")  // the following three line i dont understand well. 
 	member      Channel[] @relation("member")
