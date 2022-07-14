@@ -201,11 +201,11 @@ export class UserService {
 
 	//GAME RELATED FUNCTIONS
 
-	async hasWon(UserDto: UserDto) {
+	async hasWon(id: number) {
 		//increments the number of won and played games by one
 		const updateUser = await this.prisma.user.updateMany({
 			where: {
-			  username: UserDto.username,
+				id: id,
 			},
 			data: {
 				gamesWon: {
@@ -218,11 +218,11 @@ export class UserService {
 		  })
 	}
 
-	async hasLost(UserDto: UserDto) {
+	async hasLost(id: number) {
 		//increments the number of lost and played games by one
 		const updateUser = await this.prisma.user.updateMany({
 			where: {
-			 	username: UserDto.username,
+			 	id: id,
 			},
 			data: {
 				gamesLost: {
@@ -234,11 +234,11 @@ export class UserService {
 			  },
 		  })
 	}
-	async hadADraw(UserDto: UserDto) {
+	async hadADraw(id: number) {
 		//increments the number of won and played games by one
 		const updateUser = await this.prisma.user.update({
 			where: {
-				username: UserDto.username,
+				id: id,
 			},
 			data: {
 				gamesPlayed: {

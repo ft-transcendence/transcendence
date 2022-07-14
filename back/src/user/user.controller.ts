@@ -105,18 +105,18 @@ export class UserController {
 	//GAME RELATED FUNCTIONS
 
 //this is not a request - it comes from the back, called by the game, no need to protect
-	hasWon(UserDto: UserDto) {
+	hasWon(id: number) {
 		console.log('Going through hasWon in user.controller for');
-		return (this.userService.hasWon(UserDto));
+		return (this.userService.hasWon(id));
 	}
 
-	hasLost(UserDto: UserDto) {
+	hasLost(id: number) {
 		console.log('Going through hasLost in user.controller for');
-		return (this.userService.hasLost(UserDto));
+		return (this.userService.hasLost(id));
 	}
 
-	hadADraw(UserDto: UserDto) {
+	hadADraw(id: number) {
 		console.log('Going through hasWon in user.controller for');
-		return (this.userService.hadADraw(UserDto));
+		return (this.userService.hadADraw(id));
 	}
 }
