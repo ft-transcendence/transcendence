@@ -8,7 +8,6 @@ import { Request } from 'express';
 import { JwtGuard } from 'src/auth/guard';
 /* USER MODULES */
 import { UserService } from "./user.service";
-import { UserDto } from "./dto"
 
 /*
 *	CRUD :
@@ -55,6 +54,11 @@ export class UserController {
 	//getfriends
 
 	//idCheck (to change user params)
+	@Get()
+	idCheck(pwd: string, @Req() request) {
+		//hash it with argon - ask satch
+		return pwd === request.user.hash ? (true) : (false);
+	}
 
 
 	/*	UPDATE	*/
