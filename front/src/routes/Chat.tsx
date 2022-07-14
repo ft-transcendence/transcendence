@@ -6,6 +6,7 @@ import Preview from "./chat_modes/chatPreview";
 import ChatRoom from "./chat_modes/chatRoom";
 import RoomStatus from "./chat_modes/roomStatus";
 import { chatPreview } from "./chat_modes/type/chat.type";
+import { NewRoom } from "./chat_modes/newRoom";
 
 const socketOptions = {
   transportOptions: {
@@ -58,6 +59,7 @@ export default function Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [email])
 
+
     return (
         <div className="zone-diff">
             <Preview
@@ -68,13 +70,21 @@ export default function Chat() {
                 }}
                 newRoomRequest={newRoomRequest}
                 onNewRoomRequest={() => {
-                    setNewRoomRequest(true)
+                    setNewRoomRequest(old => {return !old})
                 }}
             />
             <ChatRoom
-                current={selectedChat}
-                newRoomRequest={newRoomRequest}/>
-            <RoomStatus current={selectedChat}/>
+                current={selectedChat}/>
+            <RoomStatus
+                current={selectedChat}/>
+            <div 
+                className="add-zone"
+                style={{display: newRoomRequest ? "" : "none"}}>
+                    <NewRoom
+                        onNewRoomRequest={() => {
+                            setNewRoomRequest(old => {return !old})
+                        }}/>
+            </div>
         </div>
     )
 }
