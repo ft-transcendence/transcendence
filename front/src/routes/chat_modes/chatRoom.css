@@ -1,26 +1,64 @@
+
+#msg::placeholder {
+    color: white;
+}
+
 .chat-room-zone {
-    background-color: green;
-    flex: 2;
+    background-color: #071330;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .brief-info {
-    background-color: white;
-    height: 5.5vh;
+    background-color: inherit;
+    height: 60px;
+    /* border-radius: 12px; */
+    border-bottom: 1px solid;
+}
+
+.chat-name {
+    padding-left: 20px;
+    padding-top: 15px;
+    color: white;
 }
 
 .msg-stream {
-    background-color: tan;
-    height: 89vh;
+    background-color: #071330;
+    border-right: 1px solid;
+    flex: 1;
+    overflow: overlay;
 }
 
 .msg-owner {
-    background-color: teal;
+    margin-left: auto;
+    margin-right: 5px;
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-bottom: .5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: fit-content;
+    background-color: white;
     text-align: right;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-radius: 10px;
+    max-width: 70%;
+    word-break: break-word;
 }
 
 .msg-other {
-    background-color: mediumaquamarine;
+    margin-right: auto;
+    padding-top: 10px;
+    padding-bottom: 3px;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: fit-content;
+    background-color: grey;
     text-align: left;
+    max-width: 70%;
+    word-break: break-word;
 }
 
 .msg-string {
@@ -40,22 +78,25 @@
     color: black;
 }
 
-.input-zone {
-    /* padding-bottom: 5px;
-    margin-bottom: 5px; */
+.msg-input-zone {
+    padding-bottom: 5px;
+    margin-bottom: 3px;
     display: flex;
-    background-color: teal;
-    height: 5.5vh;
+    height:60px;
     width: 100%;
+    border-radius: 12px;
+    border-right: 1px solid;
 }
 
 .msg-input-area {
     margin: auto;
-    background-color: teal;
-    height: 5vh;
-    width: 70%;
-}
-
-.send-msg-button {
-    background-color: saddlebrown;
+    margin-bottom: 3px;
+    padding: 20px;
+    background-color: #738FA7;
+    height: 40px;
+    border-radius: 12px;
+    width: 90%;
+    outline: none;
+    border: none;
+    color: white;
 }
