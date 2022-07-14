@@ -4,17 +4,13 @@ import {
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer,
-  WsResponse
+  WebSocketServer
 } from '@nestjs/websockets';
-import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { ChannelDto } from './dto/chat.dto';
+import { ChannelDto, UseMsgDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guard';
 import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
-import { isEmail } from 'class-validator';
 
 // @UseGuards(JwtGuard)
 @UsePipes(new ValidationPipe())
@@ -105,7 +101,7 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('msg')
-  async handleNewMsg(@MessageBody() data: any,
+  async handleNewMsg(@MessageBody() data: UseMsgDto,
   @ConnectedSocket() client: Socket
   ) {
     await this.chatservice.newMsg(data);
@@ -135,16 +131,16 @@ export class ChatGateway {
   async handleSuggestUsers(
     @ConnectedSocket() client: Socket
   ) {
-    // const users = await this.chatservice.suggestUsers();
-    // client.emit('suggest users', users);
+    const users = await this.chatservice.suggestUsers();
+    client.emit('suggest users', users);
   }
 
   @SubscribeMessage('get existed rooms')
   async handleExistedRooms(
     @ConnectedSocket() client: Socket
   ) {
-    // const rooms = await this.chatservice.existedRooms();
-    // client.emit('existed rooms', rooms);
+    const rooms = await this.chatservice.existedRooms();
+    client.emit('existed rooms', rooms);
   }
 
   @SubscribeMessage('delete msg')

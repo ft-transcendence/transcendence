@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../..";
 import { socket } from "../../App";
 import "./chatRoom.css";
-import { chatPreview, oneMsg, newMsg } from "./type/chat.type";
+import { chatPreview, oneMsg, useMsg } from "./type/chat.type";
+// import "react-contexify/dist/ReactContexify.css";
+// import "./context.css";
 import {
     Menu,
     Item,
-    Separator,
-    Submenu,
     useContextMenu
 } from "react-contexify";
 import "react-contexify/dist/ReactContexify.css";
@@ -68,8 +68,10 @@ function BriefInfo({info}
     )
 }
 
-function MsgStream({email}
-    :{email: string | null}) {
+function MsgStream({email, channel}
+    : { email: string | null,
+        channel: string | undefined}) {
+
     const [msgs, setMsgs] = useState<oneMsg[]>([]);
 
     useEffect( () => {
@@ -109,7 +111,7 @@ function MsgStream({email}
             {msgs.map((value, index) => {
                 return (
                     <div key={index}>
-                        <OneMessage data={value} email={email} channel={channel}/>
+                        <OneMessage data={value} email={email}/>
                     </div>
                 )
             })}
@@ -125,10 +127,9 @@ function MsgStream({email}
     )
 }
 
-function OneMessage({data, email, channel}
+function OneMessage({data, email}
     : { data: oneMsg,
-        email: string | null,
-        channel: string | undefined}) {
+        email: string | null}) {
 
     const { show } = useContextMenu({
         id: MENU_MSG
@@ -162,10 +163,11 @@ function InputArea({channel, email}
     }
 
     const sendMsg = () => {
-        let data: newMsg = {
+        let data: useMsg = {
             email: email,
             channel: channel,
             msg: msg,
+            msgId: 0
         };
         socket.emit("msg", data);
         setMsg("");

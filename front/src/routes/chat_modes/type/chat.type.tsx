@@ -17,13 +17,15 @@ export type updateChannel = {
     email: string | null;
 }
 
-export type newMsg = {
+export type useMsg = {
     email: string | null;
     channel: string | undefined;
     msg: string;
+    msgId: number;
 }
 
 export type oneMsg = {
+    msgId: number;
     email: string;
     username: string;
     msg: string;

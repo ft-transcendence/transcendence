@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ChannelDto, NewMsgDto } from './dto/chat.dto';
+import { ChannelDto, UseMsgDto } from './dto/chat.dto';
 import { chatPreview, oneMsg, oneUser } from './type/chat.type';
 
 @Injectable()
@@ -114,7 +114,8 @@ export class ChatService {
                 },
                 select:
                 {
-                    admin: {
+                    admin:
+                    {
                         select: 
                         {
                             name: true,
@@ -122,6 +123,10 @@ export class ChatService {
                             updatedAt: true,
                             messages:
                             {
+                                where:
+                                {
+                                    unsent: false,
+                                },
                                 select:
                                 {
                                     msg: true,
@@ -129,7 +134,8 @@ export class ChatService {
                             }
                         }
                     },
-                    member: {
+                    member:
+                    {
                         select: 
                         {
                             name: true,
@@ -137,6 +143,10 @@ export class ChatService {
                             updatedAt: true,
                             messages:
                             {
+                                where:
+                                {
+                                    unsent: false,
+                                },
                                 select:
                                 {
                                     msg: true,
@@ -145,7 +155,8 @@ export class ChatService {
                         }
                     }
                 }
-            })
+            }
+        )
         return ret;
     }
 
@@ -263,8 +274,13 @@ export class ChatService {
                 {
                     messages:
                     {
+                        where:
+                        {
+                            unsent: false
+                        },
                         select:
                         {
+                            id: true,
                             msg: true,
                             createdAt: true,
                             updatedAt: true,
@@ -296,6 +312,7 @@ export class ChatService {
                 for (let i = 0; i < source.messages.length; i++)
                 {   
                     // let element: oneMsg = {
+                    //     msgId: source.messages[i].id,
                     //     email: source.messages[i].owner.email,
                     //     username: source.messages[i].owner.username,
                     //     msg: source.messages[i].msg,
@@ -312,7 +329,7 @@ export class ChatService {
         }
     }
 
-    async newMsg(data: NewMsgDto)
+    async newMsg(data: UseMsgDto)
     {
         try {
             const id = await this.readId(data.email);

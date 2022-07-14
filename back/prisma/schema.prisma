@@ -81,8 +81,10 @@ model Msg {
 	msg  String
 	history String[]
 
-	createdAt DateTime  @default(now())
-	updatedAt DateTime  @updatedAt
+  unsent    Boolean   @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
 	owner     User      @relation(fields: [userId], references: [id])
 	userId    Int
