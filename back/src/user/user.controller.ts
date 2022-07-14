@@ -62,21 +62,24 @@ export class UserController {
 	//USER PROFILE RELATED FUNCTIONS
 
 	@Post('/update_username')
-	async updateUsername(@Body('username') newUsername: string, @Req() req) {
+	async updateUsername(@Body('username') newUsername: string, @Req() request) {
 		console.log('Going through updateUsername in user.controller');
-		const res = await this.userService.updateUsername(req.user.id, newUsername);
+		const result = await this.userService.updateUsername(request.user.id, newUsername);
+		return (result);
 	}
 
 	@Post('/update_avatar')
-	async updateAvatar(@Body('avatar') newAvatar: string, @Req() req) {
+	async updateAvatar(@Body('avatar') newAvatar: string, @Req() request) {
 		console.log('Going through updateAvatar in user.controller');
-		const res = await this.userService.updateAvatar(req.user.id, newAvatar);
+		const result = await this.userService.updateAvatar(request.user.id, newAvatar);
+		return (result);
 	}
 
 	@Post('/update_email')
-	async updateEmail(@Body('email') newEmail: string, @Req() req) {
+	async updateEmail(@Body('email') newEmail: string, @Req() request) {
 		console.log('Going through updateEmail in user.controller');
-		const res = await this.userService.updateEmail(req.user.id, newEmail);
+		const result = await this.userService.updateEmail(request.user.id, newEmail);
+		return (result);
 	}
 
 

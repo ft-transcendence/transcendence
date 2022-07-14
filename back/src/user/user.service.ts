@@ -164,6 +164,7 @@ export class UserService {
 	}	
 	
 	async blockUser(id: number, otherId: number){
+		this.rmFriend(id, otherId);
 		const user = await this.prisma.user.update({
 			where: {
 				id: id
@@ -175,7 +176,6 @@ export class UserService {
 			}
 		})
 		return (user);
-		//todo : rm from friends
 		//error: same id ?
 		//error: already blocked ?		
 	}	
@@ -216,6 +216,7 @@ export class UserService {
 				},
 			  },
 		  })
+		return (updateUser);
 	}
 
 	async hasLost(id: number) {
@@ -233,9 +234,11 @@ export class UserService {
 				},
 			  },
 		  })
+		  return (updateUser);
 	}
+
 	async hadADraw(id: number) {
-		//increments the number of won and played games by one
+		//increments the number played games by one
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,
@@ -246,5 +249,6 @@ export class UserService {
 				},
 			  },
 		  })
+		  return (updateUser);
 	}	
 }
