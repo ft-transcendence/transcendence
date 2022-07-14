@@ -7,7 +7,18 @@ import type { Container } from "tsparticles-engine";
 import { Link } from "react-router-dom";
 import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle } from './game.interfaces';
 
-const socket = io("ws://localhost:4000");
+const socketOptions = {
+    transportOptions: {
+      polling: {
+        extraHeaders: {
+            Token: localStorage.getItem("userToken"),
+        }
+      }
+    }
+ };
+ 
+
+const socket = io("ws://localhost:4000", socketOptions);
 
 const MOVE_UP   = "ArrowUp";  
 const MOVE_DOWN = "ArrowDown";  
