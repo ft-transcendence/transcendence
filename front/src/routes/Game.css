@@ -43,42 +43,49 @@
     top: 10%;
     left: 0;
     right: 0;
-    margin:auto;
-    display: inline-flex;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: space-between;
     height: 7vh;
-    width: 25%;
+    width: calc(177vh * 0.45);
     /*background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -180%, rgb(57,80,127) 270%);*/
     border: 2px solid rgb(0, 255, 255);
     border-radius: 15px;
     box-shadow: 0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 4px rgb(0, 190, 255);
-    display: unset;
 }
 
     .Player-left {
         /* background-color:lawngreen; */
         width: 50%;
-        height: 100%;
-        display: inline-flex;
-        vertical-align: top;
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        padding-right: 5%;
+        /*height: 100%;*/
+        /*vertical-align: top;*/
     }
 
     .Player-right {
         /* background-color:ivory; */
         width: 50%;
-        height: 100%;
-        display: inline-flex;
-        vertical-align: top;
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        padding-left: 5%;
+        /*height: 100%;*/
+        /*vertical-align: top;*/
     }
     
         .Score {
             /* background-color: green; */
             /*margin: 4% auto;*/
-            width: 20%;
+            width: 10%;
             height: 70%;
             font-size: 4.5vh;
             color: white;
-            display: inline-flex;
-            vertical-align: top;
+            /*vertical-align: top;*/
         }
 
         .Info {
@@ -86,7 +93,7 @@
             margin: auto;
             width: 70%;
             height: 80%;
-            display: inline-flex;
+            display:flex;
         }
 
             .Photo {
@@ -119,6 +126,7 @@
     border: 0px solid rgb(0, 255, 255);
     border-radius: 20px;
     box-shadow: 0;
+    overflow: hidden;
 }
 
     .Pad-left {
@@ -201,6 +209,7 @@
         /*box-shadow: 0 0 5px 4px rgb(143,72,89), inset 0 0 10px 5px rgb(143,72,89);*/
         background-color: rgb(93,210,204);
         box-shadow: 1px 0 2px 2px rgb(93,210,204);
+        overflow: hidden;
         display: none;
     }
 

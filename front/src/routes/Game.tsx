@@ -79,7 +79,7 @@ class Message extends React.Component< Msg, MsgState > {
                     message = "You win :)";
                     break;
                 case 3:
-                    message = "You loose :(";
+                    message = "You lose :(";
                     break;
                 default:
                     message = "error";
@@ -106,7 +106,7 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
     render() {
         const show = this.props.show ? 'unset': 'none';
         var side: string;
-        if (this.props.side == 'left')
+        if (this.props.side === 'left')
             side = "Pad-left";
         else
             side = "Pad-right";
@@ -126,7 +126,7 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
 
 export default class Game extends React.Component < {}, StatePong > {
 
-    constructor({}) 
+    constructor(none = {}) 
     {
         super({});
         this.state = {  paddleLeftY: 50,
@@ -151,7 +151,7 @@ export default class Game extends React.Component < {}, StatePong > {
         socket.on("update", (info: Game_data) =>
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score}));
         socket.on("end_game", (winner: number) => 
-            winner == this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false}) : this.setState({msgType: 3, gameStarted: false}));
+            winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false}) : this.setState({msgType: 3, gameStarted: false}));
     }
 
     particlesInit = async (main: any) => {
@@ -170,24 +170,25 @@ export default class Game extends React.Component < {}, StatePong > {
      
    
     keyDownInput = (e: KeyboardEvent) => {
-    if (e.key == MOVE_UP && this.state.gameStarted)
+    if (e.key === MOVE_UP && this.state.gameStarted)
         socket.emit("move", {dir: 1, room: this.state.roomId, player: this.state.playerNumber});
-    if (e.key == MOVE_DOWN)
+    if (e.key === MOVE_DOWN)
         socket.emit("move", {dir: 2, room: this.state.roomId, player: this.state.playerNumber});
     }
     
     keyUpInput = (e: KeyboardEvent) => {
-        if ((e.key == MOVE_UP || e.key == MOVE_DOWN) && this.state.gameStarted)
+        if ((e.key === MOVE_UP || e.key === MOVE_DOWN) && this.state.gameStarted)
             socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
     }
 
     render() {
     const shoWField = this.state.gameStarted ? 'unset': 'none';
+    const shoWInfo = this.state.gameStarted ? 'flex': 'none';
     const showBorder = this.state.gameStarted ? '2px solid rgb(0, 255, 255)' : '0px solid rgb(0, 255, 255)';
     const showShadow = this.state.gameStarted ? '0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 5px rgb(0, 190, 255)' : '0';
     var leftName;
     var rightName;
-    if (this.state.playerNumber == 1)
+    if (this.state.playerNumber === 1)
     {    
         leftName = "you";
         rightName = "opponent";
@@ -202,7 +203,7 @@ export default class Game extends React.Component < {}, StatePong > {
             <Particles id="tsparticles" url="particlesjs-config.json" init={this.particlesInit} loaded={this.particlesLoaded} />
 
             <div className='Page-top'>
-            <div style={{display: `${shoWField}`,}} className='Info-card'>
+            <div style={{display: `${shoWInfo}`,}} className='Info-card'>
                     <div className='Player-left'>
                         <div className='Info'>
                             <div className='Photo'>
