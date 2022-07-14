@@ -135,71 +135,65 @@ export class UserService {
 				id: id
 			},
 			data: {
-				addedFriends : {
+				adding : {
 					connect: { id: otherId },
 				}
 			}
 		})
- 		// const user2 = await this.prisma.user.update({
-		// 	where: {
-		// 		id: id
-		// 	},
-		// 	data: {
-		// 		friends : {
-		// 			push: otherId,
-		// 		}
-		// 	}
-		// }) 
 		return (user);
 		//error: same id ?
 		//error: already friend ?
 	}
 
+	// /!\ THIS IS NO LONGER RELEVANT to the added/adding duo since it will only cancel an invitation
+	// once the real friends list is done, change -added- for friends
 	async rmFriend(id: number, otherId: number){
- 		// const user = await this.prisma.user.update({
-		// 	where: {
-		// 		id: id
-		// 	},
-		// 	data: {
-		// 		friends : {
-		// 			delete: otherId,
-		// 		}
-		// 	}
-		// })
-		// return (user) 
+		const user = await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				adding : {
+					disconnect: { id: otherId },
+				}
+			}
+		})
+		return (user);
 		//error: same id ?
 		//error: not a friend ?
 	}	
 	
 	async blockUser(id: number, otherId: number){
- 		// const user = await this.prisma.user.update({
-		// 	where: {
-		// 		id: id
-		// 	},
-		// 	data: {
-		// 		blocked : {
-		// 			push: otherId,
-		// 		}
-		// 	}
-		// })
-		// return (user) 		
+		const user = await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				blocking : {
+					connect: { id: otherId },
+				}
+			}
+		})
+		return (user);
 		//todo : rm from friends
 		//error: same id ?
 		//error: already blocked ?		
 	}	
-	
+
+	// /!\ THIS IS NO LONGER RELEVANT to the blocked/blocking duo since it will only cancel an invitation
+	// once the real friends list is done, change -blocking- for blocks	
 	async unblockUser(id: number, otherId: number){
- 		// const user = await this.prisma.user.update({
-		// 	where: {
-		// 		id: id
-		// 	},
-		// 	data: {
-		// 		blocked : {
-		// 			delete: otherId,
-		// 		}
-		// 	}
-		// })
-		// return (user) 		
+		const user = await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				blocking : {
+					disconnect: { id: otherId },
+				}
+			}
+		})
+		return (user);
 		//error: same id ?
 		//error: not blocked ?		
 	}	

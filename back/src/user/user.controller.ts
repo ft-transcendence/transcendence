@@ -52,6 +52,11 @@ export class UserController {
 		return this.userService.getLeaderboard();        
 	}
 
+	//getfriends
+
+	//idCheck (to change user params)
+
+
 	/*	UPDATE	*/
 
 	//USER PROFILE RELATED FUNCTIONS
@@ -77,15 +82,23 @@ export class UserController {
 
 
 	//RELATIONSHIP RELATED FUNCTIONS
+
 	@Post('/add_friend')
-	async addFriend(@Body('friendId') otherId: number, @Req() req){
-		console.log('Going through addFriend in user.controller: ' + '1' + ' ' + otherId);
-		const res = await this.userService.addFriend(1, 2/*req.user.id, otherId*/);
+	async addFriend(@Req() request, @Body('friendId') otherId: number){
+		console.log('Going through addFriend in user.controller: ' + request.user.id + ' -> ' + otherId);
+		const result = await this.userService.addFriend(request.user.id, otherId);
+		return (result);
 	}
-	//getfriends
-	//addfriend
+
 	//rmfriend
-	//blockuser
+
+	@Post('/block_user')
+	async blockUser(@Req() request, @Body('friendId') otherId: number){
+		console.log('Going through blockUser in user.controller: ' + request.user.id + ' -> ' + otherId);
+		const result = await this.userService.addFriend(request.user.id, otherId);
+		return (result);
+	}
+
 	//unblock user
 
 

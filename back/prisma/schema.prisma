@@ -34,6 +34,7 @@ model User {
 	gamesPlayed	Int     @default(0)
 //game history ? Une partie = 2 id, un score
 
+	//These 4 arrays might evolve in 2 more : friends and blocks
 	adding		User[]		@relation("friendships")
 	added		User[]		@relation("friendships")
 	blocking	User[]		@relation("blockships") 
