@@ -10,8 +10,7 @@ import {
     Item,
     useContextMenu
 } from "react-contexify";
-import "react-contexify/dist/ReactContexify.css";
-import "./context.css";
+import { EventEmitter } from "stream";
 
 const MENU_MSG = "menu_msg";
 
@@ -25,7 +24,6 @@ export default function ChatRoom({current}
     const email = useAuth().user;
 
     useEffect(()=> {
-        console.log("newRoomRequest",newRoomRequest)
         if (current)
         {
             const cName = current.name;
@@ -34,27 +32,13 @@ export default function ChatRoom({current}
         }
     }, [current])
 
-    if (newRoomRequest)
-        return (
-            <div className="chat-room-zone">
-                <NewRoom/>
-            </div>
-        );
-
     return(
         <>
             <div className="chat-room-zone">
                 <BriefInfo info = {current}/>
-                <MsgStream email={email}/>
+                <MsgStream email={email} channel={current?.name}/>
                 <InputArea email = {email} channel = {current?.name}/>
             </div>
-        </>
-    )
-}
-
-function NewRoom() {
-    return (
-        <>
         </>
     )
 }
@@ -63,7 +47,9 @@ function BriefInfo({info}
     :{info: chatPreview | undefined}) {
     return (
         <div className="brief-info">
-            {info?.name}
+            <div className="chat-name">
+                {info?.name}
+            </div>
         </div>
     )
 }
@@ -73,6 +59,7 @@ function MsgStream({email, channel}
         channel: string | undefined}) {
 
     const [msgs, setMsgs] = useState<oneMsg[]>([]);
+    const scroll = useRef<HTMLDivElement>(null);
 
     useEffect( () => {
 
@@ -106,8 +93,18 @@ function MsgStream({email, channel}
         }
         socket.emit("edit msg", msg)
     }
+
+    setTimeout(()=>{
+        if (scroll.current)
+        {
+            console.log(scroll.current.scrollTop);
+            scroll.current.scrollTop = scroll.current.scrollHeight;
+        }
+    }, 30);
+
+
     return (
-        <div className="msg-stream">
+        <div className="msg-stream" ref={scroll}>
             {msgs.map((value, index) => {
                 return (
                     <div key={index}>
@@ -174,19 +171,16 @@ function InputArea({channel, email}
     }
 
     return (
-        <div className="input-zone">
-            <textarea
+        <div className="msg-input-zone">
+            <input
+                id="msg"
                 value={msg}
                 onChange={handleSetMsg}
                 className="msg-input-area"
+                placeholder="Enter a message"
                 onKeyDown={(e) => {
                     if (e.key === "Enter")
                         sendMsg()}}/>
-            <button
-                onClick={sendMsg}
-                className="send-msg-button">
-                send
-            </button>
         </div>
     )
 }
