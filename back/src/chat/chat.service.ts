@@ -79,12 +79,13 @@ export class ChatService {
         if (source.admin.length)
             for (let i = 0; i < source.admin.length; i++)
             {
+                let msgCount = source.admin[i].messages.length;
                 let element: chatPreview = {
                     name: source.admin[i].name,
                     picture: source.admin[i].picture,
                     updateAt: source.admin[i].picture,
-                    lastMsg: source.admin[i].messages.length > 0 ?
-                        source.admin[i].messages[0].msg : '',
+                    lastMsg: msgCount > 0 ? 
+                    source.admin[i].messages[msgCount - 1].msg : ''
                 };
                 data.push(element);
             }
