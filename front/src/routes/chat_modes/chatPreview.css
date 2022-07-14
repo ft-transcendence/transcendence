@@ -1,95 +1,117 @@
 
 .preview-zone {
-    background-color: rosybrown;
-    flex: 1;
+    background-color: inherit;
+    width: 250px;
+    border-right: 1px solid;
 }
 
 .preview-chat-search {
-    background-color: palevioletred;
+    /* background-color: palevioletred; */
     display: flex;
-    height: 6vh;
+    height: 60px;
+    border-bottom: 1px solid;
 }
-
 
 .input-search {
-    /* background-color: goldenrod; 
-    /* margin: auto; */
-    height: 50%;
-    width: 70%;
+    /* background-color: goldenrod; */
+    padding: 10px;
+    margin-top: 1px;
+    width: 190px;
 }
 
-.search-button {
-    background-color: transparent;
-}
-
-.create-room-button {
-    background-color: brown;
-    height: 100%;
-    width: 20%;
+.add-room-button {
+    background-color: grey;
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 15px;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    padding-top: 4px;
+    text-align: center;
+    color: white;
+    font-size: 20px;
 }
 
 .preview-chat-list {
-    background-color: midnightblue;
+    /* background-color: midnightblue; */
     overflow: overlay;
     height: calc(100% - 100px);
 }
 
 .preview-chat
 {
-    background: orange;
+    /* background: orange; */
+    height: 80px;
     display: flex;
     padding: 10px;
+    border-bottom: 1px solid;
 
 }
+
+.preview-chat:hover
+{
+    /* background: orange; */
+    background-color: #C3CEDA
+}
+/* 
+.preview-chat:active
+{
+    background-color: rgb(202, 171, 171);
+} */
 
 .preview-chat-img
 {
     background-color: white;
-    /* margin: auto; */
+    margin-top: 5px;
     border-radius: 50%;
     height: 45px;
     width: 45px;
 }
 
 .preview-chat-info {
-    background: grey;
-    margin-left: 10px;
-    margin-right: 10px;
+    /* background: grey; */
+    padding-left: 20px;
     width: 80%;
     display: flex;
 
 }
 
 .preview-chat-info-1 {
-    background: yellow;
+    /* background: yellow; */
     flex: 4;
     height: 100%;
     width: 80%;
 
 }
 
-.preview-chat-name {
-    background: pink;
-    color: black;
-}
+    .preview-chat-name {
+        /* background: pink; */
+        color: white;
+        font-size: large;
+        margin-bottom: auto;
+    }
 
-.preview-chat-msg {
-    background: white;
-    width: 100%;
-    color: black;
-}
+    .preview-chat-msg {
+        /* background: white; */
+        color: rgb(97, 95, 95);
+        /* word-wrap: break-word; */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
 .preview-chat-info-2 {
-    background: orange;
+    /* background: orange; */
     flex: 1;
     width: 80%;
 
 }
 
-.preview-chat-time {
-    background: greenyellow;
-}
+    .preview-chat-time {
+        background: greenyellow;
+    }
 
-.preview-chat-unread {
-    background: purple;
-}
+    .preview-chat-unread {
+        background: purple;
+    }
