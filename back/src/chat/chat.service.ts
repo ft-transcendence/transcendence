@@ -88,6 +88,7 @@ export class ChatService {
                 //         source.admin[i].messages[0].msg : '',
                 // };
                 // data.push(element);
+                
             }
         if (source.member.length)
             for (let i = 0; i < source.member.length; i++)
