@@ -170,19 +170,18 @@ const ModifyEntry = (props: any) => {
     });
   };
 
-  const handleSubmit = (changeUsernameHook: any) => {
+  const handleSubmit = (e: any) => {
     console.log("--------------");
     console.log("email 👉️", userInput.email);
     console.log("phone 👉️", userInput.phone);
     console.log("newPass 👉️", userInput.newPass);
     console.log("password 👉️", userInput.pass);
     if (userInput.userName) {
-      changeUsernameHook();
       console.log("userName 👉️", userInput.userName);
       updateUsernameQuery(userInput.userName);
       const button = document.getElementById("handleChange");
-      if (button)
-      {
+      if (button) {
+        button.setAttribute("name", "userName");
         button.setAttribute("value", userInput.userName);
         console.log("here");
       }
@@ -222,9 +221,10 @@ const ModifyEntry = (props: any) => {
                       type="button"
                       className="submit-button float-end"
                       size="sm"
-                      onClick={props.changeUsernameHook}
-                      name="userName"
-                      value={userInput.userName}
+                      onClick={(e:any) => {
+                        handleSubmit(e);
+                        props.changeUsernameHook(e);
+                      }}
                     >
                       Done
                     </Button>
@@ -265,13 +265,6 @@ export default function UserPrivateProfile() {
 
   const [userInfo, setUserInfo] = useState(userInfoInit);
 
-  // const changeUsernameHook = (e: any) => {
-  //   const { name, value } = e.target;
-  //   setUserInfo({
-  //     ...userInfo,
-  //     [name]: value,
-  //   });
-  // };
   const changeUsernameHook = (e: any) => {
     setUserInfo((userInfo) => {
       return { ...userInfo, [e.target.name]: e.target.value };
