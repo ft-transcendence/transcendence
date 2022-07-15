@@ -1,32 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, CanActivate, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../../user/user.service';
+import { Observable } from 'rxjs';
 import { JwtService } from "@nestjs/jwt";
-import { jwt } from "@nestjs/jwt"
+
 
 @Injectable()
 export class WsGuard implements CanActivate {
-  constructor(private userService: UserService) {
-  }
+  constructor(private userService: UserService, private readonly jwtService: JwtService) {}
 
-  canActivate(
-    context: any,
-  ): boolean | any | Promise<boolean | any> | Observable<boolean | any> {
-    const token = context.args[0].handshake.headers.token.split(' ')[1];
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
-      return new Promise((resolve, reject) => {
-        return this.userService.getUser(decoded.userId).then(user => {
-          if (user) {
-            resolve(user);
-          } else {
-            reject(false);
-          }
-        });
-
-      });
-    } catch (ex) {
-      console.log(ex);
-      return false;
+  async canActivate(context: any): Promise<any> {
+    const user = await this.userService.getUser((this.jwtService.verify(context.args[0].handshake.headers.token.split(' ')[1]).userId));
+    if (!user) {
+      throw new UnauthorizedException();                                        
     }
+    return user;
   }
 }
