@@ -37,6 +37,7 @@ export type oneMsg = {
 export type oneUser = {
     online: boolean;
     username: string;
+    email: string;
     picture: string;
 }
 

@@ -151,7 +151,7 @@ function OneStatus({data}
             <div
                 style={{display: data ? "" : "none"}}
                 className="one-status"
-                onContextMenu={show}>
+                onContextMenu={email != data?.email ? show : undefined}>
                 <p className="one-pic">{data?.picture}</p>
                 <p className="one-name">{data?.username}</p>
                 <Menu id={MENU_STATUS}>

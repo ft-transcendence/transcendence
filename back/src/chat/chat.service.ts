@@ -434,6 +434,7 @@ export class ChatService {
         let owner: oneUser = {
             online: false,
             username: source.owner.username,
+            email: source.owner.email,
             picture: source.owner.picture,
         }
         return owner;
@@ -468,6 +469,7 @@ export class ChatService {
             let admin: oneUser = {
                 online: false,
                 username: source.admins[i].username,
+                email: source.admins[i].email,
                 picture: source.admins[i].picture,
             }
             admins.push(admin)
@@ -504,6 +506,7 @@ export class ChatService {
             let member: oneUser = {
                 online: false,
                 username: source.members[i].username,
+                email: source.members[i].email,
                 picture: source.members[i].picture,
             }
             members.push(member);

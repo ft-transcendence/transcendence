@@ -94,7 +94,7 @@ function MsgStream({email, channel}
     setTimeout(()=>{
         if (scroll.current)
         {
-            console.log(scroll.current.scrollTop);
+            // console.log(scroll.current.scrollTop);
             scroll.current.scrollTop = scroll.current.scrollHeight;
         }
     }, 30);
