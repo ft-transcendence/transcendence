@@ -151,6 +151,8 @@ export class ChatGateway {
     client.emit('fetch admins', admins);
     const members = await this.chatservice.fetchMembers(channel);
     client.emit('fetch members', members);
+    const owner = await this.chatservice.fetchOwner(channel);
+    client.emit('fetch owner', owner);
   }
 
   @SubscribeMessage('get suggest users')

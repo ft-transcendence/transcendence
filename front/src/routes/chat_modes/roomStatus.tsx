@@ -42,8 +42,14 @@ function InRoomSearch() {
 function MemberStatus() {
     const [admins, setAdmins] = useState<oneUser[]>([]);
     const [members, setMembers] = useState<oneUser[]>([]);
+    const [owner, setOwner] = useState<oneUser>();
 
     useEffect( () => {
+
+        socket.on("fetch owner", function(data: oneUser){
+            console.log("got fetched owner", data)
+            setOwner(data);
+        })
 
         socket.on("fetch admins", function(data: oneUser[]){
             console.log("got fetched admins", data)
@@ -56,6 +62,7 @@ function MemberStatus() {
         })
 
         return (() => {
+            socket.off("fetch owner");
             socket.off("fetch admins");
             socket.off("fetch members");
         })
@@ -63,9 +70,22 @@ function MemberStatus() {
     }, [])
     return (
         <div className="member-status">
-            <p style={{display: admins.length ? "" : "none"}}>admins</p>
+            <p className="status-type"
+                style={{display: owner ? "" : "none"}}>
+                OWNER
+            </p>
+            <OneStatus data={owner}/>
+            <p 
+                className="status-type"
+                style={{display: admins.length > 0 ? "" : "none"}}>
+                ADMINS
+            </p>
             <Status users={admins}/>
-            <p style={{display: admins.length ? "" : "none"}}>members</p>
+            <p
+                className="status-type"
+                style={{display: members.length > 0 ? "" : "none"}}>
+                MEMBERS
+            </p>
             <Status users={members}/>
         </div>
     )
@@ -73,8 +93,6 @@ function MemberStatus() {
 
 function Status({users}
     : {users: oneUser[]}) {
-
-    
 
     return (
         <>
@@ -90,7 +108,7 @@ function Status({users}
 }
 
 function OneStatus({data}
-    : {data: oneUser}) {
+    : {data: oneUser | undefined}) {
 
     const email = useAuth().user;
 
@@ -101,7 +119,7 @@ function OneStatus({data}
     function handleAddFriend(){
         let update: updateUser = {
             self: email,
-            other: data.username
+            other: data!.username
         }
         socket.emit("add friend", update);
     }
@@ -109,7 +127,7 @@ function OneStatus({data}
     function handleInviteGame(){
         let update: updateUser = {
             self: email,
-            other: data.username
+            other: data!.username
         }
         socket.emit("invite game", update);
     }
@@ -117,7 +135,7 @@ function OneStatus({data}
     function handleMute(){
         let update: updateUser = {
             self: email,
-            other: data.username
+            other: data!.username
         }
         socket.emit("mute user", update);
     }
@@ -125,15 +143,17 @@ function OneStatus({data}
     function handleBlock(){
         let update: updateUser = {
             self: email,
-            other: data.username
+            other: data!.username
         }
         socket.emit("block user", update);
     }
         return (
             <div
+                style={{display: data ? "" : "none"}}
+                className="one-status"
                 onContextMenu={show}>
-                {data.username}
-
+                <p className="one-pic">{data?.picture}</p>
+                <p className="one-name">{data?.username}</p>
                 <Menu id={MENU_STATUS}>
                     <Item onClick={handleAddFriend}>
                         add friend

@@ -57,8 +57,8 @@ model Channel {
   private   Boolean   @default(false)
   password  String?
 
-  owner     User      @relation("owner", fields: [ownerId], references: [id])
-  ownerId   Int
+  owner     User      @relation("owner", fields: [userId], references: [id])
+  userId    Int
   admins    User[]    @relation("admin")
   members   User[]    @relation("member")
   blocked   User[]    @relation("blocked")
