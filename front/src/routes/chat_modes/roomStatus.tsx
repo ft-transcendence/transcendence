@@ -6,7 +6,6 @@ import {
     Menu,
     Item,
     Separator,
-    Submenu,
     useContextMenu
 } from "react-contexify";
 import "react-contexify/dist/ReactContexify.css";
@@ -58,6 +57,7 @@ function MemberStatus() {
 
         return (() => {
             socket.off("fetch admins");
+            socket.off("fetch members");
         })
         
     }, [])

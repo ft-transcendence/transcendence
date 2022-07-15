@@ -2,7 +2,7 @@ import "./chatPreview.css";
 import { useEffect, useState } from "react";
 import "./chatPreview.css";
 import {socket} from "../Chat";
-import { chatPreview, updateChannel } from "./type/chat.type";
+import { chatPreview, userSuggest } from "./type/chat.type";
 import {
     Menu,
     Item,
@@ -10,6 +10,7 @@ import {
 } from "react-contexify";
 import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
+import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
 const MENU_PREVIEW = "menu_preview";
 
@@ -39,7 +40,7 @@ export default function Preview(
         <div className="preview-zone">
             <div className="preview-chat-search">
                 <ChatSearch/>
-                <CreateRoom
+                <AddRoom
                     onRequest={() => {onNewRoomRequest()}}
                     requested={newRoomRequest}
                 />
@@ -59,42 +60,68 @@ export default function Preview(
     )
 }
 
-function CreateRoom({onRequest, requested}
+function AddRoom({onRequest, requested}
     : {onRequest: () => void, requested: boolean}){
 
     return (
         <div
             onMouseUp={onRequest}
-            className="create-room-button"
-            style={{opacity: requested? 0.9 : 1}}
-        />
+            className="add-room-button"
+            style={{opacity: requested? 1 : 0.6}}>+</div>
+        
     )
 }
 
 function ChatSearch() {
+    const [userSug, setUserSug] = useState<userSuggest[]>([]);
     const [keyWord, setKey] = useState("");
 
-    const handleKeyWord = (event:any) => {
-        setKey(event.target.value);
+
+    useEffect(() => {
+        socket.emit("get suggest users");
+        // socket.emit("get existed rooms");
+        socket.on("suggest users", function(data) {
+            setUserSug(data);
+            console.log("users", userSug);
+        })
+        // socket.on("existed rooms", function(data) {
+        //     setRoomExist(data);
+        //     console.log("rooms", roomExi);
+        // })
+        socket.on("exception", function(data){
+            console.log(data)
+        })
+        return  (() => {
+            socket.off("get suggest users");
+            // socket.off("get existed rooms");
+            socket.off("exception")
+        })
+        // @ts-ignore-next-line
+    }, [])
+    const handleOnSelect = (user:userSuggest) => {
+        socket.emit("chat search", user);
     }
 
-    const handleChatSearch = (event:any) => {
-        socket.emit("chat search", keyWord);
-        setKey("");
+    const formatResult = (user: userSuggest) => {
+        return (
+            <>
+              {user.picture} {user.username} exists already
+            </>
+          )
     }
     return (
-        
-        <textarea 
-            value={keyWord}
-            onChange={handleKeyWord}
-            className="input-search"
-            onKeyDown={(e) =>
-            {
-                if (e.key === "Enter")
-                    handleChatSearch(null);
-            }}
-        />
-        
+        <div className="input-search">
+            <ReactSearchAutocomplete
+                items={userSug}
+                fuseOptions={{ keys: ["username", "email"] }}
+                onSelect={handleOnSelect}
+                autoFocus={true}
+                placeholder="search"
+                resultStringKeyName="username"
+                formatResult={formatResult}
+                styling={{height: "35px", color: "white"}}
+            />
+        </div>
     );
 }
 
@@ -125,7 +152,7 @@ function PreviewChat({data, onClick, selected}: {data:chatPreview, onClick?: ()=
         <>
             <div
             className="preview-chat"
-            onMouseUp={onClick} style={{opacity: selected ? 0.7 : 1}}
+            onMouseUp={onClick} style={{backgroundColor: selected ? "#738FA7" : ""}}
             onContextMenu={show}>
             <p className="preview-chat-img">{data.picture? data.picture : null}</p>
             <div className="preview-chat-info">
