@@ -10,6 +10,7 @@ export type newChannel = {
     name: string;
     private: boolean;
     password: string;
+    email: string | null;
 }
 
 export type updateChannel = {

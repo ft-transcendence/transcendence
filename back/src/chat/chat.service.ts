@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
+import { isEmail } from 'class-validator';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChannelDto, UseMsgDto } from './dto/chat.dto';
 import { chatPreview, oneMsg, oneUser } from './type/chat.type';
-
+ 
 @Injectable()
 export class ChatService {
     chatClients = [];
@@ -184,12 +185,20 @@ export class ChatService {
     async newChannel(data: ChannelDto)
     {
         try {
+            const id = await this.readId(data.email);
             const channel =  await this.prisma.channel.create({
                 data:
                 {
                     name: data.name,
                     private: data.private,
                     password: data.password,
+                    owners:
+                    {
+                        connect:
+                        {
+                            email: data.email,
+                        }
+                    },
                     admins:
                     {
                         connect:
@@ -398,6 +407,37 @@ export class ChatService {
             throw new WsException(error)
         }
 
+    }
+
+    async fetchOwner(channelName: string)
+    {
+        try {
+            const source = await this.prisma.channel.findUnique({
+                where:
+                {
+                    name: channelName,
+                },
+                select:
+                {
+                    owners: true,
+                }
+            })
+            const owner = this.organizeOwner(source);
+            return owner;
+        } catch (error) {
+            console.log('fetchAdmins error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    organizeOwner(source: any)
+    {
+        // let owner: oneUser = {
+        //     online: false,
+        //     username: source.owner.username,
+        //     picture: source.owner.picture,
+        // }
+        // return owner;
     }
 
     async fetchAdmins(channelName: string)
