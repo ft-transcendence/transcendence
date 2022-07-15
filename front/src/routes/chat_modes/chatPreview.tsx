@@ -14,7 +14,7 @@ import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
 const MENU_PREVIEW = "menu_preview";
 
-export default function Preview(
+export default function Preview (
     { data, current, onSelect, newRoomRequest, onNewRoomRequest }
     : { data:chatPreview[],
         current: chatPreview | undefined, 
@@ -74,15 +74,14 @@ function AddRoom({onRequest, requested}
 
 function ChatSearch() {
     const [userSug, setUserSug] = useState<userSuggest[]>([]);
-    const [keyWord, setKey] = useState("");
-
+    const [searchKey, setKey] = useState("");
 
     useEffect(() => {
         socket.emit("get suggest users");
         // socket.emit("get existed rooms");
-        socket.on("suggest users", function(data) {
+        socket.on("suggest users", function(data: userSuggest[]) {
             setUserSug(data);
-            console.log("users", userSug);
+            console.log("sug users", userSug);
         })
         // socket.on("existed rooms", function(data) {
         //     setRoomExist(data);
@@ -105,7 +104,7 @@ function ChatSearch() {
     const formatResult = (user: userSuggest) => {
         return (
             <>
-              {user.picture} {user.username} exists already
+              {user.picture} {user.username}
             </>
           )
     }
@@ -119,7 +118,7 @@ function ChatSearch() {
                 placeholder="search"
                 resultStringKeyName="username"
                 formatResult={formatResult}
-                styling={{height: "35px", color: "white"}}
+                styling={{height: "35px"}}
             />
         </div>
     );

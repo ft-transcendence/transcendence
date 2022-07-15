@@ -49,8 +49,8 @@ export type updateUser = {
 
 export type userSuggest = {
     id: number;
-    username: string;
     email: string;
+    username: string;
     picture: string;
 }
 

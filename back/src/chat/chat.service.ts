@@ -521,33 +521,16 @@ export class ChatService {
                 select:
                 {
                     id: true,
-                    username: true,
                     email: true,
+                    username: true,
                     picture: true,
                 }
             })
-            const users = this.organizeSuggestUsers(source);
-            return users;
+            return source;
         } catch (error) {
             console.log('suggestUsers error:', error);
             throw new WsException(error)
         }
-    }
-
-    organizeSuggestUsers(source: any) {
-        let users = [];
-        if (source.length)
-        {
-            for (let i = 0; i < source.length; i++)
-            {
-                let user = {
-                    id: source[i].id,
-                    name: source[i].username,
-                }
-                users.push(user);
-            }
-        }
-        return users;
     }
     
     async existedRooms()
