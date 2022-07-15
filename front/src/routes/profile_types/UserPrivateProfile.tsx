@@ -1,243 +1,8 @@
-import React from "react";
 import { useState } from "react";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import {Card, Col, Container, Row } from "react-bootstrap";
+import { ModifyEntry } from "./ModifyUserInfo";
+// import { useUsername } from "../../hooks/UserInfoHooks";
 
-const CurrentPasswordValidation = (props: any) => {
-  return (
-    <div>
-      <Form.Group className="mb-3">
-        <Form.Label className="IBM-text" style={{ fontSize: "20px" }}>
-          PASSWORD
-        </Form.Label>
-        <Form.Control
-          type="password"
-          placeholder="current password"
-          onChange={props.setUserInput}
-          value={props.modifyInput}
-          name="pass"
-        />
-      </Form.Group>
-    </div>
-  );
-};
-
-const SpecificEntry = (props: any) => {
-  if (props.toEdit === "EMAIL")
-    return (
-      <EntryIsEmail
-        setUserInput={props.setUserInput}
-        modifyInput={props.userInput.email}
-      />
-    );
-  if (props.toEdit === "USERNAME")
-    return (
-      <EntryIsUsername
-        setUserInput={props.setUserInput}
-        modifyInput={props.userInput.userName}
-      />
-    );
-  if (props.toEdit === "PHONE")
-    return (
-      <EntryIsPhone
-        setUserInput={props.setUserInput}
-        modifyInput={props.userInput.phone}
-      />
-    );
-  if (props.toEdit === "PASSWORD")
-    return (
-      <EntryIsPassword
-        setUserInput={props.setUserInput}
-        modifyInput={props.userInput.newPass}
-      />
-    );
-  return null;
-};
-
-const EntryIsUsername = (props: any) => {
-  return (
-    <div>
-      <Form.Group className="mb-3">
-        <Form.Label className="IBM-text" style={{ fontSize: "20px" }}>
-          USERNAME
-        </Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="new username"
-          onChange={props.setUserInput}
-          value={props.modifyInput}
-          name="userName"
-        />
-      </Form.Group>
-    </div>
-  );
-};
-
-const EntryIsEmail = (props: any) => {
-  return (
-    <div>
-      <Form.Group className="mb-3">
-        <Form.Label className="IBM-text" style={{ fontSize: "20px" }}>
-          EMAIL
-        </Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="new email"
-          onChange={props.setUserInput}
-          value={props.modifyInput}
-          name="email"
-        />
-      </Form.Group>
-    </div>
-  );
-};
-
-const EntryIsPhone = (props: any) => {
-  return (
-    <div>
-      <Form.Group className="mb-3">
-        <Form.Label className="IBM-text" style={{ fontSize: "20px" }}>
-          PHONE NUMBER
-        </Form.Label>
-        <Form.Control
-          type="tel"
-          placeholder="new phone number"
-          onChange={props.setUserInput}
-          value={props.modifyInput}
-          name="phone"
-        />
-      </Form.Group>
-    </div>
-  );
-};
-
-const EntryIsPassword = (props: any) => {
-  return (
-    <div>
-      <Form.Group className="mb-3">
-        <Form.Label className="IBM-text" style={{ fontSize: "20px" }}>
-          NEW PASSWORD
-        </Form.Label>
-        <Form.Control
-          type="password"
-          placeholder="new password"
-          onChange={props.setUserInput}
-          value={props.modifyInput}
-          name="newPass"
-        />
-      </Form.Group>
-    </div>
-  );
-};
-
-const updateUsernameQuery = (username: string) => {
-  let token = "bearer " + localStorage.getItem("userToken");
-  console.log("token", token);
-  let myHeaders = new Headers();
-  myHeaders.append("Authorization", token);
-  myHeaders.append("Content-Type", "application/json");
-
-  var raw = JSON.stringify({
-    username: username,
-  });
-
-  fetch("http://localhost:4000/users/update_username", {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  })
-    .then((response) => response.text())
-    .then((result) => console.log(result))
-    .catch((error) => console.log("error", error));
-};
-
-const ModifyEntry = (props: any) => {
-  const initialValues = {
-    email: "",
-    userName: "",
-    phone: "",
-    newPass: "",
-    pass: "",
-  };
-
-  const [userInput, setUserInput] = useState(initialValues);
-
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    setUserInput({
-      ...userInput,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (e: any) => {
-    console.log("--------------");
-    console.log("email 👉️", userInput.email);
-    console.log("phone 👉️", userInput.phone);
-    console.log("newPass 👉️", userInput.newPass);
-    console.log("password 👉️", userInput.pass);
-    if (userInput.userName) {
-      console.log("userName 👉️", userInput.userName);
-      updateUsernameQuery(userInput.userName);
-      const button = document.getElementById("handleChange");
-      if (button) {
-        button.setAttribute("name", "userName");
-        button.setAttribute("value", userInput.userName);
-        console.log("here");
-      }
-    }
-  };
-  return (
-    <Col className="p-3 col-6">
-      <Card className="p-5 modify-card">
-        <Card.Body>
-          <div>
-            <form>
-              <div className="">
-                <SpecificEntry
-                  toEdit={props.toEdit}
-                  setUserInput={handleInputChange}
-                  userInput={userInput}
-                />
-                <CurrentPasswordValidation
-                  setUserInput={handleInputChange}
-                  userInput={userInput.pass}
-                />
-                <Row>
-                  <Col></Col>
-                  <Col>
-                    <button
-                      type="button"
-                      className="btn btn-outline-primary btn-sm float-end"
-                      onClick={props.onClick}
-                    >
-                      Cancel
-                    </button>
-                  </Col>
-                  <Col>
-                    <Button
-                      id="handleChange"
-                      variant="primary"
-                      type="button"
-                      className="submit-button float-end"
-                      size="sm"
-                      onClick={(e:any) => {
-                        handleSubmit(e);
-                        props.changeUsernameHook(e);
-                      }}
-                    >
-                      Done
-                    </Button>
-                  </Col>
-                </Row>
-              </div>
-            </form>
-          </div>
-        </Card.Body>
-      </Card>
-    </Col>
-  );
-};
 
 export default function UserPrivateProfile() {
   const [showUsername, setShowUsername] = useState(false);
@@ -257,15 +22,15 @@ export default function UserPrivateProfile() {
   const hidePass = () => setShowPass(false);
 
   const userInfoInit = {
-    email: "",
-    userName: "",
+    email: localStorage.getItem("userEmail"),
+    userName: localStorage.getItem("userName"),
     phone: "",
-    pass: "",
+    pass: localStorage.getItem("userPassword"),
   };
 
   const [userInfo, setUserInfo] = useState(userInfoInit);
 
-  const changeUsernameHook = (e: any) => {
+  const changeUserInfoHook = (e: any) => {
     setUserInfo((userInfo) => {
       return { ...userInfo, [e.target.name]: e.target.value };
     });
@@ -299,7 +64,7 @@ export default function UserPrivateProfile() {
                         USERNAME{" "}
                       </div>
                       <div className="ROBOTO-text" style={{ fontSize: "15px" }}>
-                        Looloose
+                        {userInfo.userName}
                       </div>
                     </Col>
                     <Col className=" text-right">
@@ -326,7 +91,7 @@ export default function UserPrivateProfile() {
                         EMAIL{" "}
                       </div>
                       <div className="ROBOTO-text" style={{ fontSize: "15px" }}>
-                        mvaldes@student.42.fr
+                        {userInfo.email}
                       </div>
                     </Col>
                     <Col className=" text-right">
@@ -421,11 +186,15 @@ export default function UserPrivateProfile() {
             <ModifyEntry
               toEdit="USERNAME"
               onClick={onClickEditUsername}
-              changeUsernameHook={changeUsernameHook}
+              changeUserInfoHook={changeUserInfoHook}
             />
           ) : null}
           {showEmail ? (
-            <ModifyEntry toEdit="EMAIL" onClick={onClickEditEmail} />
+            <ModifyEntry
+              toEdit="EMAIL"
+              onClick={onClickEditEmail}
+              changeUserInfoHook={changeUserInfoHook}
+            />
           ) : null}
           {showPhone ? (
             <ModifyEntry toEdit="PHONE" onClick={onClickEditPhone} />
