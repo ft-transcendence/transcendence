@@ -435,6 +435,7 @@ export class ChatService {
         // let owner: oneUser = {
         //     online: false,
         //     username: source.owner.username,
+        //     email: source.owner.email,
         //     picture: source.owner.picture,
         // }
         // return owner;
@@ -464,15 +465,16 @@ export class ChatService {
     organizeAdmins(source: any)
     {
         let admins = [];
-        for (let i = 0; i < source.admins.length; i++)
-        {    
-            // let admin: oneUser = {
-            //     online: false,
-            //     username: source.admins[i].username,
-            //     picture: source.admins[i].picture,
-            // }
-            // admins.push(admin)
-        }        
+        // for (let i = 0; i < source.admins.length; i++)
+        // {    
+        //     let admin: oneUser = {
+        //         online: false,
+        //         username: source.admins[i].username,
+        //         email: source.admins[i].email,
+        //         picture: source.admins[i].picture,
+        //     }
+        //     admins.push(admin)
+        // }        
         return admins;
     }
 
@@ -501,14 +503,16 @@ export class ChatService {
     {
         let members = [];
         // for (let i = 0; i < source.members.length; i++)
-        // {    let member: oneUser = {
+        // {    
+        //     let member: oneUser = {
         //         online: false,
         //         username: source.members[i].username,
+        //         email: source.members[i].email,
         //         picture: source.members[i].picture,
         //     }
-            // members.push(member);
+        //     members.push(member);
         // }
-        // return members;
+        return members;
     }
 
     async suggestUsers()
