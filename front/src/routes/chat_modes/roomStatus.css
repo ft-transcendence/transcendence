@@ -1,14 +1,40 @@
 .chat-status-zone {
-    background-color: grey;
-    flex: 1;
+    background-color: inherit;
+    width: 250px;
 }
 
 .in-room-search {
-    background-color: lightgray;
-    height: 5.5vh;
+    background-color: #071330;
+    height: 60px;
+    border-bottom: 1px solid;
+
+}
+
+.status-type {
+    color: grey;
+    font-weight: 600;
+    font-size: 14px;
 }
 
 .member-status {
-    background-color: orange;
+    /* background-color: rosybrown; */
+    margin-top: 20px;
+    margin-left: 20px;
+    color: white;
 }
 
+.one-status {
+    margin-top: 5px;
+    display: flex;
+}
+
+.one-pic {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.one-name {
+    padding-left: 20px;
+}
