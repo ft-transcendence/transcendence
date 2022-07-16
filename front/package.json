@@ -48,6 +48,8 @@
     ]
   },
   "devDependencies": {
-    "prettier": "2.7.1"
+    "file-loader": "^6.2.0",
+    "prettier": "2.7.1",
+    "webpack": "^5.73.0"
   }
 }
