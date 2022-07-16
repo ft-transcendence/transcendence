@@ -11,6 +11,12 @@ export type newChannel = {
     private: boolean;
     password: string;
     email: string | null;
+    members: Tag[];
+}
+
+export type Tag = {
+    id: number | string;
+    name: string;
 }
 
 export type updateChannel = {
