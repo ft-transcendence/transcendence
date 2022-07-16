@@ -67,10 +67,6 @@
   /* align-self: flex-end; */
 }
 
-.text-wrapper {
-  /* display: flex; */
-}
-
 .wrapper {
   align-items: center;
   display: flex;
@@ -83,12 +79,18 @@
   letter-spacing: -0.4px;
 }
 
+.profile-username-text {
+  font-weight: 500;
+  font-size: 25px;
+  line-height: 20px;
+  color: var(--text-color-white);
+}
+
 .caption {
   font-family: "IBM Plex Mono";
   font-style: normal;
   padding-top: 5px;
   font-size: 12px;
-  letter-spacing: -0.4px;
 }
 
 .App {
@@ -116,42 +118,19 @@
 }
 
 .profile-pic-round {
-  /* display: flex; */
   height: 150px;
   width: 150px;
-  /* display: inline-block; */
   border-radius: 50%;
   background: var(--buttons-color-gray-disabled);
-  /* Buttons/dark - outside - medium */
   box-shadow: 7px 7px 30px #1f2427, -7px -7px 30px #485057;
 }
 
-.profile-username-text {
-  display: flex;
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-size: 25px;
-  line-height: 20px;
-  /* identical to box height, or 67% */
-
-  display: flex;
-  align-items: center;
-  letter-spacing: -0.4px;
-  color: var(--text-color-white);
+.edit-round-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #5d76ec;
 }
-
-/* .profile-card {
-
-    padding-top: 30px;
-    padding-left: 30px;
-    padding-right: 30px;
-    padding-bottom: 30px;
-
-    background: #31353C;
-    box-shadow: -10px -5px 30px 5px #34373C, 10px 5px 30px 5px #24282D;
-    border-radius: 10px;
-  } */
 
 .Auth-form-container {
   display: flex;

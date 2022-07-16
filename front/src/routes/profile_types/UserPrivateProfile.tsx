@@ -1,8 +1,9 @@
 import { useState } from "react";
-import {Card, Col, Container, Row } from "react-bootstrap";
+import { Card, Col, Container, Row } from "react-bootstrap";
 import { ModifyEntry } from "./ModifyUserInfo";
+import IconPen from "../../ressources/icons/IconPen.svg";
+import ProfilePic from "../../ressources/imgs/mvaldes.jpeg";
 // import { useUsername } from "../../hooks/UserInfoHooks";
-
 
 export default function UserPrivateProfile() {
   const [showUsername, setShowUsername] = useState(false);
@@ -39,11 +40,22 @@ export default function UserPrivateProfile() {
   return (
     <main>
       <h1 className="app-title">My account</h1>
-      <Container className="p-5 h-100 wrapper">
-        <Row className="">
-          <Col className="">
-            <div className="profile-pic-round"></div>
-          </Col>
+      <Container className="p-5 h-100">
+        <Row className="wrapper">
+          <div
+            className="p-2 profile-pic-round"
+            style={{
+              backgroundImage: `url("https://cdn.intra.42.fr/users/mvaldes.JPG")`,
+              backgroundSize: "cover",
+              backgroundPosition: "center"
+            }}
+          >
+            <input
+              type="image"
+              src={IconPen}
+              className="float-end edit-round-icon"
+            />
+          </div>
           <Col className=" content">
             <div className="profile-username-text">@{userInfo.userName}</div>
             <div className="caption"> See Public Profile</div>
@@ -52,8 +64,8 @@ export default function UserPrivateProfile() {
       </Container>
 
       <Container className="p-5">
-        <Row className="flex p-4">
-          <Col className="p-3 col-6">
+        <Row className="flex">
+          <Col className="col-6">
             <Card className="p-5 profile-card">
               <Card.Body>
                 <div>
@@ -197,10 +209,18 @@ export default function UserPrivateProfile() {
             />
           ) : null}
           {showPhone ? (
-            <ModifyEntry toEdit="PHONE" onClick={onClickEditPhone} />
+            <ModifyEntry
+              toEdit="PHONE"
+              onClick={onClickEditPhone}
+              changeUserInfoHook={changeUserInfoHook}
+            />
           ) : null}
           {showPass ? (
-            <ModifyEntry toEdit="PASSWORD" onClick={onClickEditPass} />
+            <ModifyEntry
+              toEdit="PASSWORD"
+              onClick={onClickEditPass}
+              changeUserInfoHook={changeUserInfoHook}
+            />
           ) : null}
         </Row>
       </Container>

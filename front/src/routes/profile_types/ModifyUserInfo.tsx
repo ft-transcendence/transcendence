@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Col, Card, Row, Button, Form } from "react-bootstrap";
-import { updateUsernameQuery, updateEmailQuery } from "../../queries/userQueries";
+import {
+  updateUsernameQuery,
+  updateEmailQuery,
+} from "../../queries/userQueries";
 
 export const ModifyEntry = (props: any) => {
   const initialValues = {
@@ -22,6 +25,7 @@ export const ModifyEntry = (props: any) => {
   };
 
   const handleSubmit = (e: any) => {
+    e.preventDefault();
     console.log("--------------");
     if (userInput.userName) {
       console.log("userName 👉️", userInput.userName);
@@ -41,9 +45,10 @@ export const ModifyEntry = (props: any) => {
         button.setAttribute("value", userInput.email);
       }
     }
+    // ADD THE REST WHEN BACK HAS DEDICATED FUNCTIONS FOR IT
   };
   return (
-    <Col className="p-3 col-6">
+    <Col className="col-6">
       <Card className="p-5 modify-card">
         <Card.Body>
           <div>
@@ -73,7 +78,7 @@ export const ModifyEntry = (props: any) => {
                     <Button
                       id="handleChange"
                       variant="primary"
-                      type="button"
+                      type="submit"
                       className="submit-button float-end"
                       size="sm"
                       onClick={(e: any) => {
@@ -153,7 +158,7 @@ const EntryIsEmail = (props: any) => {
           EMAIL
         </Form.Label>
         <Form.Control
-          type="text"
+          type="email"
           placeholder="new email"
           onChange={props.setUserInput}
           value={props.modifyInput}
