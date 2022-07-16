@@ -23,8 +23,8 @@
 }
 
 .browse-users {
-    height: 50px;
-    /* width: 100%; */
+    max-height: 140px;
+    overflow: overlay;
 }
 
 .div-switch {
@@ -53,7 +53,6 @@
     margin-left: 50px;
     margin-right: 50px;
     border-radius: 4px;
-    /* border: ; */
     text-align: center;
     color: rgb(97, 95, 95);
 }
@@ -63,8 +62,7 @@
     color: black;
 }
 
-.flexBlock
-{
+.flexBlock {
     flex:1;
     display: flex;
 }
