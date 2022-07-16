@@ -15,7 +15,6 @@ const fetchPost = (
     redirect: "follow",
   })
     .then((response) => response.text())
-    // .then((result) => console.log(result))
     .then((result) => storeUserInfo(userInfo, result))
     .then(() => userSignIn())
     .then(() => console.log("auth " + url))
@@ -45,6 +44,7 @@ const storeUserInfo = (userInfo: any, token: string) => {
     const subOne = token.replace('{"access_token":"', "");
     const subTwo = subOne.replace('"}', "");
     localStorage.setItem("userToken", subTwo);
+    console.log("token: ", subTwo);
     if (userInfo.username) localStorage.setItem("userName", userInfo.username);
     else localStorage.setItem("userName", "not-found");
 

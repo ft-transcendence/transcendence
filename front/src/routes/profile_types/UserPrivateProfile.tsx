@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Modal, Row } from "react-bootstrap";
 import { ModifyEntry } from "./ModifyUserInfo";
 import IconPen from "../../ressources/icons/IconPen.svg";
 import ProfilePic from "../../ressources/imgs/mvaldes.jpeg";
+import { MUploadAvatar } from "../../modals/MUploadAvatar";
 // import { useUsername } from "../../hooks/UserInfoHooks";
 
 export default function UserPrivateProfile() {
@@ -37,8 +38,12 @@ export default function UserPrivateProfile() {
     });
   };
 
+  const [modalShow, setModalShow] = useState(false);
+
   return (
     <main>
+      <MUploadAvatar show={modalShow} onHide={() => setModalShow(false)} />
+
       <h1 className="app-title">My account</h1>
       <Container className="p-5 h-100">
         <Row className="wrapper">
@@ -47,13 +52,14 @@ export default function UserPrivateProfile() {
             style={{
               backgroundImage: `url("https://cdn.intra.42.fr/users/mvaldes.JPG")`,
               backgroundSize: "cover",
-              backgroundPosition: "center"
+              backgroundPosition: "center",
             }}
           >
             <input
               type="image"
               src={IconPen}
               className="float-end edit-round-icon"
+              onClick={() => setModalShow(true)}
             />
           </div>
           <Col className=" content">
