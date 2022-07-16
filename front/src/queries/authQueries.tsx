@@ -15,6 +15,7 @@ const fetchPost = (
     redirect: "follow",
   })
     .then((response) => response.text())
+    // .then((result) => console.log(result))
     .then((result) => storeUserInfo(userInfo, result))
     .then(() => userSignIn())
     .then(() => console.log("auth " + url))
@@ -36,7 +37,7 @@ export const signUp = (userInfo: any, userSignIn: any) => {
     password: userInfo.password,
     username: userInfo.username,
   });
-  fetchPost(raw, userInfo, userSignIn, "signin");
+  fetchPost(raw, userInfo, userSignIn, "signup");
 };
 
 const storeUserInfo = (userInfo: any, token: string) => {
