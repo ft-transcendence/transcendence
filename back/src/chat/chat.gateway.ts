@@ -137,6 +137,14 @@ export class ChatGateway {
     client.emit('suggest users', users);
   }
 
+  @SubscribeMessage('get user tags')
+  async handleUserTags(
+    @ConnectedSocket() client: Socket
+  ) {
+    const tags = await this.chatservice.userTags();
+    client.emit('user tags', tags);
+  }
+
   @SubscribeMessage('get existed rooms')
   async handleExistedRooms(
     @ConnectedSocket() client: Socket

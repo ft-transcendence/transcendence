@@ -2,7 +2,7 @@ import "./newRoom.css";
 import "./tags.css"
 import { useEffect, useRef, useState } from "react";
 import { socket } from "../../App";
-import { newChannel, roomExist } from "./type/chat.type";
+import { newChannel, roomExist, userSuggest } from "./type/chat.type";
 import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
 import Switch from "react-switch";
@@ -10,14 +10,11 @@ import ReactTags, { Tag } from "react-tag-autocomplete";
 import { matchSorter } from "match-sorter";
 import { useAuth } from "../..";
 
-
-
 export function NewRoom({onNewRoomRequest}
     : {onNewRoomRequest: () => void}) {
     const cardRef = useRef<HTMLDivElement>(null);
     const email = useAuth().user;
-    const [userSug, setUserSug] = useState([]);
-    const [roomExi, setRoomExist] = useState([]);
+    const [userTag, setUserTag] = useState<Tag[]>([]);
     const [roomName, setRoomName] = useState("");
     const [roomPass, setRoomPass] = useState("");
     const [isPrivate, setPrivate] = useState(false);
@@ -25,22 +22,16 @@ export function NewRoom({onNewRoomRequest}
     const [addedMember, setAddMember] = useState<Tag[]>([]);
 
     useEffect(() => {
-        socket.emit("get suggest users");
-        socket.emit("get existed rooms");
-        socket.on("suggest users", function(data) {
-            setUserSug(data);
-            console.log("users", userSug);
-        })
-        socket.on("existed rooms", function(data) {
-            setRoomExist(data);
-            console.log("rooms", roomExi);
+        socket.emit("get user tags");
+        socket.on("user tags", function(data: Tag[]) {
+            setUserTag(data);
+            console.log("tags", data);
         })
         socket.on("exception", function(data){
             console.log(data)
         })
         return  (() => {
-            socket.off("get suggest users");
-            socket.off("get existed rooms");
+            socket.off("user tags");
             socket.off("exception")
         })
         // @ts-ignore-next-line
@@ -51,6 +42,7 @@ export function NewRoom({onNewRoomRequest}
     const onAddMember = (member: Tag) => {
         const members = addedMember.concat(member)
         setAddMember(members);
+        console.log("added a member", members)
     }
 
     const onDeleteMember = (i: number) => {
@@ -107,7 +99,8 @@ export function NewRoom({onNewRoomRequest}
             </div>
             <div className="browse-users">
                 <ReactTags
-                    suggestions={userSug}
+                    tags={addedMember}
+                    suggestions={userTag.filter(v => {return addedMember.filter(v1 => {return v1.id == v.id}).length == 0})}
                     placeholderText="add users"
                     onAddition={onAddMember}
                     onDelete={onDeleteMember}

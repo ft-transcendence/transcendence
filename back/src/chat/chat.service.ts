@@ -518,7 +518,7 @@ export class ChatService {
     async suggestUsers()
     {
         try {
-            const source = await this.prisma.user.findMany({
+            const suggestion = await this.prisma.user.findMany({
                 select:
                 {
                     id: true,
@@ -527,9 +527,37 @@ export class ChatService {
                     picture: true,
                 }
             })
-            return source;
+            return suggestion;
         } catch (error) {
             console.log('suggestUsers error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    organizeTags(source: any) {
+        let users = [];
+        if (source.length)
+        {
+            for (let i = 0; i < source.length; i++)
+            {
+                let user = {
+                    id: source[i].id,
+                    name: source[i].username,
+                }
+                users.push(user);
+            }
+        }
+        return users;
+    }
+
+    async userTags()
+    {
+        try {
+            const source = await this.suggestUsers();
+            const tags = await this.organizeTags(source);
+            return tags;
+        } catch (error) {
+            console.log('userTags error:', error);
             throw new WsException(error)
         }
     }
