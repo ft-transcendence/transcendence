@@ -1,5 +1,6 @@
 /* GLOBAL MODULES */
 import { Injectable, ForbiddenException } from "@nestjs/common";
+import { User } from "@prisma/client";
 
 
 /* PRISMA */
@@ -126,51 +127,133 @@ export class UserService {
 
 	//RELATIONSHIP RELATED FUNCTIONS
 
+	async updateFriends(id: number) {
+		const user = await this.prisma.user.findUnique({where: {id: id}});
+		const adding = user.adding;
+		const added = user.added;
+
+		//find common values
+		const commonValues = added.filter(value => adding.includes(value));
+
+		await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				friends: {
+					push: commonValues
+			
+				}
+			}
+		})
+
+		//remove common values
+		const NewAdding = adding.filter(value => !commonValues.includes(value));
+		const NewAdded = added.filter(value => !commonValues.includes(value));
+
+		await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				adding: NewAdding
+			}
+		})
+
+		await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				added: NewAdded
+			}
+		})
+	}
+
 	async addFriend(id: number, otherId: number){
 		const user = await this.prisma.user.update({
 			where: {
 				id: id
 			},
 			data: {
-				adding : {
-					connect: { id: otherId },
+				adding: {
+					push: otherId
 				}
 			}
 		})
+
+		const otherUser = await this.prisma.user.update({
+			where: {
+				id: otherId
+			},
+			data: {
+				added: {
+					push: id
+				}
+			}
+		})
+		
+		this.updateFriends(id);
+		this.updateFriends(otherId);
+
 		return (user);
-		//error: same id ?
-		//error: already friend ?
 	}
 
 	// /!\ THIS IS NO LONGER RELEVANT to the added/adding duo since it will only cancel an invitation
 	// once the real friends list is done, change -added- for friends
 	async rmFriend(id: number, otherId: number){
-		const user = await this.prisma.user.update({
+
+		//removing otherUser from User.friends
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: id
+			},
+		})
+
+		const index = user.friends.indexOf(otherId);
+		if (index != -1) {
+			user.friends.splice(index, 1)
+		}
+
+		await this.prisma.user.update({
 			where: {
 				id: id
 			},
 			data: {
-				adding : {
-					disconnect: { id: otherId },
-				}
+				friends: user.friends
 			}
 		})
+
+		//removing User from otherUser.friends
+		const user2 = await this.prisma.user.findUnique({
+			where: {
+				id: otherId
+			},
+		})
+
+		const index2 = user2.friends.indexOf(id);
+		if (index2 != -1) {
+			user2.friends.splice(index2, 1)
+		}
+
+		await this.prisma.user.update({
+			where: {
+				id: otherId
+			},
+			data: {
+				friends: user2.friends
+			}
+		})
+
 		return (user);
-		//error: same id ?
-		//error: not a friend ?
-	}	
+	}
 	
 	async blockUser(id: number, otherId: number){
 		this.rmFriend(id, otherId);
-		const user = await this.prisma.user.update({
+		const user = await this.prisma.user.findUnique({
 			where: {
 				id: id
 			},
-			data: {
-				blocking : {
-					connect: { id: otherId },
-				}
-			}
 		})
 		return (user);
 		//error: same id ?
@@ -180,15 +263,10 @@ export class UserService {
 	// /!\ THIS IS NO LONGER RELEVANT to the blocked/blocking duo since it will only cancel an invitation
 	// once the real friends list is done, change -blocking- for blocks	
 	async unblockUser(id: number, otherId: number){
-		const user = await this.prisma.user.update({
+		const user = await this.prisma.user.findUnique({
 			where: {
 				id: id
 			},
-			data: {
-				blocking : {
-					disconnect: { id: otherId },
-				}
-			}
 		})
 		return (user);
 		//error: same id ?

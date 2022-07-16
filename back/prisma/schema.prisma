@@ -17,30 +17,38 @@ datasource db {
 }
 
 model User {
-	id				Int				@id @default(autoincrement())
+	id			Int			@id @default(autoincrement())
 
 	createdAt	DateTime	@default(now())
 	updatedAt	DateTime	@updatedAt
 
-	email		 	String    @unique
-	username	String?    @unique  
-	hash			String
+	email		String		@unique
+	username	String?		@unique  
+	hash		String
 	avatar		String?
 
+<<<<<<< HEAD
 	hashedRtoken	String?
 
 	gamesWon		Int     @default(0)
 	gamesLost		Int     @default(0)
 	gamesPlayed	Int     @default(0)
+=======
+	gamesWon	Int			@default(0)
+	gamesLost	Int			@default(0)
+	gamesPlayed	Int			@default(0)
+>>>>>>> :construction: addFriend, updateFriends, rmFriend
 //game history ? Une partie = 2 id, un score
 
-	//These 4 arrays might evolve in 2 more : friends and blocks
-	adding		User[]		@relation("friendships")
-	added		User[]		@relation("friendships")
-	blocking	User[]		@relation("blockships") 
-	blocked		User[]		@relation("blockships")
+	friends		Int[]
+	adding		Int[]	
+	added		Int[]		
 
-	admin       Channel[] @relation("admin")  // the following three line i dont understand well. 
+	blocks		Int[]
+	blocking	Int[]
+	blocked		Int[]
+
+	admin       Channel[] @relation("admin") 
 	member      Channel[] @relation("member")
 	chanBlocked Channel[] @relation("blocked")
 
