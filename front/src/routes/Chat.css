@@ -5,6 +5,13 @@
     border-color: grey;
 }
 
+.card-disappear-click-zone {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
 .add-zone {
     position: fixed;
     top: 50%;
@@ -14,7 +21,6 @@
     animation-duration: 0.5s;
     animation-timing-function: ease;
 }
-
 
 @keyframes mymove {
     from {transform: translateX(-50%) translateY(-50%) scale(0.95); opacity: 0;}
