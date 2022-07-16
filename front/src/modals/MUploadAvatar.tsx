@@ -1,5 +1,7 @@
 import { Modal, Button, Form } from "react-bootstrap";
 
+// updateAvatarQuery;
+
 export function MUploadAvatar(props: any) {
   return (
     <Modal
