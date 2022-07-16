@@ -37,8 +37,6 @@ export function NewRoom({onNewRoomRequest}
         // @ts-ignore-next-line
     }, [])
 
-
-
     const onAddMember = (member: Tag) => {
         const members = addedMember.concat(member)
         setAddMember(members);
@@ -73,6 +71,7 @@ export function NewRoom({onNewRoomRequest}
             private: isPrivate,
             password: roomPass,
             email: email,
+            members: addedMember,
         }
         socket.emit("new channel", data);
         initVars();

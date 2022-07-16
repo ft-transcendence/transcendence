@@ -182,30 +182,37 @@ export class ChatService {
         return ;
     }
 
-    async newChannel(data: ChannelDto)
+    async newChannel(info: ChannelDto)
     {
         try {
-            const id = await this.readId(data.email);
+            const id = await this.readId(info.email);
             const channel =  await this.prisma.channel.create({
                 data:
                 {
-                    name: data.name,
-                    private: data.private,
-                    password: data.password,
+                    name: info.name,
+                    private: info.private,
+                    password: info.password,
                     owners:
                     {
                         connect:
                         {
-                            email: data.email,
+                            email: info.email,
                         }
                     },
                     admins:
                     {
                         connect:
                         {
-                            email: data.email
+                            email: info.email
                         }
                     },
+                    members:
+                    {
+                        connect:
+                        
+                            info.members.map(id => ({id : id.id})),
+                        
+                    }
                 }
             })
             return channel.id;

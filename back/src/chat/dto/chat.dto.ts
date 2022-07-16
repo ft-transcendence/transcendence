@@ -1,4 +1,6 @@
 import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsHash, IsInt, isNotEmpty, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, maxLength } from 'class-validator';
+import { Tag } from '../type/chat.type';
+
 
 export class ChannelDto {
 
@@ -17,6 +19,10 @@ export class ChannelDto {
     @IsEmail()
     @IsNotEmpty()
     email: string
+
+    @IsArray()
+    @IsOptional()
+    members: Array<Tag>;
 
 }
 

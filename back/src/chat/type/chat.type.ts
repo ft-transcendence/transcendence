@@ -21,3 +21,8 @@ export type oneUser = {
     email: string;
     picture: string;
 }
+
+export type Tag = {
+    id: number;
+    name: string;
+}
