@@ -59,6 +59,10 @@ export default function Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [email])
 
+    const cardDisappear = () => {
+        setNewRoomRequest(old => {return !old})
+    }
+
 
     return (
         <div className="zone-diff">
@@ -77,13 +81,19 @@ export default function Chat() {
                 current={selectedChat}/>
             <RoomStatus
                 current={selectedChat}/>
-            <div 
-                className="add-zone"
+            <div
+                onClick={cardDisappear}
+                className="card-disappear-click-zone"
                 style={{display: newRoomRequest ? "" : "none"}}>
-                    <NewRoom
-                        onNewRoomRequest={() => {
-                            setNewRoomRequest(old => {return !old})
-                        }}/>
+                <div 
+                    className="add-zone"
+                    onClick={event => event.stopPropagation()}>
+                        <NewRoom
+                            newRoomRequest={newRoomRequest}
+                            onNewRoomRequest={() => {
+                                setNewRoomRequest(old => {return !old})
+                            }}/>
+                </div>
             </div>
         </div>
     )
