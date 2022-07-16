@@ -199,8 +199,6 @@ export class UserService {
 		return (user);
 	}
 
-	// /!\ THIS IS NO LONGER RELEVANT to the added/adding duo since it will only cancel an invitation
-	// once the real friends list is done, change -added- for friends
 	async rmFriend(id: number, otherId: number){
 
 		//removing otherUser from User.friends
@@ -248,6 +246,56 @@ export class UserService {
 		return (user);
 	}
 	
+	async cancelInvite(id: number, otherId: number){
+
+		//removing otherUser from User.adding
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: id
+			},
+		})
+
+		const index = user.adding.indexOf(otherId);
+		if (index != -1) {
+			user.adding.splice(index, 1)
+		}
+
+		await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				adding: user.adding
+			}
+		})
+
+		//removing User from otherUser.added
+		const user2 = await this.prisma.user.findUnique({
+			where: {
+				id: otherId
+			},
+		})
+
+		const index2 = user2.added.indexOf(id);
+		if (index2 != -1) {
+			user2.added.splice(index2, 1)
+		}
+
+		await this.prisma.user.update({
+			where: {
+				id: otherId
+			},
+			data: {
+				added: user2.added
+			}
+		})
+	}
+
+	async denyInvite(id: number, otherId: number){
+		this.cancelInvite(otherId, id);
+	}
+
+
 	async blockUser(id: number, otherId: number){
 		this.rmFriend(id, otherId);
 		const user = await this.prisma.user.findUnique({

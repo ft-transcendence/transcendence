@@ -113,6 +113,20 @@ export class UserController {
 		return (result);
 	}
 
+	@Post('/cancel_invite')
+	async cancelInvite(@Req() request, @Body('friendId') otherId: number){
+//		console.log('Going through cancelInvite in user.controller: ' + request.user.id + ' -> ' + otherId);
+		const result = await this.userService.cancelInvite(request.user.id, otherId);
+		return (result);		
+	}
+
+	@Post('/deny_invite')
+	async denyInvite(@Req() request, @Body('friendId') otherId: number){
+//		console.log('Going through cancelInvite in user.controller: ' + request.user.id + ' -> ' + otherId);
+		const result = await this.userService.denyInvite(request.user.id, otherId);
+		return (result);		
+	}
+
 	//unblock user
 
 
