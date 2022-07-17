@@ -6,7 +6,7 @@ import Preview from "./chat_modes/chatPreview";
 import ChatRoom from "./chat_modes/chatRoom";
 import RoomStatus from "./chat_modes/roomStatus";
 import { chatPreview } from "./chat_modes/type/chat.type";
-import { NewRoom } from "./chat_modes/newRoom";
+import { NewRoomCard } from "./chat_modes/newRoomCard";
 
 const socketOptions = {
   transportOptions: {
@@ -33,9 +33,8 @@ export default function Chat() {
         socket.emit("read preview", email);
 
         socket.on("set preview", function(data: chatPreview[] | null) {
-            
             if (data)
-            {   
+            {
                 console.log("chat preview", data);
                 setPreview(data);
             }
@@ -88,11 +87,11 @@ export default function Chat() {
                 <div 
                     className="add-zone"
                     onClick={event => event.stopPropagation()}>
-                        <NewRoom
+                        <NewRoomCard
                             newRoomRequest={newRoomRequest}
                             onNewRoomRequest={() => {
                                 setNewRoomRequest(old => {return !old})
-                            }}/>
+                        }}/>
                 </div>
             </div>
         </div>
