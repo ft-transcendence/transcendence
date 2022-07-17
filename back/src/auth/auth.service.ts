@@ -32,6 +32,9 @@ export class AuthService{
 		return { msg : 'This route is functional' };
 	}
 
+
+
+
 	/* SIGNUP */
 	async signup(dto: SignUpDto) {
 
@@ -47,13 +50,29 @@ export class AuthService{
 			},
 			});
 			// return a hashed user
-			return this.signin_jwt(user.id, user.email);
+			const tokens = await this.signin_jwt(user.id, user.email);
+			await this.updateRefreshToken(user.id, tokens.refresh_token);
+			return tokens;
 		} catch (error) {
 		// duplicate user email
 			if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
 					throw new ForbiddenException('Credentials already exist')
 				}
 		}
+	}
+
+	/* UPDATE REFRESH TOKEN */
+	async updateRefreshToken(userId: number, refreshToken: string) {
+
+		const hash = await argon.hash(refreshToken);
+		await this.prisma.user.update({
+			where: { 
+				id: userId, 
+			},
+			data: { 
+				hashedRtoken : hash, 
+			},
+		});
 	}
 
 	/* SIGNIN */
@@ -74,32 +93,70 @@ export class AuthService{
 		if (!pwMatches) throw new ForbiddenException(
 			'Invalid Credentials'
 			);
-		return this.signin_jwt(user.id, user.email);
+		const tokens = await this.signin_jwt(user.id, user.email);
+		await this.updateRefreshToken(user.id, tokens.refresh_token);
+		return tokens;
 	}
 
 	/* SIGNIN JASON WEB TOKEN */
 	async signin_jwt(
 		userId: number,
 		email: string,
-		): Promise<{access_token : string}> {
+		): Promise<{access_token : string, refresh_token : string}> {
+		// get tokens
+
 		// get login data
 		const login_data = {
 			sub: userId,
 			email
 		}
 		// generate jwt secret
-		const secret = this.config.get('JWT_SECRET');
+		const secret = process.env.JWT_SECRET;
 		// set JWT params (basic)
-		const token = await this.jwtService.signAsync(login_data, {
+		const Atoken = await this.jwtService.signAsync(login_data, {
 			expiresIn: '120m',
-			secret: secret,});
+			secret: secret,
+		});
+		const Rtoken = await this.jwtService.signAsync(login_data, {
+			expiresIn: '7d',
+			secret: secret,
+		});
 		// return token
 		return {
-			access_token: token,
+			access_token: Atoken,
+			refresh_token: Rtoken,
 		};
 	}
 
+	/* REFRESH TOKEN */
+	async refresh_token(userId: number, refreshToken: string) {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: userId,
+			}
+		});
+		if (!user || !user.hashedRtoken ) throw new ForbiddenException('Invalid Credentials')
+		const pwMatches = await argon.verify(user.hashedRtoken, refreshToken);
+		if (!pwMatches) throw new ForbiddenException('Invalid Credentials')
+		const tokens = await this.signin_jwt(user.id, user.email);
+		await this.updateRefreshToken(user.id, tokens.refresh_token);
+		return tokens;
+	}
+
 	/* SIGNOUT */
+	async signout(userId: number) {
+		await this.prisma.user.updateMany({
+			where: {
+				id: userId,
+				hashedRtoken: {
+					not : null,
+				}
+			},
+			data: {
+				hashedRtoken: null, 
+			},
+	});
+}
 
 	/* GENERATE A RANDOM PASSWORD */
 	generate_random_password() {

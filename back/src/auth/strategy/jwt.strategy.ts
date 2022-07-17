@@ -1,6 +1,5 @@
 /* GLOBAL MODULES */
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config';
 /* AUTH PassportStrategy */
 import { PassportStrategy } from "@nestjs/passport";
 /* AUTH JWT */
@@ -21,12 +20,11 @@ export class jwtStrategy extends PassportStrategy(
      * JWT strategy object constructor
      */
     constructor(
-        config: ConfigService,
         private prisma: PrismaService
         ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: config.get('JWT_SECRET'),
+            secretOrKey: process.env.JWT_SECRET,
         })
     }
 
@@ -47,7 +45,8 @@ export class jwtStrategy extends PassportStrategy(
             }
         });
         // remove sensitive data
-        delete user.hash;
+        if (user)
+            delete user.hash;
         // if the user is not found user == NULL
         // 401 forbidden is returned.
         return user;

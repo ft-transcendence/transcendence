@@ -4,16 +4,17 @@
  */
 
 /* GLOBAL MODULES */
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 /* CUSTOM DECORATORS */
-import { Public } from "src/decorators";
+import { GetCurrentUser, GetCurrentUserId, Public } from "src/decorators";
 /* INTERFACE FOR 42 API */
 import { Profile_42 } from "./interfaces/42.interface";
 /* AUTH MODULES */
 import { AuthService } from "./auth.service";
 import { SignUpDto, SignInDto } from "./dto"
 import { FortyTwoAuthGuard } from "./guard/42auth.guard";
+import { RtGuard } from "./guard";
 
 // AUTH CONTROLLER - /auth
 @Controller('auth')
@@ -57,7 +58,7 @@ export class AuthController {
 		url.port = process.env.FRONT_PORT;
 		url.pathname = '/login';
 		url.searchParams.append('access_token', token['access_token']);
-		response.redirect(302, url.href);
+		response.status(302).redirect(url.href);
 	}
 
 	/**
@@ -65,7 +66,7 @@ export class AuthController {
 	 * @param dto data transfer object
 	 */
 	@Public()
-	@Post('signup')
+	@Post('/signup')
 	signup(@Body() dto: SignUpDto) {
 		console.log(dto);
 		return this.authService.signup(dto);
@@ -75,9 +76,34 @@ export class AuthController {
 	 * /signin - sign in to API
 	 */
 	@Public()
-	@Post('signin')
+	@Post('/signin')
 	signin(@Body() dto: SignInDto) {
 		console.log(dto);
 		return this.authService.signin(dto);
+	}
+
+	
+	/**
+	 * /logout - logout from API
+	 */
+	//@UseGuards(JwtGuard)
+	@Post('logout')
+	@HttpCode(200)
+	logout(@GetCurrentUserId() userId: number) {
+		console.log('logout', userId);
+		return this.authService.signout(userId);
+	}
+
+	/* REFRESH TOKEN */
+	@Public()
+	@UseGuards(RtGuard)
+	@HttpCode(200)
+	@Post('/refresh')
+	refresh(
+		@GetCurrentUserId() userId: number, 
+		@GetCurrentUser('refreshToken') refreshToken: string,
+	) {
+		console.log('refresh route id:' , userId, 'token:', refreshToken);
+		return this.authService.refresh_token(userId, refreshToken);
 	}
 }

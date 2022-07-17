@@ -27,6 +27,8 @@ model User {
 	hash			String
 	avatar		String?
 
+	hashedRtoken	String?
+
 	gamesWon		Int     @default(0)
 	gamesLost		Int     @default(0)
 	gamesPlayed	Int     @default(0)
