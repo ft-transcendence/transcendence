@@ -1,4 +1,4 @@
-import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsHash, IsInt, isNotEmpty, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, maxLength } from 'class-validator';
+import { IsArray, IsBoolean, IsEmail, IsHash, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 'class-validator';
 import { Tag } from '../type/chat.type';
 
 
@@ -43,4 +43,15 @@ export class UseMsgDto {
     @IsNumber()
     @IsOptional()
     msgId: number;
+}
+
+export class DMDto {
+
+    @IsEmail()
+    @IsNotEmpty()
+    email: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    added_id: number;
 }

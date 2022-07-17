@@ -42,11 +42,11 @@ function InRoomSearch() {
 function MemberStatus() {
     const [admins, setAdmins] = useState<oneUser[]>([]);
     const [members, setMembers] = useState<oneUser[]>([]);
-    const [owner, setOwner] = useState<oneUser>();
+    const [owner, setOwner] = useState<oneUser[]>([]);
 
     useEffect( () => {
 
-        socket.on("fetch owner", function(data: oneUser){
+        socket.on("fetch owner", function(data: oneUser[]){
             console.log("got fetched owner", data)
             setOwner(data);
         })
@@ -71,10 +71,10 @@ function MemberStatus() {
     return (
         <div className="member-status">
             <p className="status-type"
-                style={{display: owner ? "" : "none"}}>
+                style={{display: owner.length > 0 ? "" : "none"}}>
                 OWNER
             </p>
-            <OneStatus data={owner}/>
+            <Status users={owner}/>
             <p 
                 className="status-type"
                 style={{display: admins.length > 0 ? "" : "none"}}>
