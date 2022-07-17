@@ -18,11 +18,16 @@ export type chatPreview = {
 
 export type newChannel = {
     name: string;
-    dm: boolean;
     private: boolean;
     password: string;
     email: string | null;
     members: Tag[];
+}
+
+export type newDM = {
+
+    email: string | null;
+    added_id: number;
 }
 
 export type Tag = {
@@ -61,5 +66,4 @@ export type oneUser = {
 export type updateUser = {
     self: string | null;
     other: string;
-
 }

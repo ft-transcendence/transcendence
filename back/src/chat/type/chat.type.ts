@@ -35,5 +35,4 @@ export type oneUser = {
 export type Tag = {
     id: number;
     name: string;
-
 }

@@ -10,7 +10,7 @@ import {
 import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import { UseMsgDto, ChannelDto } from './dto/chat.dto';
+import { UseMsgDto, ChannelDto, DMDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
@@ -81,8 +81,8 @@ export class ChatGateway {
 
   @SubscribeMessage('new channel')
   async handleNewChannel(
-  @MessageBody() data: ChannelDto,
-  @ConnectedSocket() client: Socket) {
+    @MessageBody() data: ChannelDto,
+    @ConnectedSocket() client: Socket) {
     const channelId = await this.chatservice.new__channel(data);
     if (channelId == null)
       client.emit('exception', {error: "channel exist, try another channel name!"})
@@ -94,8 +94,9 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('join channel')
-  async enterChannel(@MessageBody() data: ChannelDto,
-  @ConnectedSocket() client: Socket) {
+  async enterChannel(
+    @MessageBody() data: ChannelDto,
+    @ConnectedSocket() client: Socket) {
     
     const channelId = await this.chatservice.join__channel(data);
     if (channelId == null)
@@ -106,6 +107,15 @@ export class ChatGateway {
       client.join(data.name)
       client.emit('cid', ret);
     }
+  }
+
+  @SubscribeMessage('new dm')
+  async newDM(
+    @MessageBody() data: DMDto,
+    @ConnectedSocket() client: Socket) {
+    await this.chatservice.new__DM(data);
+    const ret = await this.chatservice.get__previews(data.email);
+    client.emit('update preview', ret)
   }
 
   @SubscribeMessage('test')
@@ -140,8 +150,8 @@ export class ChatGateway {
     @MessageBody() channel: string,
     @ConnectedSocket() client: Socket
   ) {
-    const owner = await this.chatservice.fetch__owner(channel);
-    client.emit('fetch owner', owner);
+    const owners = await this.chatservice.fetch__owners(channel);
+    client.emit('fetch owner', owners);
     const admins = await this.chatservice.fetch__admins(channel);
     client.emit('fetch admins', admins);
     const members = await this.chatservice.fetch__members(channel);

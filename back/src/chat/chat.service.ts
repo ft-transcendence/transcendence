@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 import { isEmail } from 'class-validator';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ChannelDto, UseMsgDto } from './dto/chat.dto';
+import { ChannelDto, DMDto, UseMsgDto } from './dto/chat.dto';
 import { chatPreview, oneMsg, oneSuggestion, oneUser } from './type/chat.type';
  
 @Injectable()
@@ -273,21 +273,47 @@ export class ChatService {
         return ;
     }
 
+    async new__DM(info: DMDto)
+    {
+        try {
+            let ids: number[] = [];
+            const id = await this.get__id__ByEmail(info.email);
+            ids.push(id);
+            ids.push(info.added_id);
+            const dm =  await this.prisma.channel.create({
+                data:
+                {
+                    dm: true,
+                    private: true,
+                    owners:
+                    {
+                        connect:
+                            ids.map(id => ({id: id}))                        
+                    }
+                }
+            })
+            console.log("created dm", dm)
+            return dm.id;
+        } catch (error) {
+            console.log('new__DM error:', error)
+            throw new WsException(error)
+        } 
+    }
+
     async new__channel(info: ChannelDto)
     {
         try {
-            const id = await this.get__id__ByEmail(info.email);
             const channel =  await this.prisma.channel.create({
                 data:
                 {
                     name: info.name,
                     private: info.private,
                     password: info.password,
-                    owner:
+                    owners:
                     {
                         connect:
                         {
-                            email: info.email,
+                            email: info.email
                         }
                     },
                     admins:
@@ -489,7 +515,7 @@ export class ChatService {
 
     }
 
-    async fetch__owner(channelName: string)
+    async fetch__owners(channelName: string)
     {
         try {
             const source = await this.prisma.channel.findUnique({
@@ -499,26 +525,32 @@ export class ChatService {
                 },
                 select:
                 {
-                    owner: true
+                    owners: true
                 }
             })
-            const owner = this.organize__owner(source);
-            return owner;
+            console.log(source.owners);
+            const owners = this.organize__owners(source);
+            return owners;
         } catch (error) {
             console.log('fetch__owner error:', error);
             throw new WsException(error)
         }
     }
 
-    organize__owner(source: any)
+    organize__owners(source: any)
     {
-        let owner: oneUser = {
-            online: false,
-            username: source.owner.username,
-            email: source.owner.email,
-            picture: source.owner.picture,
-        }
-        return owner;
+        let owners = [];
+        for (let i = 0; i < source.owners.length; i++)
+        {    
+            let owner: oneUser = {
+                online: false,
+                username: source.owners[i].username,
+                email: source.owners[i].email,
+                picture: source.owners[i].picture,
+            }
+            owners .push(owner)
+        }        
+        return owners;
     }
 
     async fetch__admins(channelName: string)
@@ -646,6 +678,10 @@ export class ChatService {
         try {
             const rooms = await this.prisma.channel.findMany(
             {
+                where:
+                {
+                    private: false,
+                },
                 select:
                 {
                     id: true,

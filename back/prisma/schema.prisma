@@ -49,16 +49,16 @@ model User {
 model Channel {
   id    Int           @id  @default(autoincrement())
 
-  name  String        @unique
+  name  String        @unique @default(uuid())
   picture String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
+  dm        Boolean   @default(false)
   private   Boolean   @default(false)
   password  String?
 
-  owner     User      @relation("owner", fields: [userId], references: [id])
-  userId    Int
+  owners     User[]    @relation("owner")
   admins    User[]    @relation("admin")
   members   User[]    @relation("member")
   blocked   User[]    @relation("blocked")

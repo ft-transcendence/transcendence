@@ -2,7 +2,7 @@ import "./chatPreview.css";
 import { useEffect, useState } from "react";
 import { useAuth } from "../..";
 import { socket } from "../../App";
-import { chatPreview, updateChannel, oneSuggestion, newChannel, Tag } from "./type/chat.type";
+import { chatPreview, updateChannel, oneSuggestion, newDM } from "./type/chat.type";
 import {
     Menu,
     Item,
@@ -43,7 +43,7 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
         })
 
         socket.on("update preview", function(data: chatPreview[] | null) {
-            console.log("update preview")
+            console.log("update preview", data)
             if (data)
                 setPreviews(data);
         })
@@ -54,7 +54,7 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
             socket.off("update preview")
         })
 
-    }, []);
+    }, [email]);
 
     const addPreview = (channelName: string) => {
         console.log("add preview!!")
@@ -112,33 +112,22 @@ function ChatSearch( { onSearchMyChat, onSearchPublicChat }
             setSug(data);
             console.log("suggestion", data);
         })
-        socket.on("exception", function(data){
-            console.log(data)
-        })
 
         return  (() => {
             socket.off("search suggest");
-            socket.off("exception")
         })
     
-    }, [])
+    }, [email])
 
     const handleOnSelect = (data: oneSuggestion) => {
 
         if (data.catagory === "user")
         {
-            let added: Tag = {
-                id: data.data_id,
-                name: data.name
-            }
-            let dm: newChannel = {
-                name: '',
-                dm: true,
-                private: false,
-                password: '',
+            let dm: newDM = {
                 email: email,
-                members: [added],
+                added_id: data.data_id,
             }
+            console.log("DM:", dm)
             socket.emit("new dm", dm);
         }
         else if (data.catagory === "my chat")
