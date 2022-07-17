@@ -1,4 +1,14 @@
+export type oneSuggestion = {
+    catagory: string;
+    picture: string;
+    name: string;
+    id: number;
+    data_id: number;
+}
+
 export type chatPreview = {
+    id: number;
+    dm: boolean;
     name: string;
     picture?: string;
     updateAt: string;
@@ -8,6 +18,7 @@ export type chatPreview = {
 
 export type newChannel = {
     name: string;
+    dm: boolean;
     private: boolean;
     password: string;
     email: string | null;
@@ -51,17 +62,4 @@ export type updateUser = {
     self: string | null;
     other: string;
 
-}
-
-export type userSuggest = {
-    id: number;
-    email: string;
-    username: string;
-    picture: string;
-}
-
-export type roomExist = {
-    id: number;
-    name: string;
-    picture: string;
 }

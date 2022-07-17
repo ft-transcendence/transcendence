@@ -54,14 +54,10 @@ export class ChatGateway {
     email: string,
     @ConnectedSocket() client: Socket) {
     const channels = await this.chatservice.get__channels(email);
-    console.log(channels)
     if (channels[0].member[0])
     {
       for (let i = 0; i < channels.length; i++)
-      {  
-        console.log(channels[i].member[0])
         client.join(channels[i].member[0].name);
-      }
     }
   }
 
@@ -70,16 +66,18 @@ export class ChatGateway {
     @MessageBody() email: string,
     @ConnectedSocket() client: Socket) {
     await this.handleFetchChannel(email, client);
-    const data = await this.chatservice.get__preview(email);
+    const data = await this.chatservice.get__previews(email);
     client.emit('set preview', data)
   }
 
-  // @SubscribeMessage('chatSearch')
-  // async handleChatSearch(
-  //   @MessageBody() keyword:string,
-  //   @ConnectedSocket() client: Socket) {
+  @SubscribeMessage('add preview')
+  async handleChatSearch(
+    @MessageBody() channelName: string,
+    @ConnectedSocket() client: Socket) {
+    const preview = await this.chatservice.get__onePreview(channelName);
+    client.emit('add preview', preview);
 
-  // }
+  }
 
   @SubscribeMessage('new channel')
   async handleNewChannel(
@@ -90,7 +88,7 @@ export class ChatGateway {
       client.emit('exception', {error: "channel exist, try another channel name!"})
     else
     {
-      const ret = await this.chatservice.get__preview(data.email);
+      const ret = await this.chatservice.get__previews(data.email);
       client.emit('update preview', ret)
     }
   }
@@ -104,7 +102,7 @@ export class ChatGateway {
       client.emit('exception', {error: "channel not found"})
     else
     {
-      const ret = await this.chatservice.get__preview(data.email);
+      const ret = await this.chatservice.get__previews(data.email);
       client.join(data.name)
       client.emit('cid', ret);
     }
@@ -133,14 +131,9 @@ export class ChatGateway {
     await this.chatservice.new__msg(data);
     const fetch = await this.chatservice.fetch__msgs(data.channel);
     client.emit('fetch msgs', fetch);
-    const preview = await this.chatservice.get__preview(data.email);
+    const preview = await this.chatservice.get__previews(data.email);
     client.emit('update preview', preview)
   }
-
-  // async broadcast(event: string, data: any) {
-  //   const cName = await this.chatservice.findCnameByCId(data.channelId);
-  //   this.server.in(cName).emit(event, data)
-  // }
 
   @SubscribeMessage('read room status')
   async handleFetchStatus(
@@ -157,9 +150,10 @@ export class ChatGateway {
 
   @SubscribeMessage('get search suggest')
   async handleSuggestUsers(
+    @MessageBody() email: string,
     @ConnectedSocket() client: Socket
   ) {
-    const users = await this.chatservice.get__searchSuggest();
+    const users = await this.chatservice.get__searchSuggest(email);
     client.emit('search suggest', users);
   }
 
@@ -179,7 +173,7 @@ export class ChatGateway {
     await this.chatservice.delete__msg(data);
     const fetch = await this.chatservice.fetch__msgs(data.channel);
     client.emit('fetch msgs', fetch);
-    const preview = await this.chatservice.get__preview(data.email);
+    const preview = await this.chatservice.get__previews(data.email);
     client.emit('update preview', preview)
   }
 
@@ -191,7 +185,7 @@ export class ChatGateway {
     await this.chatservice.edit__msg(data);
     const fetch = await this.chatservice.fetch__msgs(data.channel);
     client.emit('fetch msgs', fetch);
-    const preview = await this.chatservice.get__preview(data.email);
+    const preview = await this.chatservice.get__previews(data.email);
     client.emit('update preview', preview)
   }
 

@@ -18,6 +18,18 @@
     width: 190px;
 }
 
+.search-result {
+    margin-top: 17px;
+}
+
+.result-type {
+    color: grey;
+}
+
+.result {
+    color: rgb(75, 74, 74);
+}
+
 .add-room-button {
     background-color: grey;
     margin-top: 10px;

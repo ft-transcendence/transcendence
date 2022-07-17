@@ -1,4 +1,14 @@
+export type oneSuggestion = {
+    catagory: string;
+    picture: string;
+    name: string;
+    id: number;
+    data_id: number;
+}
+
 export type chatPreview = {
+    id: number;
+    dm: boolean;
     name: string;
     picture?: string;
     updateAt: string;
@@ -25,4 +35,5 @@ export type oneUser = {
 export type Tag = {
     id: number;
     name: string;
+
 }

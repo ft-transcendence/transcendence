@@ -10,25 +10,10 @@ import { chatPreview } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 
 export default function Chat() {
-    const [previewData, setPreview] = useState<chatPreview[]>([]);
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
     const [newRoomRequest, setNewRoomRequest] = useState(false); 
 
-    const email = useAuth().user;
-
     useEffect(() => {
-
-        socket.emit("read preview", email);
-
-        socket.on("set preview", function(data: chatPreview[] | null) {
-            if (data)
-            {
-                console.log("chat preview", data);
-                setPreview(data);
-            }
-            else
-                console.log("no preview")
-        })
 
         socket.on("connect", () => {
             console.log("front Connected");
@@ -43,17 +28,15 @@ export default function Chat() {
             socket.off("connect");
             socket.off("exception");
         })
-    }, [email])
+    }, [])
 
     const cardDisappear = () => {
         setNewRoomRequest(old => {return !old})
     }
 
-
     return (
         <div className="zone-diff">
             <Preview
-                data={previewData}
                 current={selectedChat}
                 onSelect={(chat) => {
                     setSelectedChat(chat)
