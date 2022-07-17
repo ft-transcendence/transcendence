@@ -12,20 +12,37 @@
 .room-name-input {
     height: 50px;
     width: 100%;
-    margin: auto;
-    padding-left: 10px;
-    border-radius: 12px;
+    margin-top: 8px;
+    /* margin-bottom: 5px; */
+    /* margin: auto; */
+    padding-left: 18px;
+    background-color: transparent;
     border-color: transparent;
+    /* padding: 6px 0 0 10px; */
+    border-bottom: 1px solid #D1D1D1;
+    
+  
+    /* shared font styles */
+    font-size: 1em;
+    line-height: 1.2;
 }
 
 .room-name-input:focus {
     outline: none;
+    border-bottom: 1px solid #B1B1B1;
+    /* border-radius: 1px; */
 }
 
 .browse-users {
+    margin-top: 5px;
+    margin-bottom: 10px;
     max-height: 140px;
     overflow: overlay;
 }
+/* 
+.browse-users:focus {
+    height:200px;
+} */
 
 .div-switch {
     display: flex;

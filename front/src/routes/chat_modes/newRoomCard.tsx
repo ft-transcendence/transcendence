@@ -1,4 +1,4 @@
-import "./newRoom.css";
+import "./newRoomCard.css";
 import "./tags.css"
 import { useEffect, useRef, useState } from "react";
 import { socket } from "../../App";
@@ -10,9 +10,9 @@ import ReactTags, { Tag } from "react-tag-autocomplete";
 import { matchSorter } from "match-sorter";
 import { useAuth } from "../..";
 
-export function NewRoom({onNewRoomRequest}
-    : {onNewRoomRequest: () => void}) {
-    const cardRef = useRef<HTMLDivElement>(null);
+export function NewRoomCard({newRoomRequest, onNewRoomRequest}
+    : { newRoomRequest: boolean,
+        onNewRoomRequest: () => void}) {
     const email = useAuth().user;
     const [userTag, setUserTag] = useState<Tag[]>([]);
     const [roomName, setRoomName] = useState("");
@@ -20,8 +20,17 @@ export function NewRoom({onNewRoomRequest}
     const [isPrivate, setPrivate] = useState(false);
     const [isPassword, setIsPassword] = useState(false);
     const [addedMember, setAddMember] = useState<Tag[]>([]);
+    const scroll = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        console.log("new room : request:", newRoomRequest)
+
+        if (newRoomRequest == false)
+        {   
+            initVars();
+            console.log("new room : request:", newRoomRequest)
+        }
+
         socket.emit("get user tags");
         socket.on("user tags", function(data: Tag[]) {
             setUserTag(data);
@@ -35,7 +44,7 @@ export function NewRoom({onNewRoomRequest}
             socket.off("exception")
         })
         // @ts-ignore-next-line
-    }, [])
+    }, [newRoomRequest])
 
     const onAddMember = (member: Tag) => {
         const members = addedMember.concat(member)
@@ -80,14 +89,23 @@ export function NewRoom({onNewRoomRequest}
 
     const initVars = () => {
         setRoomName("");
-        setRoomPass("");
+        setAddMember([]);
         setPrivate(false);
         setIsPassword(false);
         setRoomPass("");
     }
 
+    const autoScroll = () => {
+        setTimeout(() => {
+            if (scroll.current)
+                scroll.current.scrollTop = scroll.current.scrollHeight;
+        }, 30);
+    }
+
+    // .filter(v => {return addedMember.filter(v1 => {return v1.id == v.id}).length == 0})
+
     return (
-        <div className="new-room-request" ref={cardRef}>
+        <div className="new-room-request">
             <div className="room-name">
                 <input
                     value={roomName}
@@ -96,13 +114,16 @@ export function NewRoom({onNewRoomRequest}
                     placeholder="room name"
                 />
             </div>
-            <div className="browse-users">
+            <div 
+                className="browse-users"
+                ref={scroll}>
                 <ReactTags
                     tags={addedMember}
-                    suggestions={userTag.filter(v => {return addedMember.filter(v1 => {return v1.id == v.id}).length == 0})}
-                    placeholderText="add users"
+                    suggestions={userTag}
+                    placeholderText="To:"
                     onAddition={onAddMember}
                     onDelete={onDeleteMember}
+                    onInput={autoScroll}
                     suggestionsTransform={suggestionsFilter}
                     noSuggestionsText="user not found"
                 />

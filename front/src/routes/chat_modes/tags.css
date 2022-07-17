@@ -24,19 +24,19 @@
  */
  .react-tags {
     position: relative;
-    padding: 6px 0 0 6px;
-    border: 1px solid #D1D1D1;
-    border-radius: 1px;
+    padding: 6px 0 0 10px;
+    border-bottom: 1px solid #D1D1D1;
+    /* border-radius: 1px; */
   
     /* shared font styles */
     font-size: 1em;
     line-height: 1.2;
-  
     /* clicking anywhere will focus the input */
     cursor: text;
   }
   
   .react-tags.is-focused {
+    height:120px;
     border-color: #B1B1B1;
   }
   
@@ -50,7 +50,7 @@
     margin: 0 6px 6px 0;
     padding: 6px 8px;
     border: 1px solid #D1D1D1;
-    border-radius: 2px;
+    border-radius: 8px;
     background: #F1F1F1;
   
     /* match the font styles */
@@ -73,7 +73,7 @@
     display: inline-block;
   
     /* match tag layout */
-    padding: 7px 2px;
+    padding: 7px 8px;
     margin-bottom: 6px;
   
     /* prevent autoresize overflowing the container */
