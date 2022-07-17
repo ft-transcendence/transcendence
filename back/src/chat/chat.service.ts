@@ -3,7 +3,7 @@ import { WsException } from '@nestjs/websockets';
 import { isEmail } from 'class-validator';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChannelDto, UseMsgDto } from './dto/chat.dto';
-import { chatPreview, oneMsg, oneUser } from './type/chat.type';
+import { chatPreview, oneMsg, oneSuggestion, oneUser } from './type/chat.type';
  
 @Injectable()
 export class ChatService {
@@ -42,6 +42,22 @@ export class ChatService {
         }
     }
 
+    async find__CnameByCId(cid: number): Promise<string>
+    {
+        try
+        {
+            const channel = await this.prisma.channel.findFirst({
+                where: {
+                    id: cid,
+                }
+            })
+            return channel.name;
+        } catch (error) {
+            console.log('find__CnameByCId error:', error);
+            throw new WsException(error)
+        }
+    }
+
     async get__channels(email: string)
     {
         try {
@@ -64,11 +80,11 @@ export class ChatService {
         
     }
 
-    async get__preview(email: string): Promise<chatPreview[]>
+    async get__previews(email: string): Promise<chatPreview[]>
     {
         try {
             const source = await this.get__chatList__ByEmail(email);
-            const data = this.organize__preview(source);
+            const data = await this.organize__preview(source);
             return (data);
         } catch (error) {
             console.log('get__preview error:', error);
@@ -81,24 +97,29 @@ export class ChatService {
         if (source.admin.length)
             for (let i = 0; i < source.admin.length; i++)
             {
+                let msgCount = source.admin[i].messages.length;
                 // let element: chatPreview = {
+                //     id: source.admin[i].id,
+                //     dm: source.admin[i].dm,
                 //     name: source.admin[i].name,
                 //     picture: source.admin[i].picture,
                 //     updateAt: source.admin[i].picture,
-                //     lastMsg: source.admin[i].messages.length > 0 ?
-                //         source.admin[i].messages[0].msg : '',
+                //     lastMsg: msgCount > 0 ? 
+                //     source.admin[i].messages[msgCount - 1].msg : ''
                 // };
                 // data.push(element);
-                
             }
         if (source.member.length)
             for (let i = 0; i < source.member.length; i++)
             {
+                let msgCount = source.member[i].messages.length;
                 // let element: chatPreview = {
+                //     id: source.member[i].id,
+                //     dm: source.member[i].dm,
                 //     name: source.member[i].name,
                 //     picture: source.member[i].picture,
                 //     updateAt: source.member[i].picture,
-                //     lastMsg: source.member[i].messages.length > 0 ?
+                //     lastMsg: msgCount > 0 ? 
                 //         source.member[i].messages[0].msg : '',
                 // };
                 // data.push(element);
@@ -106,8 +127,70 @@ export class ChatService {
         return data;
     }
 
-    async get__chatList__ByEmail(email: string) {
+    async get__onePreview(channelName: string): Promise<chatPreview>
+    {
+        try {
+            const source = await this.get__chat__ByChannelName(channelName);
+            const data = this.organize__onePreview(source);
+            console.log("get one pre:", data)
+            // return (data);
+        } catch (error) {
+            console.log('get__onePreview error:', error);
+            return null;
+        }
+    }
 
+    organize__onePreview(source: any) {
+        let msgCount = 0;
+        if (source.messages)
+            msgCount = source.messages;
+        // let data: chatPreview = {
+        //     id: source.id,
+        //     dm: source.dm,
+        //     name: source.name,
+        //     updateAt: source.updateAt,
+        //     lastMsg: msgCount > 0 ?
+        //         source.messages[0].msg : '',
+        // }
+        // return data;
+    }
+
+    async get__chat__ByChannelName(channelName: string)
+    {
+        try {
+            const source = await this.prisma.channel.findUnique({
+                where:
+                {
+                    name: channelName,
+                },
+                select:
+                {
+                    id: true,
+                    dm: true,
+                    name: true,
+                    picture: true,
+                    updatedAt: true,
+                    messages:
+                    {
+                        where:
+                        {
+                            unsent: false,
+                        },
+                        select:
+                        {
+                            msg: true,
+                        }
+                    }
+                }
+            })
+            return source;
+        } catch (error) {
+            console.log('get__chat__ByChannelName error:', error)
+            throw new WsException(error)
+        }
+    }
+
+    async get__chatList__ByEmail(email: string) {
         try {
             const ret = await this.prisma.user.findUnique({
                 where:
@@ -120,6 +203,8 @@ export class ChatService {
                     {
                         select: 
                         {
+                            id: true,
+                            dm: true,
                             name: true,
                             picture: true,
                             updatedAt: true,
@@ -140,6 +225,8 @@ export class ChatService {
                     {
                         select: 
                         {
+                            id: true,
+                            dm: true,
                             name: true,
                             picture: true,
                             updatedAt: true,
@@ -168,7 +255,7 @@ export class ChatService {
 
     async list__allUsers()
     {
-        const users = await this.prisma.user.findMany()
+        const users = await this.prisma.user.findMany();
         let i = 0;
         for (let user = users.at(i); user != null; user = users[i++])
             console.log('   user %d: %s', i, user.email);
@@ -179,7 +266,7 @@ export class ChatService {
 
     async list__allChannels()
     {
-        const channels = await this.prisma.channel.findMany()
+        const channels = await this.prisma.channel.findMany();
         let i = 0;
         for (let channel = channels.at(i); channel != null; channel = channels[i++])
             console.log('   channel %d: %s', i, channel.name);
@@ -214,7 +301,6 @@ export class ChatService {
                     members:
                     {
                         connect:
-                        
                             info.members.map(id => ({id : id.id})),
                         
                     }
@@ -251,22 +337,6 @@ export class ChatService {
             console.log('join__channel error:', error);
             throw new WsException(error.message)
         } 
-    }
-
-    async find__CnameByCId(cid: number): Promise<string>
-    {
-        try
-        {
-            const channel = await this.prisma.channel.findFirst({
-                where: {
-                    id: cid,
-                }
-            })
-            return channel.name;
-        } catch (error) {
-            console.log('find__CnameByCId error:', error);
-            throw new WsException(error)
-        }
     }
 
     async fetch__msgs(channelName: string): Promise<oneMsg[]>
@@ -330,19 +400,18 @@ export class ChatService {
         {
             let data = [];
             if (source.messages.length)
-                for (let i = 0; i < source.messages.length; i++)
-                {   
-                    // let element: oneMsg = {
-                    //     msgId: source.messages[i].id,
-                    //     email: source.messages[i].owner.email,
-                    //     username: source.messages[i].owner.username,
-                    //     msg: source.messages[i].msg,
-                    //     createAt: source.messages[i].createdAt,
-                    //     updateAt: source.messages[i].updateAt,
-                    // };
-                    // console.log(element.email)
-                    // data.push(element);
-                }
+                // for (let i = 0; i < source.messages.length; i++)
+                // {   
+                //     let element: oneMsg = {
+                //         msgId: source.messages[i].id,
+                //         email: source.messages[i].owner.email,
+                //         username: source.messages[i].owner.username,
+                //         msg: source.messages[i].msg,
+                //         createAt: source.messages[i].createdAt,
+                //         updateAt: source.messages[i].updateAt,
+                //     };
+                //     data.push(element);
+                // }
             return data;
         } catch (error) {
             console.log('organize__msgs error:', error);
@@ -573,7 +642,7 @@ export class ChatService {
         }
     }
     
-    async get__publicChats()
+    async get__publicChats(email: string)
     {
         try {
             const rooms = await this.prisma.channel.findMany(
@@ -582,6 +651,7 @@ export class ChatService {
                 {
                     id: true,
                     name: true,
+                    picture: true,
                 }
             })
             return rooms;
@@ -591,44 +661,85 @@ export class ChatService {
         }
     }
 
-    async get__myChats()
-    {
+    async organize__searchSuggest(id, users, publicChats, myChats) {
         try {
-            const myChats = await this.prisma.channel.findMany(
-            {
-                where:
-                {
 
-                },
-                select:
-                {
-                    id: true,
-                    name: true,
-                }
+            let suggestion = [];
+            let myChatsLength = myChats.length;
+            const usersFiltered = users.filter((user) => {
+                return user.id != id;
             })
-            return myChats;
-        } catch (error) {
-            console.log('get__myChats error:', error);
-            throw new WsException(error)
-        }
-    }
 
-    async organize__searchSuggest() {
-        try {
-            
+            let usersLength = usersFiltered.length;
+
+            for (let i = 0; i < usersFiltered.length; i++)
+            {
+                let one: oneSuggestion = {
+                    catagory: 'user',
+                    picture: usersFiltered[i].picture,
+                    name: usersFiltered[i].username,
+                    id: i,
+                    data_id: usersFiltered[i].id,
+                }
+                suggestion.push(one);
+            }
+
+            for (let i = 0; i < myChats.length; i++)
+            {
+                let one: oneSuggestion = {
+                    catagory: 'my chat',
+                    picture: myChats[i].picture,
+                    name: myChats[i].name,
+                    id: usersLength + i,
+                    data_id: myChats[i].id,
+                }
+                suggestion.push(one);
+            }
+
+            // const existsInSuggestion = (chat) => {
+                
+            //     const suggestionsWhereTheChatDataIDIsTheSame = suggestion.filter((sug) => {
+            //         return sug.data_id == chat.id;
+            //     });
+
+            //     return suggestionsWhereTheChatDataIDIsTheSame.length >= 1;
+
+            // }
+
+            const publicChatsFiltered = publicChats.filter((chat) => {
+
+                return suggestion.filter((sug) => {
+                    return sug.data_id == chat.id;
+                }).length == 0;
+            })
+
+            for (let i = 0; i < publicChatsFiltered.length; i++)
+            {
+                let one: oneSuggestion = {
+                    catagory: 'public chat',
+                    picture: publicChatsFiltered[i].picture,
+                    name: publicChatsFiltered[i].name,
+                    id: usersLength + myChatsLength + i,
+                    data_id: publicChatsFiltered[i].id,
+                }
+                suggestion.push(one);
+            }
+            return suggestion;
         } catch (error) {
             console.log('organize__searchSuggest error:', error);
             throw new WsException(error)
         }
     }
 
-    async get__searchSuggest()
+    async get__searchSuggest(email: string)
     {
         try {
+            const id = await this.get__id__ByEmail(email);
             const users = await this.get__allUsers();
-            const publicChats = await this.get__publicChats();
-            const myChats = await this.get__myChats();
-            const suggestion = await this.organize__searchSuggest();
+            const publicChats = await this.get__publicChats(email);
+            const myChats = await this.get__previews(email);
+            const suggestion = await this.organize__searchSuggest(id, users, publicChats, myChats);
+            return suggestion;
         } catch (error) {
             console.log('get__searchSuggest error:', error);
             throw new WsException(error)

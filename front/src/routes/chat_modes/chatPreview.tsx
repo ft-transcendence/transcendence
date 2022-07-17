@@ -2,51 +2,91 @@ import "./chatPreview.css";
 import { useEffect, useState } from "react";
 import "./chatPreview.css";
 import {socket} from "../Chat";
-import { chatPreview, userSuggest } from "./type/chat.type";
+import { chatPreview, newChannel, oneSuggestion, Tag, updateChannel } from "./type/chat.type";
 import {
     Menu,
     Item,
     useContextMenu
 } from "react-contexify";
-import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
+import { useAuth } from "../../globals/contexts";
 
 const MENU_PREVIEW = "menu_preview";
 
-export default function Preview (
-    { data, current, onSelect, newRoomRequest, onNewRoomRequest }
-    : { data:chatPreview[],
-        current: chatPreview | undefined, 
+export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomRequest }
+    : { current: chatPreview | undefined, 
         onSelect: (chatPreview:chatPreview) => void,
         newRoomRequest: boolean,
         onNewRoomRequest: () => void }) {
 
-    const [items, setItems] = useState<chatPreview[]>([]);
+    const [roomPreview, setPreviews] = useState<chatPreview[]>([]);
+    const email = useAuth().user;
     
     useEffect(() => {
-        setItems(data);
 
-        socket.on("update preview", function(data) {
-            console.log("update preview")
-            setItems(data);
+        socket.emit("read preview", email);
+
+        socket.on("set preview", function(data: chatPreview[] | null) {
+            if (data)
+            {
+                console.log("chat preview", data);
+                setPreviews(data);
+            }
+            else
+                console.log("no preview")
         })
+        
+        socket.on("add preview", function(data: chatPreview) {
+            console.log("add preview", data)
+            if (data)
+                setPreviews(oldPreviews => [...oldPreviews, data]);
+        })
+
+        socket.on("update preview", function(data: chatPreview[] | null) {
+            console.log("update preview")
+            if (data)
+                setPreviews(data);
+        })
+
         return (() => {
+            socket.off("set preview")
+            socket.off("add preview")
             socket.off("update preview")
         })
-    }, [data]);
+
+    }, []);
+
+    const addPreview = (channelName: string) => {
+        console.log("add preview!!")
+        socket.emit("add preview", channelName)
+    }
+
+    const search = (channelName: string) => {
+        for (let i = 0; i < roomPreview.length; i++)
+        {
+            if (roomPreview[i].name === channelName)
+            {
+                onSelect(roomPreview[i]);
+                break ;
+            }
+        }
+    }
 
     return(
         <div className="preview-zone">
             <div className="preview-chat-search">
-                <ChatSearch/>
+                <ChatSearch
+                    onSearchMyChat={(channelName) => search(channelName)}
+                    onSearchPublicChat={(channelName) => addPreview(channelName)}
+                />
                 <AddRoom
                     onRequest={() => {onNewRoomRequest()}}
                     requested={newRoomRequest}
                 />
             </div>
             <div className="preview-chat-list">
-                {items.map((value, index) => {
+                {roomPreview.map((value, index) => {
                     return (
                     <div key={index}>
                         <PreviewChat
@@ -58,6 +98,90 @@ export default function Preview (
             </div>
         </div>
     )
+}
+
+function ChatSearch( { onSearchMyChat, onSearchPublicChat }
+    : { onSearchMyChat: (channelName: string) => void,
+        onSearchPublicChat: (channelName: string) => void }) {
+
+    const [suggestion, setSug] = useState<oneSuggestion[]>([]);
+    const email = useAuth().user;
+
+    useEffect(() => {
+        socket.emit("get search suggest", email);
+        socket.on("search suggest", function(data: oneSuggestion[]) {
+            setSug(data);
+            console.log("suggestion", data);
+        })
+        socket.on("exception", function(data){
+            console.log(data)
+        })
+
+        return  (() => {
+            socket.off("search suggest");
+            socket.off("exception")
+        })
+    
+    }, [])
+
+    const handleOnSelect = (data: oneSuggestion) => {
+
+        if (data.catagory === "user")
+        {
+            let added: Tag = {
+                id: data.data_id,
+                name: data.name
+            }
+            let dm: newChannel = {
+                name: '',
+                dm: true,
+                private: false,
+                password: '',
+                email: email,
+                members: [added],
+            }
+            socket.emit("new dm", dm);
+        }
+        else if (data.catagory === "my chat")
+            onSearchMyChat(data.name);
+        else if (data.catagory === "public chat")
+            onSearchPublicChat(data.name);
+    }
+
+    const formatResult = (data: oneSuggestion) => {
+        return (
+            <div className="search-result">
+                <div className="result-type">
+                    <div style={{display: data.catagory === "my chat" ? "" : "none"}}>
+                        My Chat
+                    </div>
+                    <div style={{display: data.catagory === "public chat" ? "" : "none"}}>
+                        Public Chat
+                    </div>
+                    <div style={{display: data.catagory === "user" ? "" : "none"}}>
+                        User
+                    </div>
+                    <p className="result">
+                        {data.picture} {data.name}
+                    </p>
+                </div>
+            </div>
+          )
+    }
+
+    return (
+        <div className="input-search">
+            <ReactSearchAutocomplete
+                items={suggestion}
+                fuseOptions={{ keys: ["name"] }}
+                onSelect={handleOnSelect}
+                autoFocus={true}
+                placeholder="search"
+                formatResult={formatResult}
+                styling={{height: "35px"}}
+            />
+        </div>
+    );
 }
 
 function AddRoom({onRequest, requested}
@@ -72,86 +196,38 @@ function AddRoom({onRequest, requested}
     )
 }
 
-function ChatSearch() {
-    const [userSug, setUserSug] = useState<userSuggest[]>([]);
-    const [searchKey, setKey] = useState("");
-
-    useEffect(() => {
-        socket.emit("get suggest users");
-        // socket.emit("get existed rooms");
-        socket.on("suggest users", function(data: userSuggest[]) {
-            setUserSug(data);
-            console.log("sug users", userSug);
-        })
-        // socket.on("existed rooms", function(data) {
-        //     setRoomExist(data);
-        //     console.log("rooms", roomExi);
-        // })
-        socket.on("exception", function(data){
-            console.log(data)
-        })
-        return  (() => {
-            socket.off("get suggest users");
-            // socket.off("get existed rooms");
-            socket.off("exception")
-        })
-        // @ts-ignore-next-line
-    }, [])
-    const handleOnSelect = (user:userSuggest) => {
-        socket.emit("chat search", user);
-    }
-
-    const formatResult = (user: userSuggest) => {
-        return (
-            <>
-              {user.picture} {user.username}
-            </>
-          )
-    }
-    return (
-        <div className="input-search">
-            <ReactSearchAutocomplete
-                items={userSug}
-                fuseOptions={{ keys: ["username", "email"] }}
-                onSelect={handleOnSelect}
-                autoFocus={true}
-                placeholder="search"
-                resultStringKeyName="username"
-                formatResult={formatResult}
-                styling={{height: "35px"}}
-            />
-        </div>
-    );
-}
-
-function PreviewChat({data, onClick, selected}: {data:chatPreview, onClick?: ()=>void, selected: boolean}) {
+function PreviewChat({ data, onClick, selected }
+    : { data: chatPreview,
+        onClick?: () => void,
+        selected: boolean }) {
     
     console.log("lastmsg", data.lastMsg)
+    const email = useAuth().user;
     const { show } = useContextMenu({
         id: MENU_PREVIEW
     });
 
     function handleDelete(){
-        // let update: updateChannel = {
-        //     channel: data.name,
-        //     email: email
-        // }
-        // socket.emit("delete channel", update);
+        let update: updateChannel = {
+            channel: data.name,
+            email: email
+        }
+        socket.emit("delete channel", update);
     }
 
     function handleBlock(){
-        // let update: updateChannel = {
-        //     channel: data.name,
-        //     email: email
-        // }
-        // socket.emit("block channel", update);
+        let update: updateChannel = {
+            channel: data.name,
+            email: email
+        }
+        socket.emit("block channel", update);
     }
 
     return (
         <>
             <div
             className="preview-chat"
-            onMouseUp={onClick} style={{backgroundColor: selected ? "#738FA7" : ""}}
+            onMouseDown={onClick} style={{backgroundColor: selected ? "#738FA7" : ""}}
             onContextMenu={show}>
             <p className="preview-chat-img">{data.picture? data.picture : null}</p>
             <div className="preview-chat-info">
