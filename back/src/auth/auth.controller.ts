@@ -6,17 +6,16 @@
 /* GLOBAL MODULES */
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
-import { stringify } from "querystring";
-//import { Response } from "@nestjs/common";
+/* CUSTOM DECORATORS */
 import { Public } from "src/decorators";
+/* INTERFACE FOR 42 API */
+import { Profile_42 } from "./interfaces/42.interface";
 /* AUTH MODULES */
 import { AuthService } from "./auth.service";
-
-import { SignUpDto } from "./dto"
-import { SignInDto } from "./dto"
+import { SignUpDto, SignInDto } from "./dto"
 import { FortyTwoAuthGuard } from "./guard/42auth.guard";
 
-// AUTH CONTROLLER
+// AUTH CONTROLLER - /auth
 @Controller('auth')
 export class AuthController {
 	constructor(private authService: AuthService) {}
@@ -25,27 +24,40 @@ export class AuthController {
 	 * Testing basic /auth route 
 	 */
 
+	@Public()
 	@Get('/')
 	test_auth() {
 		return this.authService.test_route();
 	}
 
 	/**
-	 * Signin using 42 API
+	 * Signin using 42 API => HREF front
 	 */
 	@Public()
 	@UseGuards(FortyTwoAuthGuard)
 	@Get('42')
-	async signin_42(@Req() request: any, @Res() response: Response) {
-		
-		const token = await this.authService.signin_42(request, response);
+	signin_42() {
+		console.log('42 API signin');
+	}
 
+
+	/**
+	 * 42 Callback URI
+	 */
+	@Public()
+	@UseGuards(FortyTwoAuthGuard)
+	@Get('42/callback')
+	async callback_42(@Req() request: any, @Res() response: Response) {
+		
+		// Generate token using API response
+		const token = await this.authService.signin_42(request.user as Profile_42);
+		
+		// SEND TOKEN TO FRONT in URL
 		const url = new URL(`${request.protocol}:${request.hostname}`);
 		url.port = process.env.FRONT_PORT;
-		url.pathname = '/';
-		url.searchParams.set('token', stringify(token));
-
-		response.status(302).send(url.href);	
+		url.pathname = '/login';
+		url.searchParams.append('access_token', token['access_token']);
+		response.redirect(302, url.href);
 	}
 
 	/**

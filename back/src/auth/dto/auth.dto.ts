@@ -38,6 +38,7 @@ export class Auth42Dto {
     @IsNotEmpty()
     username: string;
 
+    
     @IsString()
     @IsNotEmpty()
     avatar: string;

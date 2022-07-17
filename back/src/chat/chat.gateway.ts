@@ -31,7 +31,7 @@ export class ChatGateway {
 
   handleConnection(client: Socket)
   {
-    console.log('client connected: ', this.server.engine.clientsCount);
+    //console.log('client connected: ', this.server.engine.clientsCount);
     this.chatClients.push(client);
     // this.chatservice.listUser();
     // this.chatservice.listChannel()
@@ -45,7 +45,7 @@ export class ChatGateway {
         break;
       }
     }
-    console.log('a client disconnect, client connected:', this.chatClients.length);
+  //console.log('a client disconnect, client connected:', this.chatClients.length);
   }
 
   @SubscribeMessage('readId')

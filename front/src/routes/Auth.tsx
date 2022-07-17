@@ -6,6 +6,7 @@ import {
   Navigate,
   useNavigate,
   useLocation,
+  useHref,
 } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -92,27 +93,28 @@ export default function Auth() {
     if (userInfo.username && userInfo.email && userInfo.password) signUp();
     else signIn();
   };
+
   
-  const handleClick = (event: any) => {
+  const handleClick = (event : any) => {
     event.preventDefault();
     signIn42();
   }
 
   const signIn42 = () => {
-    let myHeaders = new Headers();
-
+    console.log("signIn42")
     fetch("http://localhost:4000/auth/42", {
+      //mode: "no-cors",
       method: "GET",
-      headers: myHeaders,
-      body: null,
       redirect: "follow",
-    })
+    }
+    )
       .then((response) => response.text())
-      .then((result) => console.log(result))
-      // .then((result) => storeUserInfo(userInfo, result))
+      .then((response) => console.log(response, 'response'))
+      .then((result) => console.log(result, 'result'))
+      //.then((result) => storeUserInfo(userInfo, result))
       .then(() => console.log("<= SIGNIN 42"))
-      // .then(() => userSignIn())
-      .catch((error) => console.log("error", error));
+      .then(() => userSignIn())
+      .catch((error) => console.log("error", error))
   };
 
   const signIn = () => {
@@ -191,7 +193,8 @@ export default function Auth() {
             </Form.Text>
           </Form.Group>
 
-          <Button variant="secondary" className="submit-button" size="sm" onClick={handleClick}>
+          {/*<Button variant="secondary" className="submit-button" size="sm" onClick={handleClick}>*/}
+          <Button variant="secondary" className="submit-button" size="sm" href="http://localhost:4000/auth/42">
             Sign in with 42
           </Button>
           <Button

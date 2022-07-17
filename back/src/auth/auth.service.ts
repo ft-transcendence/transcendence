@@ -5,7 +5,7 @@ import { ConfigService } from "@nestjs/config";
 import { PrismaService } from "src/prisma/prisma.service";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 /* AUTH Modules */
-import { SignUpDto } from './dto'
+import { Auth42Dto, SignUpDto } from './dto'
 import { SignInDto } from './dto'
 /* Password Hash module */
 import * as argon from 'argon2'
@@ -91,7 +91,7 @@ export class AuthService{
 		const secret = this.config.get('JWT_SECRET');
 		// set JWT params (basic)
 		const token = await this.jwtService.signAsync(login_data, {
-			expiresIn: '15m',
+			expiresIn: '120m',
 			secret: secret,});
 		// return token
 		return {
@@ -101,23 +101,25 @@ export class AuthService{
 
 	/* SIGNOUT */
 
-	/* GENERATE A RADNOM PASSWORD */
+	/* GENERATE A RANDOM PASSWORD */
 	generate_random_password() {
 		const password = Math.random().toString(36).slice(2, 15) + Math.random().toString(36).slice(2, 15);
 		return password;
 	}
 
 	/* SIGNIN USING 42 API */
-	async signin_42(request: any, response: Response) {
-		console.log('signin_42');
-		console.log(request.user.emails[0].value);
-		//console.log(request);
-		//console.log(response);
-		// check if user exists
+	async signin_42(dto: Auth42Dto) {
 		
+		// LOG
+		console.log('signin_42');
+		
+		// DTO
+		const { email , username/*, avatar */} = dto;
+		//console.log('signin_42' , dto);
+		// check if user exists
 		const user = await this.prisma.user.findUnique({
 			where: { 
-				email: request.user.emails[0].value,
+				email: email,
 			},
 		});
 		
@@ -130,9 +132,11 @@ export class AuthService{
 			// hash password using argon2
 			const hash = await argon.hash(rdm_string);
 			//create new user
-			const new_user = await this.userService.createUser(request.user.emails[0].value, request.user.username, hash);
-			// return new user token
-			return this.signin_jwt(new_user.id, new_user.email);
+			const new_user = await this.userService.createUser(email, username, hash);
+			// LOG
+			console.log('create user :', username, email, rdm_string);
+			// return token
+			return this.signin_jwt(new_user.id, email);
 		}
 		else
 		{

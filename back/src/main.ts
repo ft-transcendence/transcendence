@@ -8,9 +8,13 @@ import { PrismaService } from './prisma/prisma.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // Enable CORS
-  app.enableCors();
 
-  const prismaService = app.get(PrismaService);
+  app.enableCors({
+    origin: '*',
+  });
+
+
+  app.get(PrismaService);
   // setup app to use validation pipe 
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true
