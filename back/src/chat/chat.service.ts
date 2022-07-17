@@ -10,7 +10,7 @@ export class ChatService {
 
     constructor(private readonly prisma: PrismaService) {}
 
-    async readId(email: string)
+    async get__id__ByEmail(email: string)
     {
         try {
             const user =  await this.prisma.user.findUnique({
@@ -18,15 +18,15 @@ export class ChatService {
                     email: email,
                 }
             })
-            this.listUser()
+            this.list__allUsers()
             return (user.id);
         } catch (error) {
-            console.log('readId error:', error);
+            console.log('get__id__ByEmail error:', error);
             return null;
         }
     }
 
-    async readCid(name: string)
+    async get__cId__ByCname(name: string)
     {
         try {
             const channel =  await this.prisma.channel.findUnique({
@@ -36,12 +36,12 @@ export class ChatService {
             })
             return (channel.id);
         } catch (error) {
-            console.log('readCid error:', error);
+            console.log('get__cId__ByCname error:', error);
             return null;
         }
     }
 
-    async getChannels(email: string)
+    async get__channels(email: string)
     {
         try {
             const channels = this.prisma.user.findMany({
@@ -51,31 +51,31 @@ export class ChatService {
                 },
                 select:
                 {
+                    admin: true,
                     member: true
-                    
                 }
             })
             return channels;
         } catch (error) {
-            console.log('get Channels error:', error);
+            console.log('get__channels error:', error);
             return null;
         }
         
     }
 
-    async readPreview(email: string): Promise<chatPreview[]>
+    async get__preview(email: string): Promise<chatPreview[]>
     {
         try {
-            const source = await this.getChatList(email);
-            const data = this.getPreview(source);
+            const source = await this.get__chatList__ByEmail(email);
+            const data = this.organize__preview(source);
             return (data);
         } catch (error) {
-            console.log('readPreview error:', error);
+            console.log('get__preview error:', error);
             return null;
         }
     }
 
-    getPreview(source: any) {
+    organize__preview(source: any) {
         let data = [];
         if (source.admin.length)
             for (let i = 0; i < source.admin.length; i++)
@@ -105,8 +105,9 @@ export class ChatService {
         return data;
     }
 
-    async getChatList(email: string) {
-        
+    async get__chatList__ByEmail(email: string) {
+
+        try {
             const ret = await this.prisma.user.findUnique({
                 where:
                 {
@@ -155,12 +156,16 @@ export class ChatService {
                         }
                     }
                 }
-            }
-        )
-        return ret;
+            })
+            return ret;
+        } catch (error) {
+            console.log('get__chatList__ByEmail error:', error)
+            throw new WsException(error)
+        }
+            
     }
 
-    async listUser()
+    async list__allUsers()
     {
         const users = await this.prisma.user.findMany()
         let i = 0;
@@ -171,7 +176,7 @@ export class ChatService {
         
     }
 
-    async listChannel()
+    async list__allChannels()
     {
         const channels = await this.prisma.channel.findMany()
         let i = 0;
@@ -181,10 +186,10 @@ export class ChatService {
         return ;
     }
 
-    async newChannel(info: ChannelDto)
+    async new__channel(info: ChannelDto)
     {
         try {
-            const id = await this.readId(info.email);
+            const id = await this.get__id__ByEmail(info.email);
             const channel =  await this.prisma.channel.create({
                 data:
                 {
@@ -216,12 +221,12 @@ export class ChatService {
             })
             return channel.id;
         } catch (error) {
-            console.log('new channel error:', error)
+            console.log('new__channel error:', error)
             throw new WsException(error)
         } 
     }
 
-    async joinChannel(data: ChannelDto): Promise<number>
+    async join__channel(data: ChannelDto): Promise<number>
     {
         try {
             const channel =  await this.prisma.channel.update ({
@@ -242,12 +247,12 @@ export class ChatService {
             })
             return (channel.id);
         } catch (error) {
-            console.log('find channel error:', error);
+            console.log('join__channel error:', error);
             throw new WsException(error.message)
         } 
     }
 
-    async findCnameByCId(cid: number): Promise<string>
+    async find__CnameByCId(cid: number): Promise<string>
     {
         try
         {
@@ -258,25 +263,25 @@ export class ChatService {
             })
             return channel.name;
         } catch (error) {
-            console.log('findCnameByCid error:', error);
+            console.log('find__CnameByCId error:', error);
             throw new WsException(error)
         }
     }
 
-    async fetchMsgs(channelName: string): Promise<oneMsg[]>
+    async fetch__msgs(channelName: string): Promise<oneMsg[]>
     {
         try
         {
-            const source = await this.findMsgs(channelName);
-            const data = await this.organizeMsgs(source);
+            const source = await this.get__allMsgs(channelName);
+            const data = await this.organize__msgs(source);
             return data;
         } catch (error) {
-            console.log('fetchMsgs error:', error);
+            console.log('fetch__msgs error:', error);
             throw new WsException(error);
         }
     }
 
-    async findMsgs(channelName: string)
+    async get__allMsgs(channelName: string)
     {
         try
         {
@@ -313,12 +318,12 @@ export class ChatService {
             })
             return source;
         } catch (error) {
-            console.log('findMsgs error:', error);
+            console.log('get__allMsgs error:', error);
             throw new WsException(error);
         }
     }
     
-    async organizeMsgs(source: any): Promise<oneMsg[]>
+    async organize__msgs(source: any): Promise<oneMsg[]>
     {
         try
         {
@@ -339,16 +344,16 @@ export class ChatService {
                 }
             return data;
         } catch (error) {
-            console.log('organizeMsgs error:', error);
+            console.log('organize__msgs error:', error);
             throw new WsException(error);
         }
     }
 
-    async newMsg(data: UseMsgDto)
+    async new__msg(data: UseMsgDto)
     {
         try {
-            const id = await this.readId(data.email);
-            const cid = await this.readCid(data.channel);
+            const id = await this.get__id__ByEmail(data.email);
+            const cid = await this.get__cId__ByCname(data.channel);
             const msg =  await this.prisma.msg.create({
                 data:
                 {
@@ -370,12 +375,12 @@ export class ChatService {
             })
             return msg;
         } catch (error) {
-            console.log('newMsg error:', error);
+            console.log('new__msg error:', error);
             throw new WsException(error)
         } 
     }
 
-    async deleteMsg(data: UseMsgDto) {
+    async delete__msg(data: UseMsgDto) {
         try {
             await this.prisma.msg.update({
                 where:
@@ -388,13 +393,13 @@ export class ChatService {
                 }
             })
         } catch (error) {
-            console.log('deleteMsg error:', error);
+            console.log('delete__msg error:', error);
             throw new WsException(error)
         }
 
     }
 
-    async editMsg(data: UseMsgDto) {
+    async edit__msg(data: UseMsgDto) {
         try {
             await this.prisma.msg.update({
                 where:
@@ -409,13 +414,13 @@ export class ChatService {
                 }
             })
         } catch (error) {
-            console.log('deleteMsg error:', error);
+            console.log('edit__msg error:', error);
             throw new WsException(error)
         }
 
     }
 
-    async fetchOwner(channelName: string)
+    async fetch__owner(channelName: string)
     {
         try {
             const source = await this.prisma.channel.findUnique({
@@ -428,15 +433,15 @@ export class ChatService {
                     owner: true,
                 }
             })
-            const owner = this.organizeOwner(source);
+            const owner = this.organize__owner(source);
             return owner;
         } catch (error) {
-            console.log('fetchAdmins error:', error);
+            console.log('fetch__owner error:', error);
             throw new WsException(error)
         }
     }
 
-    organizeOwner(source: any)
+    organize__owner(source: any)
     {
         let owner: oneUser = {
             online: false,
@@ -447,7 +452,7 @@ export class ChatService {
         return owner;
     }
 
-    async fetchAdmins(channelName: string)
+    async fetch__admins(channelName: string)
     {
         try {
             const source = await this.prisma.channel.findUnique({
@@ -460,15 +465,15 @@ export class ChatService {
                     admins: true,
                 }
             })
-            const admins = this.organizeAdmins(source);
+            const admins = this.organize__admins(source);
             return admins;
         } catch (error) {
-            console.log('fetchAdmins error:', error);
+            console.log('fetch__admins error:', error);
             throw new WsException(error)
         }
     }
 
-    organizeAdmins(source: any)
+    organize__admins(source: any)
     {
         let admins = [];
         for (let i = 0; i < source.admins.length; i++)
@@ -484,7 +489,7 @@ export class ChatService {
         return admins;
     }
 
-    async fetchMembers(channelName: string)
+    async fetch__members(channelName: string)
     {
         try {
             const source = await this.prisma.channel.findUnique({
@@ -497,15 +502,15 @@ export class ChatService {
                     members: true,
                 }
             })
-            const members = this.organizeMembers(source);
+            const members = this.organize__members(source);
             return members;
         } catch (error) {
-            console.log('fetchMembers error:', error);
+            console.log('fetch__members error:', error);
             throw new WsException(error)
         }
     }
 
-    organizeMembers(source: any)
+    organize__members(source: any)
     {
         let members = [];
         for (let i = 0; i < source.members.length; i++)
@@ -521,26 +526,25 @@ export class ChatService {
         return members;
     }
 
-    async suggestUsers()
+    async get__allUsers()
     {
         try {
             const suggestion = await this.prisma.user.findMany({
                 select:
                 {
                     id: true,
-                    email: true,
                     username: true,
                     picture: true,
                 }
             })
             return suggestion;
         } catch (error) {
-            console.log('suggestUsers error:', error);
+            console.log('get__allUsers error:', error);
             throw new WsException(error)
         }
     }
 
-    organizeTags(source: any) {
+    organize__tags(source: any) {
         let users = [];
         if (source.length)
         {
@@ -556,22 +560,23 @@ export class ChatService {
         return users;
     }
 
-    async userTags()
+    async get__userTags()
     {
         try {
-            const source = await this.suggestUsers();
-            const tags = await this.organizeTags(source);
+            const source = await this.get__allUsers();
+            const tags = await this.organize__tags(source);
             return tags;
         } catch (error) {
-            console.log('userTags error:', error);
+            console.log('get__userTags error:', error);
             throw new WsException(error)
         }
     }
     
-    async existedRooms()
+    async get__publicChats()
     {
         try {
-            const rooms = await this.prisma.channel.findMany({
+            const rooms = await this.prisma.channel.findMany(
+            {
                 select:
                 {
                     id: true,
@@ -580,7 +585,51 @@ export class ChatService {
             })
             return rooms;
         } catch (error) {
-            console.log('existed rooms error:', error);
+            console.log('get__publicChats error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    async get__myChats()
+    {
+        try {
+            const myChats = await this.prisma.channel.findMany(
+            {
+                where:
+                {
+
+                },
+                select:
+                {
+                    id: true,
+                    name: true,
+                }
+            })
+            return myChats;
+        } catch (error) {
+            console.log('get__myChats error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    async organize__searchSuggest() {
+        try {
+            
+        } catch (error) {
+            console.log('organize__searchSuggest error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    async get__searchSuggest()
+    {
+        try {
+            const users = await this.get__allUsers();
+            const publicChats = await this.get__publicChats();
+            const myChats = await this.get__myChats();
+            const suggestion = await this.organize__searchSuggest();
+        } catch (error) {
+            console.log('get__searchSuggest error:', error);
             throw new WsException(error)
         }
     }
