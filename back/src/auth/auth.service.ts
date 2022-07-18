@@ -11,7 +11,6 @@ import { SignInDto } from './dto'
 import * as argon from 'argon2'
 /* JASON WEB TOKEN */
 import { JwtService } from "@nestjs/jwt";
-import { Response } from "express";
 /* USER Modules */
 import { UserService } from "src/user/user.service";
 
@@ -26,14 +25,6 @@ export class AuthService{
 		private config: ConfigService,
 		private userService: UserService,
 		) {} 
-
-	// basic test route
-	test_route() {
-		return { msg : 'This route is functional' };
-	}
-
-
-
 
 	/* SIGNUP */
 	async signup(dto: SignUpDto) {
@@ -61,19 +52,6 @@ export class AuthService{
 		}
 	}
 
-	/* UPDATE REFRESH TOKEN */
-	async updateRefreshToken(userId: number, refreshToken: string) {
-
-		const hash = await argon.hash(refreshToken);
-		await this.prisma.user.update({
-			where: { 
-				id: userId, 
-			},
-			data: { 
-				hashedRtoken : hash, 
-			},
-		});
-	}
 
 	/* SIGNIN */
 	async signin(dto: SignInDto) {
@@ -98,70 +76,22 @@ export class AuthService{
 		return tokens;
 	}
 
-	/* SIGNIN JASON WEB TOKEN */
-	async signin_jwt(
-		userId: number,
-		email: string,
-		): Promise<{access_token : string, refresh_token : string}> {
-		// get tokens
-
-		// get login data
-		const login_data = {
-			sub: userId,
-			email
-		}
-		// generate jwt secret
-		const secret = process.env.JWT_SECRET;
-		// set JWT params (basic)
-		const Atoken = await this.jwtService.signAsync(login_data, {
-			expiresIn: '120m',
-			secret: secret,
-		});
-		const Rtoken = await this.jwtService.signAsync(login_data, {
-			expiresIn: '7d',
-			secret: secret,
-		});
-		// return token
-		return {
-			access_token: Atoken,
-			refresh_token: Rtoken,
-		};
-	}
-
-	/* REFRESH TOKEN */
-	async refresh_token(userId: number, refreshToken: string) {
-		const user = await this.prisma.user.findUnique({
-			where: {
-				id: userId,
-			}
-		});
-		if (!user || !user.hashedRtoken ) throw new ForbiddenException('Invalid Credentials')
-		const pwMatches = await argon.verify(user.hashedRtoken, refreshToken);
-		if (!pwMatches) throw new ForbiddenException('Invalid Credentials')
-		const tokens = await this.signin_jwt(user.id, user.email);
-		await this.updateRefreshToken(user.id, tokens.refresh_token);
-		return tokens;
-	}
-
 	/* SIGNOUT */
 	async signout(userId: number) {
+		// delete refresh token (log out)
 		await this.prisma.user.updateMany({
 			where: {
 				id: userId,
 				hashedRtoken: {
+					// eslint-disable-next-line unicorn/no-null
 					not : null,
 				}
 			},
 			data: {
+				// eslint-disable-next-line unicorn/no-null
 				hashedRtoken: null, 
 			},
-	});
-}
-
-	/* GENERATE A RANDOM PASSWORD */
-	generate_random_password() {
-		const password = Math.random().toString(36).slice(2, 15) + Math.random().toString(36).slice(2, 15);
-		return password;
+		});
 	}
 
 	/* SIGNIN USING 42 API */
@@ -172,7 +102,6 @@ export class AuthService{
 		
 		// DTO
 		const { email , username/*, avatar */} = dto;
-		//console.log('signin_42' , dto);
 		// check if user exists
 		const user = await this.prisma.user.findUnique({
 			where: { 
@@ -202,5 +131,89 @@ export class AuthService{
 			// return token
 			return this.signin_jwt(user.id, user.email);
 		}
+	}
+
+	/* JWT */
+
+	/* GENERATE JASON WEB TOKENS */
+	async signin_jwt(userId: number, email: string)
+	: Promise<{access_token : string, refresh_token : string}> {
+		// get login data
+		const login_data = {
+			sub: userId,
+			email
+		}
+		// generate jwt secret
+		const secret = process.env.JWT_SECRET;
+		// set Auth Token params
+		const Atoken = await this.jwtService.signAsync(login_data, {
+			expiresIn: '10m',
+			secret: secret,
+		});
+		// set Refresh Token params
+		const Rtoken = await this.jwtService.signAsync(login_data, {
+			expiresIn: '60m',
+			secret: secret,
+		});
+		// return tokens
+		return {
+			access_token: Atoken,
+			refresh_token: Rtoken,
+		};
+	}	
+	
+	/* REFRESH TOKEN */
+	async refresh_token(userId: number, refreshToken: string) {
+		
+		// Find user by id
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: userId,
+			}
+		});
+		// Check if user exists and is logged in
+		if (!user || !user.hashedRtoken ) 
+			// throw 403 error
+			throw new ForbiddenException('Invalid Credentials')
+		// Verify hashed Refresh Token
+		const pwMatches = await argon.verify(user.hashedRtoken, refreshToken);
+		// Invalid refresh token
+		if (!pwMatches) throw new ForbiddenException('Invalid Credentials')
+			const tokens = await this.signin_jwt(user.id, user.email);
+		// Update Refresh Token - if user is logged in and valid
+		await this.updateRefreshToken(user.id, tokens.refresh_token);
+		// return tokens
+		return tokens;
+	}
+
+	/* UPDATE REFRESH TOKEN */
+	async updateRefreshToken(userId: number, refreshToken: string) {
+		// hash refresh token
+		const hash = await argon.hash(refreshToken);
+		// update user refresh token (log in)
+		await this.prisma.user.update({
+			where: { 
+				id: userId, 
+			},
+			data: { 
+				hashedRtoken : hash, 
+			},
+		});
+	}
+
+	/* AUTH SERVICE UTILS */
+
+	/* GENERATE A RANDOM PASSWORD */
+	generate_random_password() {
+		// generate random password for 42 User
+		const password = Math.random().toString(36).slice(2, 15) + Math.random().toString(36).slice(2, 15);
+		return password;
+	}
+
+	/* TESTING */
+
+	// basic test route
+	test_route() {
+		return { msg : 'This route is functional' };
 	}
 }
