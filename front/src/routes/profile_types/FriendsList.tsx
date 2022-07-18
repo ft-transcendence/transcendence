@@ -1,5 +1,5 @@
 import { Col, Card, Container, Nav, Navbar } from "react-bootstrap";
-import { Link, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 
 export const UsersRelations = () => {
   return (
@@ -9,9 +9,24 @@ export const UsersRelations = () => {
           <Container>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="me-auto">
-                <Link to="/app/private-profile/friends">FRIENDS</Link> | {" "} 
-                <Link to="/app/private-profile/blocked">BLOCKED</Link>
+              <Nav className="">
+                <NavLink
+                  to="/app/private-profile/friends"
+                  className={({ isActive }) =>
+                    isActive ? "active-class" : "not-active-class"
+                  }
+                >
+                  FRIENDS
+                </NavLink>{" "}
+                |{" "}
+                <NavLink
+                  to="/app/private-profile/blocked"
+                  className={({ isActive }) =>
+                    isActive ? "active-class" : "not-active-class"
+                  }
+                >
+                  BLOCKED
+                </NavLink>
               </Nav>
             </Navbar.Collapse>
           </Container>
@@ -23,9 +38,9 @@ export const UsersRelations = () => {
 };
 
 export const FriendsList = () => {
-  return <div>COOL</div>;
+  return <div>Here are my friends</div>;
 };
 
 export const BlockedList = () => {
-  return <div>NOT COOL</div>;
+  return <div>Here are my foes</div>;
 };

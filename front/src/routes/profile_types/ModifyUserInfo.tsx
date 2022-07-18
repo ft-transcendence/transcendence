@@ -3,7 +3,7 @@ import { Col, Card, Row, Button, Form } from "react-bootstrap";
 import {
   updateUsernameQuery,
   updateEmailQuery,
-} from "../../queries/userQueries";
+} from "../../queries/updateUserQueries";
 
 export const ModifyEntry = (props: any) => {
   const initialValues = {

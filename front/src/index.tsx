@@ -43,6 +43,7 @@ root.render(
           >
             <Route path="home" element={<Home />} />
             <Route path="private-profile" element={<UserPrivateProfile />}>
+              <Route index element={<FriendsList />} />
               <Route path="friends" element={<FriendsList />} />
               <Route path="blocked" element={<BlockedList />} />
             </Route>

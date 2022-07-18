@@ -206,25 +206,31 @@
   cursor: pointer;
 }
 
-a:link {
+/* a:link {
   color: var(--buttons-color-blue);
 }
 
 /* visited link */
-a:visited {
-  color: var(--buttons-color-blue);
-}
+/* a:visited { */
+  /* color: var(--buttons-color-blue); */
+/* } */
 
 /* mouse over link */
-a:hover {
-  color: var(--buttons-color-blue-disabled);
-}
+/* a:hover { */
+  /* color: var(--buttons-color-blue-disabled); */
+/* } */
 
 /* selected link */
-a:active {
-  color: var(--buttons-color-blue-selected);
-}
+/* a:active { */
+  /* color: var(--basic-color-green); */
+/* } */
 
+.active-class {
+  color: red;
+}
+.not-active-class {
+  color: white;
+}
 .Auth-form-title {
   font-family: "Roboto" sans-serif;
   font-style: normal;
