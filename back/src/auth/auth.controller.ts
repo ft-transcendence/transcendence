@@ -12,58 +12,19 @@ import { GetCurrentUser, GetCurrentUserId, Public } from "src/decorators";
 import { Profile_42 } from "./interfaces/42.interface";
 /* AUTH MODULES */
 import { AuthService } from "./auth.service";
-import { SignUpDto, SignInDto } from "./dto"
-import { FortyTwoAuthGuard } from "./guard/42auth.guard";
+import { FortyTwoAuthGuard } from "./guard";
 import { RtGuard } from "./guard";
+/* AUTH DTOs */
+import { SignUpDto, SignInDto } from "./dto"
 
 // AUTH CONTROLLER - /auth
 @Controller('auth')
 export class AuthController {
 	constructor(private authService: AuthService) {}
-	
-	/**
-	 * Testing basic /auth route 
-	 */
-
-	@Public()
-	@Get('/')
-	test_auth() {
-		return this.authService.test_route();
-	}
-
-	/**
-	 * Signin using 42 API => HREF front
-	 */
-	@Public()
-	@UseGuards(FortyTwoAuthGuard)
-	@Get('42')
-	signin_42() {
-		console.log('42 API signin');
-	}
-
-
-	/**
-	 * 42 Callback URI
-	 */
-	@Public()
-	@UseGuards(FortyTwoAuthGuard)
-	@Get('42/callback')
-	async callback_42(@Req() request: any, @Res() response: Response) {
-		
-		// Generate token using API response
-		const token = await this.authService.signin_42(request.user as Profile_42);
-		
-		// SEND TOKEN TO FRONT in URL
-		const url = new URL(`${request.protocol}:${request.hostname}`);
-		url.port = process.env.FRONT_PORT;
-		url.pathname = '/login';
-		url.searchParams.append('access_token', token['access_token']);
-		response.status(302).redirect(url.href);
-	}
 
 	/**
 	 *	/signup - create account 
-	 * @param dto data transfer object
+	 * Creates a new user email/username/password
 	 */
 	@Public()
 	@Post('/signup')
@@ -74,6 +35,7 @@ export class AuthController {
 
 	/**
 	 * /signin - sign in to API
+	 * Signs an existing user email/username and password
 	 */
 	@Public()
 	@Post('/signin')
@@ -82,19 +44,57 @@ export class AuthController {
 		return this.authService.signin(dto);
 	}
 
-	
 	/**
 	 * /logout - logout from API
+	 * Deletes the refresh token from the database
 	 */
-	//@UseGuards(JwtGuard)
 	@Post('logout')
 	@HttpCode(200)
 	logout(@GetCurrentUserId() userId: number) {
+		// LOG
 		console.log('logout', userId);
 		return this.authService.signout(userId);
 	}
 
-	/* REFRESH TOKEN */
+	/* 42 API  */
+
+	/**
+	 * Signin using 42 API => HREF front
+	 * Work in progress
+	 */
+	 @Public()
+	 @UseGuards(FortyTwoAuthGuard)
+	 @Get('42')
+	 signin_42() {
+		 console.log('42 API signin');
+	 }
+
+	 /**
+	  * 42 Callback URI
+	  * Creates user or signin if user already exists
+	  */
+	 @Public()
+	 @UseGuards(FortyTwoAuthGuard)
+	 @Get('42/callback')
+	 async callback_42(@Req() request: any, @Res() response: Response) {
+		 
+		 // Generate token using API response
+		 const token = await this.authService.signin_42(request.user as Profile_42);
+		 
+		 // SEND TOKEN TO FRONT in URL
+		 const url = new URL(`${request.protocol}:${request.hostname}`);
+		 url.port = process.env.FRONT_PORT;
+		 url.pathname = '/login';
+		 url.searchParams.append('access_token', token['access_token']);
+		 response.status(302).redirect(url.href);
+	 }
+
+	/* REFRESH TOKEN CALLBACK */
+
+	/**
+	 *	Updates Tokens for signed in user
+	 *	Work in progress
+	 */
 	@Public()
 	@UseGuards(RtGuard)
 	@HttpCode(200)
@@ -106,4 +106,14 @@ export class AuthController {
 		console.log('refresh route id:' , userId, 'token:', refreshToken);
 		return this.authService.refresh_token(userId, refreshToken);
 	}
+
+	/**
+	 * Testing basic /auth route 
+	 */
+	@Public()
+	@Get('/')
+	test_auth() {
+		return this.authService.test_route();
+	}
+	 
 }
