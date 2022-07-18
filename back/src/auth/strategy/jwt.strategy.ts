@@ -1,10 +1,10 @@
 /* GLOBAL MODULES */
-import { Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
 /* AUTH PassportStrategy */
 import { PassportStrategy } from "@nestjs/passport";
 /* AUTH JWT */
 import { ExtractJwt, Strategy } from "passport-jwt";
-import { PrismaService } from 'src/prisma/prisma.service';
 
 /**
  * Creating a JWT strategy
