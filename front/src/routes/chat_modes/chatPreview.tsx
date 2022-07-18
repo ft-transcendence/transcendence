@@ -87,7 +87,8 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
         let update: updateChannel = {
             channelId: global.selectedData.id,
             email: email,
-            adminEmail: ""
+            adminEmail: "",
+            invitedId: 0
         }
         socket.emit("leave channel", update);
     }
@@ -96,7 +97,8 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
         let update: updateChannel = {
             channelId: global.selectedData.id,
             email: email,
-            adminEmail: ""
+            adminEmail: "",
+            invitedId: 0
         }
         console.log("data", global.selectedData)
         socket.emit("block channel", update);
@@ -106,7 +108,8 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
         let update: updateChannel = {
             channelId: global.selectedData.id,
             email: email,
-            adminEmail: ""
+            adminEmail: "",
+            invitedId: 0
         }
         socket.emit("block channel", update);
     }
@@ -259,19 +262,21 @@ function PreviewChat({ data, onClick, selected }
         <>
             <div
             className="preview-chat"
-            onMouseDown={onClick} style={{backgroundColor: selected ? "#738FA7" : ""}}
+            onMouseDown={onClick} style={{backgroundColor: selected ? "rgb(255 255 255 / 29%)" : ""}}
             onContextMenu={(e) => {global.selectedData = data; show(e)}}>
-                <p className="preview-chat-img">{data.picture? data.picture : null}</p>
-                <div className="preview-chat-info">
-                    <div className="preview-chat-info-1">
-                        <p className="preview-chat-name">{data.name}</p>
-                        
-                        <p className="preview-chat-msg">{data.lastMsg}</p>
+                <div>
+                    <div className="preview-chat-img">{data.picture? data.picture : null}</div>
+                    <div className="preview-chat-info">
+                        <div className="preview-chat-info-1">
+                            <p className="preview-chat-name">{data.name}</p>
+                            
+                            <p className="preview-chat-msg">{data.lastMsg}</p>
+                        </div>
+                        {/* <div className="preview-chat-info-2">
+                            <p className="preview-chat-time">{data.updateAt}</p>
+                            <p className="preview-chat-unread">{unreadCount}</p>
+                        </div> */}
                     </div>
-                    {/* <div className="preview-chat-info-2">
-                        <p className="preview-chat-time">{data.updateAt}</p>
-                        <p className="preview-chat-unread">{unreadCount}</p>
-                    </div> */}
                 </div>
             </div>
             

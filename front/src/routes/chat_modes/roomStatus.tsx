@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { socket } from "../../App";
 import "./roomStatus.css";
-import { chatPreview, oneUser, updateChannel, updateUser } from "./type/chat.type";
+import { chatPreview, oneUser, Tag, updateChannel, updateUser } from "./type/chat.type";
 import {
     Menu,
     Item,
@@ -14,6 +14,8 @@ import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
 import { useAuth } from "../..";
 import { Router } from "react-router-dom";
+import { AddUserIcon, QuitIcon } from "./icon";
+import ReactTags from "react-tag-autocomplete";
 // import { MENU_USER } from "../Chat";
 
 export const MENU_USER = "menu_user";
@@ -23,26 +25,74 @@ declare var global: {
 }
 
 export default function RoomStatus({current}:{current: chatPreview | undefined}) {
+    const [add, setAdd] = useState<boolean>(false);
+    const [userTag, setUserTag] = useState<Tag[]>([]);
+
+    const email = useAuth().user;
 
     useEffect(()=> {
 
         if (current)
             socket.emit("read room status", current?.id);
 
+        socket.on("user tags", function(data: Tag[]) {
+            setUserTag(data);
+            console.log("tags", data);
+        })
+
+        return (() => {
+            socket.off("user tags");
+        })
+
     }, [current])
+
+    const handleInvite = (member: Tag) => {
+        setAdd(false);
+        let update: updateChannel = {
+            channelId: current!.id,
+            email: email,
+            adminEmail: "",
+            invitedId: member.id
+        }
+        socket.emit("invite to channel", update);
+        console.log("YOU ADD " + member.name);
+    }
+
+    const onDelete = (i: number) => {}
 
     return(
         <div className="chat-status-zone">
-            <div className="status-top"/>
+            <div className="status-top">
+                    {userTag && userTag.length > 0 && add ?
+                    <div className="add-box">
+                        <ReactTags
+                            tags={[]}
+                            suggestions={userTag}
+                            placeholderText="invite to chat..."
+                            noSuggestionsText="user not found"
+                            onAddition={handleInvite}
+                            onDelete={onDelete}
+                            autofocus={true}
+                        />
+                        <QuitIcon onClick={() => {
+                            setAdd(false) }}/>
+                    </div> : <>
+                        <AddUserIcon onClick={() => {
+                            socket.emit("get user tags");
+                            setAdd(true);
+                        }}/>
+                </>}
+            </div>
             <MemberStatus current={current}/>
         </div>
     )
 }
 
 function MemberStatus({current}:{current: chatPreview | undefined}) {
+    const [owner, setOwner] = useState<oneUser[] | null>([]);
     const [admins, setAdmins] = useState<oneUser[] | null>([]);
     const [members, setMembers] = useState<oneUser[] | null>([]);
-    const [owner, setOwner] = useState<oneUser[] | null>([]);
+    const [inviteds, setInviteds] = useState<oneUser[] | null>([]);
 
     useEffect( () => {
 
@@ -61,10 +111,16 @@ function MemberStatus({current}:{current: chatPreview | undefined}) {
             setMembers(data);
         })
 
+        socket.on("fetch inviteds", function(data: oneUser[] | null){
+            console.log("got fetched inviteds", data)
+            setInviteds(data);
+        })
+
         return (() => {
             socket.off("fetch owner");
             socket.off("fetch admins");
             socket.off("fetch members");
+            socket.off("fetch inviteds");
         })
         
     }, [])
@@ -87,6 +143,12 @@ function MemberStatus({current}:{current: chatPreview | undefined}) {
                 MEMBERS
             </p>
             <Status users={members} current={current}/>
+            <p
+                className="status-type"
+                style={{display: inviteds?.length ? "" : "none"}}>
+                Invited Users
+            </p>
+            <Status users={inviteds} current={current}/>
         </div>
     )
 }
@@ -133,7 +195,8 @@ function Status({users, current}
         let update: updateChannel = {
             channelId: current!.id,
             email: email,
-            adminEmail: global.selectedData.email
+            adminEmail: global.selectedData.email,
+            invitedId: 0
         }
         console.log("myemail: %s, email: %s", email, global.selectedData.email)
         socket.emit("be admin", update);
@@ -143,7 +206,8 @@ function Status({users, current}
         let update: updateChannel = {
             channelId: current!.id,
             email: email,
-            adminEmail: global.selectedData.email
+            adminEmail: global.selectedData.email,
+            invitedId: 0
         }
         console.log("myemail: %s, email: %s, ownerEmail: %s", email, global.selectedData.email, current?.ownerEmail)
         socket.emit("not admin", update);
@@ -153,7 +217,8 @@ function Status({users, current}
         let update: updateChannel = {
             channelId: current!.id,
             email: global.selectedData.email,
-            adminEmail: ""
+            adminEmail: "",
+            invitedId: 0
         }
         socket.emit("leave channel", update);
     }

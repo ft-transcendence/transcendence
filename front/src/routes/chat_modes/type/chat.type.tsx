@@ -40,6 +40,7 @@ export type updateChannel = {
     channelId: number;
     email: string | null;
     adminEmail: string;
+    invitedId: number | string;
 }
 
 export type useMsg = {
@@ -56,6 +57,7 @@ export type oneMsg = {
     msg: string;
     createAt: string;
     updateAt: string;
+    isInvite: boolean;
 }
 
 export type oneUser = {
