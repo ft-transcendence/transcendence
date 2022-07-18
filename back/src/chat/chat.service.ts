@@ -3,7 +3,7 @@ import { WsException } from '@nestjs/websockets';
 import { isEmail } from 'class-validator';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChannelDto, DMDto, UseMsgDto } from './dto/chat.dto';
-import { chatPreview, oneMsg, oneSuggestion, oneUser } from './type/chat.type';
+import { chatPreview, oneMsg, oneSuggestion, oneUser, updateChannel } from './type/chat.type';
  
 @Injectable()
 export class ChatService {
@@ -99,10 +99,13 @@ export class ChatService {
             for (let i = 0; i < source.owner.length; i++)
             {
                 let dmName = "";
-                if (source.owner[i].owners[0].email === email)
-                    dmName = source.owner[i].owners[1].username;
+                if (source.owner[i].owners.length > 1)
+                    if (source.owner[i].owners[0].email === email)
+                        dmName = source.owner[i].owners[1].username;
+                    else
+                        dmName = source.owner[i].owners[0].username;
                 else
-                    dmName = source.owner[i].owners[0].username;
+                    dmName = "No One"
                 let msgCount = source.owner[i].messages.length;
                 // let element: chatPreview = {
                 //     id: source.owner[i].id,
@@ -111,8 +114,10 @@ export class ChatService {
                 //     picture: source.owner[i].picture,
                 //     updateAt: source.owner[i].picture,
                 //     lastMsg: msgCount > 0 ? 
-                //     source.owner[i].messages[msgCount - 1].msg : ''
+                //     source.owner[i].messages[msgCount - 1].msg : '',
+                //     ownerEmail: source.owner[i].owners[0].email
                 // };
+                // console.log(":::", source.owner[i].owners[0].email);
                 // data.push(element);
             }
         }
@@ -127,8 +132,11 @@ export class ChatService {
                 //     picture: source.admin[i].picture,
                 //     updateAt: source.admin[i].picture,
                 //     lastMsg: msgCount > 0 ? 
-                //     source.admin[i].messages[msgCount - 1].msg : ''
+                //     source.admin[i].messages[msgCount - 1].msg : '',
+                //     ownerEmail: source.admin[i].owners[0].email
                 // };
+                // console.log(":::", source.admin[i].owners[0].email);
+
                 // data.push(element);
             }
         if (source.member.length)
@@ -143,16 +151,18 @@ export class ChatService {
                 //     updateAt: source.member[i].picture,
                 //     lastMsg: msgCount > 0 ? 
                 //         source.member[i].messages[0].msg : '',
+                //     ownerEmail: source.member[i].owners[0].email
                 // };
+                // console.log(":::", source.member[i].owners[0].email);
                 // data.push(element);
             }
         return data;
     }
 
-    async get__onePreview(channelName: string): Promise<chatPreview>
+    async get__onePreview(channelId: number): Promise<chatPreview>
     {
         try {
-            const source = await this.get__chat__ByChannelName(channelName);
+            const source = await this.get__chat__ByChannelId(channelId);
             const data = this.organize__onePreview(source);
             console.log("get one pre:", data)
             // return (data);
@@ -173,17 +183,18 @@ export class ChatService {
         //     updateAt: source.updateAt,
         //     lastMsg: msgCount > 0 ?
         //         source.messages[0].msg : '',
+        //     ownerEmail: source.messages[0].owners[0].email
         // }
         // return data;
     }
 
-    async get__chat__ByChannelName(channelName: string)
+    async get__chat__ByChannelId(channelId: number)
     {
         try {
             const source = await this.prisma.channel.findUnique({
                 where:
                 {
-                    name: channelName,
+                    id: channelId,
                 },
                 select:
                 {
@@ -272,6 +283,14 @@ export class ChatService {
                             name: true,
                             picture: true,
                             updatedAt: true,
+                            owners:
+                            {
+                                select:
+                                {
+                                    email: true,
+                                    username: true,
+                                }
+                            },
                             messages:
                             {
                                 where:
@@ -294,6 +313,14 @@ export class ChatService {
                             name: true,
                             picture: true,
                             updatedAt: true,
+                            owners:
+                            {
+                                select:
+                                {
+                                    email: true,
+                                    username: true,
+                                }
+                            },
                             messages:
                             {
                                 where:
@@ -426,6 +453,52 @@ export class ChatService {
             console.log('join__channel error:', error);
             throw new WsException(error.message)
         } 
+    }
+
+    async leave__channel(data: updateChannel) {
+        try {
+            await this.prisma.channel.update ({
+                where:
+                {
+                    id: data.channelId
+                },
+                data:
+                {
+                    owners:
+                    {
+                        disconnect:
+                        {
+                            email: data.email
+                        }
+                    },
+                    admins:
+                    {
+                        disconnect:
+                        {
+                            email: data.email
+                        }
+                    },
+                    members:
+                    {
+                        disconnect:
+                        {
+                            email: data.email
+                        }
+                    }
+                }
+            })
+            const channel = await this.get__chat__ByChannelId(data.channelId)
+            if (!channel.owners)
+                await this.prisma.channel.delete ({
+                    where:
+                    {
+                        id: data.channelId
+                    }
+                })
+        } catch (error) {
+            console.log('delete__channel error:', error);
+            throw new WsException(error.message)
+        }
     }
 
     async fetch__msgs(channelId: number): Promise<oneMsg[]>
@@ -591,7 +664,6 @@ export class ChatService {
                     owners: true
                 }
             })
-            console.log("fetch__owners:::", source);
             const owners = this.organize__owners(source);
             return owners;
         } catch (error) {
@@ -611,6 +683,9 @@ export class ChatService {
             //         username: source.owners[i].username,
             //         email: source.owners[i].email,
             //         picture: source.owners[i].picture,
+            //         isOwner: true,
+            //         isAdmin: true,
+            //         isMuted: false
             //     }
             //     owners.push(owner)
             // }        
@@ -648,6 +723,9 @@ export class ChatService {
         //         username: source.admins[i].username,
         //         email: source.admins[i].email,
         //         picture: source.admins[i].picture,
+        //         isOwner: false,
+        //         isAdmin: true,
+        //         isMuted: false
         //     }
         //     admins.push(admin)
         // }        
@@ -685,6 +763,9 @@ export class ChatService {
         //         username: source.members[i].username,
         //         email: source.members[i].email,
         //         picture: source.members[i].picture,
+        //         isOwner: false,
+        //         isAdmin: false,
+        //         isMuted: false
         //     }
         //     members.push(member);
         // }
@@ -765,8 +846,24 @@ export class ChatService {
 
             let suggestion = [];
             let myChatsLength = myChats.length;
+
+            for (let i = 0; i < myChats.length; i++)
+            {
+                let one: oneSuggestion = {
+                    catagory: 'my chat',
+                    picture: myChats[i].picture,
+                    name: myChats[i].name,
+                    id: i,
+                    data_id: myChats[i].id,
+                }
+                suggestion.push(one);
+            }
+
             const usersFiltered = users.filter((user) => {
-                return user.id != id;
+
+                return suggestion.filter((sug: oneSuggestion) => {
+                    return sug.name != user.name;
+                }).length == 0 && user.id != id;
             })
 
             let usersLength = usersFiltered.length;
@@ -777,33 +874,11 @@ export class ChatService {
                     catagory: 'user',
                     picture: usersFiltered[i].picture,
                     name: usersFiltered[i].username,
-                    id: i,
+                    id: myChatsLength + i,
                     data_id: usersFiltered[i].id,
                 }
                 suggestion.push(one);
             }
-
-            for (let i = 0; i < myChats.length; i++)
-            {
-                let one: oneSuggestion = {
-                    catagory: 'my chat',
-                    picture: myChats[i].picture,
-                    name: myChats[i].name,
-                    id: usersLength + i,
-                    data_id: myChats[i].id,
-                }
-                suggestion.push(one);
-            }
-
-            // const existsInSuggestion = (chat) => {
-                
-            //     const suggestionsWhereTheChatDataIDIsTheSame = suggestion.filter((sug) => {
-            //         return sug.data_id == chat.id;
-            //     });
-
-            //     return suggestionsWhereTheChatDataIDIsTheSame.length >= 1;
-
-            // }
 
             const publicChatsFiltered = publicChats.filter((chat) => {
 
@@ -842,6 +917,68 @@ export class ChatService {
         } catch (error) {
             console.log('get__searchSuggest error:', error);
             throw new WsException(error)
+        }
+    }
+
+    async be__admin(data: updateChannel) {
+        try {
+            await this.prisma.channel.update ({
+                where:
+                {
+                    id: data.channelId
+                },
+                data:
+                {
+                    admins:
+                    {
+                        connect:
+                        {
+                            email: data.adminEmail
+                        }
+                    },
+                    members:
+                    {
+                        disconnect:
+                        {
+                            email: data.adminEmail
+                        }
+                    }
+                }
+            })
+        } catch (error) {
+            console.log('be__admin error:', error);
+            throw new WsException(error.message)
+        }
+    }
+
+    async not__admin(data: updateChannel) {
+        try {
+            await this.prisma.channel.update ({
+                where:
+                {
+                    id: data.channelId
+                },
+                data:
+                {
+                    admins:
+                    {
+                        disconnect:
+                        {
+                            email: data.adminEmail
+                        }
+                    },
+                    members:
+                    {
+                        connect:
+                        {
+                            email: data.adminEmail
+                        }
+                    }
+                }
+            })
+        } catch (error) {
+            console.log('not__admin error:', error);
+            throw new WsException(error.message)
         }
     }
 }

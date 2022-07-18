@@ -24,8 +24,6 @@ export default function Chat() {
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
     const [newRoomRequest, setNewRoomRequest] = useState(false);
 
-    const email = useAuth().user;
-
     useEffect(() => {
 
         socket.on("connect", () => {
@@ -60,8 +58,10 @@ export default function Chat() {
             />
             <ChatRoom
                 current={selectedChat}/>
-            <RoomStatus
-                current={selectedChat}/>
+            <div style={{display: selectedChat?.dm ? "none" : ""}}>
+                <RoomStatus
+                    current={selectedChat}/>
+            </div>
             <div
                 onClick={cardDisappear}
                 className="card-disappear-click-zone"

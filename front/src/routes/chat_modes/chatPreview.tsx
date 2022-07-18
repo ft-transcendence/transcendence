@@ -6,13 +6,18 @@ import { chatPreview, newDM, oneSuggestion, updateChannel } from "./type/chat.ty
 import {
     Menu,
     Item,
-    useContextMenu
+    useContextMenu,
+    theme
 } from "react-contexify";
 import "./context.css";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import { useAuth } from "../../globals/contexts";
 
-const MENU_PREVIEW = "menu_preview";
+const MENU_CHAT = "menu_chat";
+
+declare var global: {
+    selectedData: chatPreview
+}
 
 export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomRequest }
     : { current: chatPreview | undefined, 
@@ -62,15 +67,15 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
 
     }, [email]);
 
-    const addPreview = (channelName: string) => {
+    const addPreview = (channelId: number) => {
         console.log("add preview!!")
-        socket.emit("add preview", channelName)
+        socket.emit("add preview", channelId)
     }
 
-    const search = (channelName: string) => {
+    const search = (channelId: number) => {
         for (let i = 0; i < roomPreview.length; i++)
         {
-            if (roomPreview[i].name === channelName)
+            if (roomPreview[i].id === channelId)
             {
                 onSelect(roomPreview[i]);
                 break ;
@@ -78,12 +83,41 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
         }
     }
 
+    function handleLeave(){
+        let update: updateChannel = {
+            channelId: global.selectedData.id,
+            email: email,
+            adminEmail: ""
+        }
+        socket.emit("leave channel", update);
+    }
+
+    function handleBlockChannel(){
+        let update: updateChannel = {
+            channelId: global.selectedData.id,
+            email: email,
+            adminEmail: ""
+        }
+        console.log("data", global.selectedData)
+        socket.emit("block channel", update);
+    }
+
+    function handleBlockUser(){
+        let update: updateChannel = {
+            channelId: global.selectedData.id,
+            email: email,
+            adminEmail: ""
+        }
+        socket.emit("block channel", update);
+    }
+
+
     return(
         <div className="preview-zone">
             <div className="preview-chat-search">
                 <ChatSearch
-                    onSearchMyChat={(channelName) => search(channelName)}
-                    onSearchPublicChat={(channelName) => addPreview(channelName)}
+                    onSearchMyChat={(channelId) => search(channelId)}
+                    onSearchPublicChat={(channelId) => addPreview(channelId)}
                 />
                 <AddRoom
                     onRequest={() => {onNewRoomRequest()}}
@@ -99,15 +133,38 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
                             onClick={()=>{onSelect(value)}}
                             selected={value === current}/>
                     </div>);
-                })}
+                })
+                }
+                <Menu id={MENU_CHAT} theme={theme.dark}>
+                    <Item
+                        style={{display: global.selectedData?.dm === true ?  "" : "none" }}
+                        onClick={handleLeave}>
+                        Leave the chat
+                    </Item>
+                    <Item
+                        style={{display: global.selectedData?.dm === true ? "none" : "" }}
+                        onClick={handleLeave}>
+                        delete message
+                    </Item>
+                    <Item 
+                        style={{display: global.selectedData?.dm === true ? "" : "none"}}
+                        onClick={handleBlockChannel}>
+                        Block the channel
+                    </Item>
+                    <Item 
+                        style={{display: global.selectedData?.dm === true ? "none" : "" }}
+                        onClick={handleBlockUser}>
+                        Block the user
+                    </Item>
+                </Menu>
             </div>
         </div>
     )
 }
 
 function ChatSearch( { onSearchMyChat, onSearchPublicChat }
-    : { onSearchMyChat: (channelName: string) => void,
-        onSearchPublicChat: (channelName: string) => void }) {
+    : { onSearchMyChat: (channelId: number) => void,
+        onSearchPublicChat: (channelId: number) => void }) {
 
     const [suggestion, setSug] = useState<oneSuggestion[]>([]);
     const email = useAuth().user;
@@ -137,9 +194,9 @@ function ChatSearch( { onSearchMyChat, onSearchPublicChat }
             socket.emit("new dm", dm);
         }
         else if (data.catagory === "my chat")
-            onSearchMyChat(data.name);
+            onSearchMyChat(data.data_id);
         else if (data.catagory === "public chat")
-            onSearchPublicChat(data.name);
+            onSearchPublicChat(data.data_id);
     }
 
     const formatResult = (data: oneSuggestion) => {
@@ -194,56 +251,30 @@ function PreviewChat({ data, onClick, selected }
     : { data: chatPreview,
         onClick?: () => void,
         selected: boolean }) {
-    
-    console.log("lastmsg", data.lastMsg)
-    const email = useAuth().user;
     const { show } = useContextMenu({
-        id: MENU_PREVIEW
+        id: MENU_CHAT
     });
-
-    function handleDelete(){
-        let update: updateChannel = {
-            channel: data.name,
-            email: email
-        }
-        socket.emit("delete channel", update);
-    }
-
-    function handleBlock(){
-        let update: updateChannel = {
-            channel: data.name,
-            email: email
-        }
-        socket.emit("block channel", update);
-    }
 
     return (
         <>
             <div
             className="preview-chat"
             onMouseDown={onClick} style={{backgroundColor: selected ? "#738FA7" : ""}}
-            onContextMenu={show}>
-            <p className="preview-chat-img">{data.picture? data.picture : null}</p>
-            <div className="preview-chat-info">
-                <div className="preview-chat-info-1">
-                    <p className="preview-chat-name">{data.name}</p>
-                    
-                    <p className="preview-chat-msg">{data.lastMsg}</p>
+            onContextMenu={(e) => {global.selectedData = data; show(e)}}>
+                <p className="preview-chat-img">{data.picture? data.picture : null}</p>
+                <div className="preview-chat-info">
+                    <div className="preview-chat-info-1">
+                        <p className="preview-chat-name">{data.name}</p>
+                        
+                        <p className="preview-chat-msg">{data.lastMsg}</p>
+                    </div>
+                    {/* <div className="preview-chat-info-2">
+                        <p className="preview-chat-time">{data.updateAt}</p>
+                        <p className="preview-chat-unread">{unreadCount}</p>
+                    </div> */}
                 </div>
-                {/* <div className="preview-chat-info-2">
-                    <p className="preview-chat-time">{data.updateAt}</p>
-                    <p className="preview-chat-unread">{unreadCount}</p>
-                </div> */}
             </div>
-            </div>
-            <Menu id={MENU_PREVIEW}>
-                <Item onClick={handleDelete}>
-                    delete
-                </Item>
-                <Item onClick={handleBlock}>
-                    block
-                </Item>
-            </Menu>
+            
         </>
     );
 }
