@@ -127,10 +127,10 @@ export class ChatGateway {
 
   @SubscribeMessage('read msgs')
   async handleFetchMsgs(
-    @MessageBody() channel: string,
+    @MessageBody() channelId: number,
     @ConnectedSocket() client: Socket
   ) {
-    const data = await this.chatservice.fetch__msgs(channel);
+    const data = await this.chatservice.fetch__msgs(channelId);
     client.emit('fetch msgs', data);
   }
 
@@ -139,7 +139,7 @@ export class ChatGateway {
   @ConnectedSocket() client: Socket
   ) {
     await this.chatservice.new__msg(data);
-    const fetch = await this.chatservice.fetch__msgs(data.channel);
+    const fetch = await this.chatservice.fetch__msgs(data.channelId);
     client.emit('fetch msgs', fetch);
     const preview = await this.chatservice.get__previews(data.email);
     client.emit('update preview', preview)
@@ -147,14 +147,14 @@ export class ChatGateway {
 
   @SubscribeMessage('read room status')
   async handleFetchStatus(
-    @MessageBody() channel: string,
+    @MessageBody() channelId: number,
     @ConnectedSocket() client: Socket
   ) {
-    const owners = await this.chatservice.fetch__owners(channel);
+    const owners = await this.chatservice.fetch__owners(channelId);
     client.emit('fetch owner', owners);
-    const admins = await this.chatservice.fetch__admins(channel);
+    const admins = await this.chatservice.fetch__admins(channelId);
     client.emit('fetch admins', admins);
-    const members = await this.chatservice.fetch__members(channel);
+    const members = await this.chatservice.fetch__members(channelId);
     client.emit('fetch members', members);
   }
 
@@ -181,7 +181,7 @@ export class ChatGateway {
     @ConnectedSocket() client: Socket
   ) {
     await this.chatservice.delete__msg(data);
-    const fetch = await this.chatservice.fetch__msgs(data.channel);
+    const fetch = await this.chatservice.fetch__msgs(data.channelId);
     client.emit('fetch msgs', fetch);
     const preview = await this.chatservice.get__previews(data.email);
     client.emit('update preview', preview)
@@ -193,7 +193,7 @@ export class ChatGateway {
     @ConnectedSocket() client: Socket
   ) {
     await this.chatservice.edit__msg(data);
-    const fetch = await this.chatservice.fetch__msgs(data.channel);
+    const fetch = await this.chatservice.fetch__msgs(data.channelId);
     client.emit('fetch msgs', fetch);
     const preview = await this.chatservice.get__previews(data.email);
     client.emit('update preview', preview)

@@ -24,6 +24,11 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
     
     useEffect(() => {
 
+        socket.on("connect", () => {
+            console.log("front Connected");
+            socket.emit("read preview", email);
+        });
+
         socket.emit("read preview", email);
 
         socket.on("set preview", function(data: chatPreview[] | null) {

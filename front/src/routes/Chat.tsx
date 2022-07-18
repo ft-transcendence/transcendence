@@ -5,13 +5,14 @@ import { useAuth } from "..";
 import Preview from "./chat_modes/chatPreview";
 import ChatRoom from "./chat_modes/chatRoom";
 import RoomStatus from "./chat_modes/roomStatus";
-import React from "react";
 import { chatPreview } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 
 export default function Chat() {
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
-    const [newRoomRequest, setNewRoomRequest] = useState(false); 
+    const [newRoomRequest, setNewRoomRequest] = useState(false);
+
+    const email = useAuth().user;
 
     useEffect(() => {
 

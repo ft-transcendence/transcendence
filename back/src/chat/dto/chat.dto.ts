@@ -34,7 +34,7 @@ export class UseMsgDto {
 
     @IsString()
     @IsNotEmpty()
-    channel: string;
+    channelId: number;
 
     @IsString()
     @IsNotEmpty()
