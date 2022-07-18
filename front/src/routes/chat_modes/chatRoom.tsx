@@ -23,9 +23,9 @@ export default function ChatRoom({current}
     useEffect(()=> {
         if (current)
         {
-            const cName = current.name;
+            const cId = current.id;
             console.log("current selected")
-            socket.emit("read msgs", cName);
+            socket.emit("read msgs", cId);
         }
     }, [current])
 

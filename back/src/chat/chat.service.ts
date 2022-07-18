@@ -84,7 +84,7 @@ export class ChatService {
     {
         try {
             const source = await this.get__chatList__ByEmail(email);
-            const data = await this.organize__preview(source);
+            const data = await this.organize__preview(source, email);
             return (data);
         } catch (error) {
             console.log('get__preview error:', error);
@@ -92,8 +92,30 @@ export class ChatService {
         }
     }
 
-    organize__preview(source: any) {
+    organize__preview(source: any, email: string) {
         let data = [];
+        if (source.owner.length)
+        {
+            for (let i = 0; i < source.owner.length; i++)
+            {
+                let dmName = "";
+                if (source.owner[i].owners[0].email === email)
+                    dmName = source.owner[i].owners[1].username;
+                else
+                    dmName = source.owner[i].owners[0].username;
+                let msgCount = source.owner[i].messages.length;
+                // let element: chatPreview = {
+                //     id: source.owner[i].id,
+                //     dm: source.owner[i].dm,
+                //     name: dmName,
+                //     picture: source.owner[i].picture,
+                //     updateAt: source.owner[i].picture,
+                //     lastMsg: msgCount > 0 ? 
+                //     source.owner[i].messages[msgCount - 1].msg : ''
+                // };
+                // data.push(element);
+            }
+        }
         if (source.admin.length)
             for (let i = 0; i < source.admin.length; i++)
             {
@@ -170,6 +192,14 @@ export class ChatService {
                     name: true,
                     picture: true,
                     updatedAt: true,
+                    owners:
+                    {
+                        select:
+                        {
+                            email: true,
+                            username: true,
+                        }
+                    },
                     messages:
                     {
                         where:
@@ -199,6 +229,40 @@ export class ChatService {
                 },
                 select:
                 {
+                    owner:
+                    {
+                        where:
+                        {
+                            dm: true,
+                        },
+                        select: 
+                        {
+                            id: true,
+                            dm: true,
+                            name: true,
+                            picture: true,
+                            updatedAt: true,
+                            owners:
+                            {
+                                select:
+                                {
+                                    email: true,
+                                    username: true,
+                                }
+                            },
+                            messages:
+                            {
+                                where:
+                                {
+                                    unsent: false,
+                                },
+                                select:
+                                {
+                                    msg: true,
+                                }
+                            }
+                        }
+                    },
                     admin:
                     {
                         select: 
@@ -293,7 +357,6 @@ export class ChatService {
                     }
                 }
             })
-            console.log("created dm", dm)
             return dm.id;
         } catch (error) {
             console.log('new__DM error:', error)
@@ -365,11 +428,11 @@ export class ChatService {
         } 
     }
 
-    async fetch__msgs(channelName: string): Promise<oneMsg[]>
+    async fetch__msgs(channelId: number): Promise<oneMsg[]>
     {
         try
         {
-            const source = await this.get__allMsgs(channelName);
+            const source = await this.get__allMsgs(channelId);
             const data = await this.organize__msgs(source);
             return data;
         } catch (error) {
@@ -378,14 +441,14 @@ export class ChatService {
         }
     }
 
-    async get__allMsgs(channelName: string)
+    async get__allMsgs(channelId: number)
     {
         try
         {
             const source = this.prisma.channel.findUnique({
                 where:
                 {
-                    name: channelName,
+                    id: channelId,
                 },
                 select:
                 {
@@ -425,7 +488,7 @@ export class ChatService {
         try
         {
             let data = [];
-            if (source.messages.length)
+            if (source.messages)
                 // for (let i = 0; i < source.messages.length; i++)
                 // {   
                 //     let element: oneMsg = {
@@ -449,14 +512,13 @@ export class ChatService {
     {
         try {
             const id = await this.get__id__ByEmail(data.email);
-            const cid = await this.get__cId__ByCname(data.channel);
             const msg =  await this.prisma.msg.create({
                 data:
                 {
                     msg: data.msg,
                     history: [data.msg],
                     userId: id,
-                    cid: cid,
+                    cid: data.channelId,
                 }
             })
             await this.prisma.msg.update({
@@ -516,24 +578,24 @@ export class ChatService {
 
     }
 
-    async fetch__owners(channelName: string)
+    async fetch__owners(channelId: number)
     {
         try {
             const source = await this.prisma.channel.findUnique({
                 where:
                 {
-                    name: channelName,
+                    id: channelId,
                 },
                 select:
                 {
                     owners: true
                 }
             })
-            console.log(source.owners);
+            console.log("fetch__owners:::", source);
             const owners = this.organize__owners(source);
             return owners;
         } catch (error) {
-            console.log('fetch__owner error:', error);
+            console.log('fetch__owners error:', error);
             throw new WsException(error)
         }
     }
@@ -541,26 +603,27 @@ export class ChatService {
     organize__owners(source: any)
     {
         let owners = [];
-        // for (let i = 0; i < source.owners.length; i++)
-        // {    
-        //     let owner: oneUser = {
-        //         online: false,
-        //         username: source.owners[i].username,
-        //         email: source.owners[i].email,
-        //         picture: source.owners[i].picture,
-        //     }
-        //     owners .push(owner)
-        // }        
+        if (source)
+            // for (let i = 0; i < source.owners.length; i++)
+            // {    
+            //     let owner: oneUser = {
+            //         online: false,
+            //         username: source.owners[i].username,
+            //         email: source.owners[i].email,
+            //         picture: source.owners[i].picture,
+            //     }
+            //     owners.push(owner)
+            // }        
         return owners;
     }
 
-    async fetch__admins(channelName: string)
+    async fetch__admins(channelId: number)
     {
         try {
             const source = await this.prisma.channel.findUnique({
                 where:
                 {
-                    name: channelName,
+                    id: channelId,
                 },
                 select:
                 {
@@ -591,13 +654,13 @@ export class ChatService {
         return admins;
     }
 
-    async fetch__members(channelName: string)
+    async fetch__members(channelId: number)
     {
         try {
             const source = await this.prisma.channel.findUnique({
                 where:
                 {
-                    name: channelName,
+                    id: channelId,
                 },
                 select:
                 {

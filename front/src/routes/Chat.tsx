@@ -22,7 +22,9 @@ export const socket = io("ws://localhost:4000", socketOptions);
 
 export default function Chat() {
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
-    const [newRoomRequest, setNewRoomRequest] = useState(false); 
+    const [newRoomRequest, setNewRoomRequest] = useState(false);
+
+    const email = useAuth().user;
 
     useEffect(() => {
 
