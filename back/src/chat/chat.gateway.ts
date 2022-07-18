@@ -1,4 +1,4 @@
-import { UseFilters, UseGuards, WsExceptionFilter } from '@nestjs/common';
+import { UseFilters } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -7,14 +7,13 @@ import {
   WebSocketServer,
   WsResponse
 } from '@nestjs/websockets';
-import { from, map, Observable } from 'rxjs';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { UseMsgDto, ChannelDto, DMDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guard';
 import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
-import { isEmail } from 'class-validator';
+import { updateChannel } from './type/chat.type';
 
 // @UseGuards(JwtGuard)
 @UsePipes(new ValidationPipe())
@@ -72,9 +71,9 @@ export class ChatGateway {
 
   @SubscribeMessage('add preview')
   async handleChatSearch(
-    @MessageBody() channelName: string,
+    @MessageBody() channelId: number,
     @ConnectedSocket() client: Socket) {
-    const preview = await this.chatservice.get__onePreview(channelName);
+    const preview = await this.chatservice.get__onePreview(channelId);
     client.emit('add preview', preview);
 
   }
@@ -107,6 +106,22 @@ export class ChatGateway {
       client.join(data.name)
       client.emit('cid', ret);
     }
+  }
+
+  @SubscribeMessage('leave channel')
+  async handleDeleteChannel(
+    @MessageBody() data: updateChannel,
+    @ConnectedSocket() client: Socket
+  ) {
+    await this.chatservice.leave__channel(data);
+    const preview = await this.chatservice.get__previews(data.email);
+    client.emit('update preview', preview);
+    const owners = await this.chatservice.fetch__owners(data.channelId);
+    client.emit('fetch owner', owners);
+    const admins = await this.chatservice.fetch__admins(data.channelId);
+    client.emit('fetch admins', admins);
+    const members = await this.chatservice.fetch__members(data.channelId);
+    client.emit('fetch members', members);
   }
 
   @SubscribeMessage('new dm')
@@ -197,6 +212,30 @@ export class ChatGateway {
     client.emit('fetch msgs', fetch);
     const preview = await this.chatservice.get__previews(data.email);
     client.emit('update preview', preview)
+  }
+
+  @SubscribeMessage('be admin')
+  async handleBeAdmin(
+    @MessageBody() data: updateChannel,
+    @ConnectedSocket() client: Socket
+  ) {
+    await this.chatservice.be__admin(data);
+    const admins = await this.chatservice.fetch__admins(data.channelId);
+    client.emit('fetch admins', admins);
+    const members = await this.chatservice.fetch__members(data.channelId);
+    client.emit('fetch members', members);
+  }
+
+  @SubscribeMessage('not admin')
+  async handleNotAdmin(
+    @MessageBody() data: updateChannel,
+    @ConnectedSocket() client: Socket
+  ) {
+    await this.chatservice.not__admin(data);
+    const admins = await this.chatservice.fetch__admins(data.channelId);
+    client.emit('fetch admins', admins);
+    const members = await this.chatservice.fetch__members(data.channelId);
+    client.emit('fetch members', members);
   }
 
 }

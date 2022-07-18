@@ -32,7 +32,7 @@ export class UseMsgDto {
     @IsNotEmpty()
     email: string
 
-    @IsString()
+    @IsNumber()
     @IsNotEmpty()
     channelId: number;
 

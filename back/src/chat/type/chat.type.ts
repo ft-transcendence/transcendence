@@ -14,6 +14,7 @@ export type chatPreview = {
     updateAt: string;
     lastMsg: string;
     unreadCount?: number;
+    ownerEmail: string; 
 }
 
 export type oneMsg = {
@@ -30,9 +31,18 @@ export type oneUser = {
     username: string;
     email: string;
     picture: string;
+    isOwner: boolean;
+    isAdmin: boolean;
+    isMuted: boolean;
 }
 
 export type Tag = {
     id: number;
     name: string;
+}
+
+export type updateChannel = {
+    channelId: number;
+    email: string | null;
+    adminEmail: string;
 }

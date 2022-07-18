@@ -33,8 +33,8 @@ export default function ChatRoom({current}
         <>
             <div className="chat-room-zone">
                 <BriefInfo info = {current}/>
-                <MsgStream email={email} channel={current?.name}/>
-                <InputArea email = {email} channel = {current?.name}/>
+                <MsgStream email={email} channelId={current!.id}/>
+                <InputArea email = {email} channelId = {current!.id}/>
             </div>
         </>
     )
@@ -51,9 +51,9 @@ function BriefInfo({info}
     )
 }
 
-function MsgStream({email, channel}
+function MsgStream({email, channelId}
     : { email: string | null,
-        channel: string | undefined}) {
+        channelId: number }) {
 
     const [msgs, setMsgs] = useState<oneMsg[]>([]);
     const scroll = useRef<HTMLDivElement>(null);
@@ -73,7 +73,7 @@ function MsgStream({email, channel}
     const handleDeleteMsg = () => {
         let msg: useMsg = {
             email: email,
-            channel: channel,
+            channelId: channelId,
             msgId: global.selectedData.msgId,
             msg: global.selectedData.msg
         }
@@ -84,7 +84,7 @@ function MsgStream({email, channel}
     const handleEditMsg = () => {
         let msg: useMsg = {
             email: email,
-            channel: channel,
+            channelId: channelId,
             msgId: global.selectedData.msgId,
             msg: global.selectedData.msg
         }
@@ -145,8 +145,8 @@ function OneMessage({data, email}
     )
 }
 
-function InputArea({channel, email}
-    :{channel: string | undefined, email: string | null}) {
+function InputArea({channelId, email}
+    :{channelId: number, email: string | null}) {
     const [msg, setMsg] = useState("");
 
     const handleSetMsg = (event:any) => {
@@ -156,7 +156,7 @@ function InputArea({channel, email}
     const sendMsg = () => {
         let data: useMsg = {
             email: email,
-            channel: channel,
+            channelId: channelId,
             msg: msg,
             msgId: 0
         };

@@ -1,62 +1,62 @@
 import { useEffect, useState } from "react";
 import { socket } from "../../App";
 import "./roomStatus.css";
-import { chatPreview, oneUser, updateUser } from "./type/chat.type";
+import { chatPreview, oneUser, updateChannel, updateUser } from "./type/chat.type";
 import {
     Menu,
     Item,
     Separator,
-    useContextMenu
+    useContextMenu,
+    Submenu,
+    theme
 } from "react-contexify";
 import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
 import { useAuth } from "../..";
+import { Router } from "react-router-dom";
+// import { MENU_USER } from "../Chat";
 
-const MENU_STATUS = "menu_status";
+export const MENU_USER = "menu_user";
+
+declare var global: {
+    selectedData: oneUser
+}
 
 export default function RoomStatus({current}:{current: chatPreview | undefined}) {
 
     useEffect(()=> {
+
         if (current)
-        {
-            const cName = current.name;
-            socket.emit("read room status", cName);
-        }
+            socket.emit("read room status", current?.id);
+
     }, [current])
+
     return(
         <div className="chat-status-zone">
-            <InRoomSearch/>
-            <MemberStatus/>
+            <div className="status-top"/>
+            <MemberStatus current={current}/>
         </div>
     )
 }
 
-function InRoomSearch() {
-    return (
-        <div className="in-room-search">
-
-        </div>
-    )
-}
-
-function MemberStatus() {
-    const [admins, setAdmins] = useState<oneUser[]>([]);
-    const [members, setMembers] = useState<oneUser[]>([]);
-    const [owner, setOwner] = useState<oneUser[]>([]);
+function MemberStatus({current}:{current: chatPreview | undefined}) {
+    const [admins, setAdmins] = useState<oneUser[] | null>([]);
+    const [members, setMembers] = useState<oneUser[] | null>([]);
+    const [owner, setOwner] = useState<oneUser[] | null>([]);
 
     useEffect( () => {
 
-        socket.on("fetch owner", function(data: oneUser[]){
+        socket.on("fetch owner", function(data: oneUser[] | null){
             console.log("got fetched owner", data)
             setOwner(data);
         })
 
-        socket.on("fetch admins", function(data: oneUser[]){
+        socket.on("fetch admins", function(data: oneUser[] | null){
             console.log("got fetched admins", data)
             setAdmins(data);
         })
 
-        socket.on("fetch members", function(data: oneUser[]){
+        socket.on("fetch members", function(data: oneUser[] | null){
             console.log("got fetched members", data)
             setMembers(data);
         })
@@ -71,55 +71,36 @@ function MemberStatus() {
     return (
         <div className="member-status">
             <p className="status-type"
-                style={{display: owner.length > 0 ? "" : "none"}}>
+                style={{display: owner?.length ? "" : "none"}}>
                 OWNER
             </p>
-            <Status users={owner}/>
+            <Status users={owner} current={current}/>
             <p 
                 className="status-type"
-                style={{display: admins.length > 0 ? "" : "none"}}>
+                style={{display: admins?.length ? "" : "none"}}>
                 ADMINS
             </p>
-            <Status users={admins}/>
+            <Status users={admins} current={current}/>
             <p
                 className="status-type"
-                style={{display: members.length > 0 ? "" : "none"}}>
+                style={{display: members?.length ? "" : "none"}}>
                 MEMBERS
             </p>
-            <Status users={members}/>
+            <Status users={members} current={current}/>
         </div>
     )
 }
 
-function Status({users}
-    : {users: oneUser[]}) {
-
-    return (
-        <>
-            {users.map((value, index) => {
-                return (
-                <div key={index}>
-                    <OneStatus data={value}/>
-                </div>
-                )
-            })}
-        </>
-    )
-}
-
-function OneStatus({data}
-    : {data: oneUser | undefined}) {
-
+function Status({users, current}
+    : { users: oneUser[] | null,
+        current: chatPreview | undefined }) {
+    
     const email = useAuth().user;
-
-    const { show } = useContextMenu({
-        id: MENU_STATUS
-    });
 
     function handleAddFriend(){
         let update: updateUser = {
             self: email,
-            other: data!.username
+            other: global.selectedData.username
         }
         socket.emit("add friend", update);
     }
@@ -127,15 +108,15 @@ function OneStatus({data}
     function handleInviteGame(){
         let update: updateUser = {
             self: email,
-            other: data!.username
+            other: global.selectedData.username
         }
         socket.emit("invite game", update);
     }
 
-    function handleMute(){
+    function handleMute(mins: number){
         let update: updateUser = {
             self: email,
-            other: data!.username
+            other: global.selectedData.username
         }
         socket.emit("mute user", update);
     }
@@ -143,32 +124,131 @@ function OneStatus({data}
     function handleBlock(){
         let update: updateUser = {
             self: email,
-            other: data!.username
+            other: global.selectedData.username
         }
         socket.emit("block user", update);
     }
-        return (
-            <div
-                style={{display: data ? "" : "none"}}
-                className="one-status"
-                onContextMenu={email != data?.email ? show : undefined}>
-                <p className="one-pic">{data?.picture}</p>
-                <p className="one-name">{data?.username}</p>
-                <Menu id={MENU_STATUS}>
+
+    function handleBeAdmin(){
+        let update: updateChannel = {
+            channelId: current!.id,
+            email: email,
+            adminEmail: global.selectedData.email
+        }
+        console.log("myemail: %s, email: %s", email, global.selectedData.email)
+        socket.emit("be admin", update);
+    }
+
+    function handleNotAdmin(){
+        let update: updateChannel = {
+            channelId: current!.id,
+            email: email,
+            adminEmail: global.selectedData.email
+        }
+        console.log("myemail: %s, email: %s, ownerEmail: %s", email, global.selectedData.email, current?.ownerEmail)
+        socket.emit("not admin", update);
+    }
+
+    function handleLeave(){
+        let update: updateChannel = {
+            channelId: current!.id,
+            email: global.selectedData.email,
+            adminEmail: ""
+        }
+        socket.emit("leave channel", update);
+    }
+
+    return (
+        <>
+            {users?.map((value, index) => {
+                return (
+                <div key={index}>
+                    <OneStatus data={value}/>
+                </div>
+                )
+            })}
+            <Menu id={MENU_USER} theme={theme.dark}>
                     <Item onClick={handleAddFriend}>
                         add friend
                     </Item>
                     <Item onClick={handleInviteGame}>
                         invite to a game!
                     </Item>
-                <Separator/>
-                    <Item onClick={handleMute}>
-                        mute
-                    </Item>
-                    <Item onClick={handleBlock}>
-                        block
-                    </Item>
-            </Menu>
+                    
+                    <Separator/>
+                        <Item 
+                            style={{display:
+                                (global.selectedData?.isAdmin === false) ? "" : "none"}}
+                            onClick={handleBeAdmin}>
+                            assign as admin
+                        </Item>
+                        <Item 
+                            style={{display: 
+                                (global.selectedData?.isAdmin === true) ? "" : "none"}}
+                            onClick={handleNotAdmin}>
+                            take back the admin right
+                        </Item>
+                        <div style={{display: 
+                                (email === current?.ownerEmail) ?  "" : "none"}}>
+                            <Separator/>
+                        </div>
+                        <Submenu label="mute" style={{display: 
+                                (global.selectedData?.isAdmin) === true ?  "" : "none"}}>
+                            <Item 
+                                style={{position: "relative", right: "200%"}}
+                                onClick={() => handleMute(5)}>
+                                5 mins
+                            </Item>
+                            <Item 
+                                style={{position: "relative", right: "200%"}}
+                                onClick={() => handleMute(10)}>
+                                10 mins
+                            </Item>
+                            <Item
+                                style={{position: "relative", right: "200%"}}
+                                onClick={() => handleMute(15)}>
+                                15 mins
+                            </Item>
+                            <Item
+                                style={{position: "relative", right: "200%"}}
+                                onClick={() => handleMute(20)}>
+                                20 mins
+                            </Item>
+                        </Submenu>
+                        <Item onClick={handleBlock}>
+                            block
+                        </Item>
+                        <Item onClick={handleLeave}>
+                            kick out
+                        </Item>
+                </Menu>
+        </>
+    )
+}
+
+function OneStatus({data}
+    : { data: oneUser }) {
+
+    const email = useAuth().user;
+
+    const { show } = useContextMenu({
+        id: MENU_USER
+    });
+
+    const goProfile = () => {
+        // link to profile 
+    }
+
+        return (
+            <div
+                style={{display: data ? "" : "none"}}
+                className="one-status"
+                onContextMenu={email !== data?.email ? (e) => {global.selectedData = data; show(e)} : undefined }
+                onClick={goProfile}
+                >
+                <p className="one-pic">{data?.picture}</p>
+                <p className="one-name">{data?.username}</p>
+                
             </div>
         )
     }

@@ -8,6 +8,8 @@ import RoomStatus from "./chat_modes/roomStatus";
 import { chatPreview } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 
+
+
 export default function Chat() {
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
     const [newRoomRequest, setNewRoomRequest] = useState(false);
@@ -49,8 +51,10 @@ export default function Chat() {
             />
             <ChatRoom
                 current={selectedChat}/>
-            <RoomStatus
-                current={selectedChat}/>
+            <div style={{display: selectedChat?.dm ? "none" : ""}}>
+                <RoomStatus
+                    current={selectedChat}/>
+            </div>
             <div
                 onClick={cardDisappear}
                 className="card-disappear-click-zone"
