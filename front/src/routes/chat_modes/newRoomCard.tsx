@@ -32,7 +32,7 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
         }
 
         socket.emit("get user tags");
-        socket.on("user tags", function(data: Tag[]) {
+        socket.on("user tags", (data: Tag[]) => {
             setUserTag(data);
             console.log("tags", data);
         })

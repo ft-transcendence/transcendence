@@ -68,7 +68,7 @@ function MsgStream({email, channelId}
 
     useEffect( () => {
 
-        socket.on("fetch msgs", function(data: oneMsg[]){
+        socket.on("fetch msgs", (data: oneMsg[]) => {
             console.log("got fetched msgs", data)
             setMsgs(data);
         })
