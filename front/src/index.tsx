@@ -18,6 +18,7 @@ import Home from "./routes/Home";
 import Chat from "./routes/Chat";
 import "./index.css";
 import React from "react";
+import { GetLogin } from "./routes/GetLogin";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
@@ -25,6 +26,7 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}>
+          <Route path="/login" element={<GetLogin />} />
           <Route path="/auth" element={<Auth />}>
             <Route index element={<Navigate to="/auth/signin" />} />
             <Route path="signin" element={<SignIn />} />

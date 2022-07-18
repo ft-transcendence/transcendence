@@ -135,6 +135,9 @@ export class AuthService{
 
 	/* JWT */
 
+
+
+
 	/* GENERATE JASON WEB TOKENS */
 	async signin_jwt(userId: number, email: string)
 	: Promise<{access_token : string, refresh_token : string}> {
@@ -161,7 +164,9 @@ export class AuthService{
 			refresh_token: Rtoken,
 		};
 	}	
-	
+
+
+
 	/* REFRESH TOKEN */
 	async refresh_token(userId: number, refreshToken: string) {
 		

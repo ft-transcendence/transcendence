@@ -31,6 +31,7 @@ export default function App() {
           }}
         >
           <Link to="/auth">Auth</Link> |{" "}
+          <Link to="/login">Login</Link> |{" "}
           <Link to="/home">Home(sign in protected)</Link> |{" "}
           <Link to="/game">Game</Link> | <Link to="/chat">chat</Link> |{" "}
           <Link to="/landing-page">Landing page</Link> |{" "}

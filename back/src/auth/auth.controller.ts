@@ -79,15 +79,21 @@ export class AuthController {
 	 async callback_42(@Req() request: any, @Res() response: Response) {
 		 
 		 // Generate token using API response
-		 const token = await this.authService.signin_42(request.user as Profile_42);
-		 
+		 const tokens = await this.authService.signin_42(request.user as Profile_42);
+
+			 
 		 // SEND TOKEN TO FRONT in URL
-		 const url = new URL(`${request.protocol}:${request.hostname}`);
+		 const url = new URL(`${request.protocol}` + '://localhost');
 		 url.port = process.env.FRONT_PORT;
 		 url.pathname = '/login';
-		 url.searchParams.append('access_token', token['access_token']);
+		 url.searchParams.append('access_token', tokens['access_token']);
 		 response.status(302).redirect(url.href);
-	 }
+		
+		// SEND TOKEN TO FRONT
+		//console.log('callback_42', tokens);
+		//return response.status(201).send(tokens['access_token']);
+		//return tokens['access_token'];
+	}
 
 	/* REFRESH TOKEN CALLBACK */
 

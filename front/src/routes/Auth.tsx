@@ -15,6 +15,7 @@ import { UsernameCxt } from "../App";
 import SignIn from "./auth_modes/SignIn";
 import { useAuth } from "..";
 import { clear } from "console";
+import { rawListeners } from "process";
 
 export const userInputsRefs: {
   username: React.RefObject<HTMLInputElement>;
@@ -93,7 +94,6 @@ export default function Auth() {
     if (userInfo.username && userInfo.email && userInfo.password) signUp();
     else signIn();
   };
-
   
   const handleClick = (event : any) => {
     event.preventDefault();
@@ -102,7 +102,7 @@ export default function Auth() {
 
   const signIn42 = () => {
     console.log("signIn42")
-    fetch("http://localhost:4000/auth/42", {
+    fetch("http://localhost:1024/back/auth/42", {
       //mode: "no-cors",
       method: "GET",
       redirect: "follow",
@@ -194,7 +194,7 @@ export default function Auth() {
           </Form.Group>
 
           {/*<Button variant="secondary" className="submit-button" size="sm" onClick={handleClick}>*/}
-          <Button variant="secondary" className="submit-button" size="sm" href="http://localhost:4000/auth/42">
+          <Button variant="secondary" className="submit-button" size="sm" href="http://localhost:1024/back/auth/42">
             Sign in with 42
           </Button>
           <Button
