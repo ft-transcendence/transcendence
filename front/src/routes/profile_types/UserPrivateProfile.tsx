@@ -4,6 +4,7 @@ import { ModifyEntry } from "./ModifyUserInfo";
 import IconPen from "../../ressources/icons/IconPen.svg";
 import ProfilePic from "../../ressources/imgs/mvaldes.jpeg";
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
+import { UsersRelations } from "./FriendsList";
 // import { useUsername } from "../../hooks/UserInfoHooks";
 
 export default function UserPrivateProfile() {
@@ -22,6 +23,10 @@ export default function UserPrivateProfile() {
   const [showPass, setShowPass] = useState(false);
   const onClickEditPass = () => setShowPass((curent) => !curent);
   const hidePass = () => setShowPass(false);
+
+  const [showFriends, setShowFriends] = useState(true);
+  const onClickShowFriends = () => setShowFriends((curent) => !curent);
+  const hideFriends = () => setShowFriends(false);
 
   const userInfoInit = {
     email: localStorage.getItem("userEmail"),
@@ -47,20 +52,22 @@ export default function UserPrivateProfile() {
       <h1 className="app-title">My account</h1>
       <Container className="p-5 h-100">
         <Row className="wrapper">
-          <div
-            className="p-2 profile-pic-round"
-            style={{
-              backgroundImage: `url("https://cdn.intra.42.fr/users/mvaldes.JPG")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          >
-            <input
-              type="image"
-              src={IconPen}
-              className="float-end edit-round-icon"
-              onClick={() => setModalShow(true)}
-            />
+          <div className="p-2 profile-pic-round">
+            <div
+              className="profile-pic-inside"
+              style={{
+                backgroundImage: `url("https://cdn.intra.42.fr/users/mvaldes.JPG")`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              <input
+                type="image"
+                src={IconPen}
+                className="edit-round-icon float-end"
+                onClick={() => setModalShow(true)}
+              />
+            </div>
           </div>
           <Col className=" content">
             <div className="profile-username-text">@{userInfo.userName}</div>
@@ -91,6 +98,7 @@ export default function UserPrivateProfile() {
                         className="btn btn-secondary btn-sm submit-button float-end"
                         onClick={() => {
                           onClickEditUsername();
+                          onClickShowFriends();
                           hideEmail();
                           hidePhone();
                           hidePass();
@@ -118,6 +126,7 @@ export default function UserPrivateProfile() {
                         className="btn btn-secondary btn-sm submit-button float-end"
                         onClick={() => {
                           onClickEditEmail();
+                          onClickShowFriends();
                           hideUsername();
                           hidePhone();
                           hidePass();
@@ -153,6 +162,7 @@ export default function UserPrivateProfile() {
                         className="btn btn-secondary btn-sm submit-button float-end"
                         onClick={() => {
                           onClickEditPhone();
+                          onClickShowFriends();
                           hideUsername();
                           hideEmail();
                           hidePass();
@@ -170,6 +180,7 @@ export default function UserPrivateProfile() {
                       className="col-5 btn btn-outline-primary btn-sm"
                       onClick={() => {
                         onClickEditPass();
+                        onClickShowFriends();
                         hideUsername();
                         hideEmail();
                         hidePhone();
@@ -200,31 +211,44 @@ export default function UserPrivateProfile() {
               </Card.Body>
             </Card>
           </Col>
+          {showFriends ? <UsersRelations /> : null}
           {showUsername ? (
             <ModifyEntry
               toEdit="USERNAME"
-              onClick={onClickEditUsername}
+              onClick={() => {
+                onClickEditUsername();
+                onClickShowFriends();
+              }}
               changeUserInfoHook={changeUserInfoHook}
             />
           ) : null}
           {showEmail ? (
             <ModifyEntry
               toEdit="EMAIL"
-              onClick={onClickEditEmail}
+              onClick={() => {
+                onClickEditEmail();
+                onClickShowFriends();
+              }}
               changeUserInfoHook={changeUserInfoHook}
             />
           ) : null}
           {showPhone ? (
             <ModifyEntry
               toEdit="PHONE"
-              onClick={onClickEditPhone}
+              onClick={() => {
+                onClickEditPhone();
+                onClickShowFriends();
+              }}
               changeUserInfoHook={changeUserInfoHook}
             />
           ) : null}
           {showPass ? (
             <ModifyEntry
               toEdit="PASSWORD"
-              onClick={onClickEditPass}
+              onClick={() => {
+                onClickEditPass();
+                onClickShowFriends();
+              }}
               changeUserInfoHook={changeUserInfoHook}
             />
           ) : null}

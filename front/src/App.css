@@ -57,14 +57,14 @@
   font-family: "IBM Plex Mono";
   font-style: normal;
   letter-spacing: -0.4px;
-  /* align-self: flex-end; */
+  color: var(--text-color-white);
 }
 
 .ROBOTO-text {
   font-family: "Roboto" sans-serif;
   font-style: normal;
   letter-spacing: -0.4px;
-  /* align-self: flex-end; */
+ color: var(--text-color-white);
 }
 
 .wrapper {
@@ -118,11 +118,20 @@
 }
 
 .profile-pic-round {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 150px;
   width: 150px;
   border-radius: 50%;
   background: var(--buttons-color-gray-disabled);
   box-shadow: 7px 7px 30px #1f2427, -7px -7px 30px #485057;
+}
+
+.profile-pic-inside {
+  height: 98%;
+  width: 98%;
+  border-radius: 50%;
 }
 
 .edit-round-icon {

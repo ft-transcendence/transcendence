@@ -18,6 +18,7 @@ import Chat from "./routes/Chat";
 import "./index.css";
 import React from "react";
 import UserPrivateProfile from "./routes/profile_types/UserPrivateProfile";
+import { BlockedList, FriendsList } from "./routes/profile_types/FriendsList";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
@@ -41,7 +42,10 @@ root.render(
             }
           >
             <Route path="home" element={<Home />} />
-            <Route path="private-profile" element={<UserPrivateProfile />} />
+            <Route path="private-profile" element={<UserPrivateProfile />}>
+              <Route path="friends" element={<FriendsList />} />
+              <Route path="blocked" element={<BlockedList />} />
+            </Route>
             <Route path="chat" element={<Chat />} />
             <Route path="game" element={<Game />} />
             <Route path="*" element={<Navigate to="/app" />} />
