@@ -51,7 +51,7 @@ export default function Chat() {
             />
             <ChatRoom
                 current={selectedChat}/>
-            <div style={{display: selectedChat?.dm ? "none" : ""}}>
+            <div style={{display: selectedChat?.dm ? "none" : "", backgroundColor: "#003e60"}}>
                 <RoomStatus
                     current={selectedChat}/>
             </div>

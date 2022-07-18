@@ -2,7 +2,7 @@ import "./newRoomCard.css";
 import "./tags.css"
 import { useEffect, useRef, useState } from "react";
 import { socket } from "../../App";
-import { newChannel, roomExist, userSuggest } from "./type/chat.type";
+import { newChannel } from "./type/chat.type";
 import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
 import Switch from "react-switch";
@@ -25,7 +25,7 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
     useEffect(() => {
         console.log("new room : request:", newRoomRequest)
 
-        if (newRoomRequest == false)
+        if (newRoomRequest === false)
         {   
             initVars();
             console.log("new room : request:", newRoomRequest)
@@ -36,12 +36,9 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
             setUserTag(data);
             console.log("tags", data);
         })
-        socket.on("exception", function(data){
-            console.log(data)
-        })
+
         return  (() => {
             socket.off("user tags");
-            socket.off("exception")
         })
         // @ts-ignore-next-line
     }, [newRoomRequest])
@@ -85,6 +82,7 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
         socket.emit("new channel", data);
         initVars();
         onNewRoomRequest();
+        socket.emit("get search suggest", email);
     }
 
     const initVars = () => {
@@ -102,8 +100,6 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
         }, 30);
     }
 
-    // .filter(v => {return addedMember.filter(v1 => {return v1.id == v.id}).length == 0})
-
     return (
         <div className="new-room-request">
             <div className="room-name">
@@ -119,7 +115,7 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
                 ref={scroll}>
                 <ReactTags
                     tags={addedMember}
-                    suggestions={userTag}
+                    suggestions={userTag.filter(v => {return addedMember.filter(v1 => {return v1.id === v.id}).length === 0})}
                     placeholderText="To:"
                     onAddition={onAddMember}
                     onDelete={onDeleteMember}

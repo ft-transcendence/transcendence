@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../..";
 import { socket } from "../../App";
 import "./chatRoom.css";
-import { chatPreview, oneMsg, useMsg } from "./type/chat.type";
+import { 
+    chatPreview,
+    oneMsg,
+    useMsg
+} from "./type/chat.type";
 import {
     Menu,
     Item,
@@ -33,8 +37,12 @@ export default function ChatRoom({current}
         <>
             <div className="chat-room-zone">
                 <BriefInfo info = {current}/>
-                <MsgStream email={email} channelId={current!.id}/>
-                <InputArea email = {email} channelId = {current!.id}/>
+                {current ? 
+                    <>
+                        <MsgStream email={email} channelId={current!.id}/>
+                        <InputArea email = {email} channelId = {current!.id}/>
+                    </>
+                : <></>}
             </div>
         </>
     )

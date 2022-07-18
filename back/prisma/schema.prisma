@@ -38,6 +38,7 @@ model User {
   owner       Channel[] @relation("owner")
   admin       Channel[] @relation("admin")  // the following three line i dont understand well. 
   member      Channel[] @relation("member")
+  invited     Channel[] @relation("invite")
   chanBlocked Channel[] @relation("blocked")
 
   messages    Msg[]
@@ -58,9 +59,10 @@ model Channel {
   private   Boolean   @default(false)
   password  String?
 
-  owners     User[]    @relation("owner")
+  owners    User[]    @relation("owner")
   admins    User[]    @relation("admin")
   members   User[]    @relation("member")
+  inviteds    User[]    @relation("invite")
   blocked   User[]    @relation("blocked")
   messages  Msg[]
 

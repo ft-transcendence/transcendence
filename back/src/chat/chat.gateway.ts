@@ -75,7 +75,7 @@ export class ChatGateway {
     @ConnectedSocket() client: Socket) {
     const preview = await this.chatservice.get__onePreview(channelId);
     client.emit('add preview', preview);
-
+    
   }
 
   @SubscribeMessage('new channel')
@@ -108,6 +108,17 @@ export class ChatGateway {
     }
   }
 
+  @SubscribeMessage('invite to channel')
+  async inviteToChannel(
+    @MessageBody() data: updateChannel,
+    @ConnectedSocket() client: Socket) {
+
+    const channelId = await this.chatservice.invite__toChannel(data)
+    console.log("channelID:::", channelId)
+    const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
+    client.emit('fetch inviteds', inviteds);
+  }
+
   @SubscribeMessage('leave channel')
   async handleDeleteChannel(
     @MessageBody() data: updateChannel,
@@ -122,6 +133,8 @@ export class ChatGateway {
     client.emit('fetch admins', admins);
     const members = await this.chatservice.fetch__members(data.channelId);
     client.emit('fetch members', members);
+    const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
+    client.emit('fetch inviteds', inviteds);
   }
 
   @SubscribeMessage('new dm')
@@ -171,7 +184,10 @@ export class ChatGateway {
     client.emit('fetch admins', admins);
     const members = await this.chatservice.fetch__members(channelId);
     client.emit('fetch members', members);
+    const inviteds = await this.chatservice.fetch__inviteds(channelId);
+    client.emit('fetch inviteds', inviteds);
   }
+
 
   @SubscribeMessage('get search suggest')
   async handleSuggestUsers(
