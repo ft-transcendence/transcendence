@@ -67,6 +67,7 @@ export type oneUser = {
     picture: string;
     isOwner: boolean;
     isAdmin: boolean;
+    isInvited: boolean;
     isMuted: boolean;
 }
 

@@ -22,7 +22,7 @@ export default function Chat() {
             console.log("front Connected");
         });
 
-        socket.on("exception", function(data) {
+        socket.on("exception", (data) => {
             console.log("exception", data)
         })
 

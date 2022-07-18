@@ -93,25 +93,27 @@ function MemberStatus({current}:{current: chatPreview | undefined}) {
     const [admins, setAdmins] = useState<oneUser[] | null>([]);
     const [members, setMembers] = useState<oneUser[] | null>([]);
     const [inviteds, setInviteds] = useState<oneUser[] | null>([]);
+    const [ myRole, setMyRole ] = useState("");
+    const email = useAuth().user;
 
     useEffect( () => {
 
-        socket.on("fetch owner", function(data: oneUser[] | null){
+        socket.on("fetch owner", (data: oneUser[] | null) => {
             console.log("got fetched owner", data)
             setOwner(data);
         })
 
-        socket.on("fetch admins", function(data: oneUser[] | null){
+        socket.on("fetch admins", (data: oneUser[] | null) => {
             console.log("got fetched admins", data)
             setAdmins(data);
         })
 
-        socket.on("fetch members", function(data: oneUser[] | null){
+        socket.on("fetch members", (data: oneUser[] | null) => {
             console.log("got fetched members", data)
             setMembers(data);
         })
 
-        socket.on("fetch inviteds", function(data: oneUser[] | null){
+        socket.on("fetch inviteds", (data: oneUser[] | null) => {
             console.log("got fetched inviteds", data)
             setInviteds(data);
         })
@@ -124,38 +126,71 @@ function MemberStatus({current}:{current: chatPreview | undefined}) {
         })
         
     }, [])
+
+    useEffect(() => {
+        setRole();
+    }, [owner, admins, members, inviteds]);
+
+    const setRole = () => {
+            if (inviteds && inviteds.length > 0)
+            {   
+                var i = inviteds.filter((invited) => { 
+                    return invited.email === email }).length > 0 ?
+                setMyRole("invited") : null;
+            }
+            if (members && members.length > 0)
+            {
+                var i = members.filter((member) => { 
+                    return member.email === email }).length > 0 ?
+                setMyRole("member") : null;
+            }
+            if (admins && admins.length > 0)
+            {
+                var i = admins.filter((admin) => { 
+                    return admin.email === email }).length > 0 ?
+                setMyRole("admin") : null;
+            }
+            if (owner && owner.length > 0)
+            {
+                var i = owner.filter((owner) => { 
+                    return owner.email === email }).length > 0 ?
+                setMyRole("owner") : null;
+            }
+    }
+
     return (
         <div className="member-status">
             <p className="status-type"
                 style={{display: owner?.length ? "" : "none"}}>
-                OWNER
+                OWNER {myRole}
             </p>
-            <Status users={owner} current={current}/>
+            <Status users={owner} current={current} myRole={myRole}/>
             <p 
                 className="status-type"
                 style={{display: admins?.length ? "" : "none"}}>
                 ADMINS
             </p>
-            <Status users={admins} current={current}/>
+            <Status users={admins} current={current} myRole={myRole}/>
             <p
                 className="status-type"
                 style={{display: members?.length ? "" : "none"}}>
                 MEMBERS
             </p>
-            <Status users={members} current={current}/>
+            <Status users={members} current={current} myRole={myRole}/>
             <p
                 className="status-type"
                 style={{display: inviteds?.length ? "" : "none"}}>
                 Invited Users
             </p>
-            <Status users={inviteds} current={current}/>
+            <Status users={inviteds} current={current} myRole={myRole}/>
         </div>
     )
 }
 
-function Status({users, current}
+function Status({users, current, myRole}
     : { users: oneUser[] | null,
-        current: chatPreview | undefined }) {
+        current: chatPreview | undefined,
+        myRole: string }) {
     
     const email = useAuth().user;
 
@@ -239,54 +274,56 @@ function Status({users, current}
                     <Item onClick={handleInviteGame}>
                         invite to a game!
                     </Item>
-                    
+                    <Item onClick={handleBlock}>
+                        block user
+                    </Item>
                     <Separator/>
+                    {myRole === "owner" ?
+                    <>
                         <Item 
-                            style={{display:
-                                (global.selectedData?.isAdmin === false) ? "" : "none"}}
-                            onClick={handleBeAdmin}>
-                            assign as admin
+                        style={{display:
+                            (global.selectedData?.isAdmin === false) &&
+                            (global.selectedData?.isInvited === false) ? "" : "none"}}
+                        onClick={handleBeAdmin}>
+                        assign as admin
                         </Item>
                         <Item 
                             style={{display: 
                                 (global.selectedData?.isAdmin === true) ? "" : "none"}}
                             onClick={handleNotAdmin}>
-                            take back the admin right
+                            unset admin right
                         </Item>
-                        <div style={{display: 
-                                (email === current?.ownerEmail) ?  "" : "none"}}>
-                            <Separator/>
-                        </div>
-                        <Submenu label="mute" style={{display: 
-                                (global.selectedData?.isAdmin) === true ?  "" : "none"}}>
-                            <Item 
-                                style={{position: "relative", right: "200%"}}
-                                onClick={() => handleMute(5)}>
-                                5 mins
-                            </Item>
-                            <Item 
-                                style={{position: "relative", right: "200%"}}
-                                onClick={() => handleMute(10)}>
-                                10 mins
-                            </Item>
-                            <Item
-                                style={{position: "relative", right: "200%"}}
-                                onClick={() => handleMute(15)}>
-                                15 mins
-                            </Item>
-                            <Item
-                                style={{position: "relative", right: "200%"}}
-                                onClick={() => handleMute(20)}>
-                                20 mins
-                            </Item>
-                        </Submenu>
-                        <Item onClick={handleBlock}>
-                            block
+                    </> : <></>}
+                    {(myRole === "admin" || myRole === "owner") && 
+                        ((global.selectedData?.isInvited) === false) ? 
+                    <>
+                        <Submenu label="mute">
+                        <Item 
+                            style={{position: "relative", right: "200%"}}
+                            onClick={() => handleMute(5)}>
+                            5 mins
                         </Item>
-                        <Item onClick={handleLeave}>
-                            kick out
+                        <Item 
+                            style={{position: "relative", right: "200%"}}
+                            onClick={() => handleMute(10)}>
+                            10 mins
                         </Item>
-                </Menu>
+                        <Item
+                            style={{position: "relative", right: "200%"}}
+                            onClick={() => handleMute(15)}>
+                            15 mins
+                        </Item>
+                        <Item
+                            style={{position: "relative", right: "200%"}}
+                            onClick={() => handleMute(20)}>
+                            20 mins
+                        </Item>
+                    </Submenu>
+                    <Item onClick={handleLeave}>
+                        kick out
+                    </Item>
+                        </> : <></>}
+            </Menu>
         </>
     )
 }

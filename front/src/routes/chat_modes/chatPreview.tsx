@@ -36,7 +36,7 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
 
         socket.emit("read preview", email);
 
-        socket.on("set preview", function(data: chatPreview[] | null) {
+        socket.on("set preview", (data: chatPreview[] | null) => {
             if (data)
             {
                 console.log("chat preview", data);
@@ -46,13 +46,13 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
                 console.log("no preview")
         })
         
-        socket.on("add preview", function(data: chatPreview) {
+        socket.on("add preview", (data: chatPreview) => {
             console.log("add preview", data)
             if (data)
                 setPreviews(oldPreviews => [...oldPreviews, data]);
         })
 
-        socket.on("update preview", function(data: chatPreview[] | null) {
+        socket.on("update preview", (data: chatPreview[] | null) => {
             console.log("update preview", data)
             if (data)
                 setPreviews(data);
@@ -141,7 +141,7 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
                     <Item
                         style={{display: global.selectedData?.dm === true ?  "" : "none" }}
                         onClick={handleLeave}>
-                        Leave the chat
+                        Leave chat
                     </Item>
                     <Item
                         style={{display: global.selectedData?.dm === true ? "none" : "" }}
@@ -151,12 +151,12 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
                     <Item 
                         style={{display: global.selectedData?.dm === true ? "" : "none"}}
                         onClick={handleBlockChannel}>
-                        Block the channel
+                        Block channel
                     </Item>
                     <Item 
                         style={{display: global.selectedData?.dm === true ? "none" : "" }}
                         onClick={handleBlockUser}>
-                        Block the user
+                        Block user
                     </Item>
                 </Menu>
             </div>
@@ -173,7 +173,7 @@ function ChatSearch( { onSearchMyChat, onSearchPublicChat }
 
     useEffect(() => {
         socket.emit("get search suggest", email);
-        socket.on("search suggest", function(data: oneSuggestion[]) {
+        socket.on("search suggest", (data: oneSuggestion[]) => {
             setSug(data);
             console.log("suggestion", data);
         })
