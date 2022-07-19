@@ -13,9 +13,9 @@ export default function Auth() {
   let auth = useAuth(); // subscribe to Auth context
 
   function userSignIn() {
-    let email = localStorage.getItem("userEmail");
-    if (email)
-      auth.signin(email, () => {
+    let username = localStorage.getItem("userName");
+    if (username)
+      auth.signin(username, () => {
         navigate("/app/private-profile", { replace: true });
       });
   }

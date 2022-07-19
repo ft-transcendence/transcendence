@@ -84,6 +84,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   let signin = (newUser: string | null, callback: VoidFunction) => {
     return fakeAuthProvider.signin(() => {
       setUser(newUser);
+      localStorage.setItem("userLogged", "true");
       callback();
     });
   };
@@ -92,10 +93,10 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     return fakeAuthProvider.signout(() => {
       setUser(null);
       localStorage.clear();
+      localStorage.setItem("userLogged", "false");
       callback();
     });
   };
-
   let value = { user, signin, signout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -109,7 +110,7 @@ export function AuthStatus() {
   let auth = useAuth();
   let navigate = useNavigate();
 
-  if (!auth.user) {
+  if (!(localStorage!.getItem("userLogged")! === "true")) {
     return <Link to="/auth/signin">Sign in.</Link>;
   }
 
@@ -131,7 +132,9 @@ function RequireAuth({ children }: { children: JSX.Element }) {
   let auth = useAuth(); // subscribe to Auth context
   let location = useLocation(); // returns the current location object
 
-  if (!auth.user) {
+  if (localStorage!.getItem("userLogged")! === "true") {
+    auth.signin(localStorage.getItem("userName"), () => {});
+  } else {
     return <Navigate to="/auth/signin" state={{ from: location }} replace />; //  to replace the /login
     // route in the history stack so the user doesn't return to the login page when clicking the
     // back button after logging in

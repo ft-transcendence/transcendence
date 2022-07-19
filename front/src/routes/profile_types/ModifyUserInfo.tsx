@@ -28,7 +28,6 @@ export const ModifyEntry = (props: any) => {
     e.preventDefault();
     console.log("--------------");
     if (userInput.userName) {
-      console.log("userName 👉️", userInput.userName);
       updateUsernameQuery(userInput.userName);
       const button = document.getElementById("handleChange");
       if (button) {
@@ -37,7 +36,6 @@ export const ModifyEntry = (props: any) => {
       }
     }
     if (userInput.email) {
-      console.log("email 👉️", userInput.email);
       updateEmailQuery(userInput.email);
       const button = document.getElementById("handleChange");
       if (button) {
@@ -84,6 +82,7 @@ export const ModifyEntry = (props: any) => {
                       onClick={(e: any) => {
                         handleSubmit(e);
                         props.changeUserInfoHook(e);
+                        props.onClick();
                       }}
                     >
                       Done
