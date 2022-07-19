@@ -319,30 +319,127 @@ export class UserService {
 		this.cancelInvite(otherId, id);
 	}
 
+	async updateBlocks(id: number) {
+		const user = await this.prisma.user.findUnique({where: {id: id}});
+		const blocking = user.blocking;
+		const blocked = user.blocked;
+
+		await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				blocks: {
+					push: blocking,
+				}
+			}
+		})
+		await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				blocks: {
+					push: blocked,
+				}
+			}
+		})
+		//empty arrays
+		blocking.length = 0;
+		blocked.length = 0;
+
+		await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				blocking: blocking
+			}
+		})
+
+		await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				blocked: blocked
+			}
+		})
+	}
 
 	async blockUser(id: number, otherId: number){
 		this.rmFriend(id, otherId);
-		const user = await this.prisma.user.findUnique({
+		const user = await this.prisma.user.update({
 			where: {
 				id: id
 			},
+			data: {
+				blocking: {
+					push: otherId
+				}
+			}
 		})
-		return (user);
-		//error: same id ?
-		//error: already blocked ?		
+
+		const otherUser = await this.prisma.user.update({
+			where: {
+				id: otherId
+			},
+			data: {
+				blocked: {
+					push: id
+				}
+			}
+		})
+		
+		this.updateBlocks(id);
+		this.updateBlocks(otherId);
+
+		return (user);		
 	}	
 
-	// /!\ THIS IS NO LONGER RELEVANT to the blocked/blocking duo since it will only cancel an invitation
-	// once the real friends list is done, change -blocking- for blocks	
+
 	async unblockUser(id: number, otherId: number){
+		//removing otherUser from User.blocks
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id: id
 			},
 		})
-		return (user);
-		//error: same id ?
-		//error: not blocked ?		
+
+		const index = user.blocks.indexOf(otherId);
+		if (index != -1) {
+			user.blocks.splice(index, 1)
+		}
+
+		await this.prisma.user.update({
+			where: {
+				id: id
+			},
+			data: {
+				blocks: user.blocks
+			}
+		})
+
+		//removing User from otherUser.blocks
+		const user2 = await this.prisma.user.findUnique({
+			where: {
+				id: otherId
+			},
+		})
+
+		const index2 = user2.blocks.indexOf(id);
+		if (index2 != -1) {
+			user2.blocks.splice(index2, 1)
+		}
+
+		await this.prisma.user.update({
+			where: {
+				id: otherId
+			},
+			data: {
+				blocks: user2.blocks
+			}
+		})
 	}	
 
 

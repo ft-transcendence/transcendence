@@ -122,13 +122,6 @@ export class UserController {
 		return (result);
 	}
 
-	@Post('/block_user')
-	async blockUser(@Req() request, @Body('friendId') otherId: number){
-		console.log('Going through blockUser in user.controller: ' + request.user.id + ' -> ' + otherId);
-		const result = await this.userService.addFriend(request.user.id, otherId);
-		return (result);
-	}
-
 	@Post('/cancel_invite')
 	async cancelInvite(@Req() request, @Body('friendId') otherId: number){
 //		console.log('Going through cancelInvite in user.controller: ' + request.user.id + ' -> ' + otherId);
@@ -138,13 +131,26 @@ export class UserController {
 
 	@Post('/deny_invite')
 	async denyInvite(@Req() request, @Body('friendId') otherId: number){
-//		console.log('Going through cancelInvite in user.controller: ' + request.user.id + ' -> ' + otherId);
+//		console.log('Going through denyInvite in user.controller: ' + request.user.id + ' -> ' + otherId);
 		const result = await this.userService.denyInvite(request.user.id, otherId);
 		return (result);		
 	}
 
-	//unblock user
+	@Post('/block_user')
+	async blockUser(@Req() request, @Body('friendId') otherId: number){
+		console.log('Going through blockUser in user.controller: ' + request.user.id + ' -> ' + otherId);
+		const result = await this.userService.blockUser(request.user.id, otherId);
 
+		return (result);
+	}
+
+	@Post('/unblock_user')
+	async unblockUser(@Req() request, @Body('friendId') otherId: number){
+		console.log('Going through unblockUser in user.controller: ' + request.user.id + ' -> ' + otherId);
+		const result = await this.userService.unblockUser(request.user.id, otherId);
+
+		return (result);
+	}
 
 	//GAME RELATED FUNCTIONS
 
