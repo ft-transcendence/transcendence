@@ -15,6 +15,7 @@ import "./context.css";
 import { useAuth } from "../..";
 import { AddUserIcon, QuitIcon } from "./icon";
 import ReactTags from "react-tag-autocomplete";
+import { channel } from "diagnostics_channel";
 
 declare var global: {
     selectedData: oneUser
@@ -23,6 +24,7 @@ declare var global: {
 export default function RoomStatus({current}:{current: chatPreview | undefined}) {
     const [add, setAdd] = useState<boolean>(false);
     const [userTag, setUserTag] = useState<Tag[]>([]);
+    const [joinable, setJoinable] = useState(false);
 
     const email = useAuth().user;
 
@@ -56,6 +58,8 @@ export default function RoomStatus({current}:{current: chatPreview | undefined})
 
     const onDelete = (i: number) => {}
 
+    console.log("jnn ", joinable)
+
     return(
         <div className="chat-status-zone">
             <div className="status-top">
@@ -79,19 +83,48 @@ export default function RoomStatus({current}:{current: chatPreview | undefined})
                         }}/>
                 </>}
             </div>
-            <MemberStatus current={current}/>
+            <MemberStatus current={current} joinable={joinable} setJoinable={setJoinable}/>
+            <JoinChannel channelId={current?.id} joinable={joinable}/>
         </div>
     )
 }
 
-function MemberStatus({current}:{current: chatPreview | undefined}) {
+function JoinChannel({channelId, joinable}
+    : { channelId: number | undefined,
+        joinable: boolean}) {
+    const email = useAuth().user;
+
+    const handleJoin = () => {    
+        let update: updateChannel = {
+            channelId: channelId,
+            email: email,
+            adminEmail: "",
+            invitedId: ""
+        }
+        socket.emit("join channel", update)
+    }
+
+    return (
+    <div
+        style={{display: joinable ? "" : "none"}}
+        className="join-channel-button"
+        onMouseUp={handleJoin}>
+            join channel
+    </div>)
+}
+
+function MemberStatus({current, joinable, setJoinable}
+    : { current: chatPreview | undefined,
+        joinable: boolean,
+        setJoinable:(value: boolean) => void}) {
     const [owner, setOwner] = useState<oneUser[] | null>([]);
     const [admins, setAdmins] = useState<oneUser[] | null>([]);
     const [members, setMembers] = useState<oneUser[] | null>([]);
     const [inviteds, setInviteds] = useState<oneUser[] | null>([]);
-    const [ myRole, setMyRole ] = useState("");
+    const [myRole, setMyRole] = useState("");;
     const email = useAuth().user;
 
+    
     useEffect( () => {
 
         socket.on("fetch owner", (data: oneUser[] | null) => {
@@ -121,46 +154,55 @@ function MemberStatus({current}:{current: chatPreview | undefined}) {
             socket.off("fetch inviteds");
         })
         
-    }, [])
+    }, [current])
 
     useEffect(() => {
         setRole();
     }, [owner, admins, members, inviteds]);
 
+    useEffect(() => {
+        setJoinable((myRole === "invited" || myRole === "noRole") && current ? true : false);
+    }, [myRole]);
+
     const setRole = () => {
-            if (inviteds && inviteds.length > 0)
-            {   
-                const isInvited: number = inviteds.filter((invited) => { 
-                    return invited.email === email }).length;
-                if (isInvited > 0)
-                    setMyRole("invited")
-            }
-            if (members && members.length > 0)
-            {
-                const isMember: number = members.filter((member) => { 
-                    return member.email === email }).length;
-                if (isMember > 0)
-                    setMyRole("member")
-            }
-            if (admins && admins.length > 0)
-            {
-                const isAdmin: number = admins.filter((admin) => { 
-                    return admin.email === email }).length;
-                if (isAdmin > 0)
-                    setMyRole("admin")
-            }
-            if (owner && owner.length > 0)
-            {
-                const isOwner: number = owner.filter((owner) => { 
-                    return owner.email === email }).length;
-                if (isOwner > 0)
-                    setMyRole("owner")
-            }
+        setMyRole("noRole")
+        if (inviteds && inviteds.length > 0)
+        {   
+            const isInvited: number = inviteds.filter((invited) => { 
+                return invited.email === email }).length;
+            if (isInvited > 0)
+                setMyRole("invited")
+        }
+        if (members && members.length > 0)
+        {
+            const isMember: number = members.filter((member) => { 
+                return member.email === email }).length;
+            if (isMember > 0)
+                setMyRole("member")
+        }
+        if (admins && admins.length > 0)
+        {
+            const isAdmin: number = admins.filter((admin) => { 
+                return admin.email === email }).length;
+            if (isAdmin > 0)
+                setMyRole("admin")
+        }
+        if (owner && owner.length > 0)
+        {
+            const isOwner: number = owner.filter((owner) => { 
+                return owner.email === email }).length;
+            if (isOwner > 0)
+                setMyRole("owner")
+        }
+        console.log("roleee", myRole)
     }
+
+    
 
     return (
         <div className="member-status">
-            <p className="status-type"
+            <p 
+                className="status-type"
                 style={{display: owner?.length ? "" : "none"}}>
                 OWNER
             </p>
@@ -269,8 +311,6 @@ function Status({users, current, myRole}
         socket.emit("leave channel", update);
     }
 
-    console.log("UPDATE ", global.selectedData);
-
     return (
         <>
             {users?.map((value, index) => {
@@ -351,16 +391,14 @@ function OneStatus({data, setSelData}
         // link to profile 
     }
 
-        return (
-            <div
-                style={{display: data ? "" : "none"}}
-                className="one-status"
-                onContextMenu={email !== data?.email ? (e) => {global.selectedData = data; e.preventDefault(); setSelData({data: data, event: e});} : undefined }
-                onClick={goProfile}
-                >
+    return (
+        <div
+            style={{display: data ? "" : "none"}}
+            className="one-status"
+            onContextMenu={email !== data?.email ? (e) => {global.selectedData = data; e.preventDefault(); setSelData({data: data, event: e});} : undefined }
+            onClick={goProfile}>
                 <p className="one-pic">{data?.picture}</p>
                 <p className="one-name">{data?.username}</p>
-                
-            </div>
-        )
-    }
+        </div>
+    )
+}

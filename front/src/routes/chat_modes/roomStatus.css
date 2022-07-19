@@ -1,6 +1,10 @@
 .chat-status-zone {
     background-color: #003e60;
     width: 250px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-bottom: 20px;
 }
 
 .status-top {
@@ -9,94 +13,104 @@
     border-bottom: 1px solid;
 }
 
-.add-box
-{
-    display: flex;
-    padding-left: 5px;
-}
+    .add-box
+    {
+        display: flex;
+        padding-left: 5px;
+    }
 
-.add-box > .react-tags
-{
-    background-color: inherit;
-    border: none;
+        .add-box > .react-tags
+        {
+            background-color: inherit;
+            border: none;
 
-}
+        }
 
-.add-box > .react-tags input 
-{
-    padding-top: 10px;
-    background-color: inherit;
-    color: white;
-    width: 180px;
-}
+        .add-box > .react-tags input 
+        {
+            padding-top: 10px;
+            background-color: inherit;
+            color: white;
+            width: 180px;
+        }
 
-.add-box > .react-tags__search
-{
-    margin-top: 10px;
-}
+        .add-box > .react-tags__search
+        {
+            margin-top: 10px;
+        }
 
-.add-box > .react-tags input::placeholder
-{
-    font-size: 14px;
-    color: rgb(207, 202, 202);
-}
+        .add-box > .react-tags input::placeholder
+        {
+            font-size: 14px;
+            color: rgb(207, 202, 202);
+        }
 
-.status-top > svg
-{
-    float: right;
-    padding: 3px;
-    margin: 15px;
-    opacity: 0.9;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+        .status-top > svg
+        {
+            float: right;
+            padding: 3px;
+            margin: 15px;
+            opacity: 0.9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-.status-top > svg:hover
-{
-    opacity: 1;
-}
+        .status-top > svg:hover
+        {
+            opacity: 1;
+        }
 
-.add-box .xicon
-{
-    float: right;
-    padding: 15px;
-    margin: 9px;
-    opacity: 0.9;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+        .add-box .xicon
+        {
+            float: right;
+            padding: 15px;
+            margin: 9px;
+            opacity: 0.9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-.add-box .xicon:hover
-{
-    opacity: 1;
-}
-
-
-.status-type {
-    color: grey;
-    font-weight: 600;
-    font-size: 14px;
-}
+        .add-box .xicon:hover
+        {
+            opacity: 1;
+        }
 
 .member-status {
     margin-top: 20px;
     margin-left: 20px;
     color: white;
+    flex: 1;
+    overflow: overlay;
 }
 
-.one-status {
-    margin-top: 5px;
-    display: flex;
-}
+    .status-type {
+        color: grey;
+        font-weight: 600;
+        font-size: 14px;
+    }
 
-.one-pic {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: white;
-}
+    .one-status {
+        margin-top: 5px;
+        display: flex;
+    }
 
-.one-name {
-    padding-left: 20px;
-}
+    .one-pic {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: white;
+    }
 
+    .one-name {
+        padding-left: 20px;
+    }
+
+.join-channel-button {
+    margin: auto;
+    width: 180px;
+    color:rgb(207, 202, 202);
+    line-height: 2.5;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 3px;
+}

@@ -25,7 +25,7 @@ export class ChatService {
             return null;
         }
     }
-
+    
     async get__cId__ByCname(name: string)
     {
         try {
@@ -41,18 +41,18 @@ export class ChatService {
         }
     }
 
-    async find__CnameByCId(cid: number): Promise<string>
+    async get__Cname__ByCId(cid: number)
     {
         try
         {
-            const channel = await this.prisma.channel.findFirst({
+            const channel = await this.prisma.channel.findUnique({
                 where: {
                     id: cid,
                 }
             })
             return channel.name;
         } catch (error) {
-            console.log('find__CnameByCId error:', error);
+            console.log('get__Cname__ByCId error:', error);
             throw new WsException(error)
         }
     }
@@ -477,19 +477,26 @@ export class ChatService {
         } 
     }
 
-    async join__channel(data: ChannelDto): Promise<number>
+    async join__channel(data: updateChannel): Promise<number>
     {
         try {
             const channel =  await this.prisma.channel.update ({
                 where:
                 {
-                    name: data.name
+                    id: data.channelId
                 },
                 data:
                 {
                     members:
                     {
                         connect:
+                        {
+                            email: data.email,
+                        }
+                    },
+                    inviteds:
+                    {
+                        disconnect:
                         {
                             email: data.email,
                         }

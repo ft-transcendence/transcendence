@@ -50,8 +50,8 @@ export class ChatGateway {
     @MessageBody() channelId: number,
     @ConnectedSocket() client: Socket) {
     const preview = await this.chatservice.get__onePreview(channelId);
+    client.join(preview.name);
     client.emit('add preview', preview);
-    
   }
 
   @SubscribeMessage('new channel')
@@ -69,8 +69,8 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('join channel')
-  async enterChannel(
-    @MessageBody() data: ChannelDto,
+  async joinChannel(
+    @MessageBody() data: updateChannel,
     @ConnectedSocket() client: Socket) {
     
     const channelId = await this.chatservice.join__channel(data);
@@ -78,9 +78,14 @@ export class ChatGateway {
       client.emit('exception', {error: "channel not found"})
     else
     {
-      const ret = await this.chatservice.get__previews(data.email);
-      client.join(data.name)
-      client.emit('cid', ret);
+      const channelName = await this.chatservice.get__Cname__ByCId(data.channelId);
+      client.join(channelName);
+      const preview = await this.chatservice.get__previews(data.email);
+      client.emit('update preview', preview);
+      const members = await this.chatservice.fetch__members(data.channelId);
+      client.emit('fetch members', members);
+      const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
+      client.emit('fetch inviteds', inviteds);
     }
   }
 

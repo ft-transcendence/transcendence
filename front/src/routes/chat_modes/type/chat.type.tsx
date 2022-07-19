@@ -37,7 +37,7 @@ export type Tag = {
 }
 
 export type updateChannel = {
-    channelId: number;
+    channelId: number | undefined;
     email: string | null;
     adminEmail: string;
     invitedId: number | string;
