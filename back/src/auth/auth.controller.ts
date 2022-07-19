@@ -85,7 +85,7 @@ export class AuthController {
 		 // SEND TOKEN TO FRONT in URL
 		 const url = new URL(`${request.protocol}` + '://localhost');
 		 url.port = process.env.FRONT_PORT;
-		 url.pathname = '/login';
+		 url.pathname = '/auth';
 		 url.searchParams.append('access_token', tokens['access_token']);
 		 response.status(302).redirect(url.href);
 		

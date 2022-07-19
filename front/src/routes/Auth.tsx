@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -73,7 +73,9 @@ export default function Auth() {
   let location = useLocation();
   let auth = useAuth(); // subscribe to Auth context
 
-  function userSignIn() {
+
+  // Create call back for query token
+  const userSignIn = useCallback(() => {
     const { from } = (location.state as LocationState) || {
       from: { pathname: "/" },
     };
@@ -82,7 +84,18 @@ export default function Auth() {
       auth.signin(email, () => {
         navigate(from, { replace: true });
       });
-  }
+    }, [navigate, auth, location.state]);
+
+  // Add the token to localstorage
+  useEffect(() => {
+    const access_token = location.search.split("=")[1];
+    if (access_token) {
+    console.log(access_token);
+    storeUserInfo(userInfo, access_token);
+    userSignIn();
+    }
+    } , [location.search, userSignIn]);
+
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
