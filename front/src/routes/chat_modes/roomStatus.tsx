@@ -352,22 +352,18 @@ function Status({users, current, myRole}
                     <>
                         <Submenu label="mute">
                         <Item 
-                            style={{position: "relative", right: "200%"}}
                             onClick={() => handleMute(5)}>
                             5 mins
                         </Item>
                         <Item 
-                            style={{position: "relative", right: "200%"}}
                             onClick={() => handleMute(10)}>
                             10 mins
                         </Item>
                         <Item
-                            style={{position: "relative", right: "200%"}}
                             onClick={() => handleMute(15)}>
                             15 mins
                         </Item>
                         <Item
-                            style={{position: "relative", right: "200%"}}
                             onClick={() => handleMute(20)}>
                             20 mins
                         </Item>
