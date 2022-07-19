@@ -1,7 +1,7 @@
 import React from "react";
 import { Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { userInputsRefs } from "../Auth";
+import { GUserInputsRefs } from "../../globals/variables";
 
 export default function SignUp() {
   let navigate = useNavigate();
@@ -23,7 +23,7 @@ export default function SignUp() {
       <Form.Group className="mb-3">
         <Form.Label className="form-test">USERNAME</Form.Label>
         <Form.Control
-          ref={userInputsRefs.username}
+          ref={GUserInputsRefs.username}
           type="text"
           placeholder="JaneDoe"
         />
