@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, IsNumber } from 'class-validator'
+import { IsEmail, IsNotEmpty, IsString, IsNumber, MaxLength } from 'class-validator'
 
 /*
 *	DTO = Data Transfer Object
@@ -16,6 +16,7 @@ export class UserDto {      //Data transfer object
 
 	@IsString()
 	@IsNotEmpty()
+	@MaxLength(65000)
 	picture: string; 
 
 	@IsNumber()
