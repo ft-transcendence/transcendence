@@ -536,7 +536,7 @@ export class ChatService {
                 }
             })
             const channel = await this.get__chat__ByChannelId(data.channelId)
-            if (!channel.owners)
+            if (channel.owners.length === 0)
                 await this.prisma.channel.delete ({
                     where:
                     {
@@ -750,7 +750,7 @@ export class ChatService {
     organize__owners(source: any)
     {
         let owners = [];
-        if (source.owners)
+        if (source)
             for (let i = 0; i < source.owners.length; i++)
             {    
                 let owner: oneUser = {
