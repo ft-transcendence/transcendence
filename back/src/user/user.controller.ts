@@ -25,18 +25,15 @@ export class UserController {
 	/*	READ	*/
 
 	@Get('me') 
-	getMe(@Req() request: Request) {
-		// log in console
-		console.log({
-			user: request.user,
-		})
-		return request.user
+	getMe(@Req() request) {
+		console.log('Going through getMe in user.controller : ' + request.user);
+		return this.userService.getUser(request.user.id);
 	}
 
 	@Get('him') //to change
 	getUser(id: number) {
 		console.log('Going through getUser in user.controller');
-		return this.userService.getUser(id);
+		return this.userService.getUser(2);
 	}	
 
 	@Get('/')	//default testing route, localhost:4000/users/

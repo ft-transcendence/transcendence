@@ -33,7 +33,13 @@ export class UserService {
 
 
 	/*	READ	*/
-	
+
+	async getMe(id: number) {
+		//returns a record of all the users, ordered by id in acending order
+		const user = await this.prisma.user.findUnique({where : {id: id}});
+		return (user);
+	}
+
 	async getAllUsers() {
 		//returns a record of all the users, ordered by id in acending order
 		const users = await this.prisma.user.findMany({orderBy : {id: 'asc'}});
@@ -74,9 +80,9 @@ export class UserService {
 		})
 		const	friendList: User[] = [];
 		for (const element of friendIdList) {
-			console.log('fL')
+			// console.log('fL')
 			for (let index = 0; index < element.friends.length; index++) {
-				console.log('indx')
+				// console.log('indx')
 				const friend = await this.prisma.user.findUnique({where: {id: element.friends[index]}})
 				friendList.push(friend);
 			}
