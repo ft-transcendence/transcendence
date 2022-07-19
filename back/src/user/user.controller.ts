@@ -4,6 +4,7 @@ import { Body, Controller,
 	Req,
 	UseGuards,
 } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { Request } from 'express';
 import { JwtGuard } from 'src/auth/guard';
 /* USER MODULES */
@@ -24,22 +25,24 @@ export class UserController {
 
 	/*	READ	*/
 
+	@UseGuards(JwtGuard)
 	@Get('me') 
 	getMe(@Req() request: Request) {
 			// log in console
 			console.log({
 				user: request.user,
 			})
-			return request.user;
-		}		
-		// console.log('Going through getMe in user.controller : ' + request.user);
-		// return this.userService.getUser(request.user.id);
-	//}
+		const prismaUser  = (request.user as User);
+//		console.log(userE.id)
+		return this.userService.getUser(prismaUser.id);
+		// return request.user;
+	
+	}
 
 	@Get('him') //to change
 	getUser(id: number) {
 		console.log('Going through getUser in user.controller');
-		return this.userService.getUser(2);
+		return this.userService.getUser(id);
 	}	
 
 	@Get('/')	//default testing route, localhost:4000/users/
@@ -64,11 +67,14 @@ export class UserController {
 	}
 
 	//idCheck (security to change user params)
+	@UseGuards(JwtGuard)
 	@Get('id_check')
-	idCheck(password: string, @Req() request) {
+	async idCheck(password: string, @Req() request) {
 		console.log('Going through idCheck in user.controller');
-//		const result = this.userService.idCheck(request.user.id, password);
-		return (/*result*/ request.user);	}
+		const prismaUser  = (request.user as User);
+		const fullUser = await this.userService.getUser(prismaUser.id);
+		const result = await this.userService.idCheck(fullUser.id, password);
+		return (result);	}
 
 
 	/*	UPDATE	*/
