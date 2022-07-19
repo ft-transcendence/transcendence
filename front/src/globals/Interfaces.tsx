@@ -1,3 +1,9 @@
+export interface AuthContextType {
+  user: string | null;
+  signin: (user: string | null, callback: VoidFunction) => void;
+  signout: (callback: VoidFunction) => void;
+}
+
 export interface IUserInputsRef {
   username: React.RefObject<HTMLInputElement>;
   email: React.RefObject<HTMLInputElement>;

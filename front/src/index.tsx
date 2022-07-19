@@ -1,24 +1,16 @@
 import ReactDOM from "react-dom/client";
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  useNavigate,
-  useLocation,
-  Link,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import App from "./App";
 import Game from "./routes/Game";
 import Auth from "./routes/Auth";
-import SignIn from "./routes/auth_modes/SignIn";
-import SignUp from "./routes/auth_modes/SignUp";
+import SignIn from "./routes/Auth/SignIn";
+import SignUp from "./routes/Auth/SignUp";
 import Home from "./routes/Home";
 import Chat from "./routes/Chat";
 import "./index.css";
-import React from "react";
 import UserPrivateProfile from "./routes/profile_types/UserPrivateProfile";
 import { BlockedList, FriendsList } from "./routes/profile_types/FriendsList";
+import { AuthProvider, RequireAuth } from "./hooks/AuthHooks";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
@@ -57,87 +49,3 @@ root.render(
     </BrowserRouter>
   </AuthProvider>
 );
-
-const fakeAuthProvider = {
-  isAuthenticated: false,
-  signin(callback: VoidFunction) {
-    fakeAuthProvider.isAuthenticated = true;
-    setTimeout(callback, 1); // fake async
-  },
-  signout(callback: VoidFunction) {
-    fakeAuthProvider.isAuthenticated = false;
-    setTimeout(callback, 1);
-  },
-};
-
-interface AuthContextType {
-  user: string | null;
-  signin: (user: string | null, callback: VoidFunction) => void;
-  signout: (callback: VoidFunction) => void;
-}
-
-let AuthContext = React.createContext<AuthContextType>(null!);
-
-function AuthProvider({ children }: { children: React.ReactNode }) {
-  let [user, setUser] = React.useState<any>(null);
-
-  let signin = (newUser: string | null, callback: VoidFunction) => {
-    return fakeAuthProvider.signin(() => {
-      setUser(newUser);
-      localStorage.setItem("userLogged", "true");
-      callback();
-    });
-  };
-
-  let signout = (callback: VoidFunction) => {
-    return fakeAuthProvider.signout(() => {
-      setUser(null);
-      localStorage.clear();
-      localStorage.setItem("userLogged", "false");
-      callback();
-    });
-  };
-  let value = { user, signin, signout };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  return React.useContext(AuthContext);
-}
-
-export function AuthStatus() {
-  let auth = useAuth();
-  let navigate = useNavigate();
-
-  if (!(localStorage!.getItem("userLogged")! === "true")) {
-    return <Link to="/auth/signin">Sign in.</Link>;
-  }
-
-  return (
-    <p>
-      Welcome {auth.user}!{" "}
-      <button
-        onClick={() => {
-          auth.signout(() => navigate("/"));
-        }}
-      >
-        Sign out
-      </button>
-    </p>
-  );
-}
-
-function RequireAuth({ children }: { children: JSX.Element }) {
-  let auth = useAuth(); // subscribe to Auth context
-  let location = useLocation(); // returns the current location object
-
-  if (localStorage!.getItem("userLogged")! === "true") {
-    auth.signin(localStorage.getItem("userName"), () => {});
-  } else {
-    return <Navigate to="/auth/signin" state={{ from: location }} replace />; //  to replace the /login
-    // route in the history stack so the user doesn't return to the login page when clicking the
-    // back button after logging in
-  }
-  return children;
-}

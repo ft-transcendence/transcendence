@@ -3,15 +3,14 @@ import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Outlet } from "react-router-dom";
-import { useAuth } from "..";
 import { IUserInfo } from "../globals/Interfaces";
 import { signUp, signIn } from "../queries/authQueries";
 import { GUserInputsRefs } from "../globals/variables";
+import { useAuth } from "../globals/contexts";
 
 export default function Auth() {
   let navigate = useNavigate();
-  let auth = useAuth(); // subscribe to Auth context
-
+  let auth = useAuth();
   function userSignIn() {
     let username = localStorage.getItem("userName");
     if (username)
