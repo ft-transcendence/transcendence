@@ -16,10 +16,10 @@ const fetchPost = (
     body: raw,
     redirect: "follow",
   })
-    .then((response) => response.text())
-    .then((result) => storeUserInfo(userInfo, result))
+    .then(response => response.text())
+    .then(result => storeToken(userInfo, result))
+    .then(() => getUserData())
     .then(() => userSignIn())
-    .then(() => console.log("auth " + url))
     .catch((error) => console.log("error", error));
 };
 
@@ -40,13 +40,13 @@ export const signUp = (userInfo: any, userSignIn: any) => {
   fetchPost(raw, userInfo, userSignIn, "signup");
 };
 
-const storeUserInfo = (userInfo: any, token: string) => {
+const storeToken = (userInfo: any, token: string) => {
   if (!token.includes("403")) {
+    console.log("No error, storing token.");
     const subOne = token.replace('{"access_token":"', "");
     const subTwo = subOne.replace('"}', "");
     localStorage.setItem("userToken", subTwo);
     console.log("token: ", subTwo);
-    getUserData();
   }
-  userInfo.clear();
+  // userInfo.clear();
 };

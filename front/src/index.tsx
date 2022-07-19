@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import App from "./App";
 import Game from "./routes/Game";
-import Auth from "./routes/Auth";
+import Auth from "./routes/Auth/Auth";
 import SignIn from "./routes/Auth/SignIn";
 import SignUp from "./routes/Auth/SignUp";
 import Home from "./routes/Home";

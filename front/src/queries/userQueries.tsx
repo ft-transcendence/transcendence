@@ -1,5 +1,5 @@
 export const getUserData = () => {
-  fetchGet("me", authFileHeader);
+  return fetchGet("me", authFileHeader);
 };
 
 const authFileHeader = () => {
@@ -20,6 +20,10 @@ const fetchGet = (url: string, header: any) => {
     .then((response) => response.json())
     .then((result) => storeUserInfo(result))
     .catch((error) => console.log("error", error));
+  // return new Promise((resolve, reject) => {
+  //   var username = localStorage.getItem("userName");
+  //   username ? resolve(username) : reject("Error");
+  // });
 };
 
 export const storeUserInfo = (result: any) => {
@@ -29,4 +33,10 @@ export const storeUserInfo = (result: any) => {
   localStorage.setItem("userGamesWon", result.gamesWon);
   localStorage.setItem("userGamesLost", result.gamesLost);
   localStorage.setItem("userGamesPlayed", result.gamesPlayed);
+
+  console.log("stored username: ", localStorage.getItem("userName"));
+//     return new Promise((resolve, reject) => {
+//       var username = localStorage.getItem("userName");
+//       username ? resolve(username) : reject("No username stored");
+//     });
 };
