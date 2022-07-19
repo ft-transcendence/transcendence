@@ -10,23 +10,18 @@ import { UsersRelations } from "./FriendsList";
 export default function UserPrivateProfile() {
   const [showUsername, setShowUsername] = useState(false);
   const onClickEditUsername = () => setShowUsername((curent) => !curent);
-  const hideUsername = () => setShowUsername(false);
 
   const [showEmail, setShowEmail] = useState(false);
   const onClickEditEmail = () => setShowEmail((curent) => !curent);
-  const hideEmail = () => setShowEmail(false);
 
   const [showPhone, setShowPhone] = useState(false);
   const onClickEditPhone = () => setShowPhone((curent) => !curent);
-  const hidePhone = () => setShowPhone(false);
 
   const [showPass, setShowPass] = useState(false);
   const onClickEditPass = () => setShowPass((curent) => !curent);
-  const hidePass = () => setShowPass(false);
 
   const [showFriends, setShowFriends] = useState(true);
   const onClickShowFriends = () => setShowFriends((curent) => !curent);
-  const hideFriends = () => setShowFriends(false);
 
   const userInfoInit = {
     email: localStorage.getItem("userEmail"),
@@ -97,11 +92,11 @@ export default function UserPrivateProfile() {
                         type="button"
                         className="btn btn-secondary btn-sm submit-button float-end"
                         onClick={() => {
-                          onClickEditUsername();
-                          onClickShowFriends();
-                          hideEmail();
-                          hidePhone();
-                          hidePass();
+                          setShowUsername(true);
+                          setShowFriends(false);
+                          setShowEmail(false);
+                          setShowPhone(false);
+                          setShowPass(false);
                         }}
                       >
                         Edit
@@ -125,11 +120,11 @@ export default function UserPrivateProfile() {
                         type="button"
                         className="btn btn-secondary btn-sm submit-button float-end"
                         onClick={() => {
-                          onClickEditEmail();
-                          onClickShowFriends();
-                          hideUsername();
-                          hidePhone();
-                          hidePass();
+                          setShowEmail(true);
+                          setShowFriends(false);
+                          setShowUsername(false);
+                          setShowPhone(false);
+                          setShowPass(false);
                         }}
                       >
                         Edit
@@ -161,11 +156,11 @@ export default function UserPrivateProfile() {
                         type="button"
                         className="btn btn-secondary btn-sm submit-button float-end"
                         onClick={() => {
-                          onClickEditPhone();
-                          onClickShowFriends();
-                          hideUsername();
-                          hideEmail();
-                          hidePass();
+                          setShowPhone(true);
+                          setShowFriends(false);
+                          setShowUsername(false);
+                          setShowEmail(false);
+                          setShowPass(false);
                         }}
                       >
                         Edit
@@ -179,11 +174,11 @@ export default function UserPrivateProfile() {
                       type="button"
                       className="col-5 btn btn-outline-primary btn-sm"
                       onClick={() => {
-                        onClickEditPass();
-                        onClickShowFriends();
-                        hideUsername();
-                        hideEmail();
-                        hidePhone();
+                        setShowPass(true);
+                        setShowFriends(false);
+                        setShowUsername(false);
+                        setShowEmail(false);
+                        setShowPhone(false);
                       }}
                     >
                       Change Password
