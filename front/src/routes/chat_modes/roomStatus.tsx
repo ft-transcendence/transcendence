@@ -13,12 +13,8 @@ import {
 import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
 import { useAuth } from "../..";
-import { Router } from "react-router-dom";
 import { AddUserIcon, QuitIcon } from "./icon";
 import ReactTags from "react-tag-autocomplete";
-// import { MENU_USER } from "../Chat";
-
-export const MENU_USER = "menu_user";
 
 declare var global: {
     selectedData: oneUser
@@ -134,27 +130,31 @@ function MemberStatus({current}:{current: chatPreview | undefined}) {
     const setRole = () => {
             if (inviteds && inviteds.length > 0)
             {   
-                var i = inviteds.filter((invited) => { 
-                    return invited.email === email }).length > 0 ?
-                setMyRole("invited") : null;
+                const isInvited: number = inviteds.filter((invited) => { 
+                    return invited.email === email }).length;
+                if (isInvited > 0)
+                    setMyRole("invited")
             }
             if (members && members.length > 0)
             {
-                var i = members.filter((member) => { 
-                    return member.email === email }).length > 0 ?
-                setMyRole("member") : null;
+                const isMember: number = members.filter((member) => { 
+                    return member.email === email }).length;
+                if (isMember > 0)
+                    setMyRole("member")
             }
             if (admins && admins.length > 0)
             {
-                var i = admins.filter((admin) => { 
-                    return admin.email === email }).length > 0 ?
-                setMyRole("admin") : null;
+                const isAdmin: number = admins.filter((admin) => { 
+                    return admin.email === email }).length;
+                if (isAdmin > 0)
+                    setMyRole("admin")
             }
             if (owner && owner.length > 0)
             {
-                var i = owner.filter((owner) => { 
-                    return owner.email === email }).length > 0 ?
-                setMyRole("owner") : null;
+                const isOwner: number = owner.filter((owner) => { 
+                    return owner.email === email }).length;
+                if (isOwner > 0)
+                    setMyRole("owner")
             }
     }
 
@@ -162,7 +162,7 @@ function MemberStatus({current}:{current: chatPreview | undefined}) {
         <div className="member-status">
             <p className="status-type"
                 style={{display: owner?.length ? "" : "none"}}>
-                OWNER {myRole}
+                OWNER
             </p>
             <Status users={owner} current={current} myRole={myRole}/>
             <p 
@@ -193,6 +193,17 @@ function Status({users, current, myRole}
         myRole: string }) {
     
     const email = useAuth().user;
+
+    const [selData, setSelData] = useState<any>(null);
+    const { show } = useContextMenu();
+
+    useEffect(() => {
+        if (selData && selData.event)
+        {
+            show(selData.event, {id: JSON.stringify(selData.data)});
+            selData.event = null;
+        }
+    }, [selData]);
 
     function handleAddFriend(){
         let update: updateUser = {
@@ -258,16 +269,18 @@ function Status({users, current, myRole}
         socket.emit("leave channel", update);
     }
 
+    console.log("UPDATE ", global.selectedData);
+
     return (
         <>
             {users?.map((value, index) => {
                 return (
                 <div key={index}>
-                    <OneStatus data={value}/>
+                    <OneStatus data={value} setSelData={setSelData}/>
                 </div>
                 )
             })}
-            <Menu id={MENU_USER} theme={theme.dark}>
+            <Menu id={JSON.stringify(global.selectedData)} theme={theme.dark}>
                     <Item onClick={handleAddFriend}>
                         add friend
                     </Item>
@@ -278,12 +291,12 @@ function Status({users, current, myRole}
                         block user
                     </Item>
                     <Separator/>
-                    {myRole === "owner" ?
+                    {myRole === "owner" && 
+                        (global.selectedData?.isInvited === false) ?
                     <>
                         <Item 
                         style={{display:
-                            (global.selectedData?.isAdmin === false) &&
-                            (global.selectedData?.isInvited === false) ? "" : "none"}}
+                            (global.selectedData?.isAdmin === false) ? "" : "none"}}
                         onClick={handleBeAdmin}>
                         assign as admin
                         </Item>
@@ -295,7 +308,7 @@ function Status({users, current, myRole}
                         </Item>
                     </> : <></>}
                     {(myRole === "admin" || myRole === "owner") && 
-                        ((global.selectedData?.isInvited) === false) ? 
+                        (global.selectedData?.isInvited === false) ? 
                     <>
                         <Submenu label="mute">
                         <Item 
@@ -328,14 +341,11 @@ function Status({users, current, myRole}
     )
 }
 
-function OneStatus({data}
-    : { data: oneUser }) {
+function OneStatus({data, setSelData}
+    : { data: oneUser, setSelData: (d : any) => void }) {
 
     const email = useAuth().user;
 
-    const { show } = useContextMenu({
-        id: MENU_USER
-    });
 
     const goProfile = () => {
         // link to profile 
@@ -345,7 +355,7 @@ function OneStatus({data}
             <div
                 style={{display: data ? "" : "none"}}
                 className="one-status"
-                onContextMenu={email !== data?.email ? (e) => {global.selectedData = data; show(e)} : undefined }
+                onContextMenu={email !== data?.email ? (e) => {global.selectedData = data; e.preventDefault(); setSelData({data: data, event: e});} : undefined }
                 onClick={goProfile}
                 >
                 <p className="one-pic">{data?.picture}</p>
