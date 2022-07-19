@@ -108,6 +108,7 @@ export default function Auth() {
     else signIn();
   };
   
+  /* OLD HANDLE 42 SIGNIN
   const handleClick = (event : any) => {
     event.preventDefault();
     signIn42();
@@ -129,6 +130,7 @@ export default function Auth() {
       .then(() => userSignIn())
       .catch((error) => console.log("error", error))
   };
+  */
 
   const signIn = () => {
     let myHeaders = new Headers();
@@ -206,7 +208,7 @@ export default function Auth() {
             </Form.Text>
           </Form.Group>
 
-          {/*<Button variant="secondary" className="submit-button" size="sm" onClick={handleClick}>*/}
+          {/*<Button variant="secondary" className="submit-button" size="sm" onClick={handleClick}> -- > OLD 42 SIGNIN < -- */}
           <Button variant="secondary" className="submit-button" size="sm" href="http://localhost:1024/back/auth/42">
             Sign in with 42
           </Button>
