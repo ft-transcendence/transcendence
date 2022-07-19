@@ -63,17 +63,26 @@ export class UserService {
 		}
 	}
 
-	
 	async getFriends(id: number){
-		// const friendList = await this.prisma.user.findMany({
-		// 	where: {
-		// 		id: id,
-		// 	},
-		// 	select : {
-		// 		friends: true,
-		// 	}
-		// })
-		// return (friendList);
+		const friendIdList = await this.prisma.user.findMany({
+			where: {
+				id: id,
+			},
+			select : {
+				friends: true,
+			}
+		})
+		const	friendList: User[] = [];
+		for (const element of friendIdList) {
+			console.log('fL')
+			for (let index = 0; index < element.friends.length; index++) {
+				console.log('indx')
+				const friend = await this.prisma.user.findUnique({where: {id: element.friends[index]}})
+				friendList.push(friend);
+			}
+		}
+
+		return (friendList);
 		//error: no friends ? 
 	}
 

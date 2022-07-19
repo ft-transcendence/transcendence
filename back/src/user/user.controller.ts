@@ -51,9 +51,16 @@ export class UserController {
 		return this.userService.getLeaderboard();        
 	}
 
-	//getfriends
+	@Get('get_friends')
+	async getFriends(@Req() request)
+	{
+		console.log('Going through getFriends in user.controller');
+		const result = await this.userService.getFriends(/*request.user.id*/1);
+		return (result);
 
-	//idCheck (to change user params)
+	}
+
+	//idCheck (security to change user params)
 	@Get()
 	idCheck(pwd: string, @Req() request) {
 		//hash it with argon - ask satch
@@ -93,7 +100,7 @@ export class UserController {
 	@Post('/add_friend')
 	async addFriend(@Req() request, @Body('friendId') otherId: number){
 //		console.log('Going through addFriend in user.controller: ' + request.user.id + ' -> ' + otherId);
-		const result = await this.userService.addFriend(request.user.id, otherId);
+		const result = await this.userService.addFriend(/*request.user.id, otherId*/1, 4);
 
 		return (result);
 	}
