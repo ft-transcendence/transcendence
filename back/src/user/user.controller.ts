@@ -25,10 +25,16 @@ export class UserController {
 	/*	READ	*/
 
 	@Get('me') 
-	getMe(@Req() request) {
-		console.log('Going through getMe in user.controller : ' + request.user);
-		return this.userService.getUser(request.user.id);
-	}
+	getMe(@Req() request: Request) {
+			// log in console
+			console.log({
+				user: request.user,
+			})
+			return request.user;
+		}		
+		// console.log('Going through getMe in user.controller : ' + request.user);
+		// return this.userService.getUser(request.user.id);
+	//}
 
 	@Get('him') //to change
 	getUser(id: number) {
@@ -58,11 +64,11 @@ export class UserController {
 	}
 
 	//idCheck (security to change user params)
-	@Get()
-	idCheck(pwd: string, @Req() request) {
-		//hash it with argon - ask satch
-		return pwd === request.user.hash ? (true) : (false);
-	}
+	@Get('id_check')
+	idCheck(password: string, @Req() request) {
+		console.log('Going through idCheck in user.controller');
+//		const result = this.userService.idCheck(request.user.id, password);
+		return (/*result*/ request.user);	}
 
 
 	/*	UPDATE	*/

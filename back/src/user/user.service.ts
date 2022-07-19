@@ -1,6 +1,7 @@
 /* GLOBAL MODULES */
 import { Injectable, ForbiddenException } from "@nestjs/common";
 import { User } from "@prisma/client";
+import * as argon from 'argon2'
 
 
 /* PRISMA */
@@ -98,6 +99,14 @@ export class UserService {
 		return (false);
 	}
 
+	async idCheck(id: number, password: string) {
+		const user = await this.prisma.user.findUnique({where: {id: id}});
+		const pwMatches = await argon.verify(user.hash, password);
+		// Invalid password
+		if (!pwMatches) 
+			return (false);
+		return (true);
+	}
 
 	/*	UPDATE	*/
 
@@ -106,7 +115,7 @@ export class UserService {
 	async updateUsername(id: number, newUsername: string) {
 		const updateUser = await this.prisma.user.update({
 			where: {
-			id: id,
+				id: id,
 			},
 			data: {
 				username: newUsername,
