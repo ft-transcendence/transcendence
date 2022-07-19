@@ -12,7 +12,11 @@ export class UserDto {      //Data transfer object
 
 	@IsString()
 	@IsNotEmpty()
-	username: string;  
+	username: string; 
+
+	@IsString()
+	@IsNotEmpty()
+	email: string;
 
 	@IsString()
 	@IsNotEmpty()
