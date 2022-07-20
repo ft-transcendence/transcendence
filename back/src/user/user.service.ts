@@ -90,13 +90,24 @@ export class UserService {
 		}
 
 		return (friendList);
-		//error: no friends ? 
 	}
 
 	async isFriend(id1: number, id2: number){
-		// if (this.getFriends(id1).find(id2))
-			return (true);
-		return (false);
+		const user = await this.prisma.user.findUnique({where: {id: id1}});
+		const index = user.friends.indexOf(id2);
+		if (index != -1) {
+			return (false)
+		}
+		return (true);
+	}
+
+	async isBlocked(id1: number, id2: number){
+		const user = await this.prisma.user.findUnique({where: {id: id1}});
+		const index = user.blocks.indexOf(id2);
+		if (index != -1) {
+			return (false)
+		}
+		return (true);
 	}
 
 	async idCheck(id: number, password: string) {
