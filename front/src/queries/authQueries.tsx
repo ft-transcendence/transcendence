@@ -3,24 +3,25 @@ import { getUserData } from "./userQueries";
 let myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
 
-const fetchPost = (
+const fetchPost = async (
   raw: string,
   userInfo: any,
   userSignIn: any,
   url: string
 ) => {
   let fetchUrl = "http://localhost:4000/auth/" + url;
-  fetch(fetchUrl, {
+
+  const rest = await fetch(fetchUrl, {
     method: "POST",
     headers: myHeaders,
     body: raw,
     redirect: "follow",
-  })
-    .then(response => response.text())
-    .then(result => storeToken(userInfo, result))
-    .then(() => getUserData())
-    .then(() => userSignIn())
-    .catch((error) => console.log("error", error));
+  }).then((response) => response.text());
+  storeToken(userInfo, rest);
+  if (localStorage.getItem("userToken")) {
+    await getUserData();
+    if (localStorage.getItem("userName")) userSignIn();
+  }
 };
 
 export const signIn = (userInfo: any, userSignIn: any) => {
@@ -42,11 +43,10 @@ export const signUp = (userInfo: any, userSignIn: any) => {
 
 const storeToken = (userInfo: any, token: string) => {
   if (!token.includes("403")) {
-    console.log("No error, storing token.");
     const subOne = token.replace('{"access_token":"', "");
     const subTwo = subOne.replace('"}', "");
     localStorage.setItem("userToken", subTwo);
     console.log("token: ", subTwo);
   }
-  // userInfo.clear();
+  userInfo.clear();
 };
