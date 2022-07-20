@@ -9,15 +9,16 @@ export class ChannelDto {
     name: string;
 
     @IsBoolean()
-    @IsOptional()
     private: boolean;
+
+    @IsBoolean()
+    isPassword: boolean;
 
     @IsOptional()
     @IsString()
     password: string;
 
     @IsEmail()
-    @IsNotEmpty()
     email: string
 
     @IsArray()

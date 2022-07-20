@@ -75,6 +75,7 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
         let data: newChannel = {
             name: roomName,
             private: isPrivate,
+            isPassword: isPassword,
             password: roomPass,
             email: email,
             members: addedMember,
