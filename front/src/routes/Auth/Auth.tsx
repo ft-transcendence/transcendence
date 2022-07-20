@@ -7,7 +7,7 @@ import { IUserInfo } from "../../globals/Interfaces";
 import { signUp, signIn } from "../../queries/authQueries";
 import { GUserInputsRefs } from "../../globals/variables";
 import { useAuth } from "../../globals/contexts";
-import { storeUserInfo } from "../../queries/userQueries";
+import { getUserData, storeUserInfo } from "../../queries/userQueries";
 
 export default function Auth() {
   let navigate = useNavigate();
@@ -27,30 +27,21 @@ export default function Auth() {
 
   // useEffect to get access token from URL
     useEffect(() => {
-      let userInfo: IUserInfo = {
-        username: null,
-        email: null,
-        password: null,
-        clear: function() {
-          this.username = null;
-          this.email = null;
-          this.password = null;
-        }
-      };
     // get access token from URL Query
     const access_token = location.search.split("=")[1];
     if (access_token) {
       // LOG
       console.log(access_token);
-      // store user info in localstorage
-      storeUserInfo(userInfo);
-      //storeToken(access_token);
+      //storeToken(access_token); --> Add function <--
       // set the token into localstorage
       localStorage.setItem("userToken", access_token);
+      // get user data
+      getUserData();
       // sign in the user
       userSignIn();
       }
     } , [location.search, userSignIn]);
+
 
   const handleSubmit = (event: any) => {
     let userInfo: IUserInfo = {
