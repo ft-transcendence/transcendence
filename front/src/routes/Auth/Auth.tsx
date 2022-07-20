@@ -7,7 +7,7 @@ import { IUserInfo } from "../../globals/Interfaces";
 import { signUp, signIn } from "../../queries/authQueries";
 import { GUserInputsRefs } from "../../globals/variables";
 import { useAuth } from "../../globals/contexts";
-import { getUserData, storeUserInfo } from "../../queries/userQueries";
+import { getUserData } from "../../queries/userQueries";
 
 export default function Auth() {
   let navigate = useNavigate();
