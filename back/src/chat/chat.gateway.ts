@@ -52,14 +52,11 @@ export class ChatGateway {
   async handleFetchChannel(
     email: string,
     @ConnectedSocket() client: Socket) {
-    const channels = await this.chatservice.get__channels(email);
-    if (channels[0].member[0])
-    {
+    const channels = await this.chatservice.get__channelsToJoin(email);
+    if (channels.length > 0)
       for (let i = 0; i < channels.length; i++)
-        client.join(channels[i].member[0].name);
-    }
+        client.join(channels[i]);
   }
-
   @SubscribeMessage('read preview')
   async handleReadPreview(
     @MessageBody() email: string,

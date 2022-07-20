@@ -57,10 +57,10 @@ export class ChatService {
         }
     }
 
-    async get__channels(email: string)
+    async get__channelsToJoin(email: string)
     {
         try {
-            const channels = this.prisma.user.findMany({
+            const source = this.prisma.user.findMany({
                 where:
                 {
                     email: email
@@ -68,15 +68,41 @@ export class ChatService {
                 select:
                 {
                     admin: true,
-                    member: true
+                    member: true,
+                    invited: true
                 }
             })
+            const channels = this.organize__channelToJoin(source);
             return channels;
         } catch (error) {
             console.log('get__channels error:', error);
             return null;
         }
         
+    }
+
+    async organize__channelToJoin(source: any)
+    {
+        const channels = [];
+        if (source.admin)
+            for (let i = 0; i < source.admin.length; i++)
+            {    
+                let channel = source.admin[i].name;
+                channels.push(channel);
+            }
+        if (source.member)
+            for (let i = 0; i < source.member.length; i++)
+            {    
+                let channel = source.member[i].name;
+                channels.push(channel);
+            }
+        if (source.invited)
+            for (let i = 0; i < source.invited.length; i++)
+            {    
+                let channel = source.invited[i].name;
+                channels.push(channel);
+            }
+        return channels;
     }
 
     async get__previews(email: string): Promise<chatPreview[]>

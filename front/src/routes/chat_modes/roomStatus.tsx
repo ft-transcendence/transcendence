@@ -15,7 +15,6 @@ import "./context.css";
 import { useAuth } from "../..";
 import { AddUserIcon, QuitIcon } from "./icon";
 import ReactTags from "react-tag-autocomplete";
-import { channel } from "diagnostics_channel";
 
 declare var global: {
     selectedData: oneUser
