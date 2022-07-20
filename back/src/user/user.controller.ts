@@ -58,12 +58,25 @@ export class UserController {
 	}
 
 	@Get('get_friends')
-	async getFriends(@Req() request)
-	{
+	async getFriends(@Req() request) {
 		console.log('Going through getFriends in user.controller');
 		const result = await this.userService.getFriends(/*request.user.id*/1);
 		return (result);
 
+	}
+
+	@Get('is_friend')
+	async isFriend(@Req() request, otherId: number) {
+		console.log('Going through isFriend in user.controller');
+		const result = await this.userService.isFriend(request.user.id, otherId);
+		return (result);
+	}
+
+	@Get('is_blocked')
+	async isBlocked(@Req() request, otherId: number) {
+		console.log('Going through isFriend in user.controller');
+		const result = await this.userService.isBlocked(request.user.id, otherId);
+		return (result);
 	}
 
 	//idCheck (security to change user params)
