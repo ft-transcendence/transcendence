@@ -35,10 +35,15 @@ export default function Auth() {
       //storeToken(access_token); --> Add function <--
       // set the token into localstorage
       localStorage.setItem("userToken", access_token);
-      // get user data
-      getUserData();
+      // getUserData is a fetch that might take time. In order for sign in
+      // to operate after the function, it needs to use await, asyn and .then
+      // keywords. Otherwise, things might happen in the wrong order.
+      const fetchData = async () => {
+       const data = await getUserData(); 
+      }
       // sign in the user
-      userSignIn();
+      fetchData()
+      .then (() => userSignIn())
       }
     } , [location.search, userSignIn]);
 
