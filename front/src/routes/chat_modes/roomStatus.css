@@ -106,6 +106,7 @@
     }
 
 .join-channel-button {
+    cursor: pointer;
     margin: auto;
     width: 180px;
     color:rgb(207, 202, 202);
