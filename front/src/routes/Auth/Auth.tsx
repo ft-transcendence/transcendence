@@ -25,7 +25,7 @@ export default function Auth() {
       console.log("user is signed in");
   }, [navigate, auth]);
 
-  // Add the token to localstorage
+  // useEffect to get access token from URL
     useEffect(() => {
       let userInfo: IUserInfo = {
         username: null,
@@ -37,14 +37,19 @@ export default function Auth() {
           this.password = null;
         }
       };
+    // get access token from URL Query
     const access_token = location.search.split("=")[1];
     if (access_token) {
-    console.log(access_token);
-    storeUserInfo(userInfo);
-    //storeToken(access_token);
-    localStorage.setItem("userToken", access_token);
-    userSignIn();
-    }
+      // LOG
+      console.log(access_token);
+      // store user info in localstorage
+      storeUserInfo(userInfo);
+      //storeToken(access_token);
+      // set the token into localstorage
+      localStorage.setItem("userToken", access_token);
+      // sign in the user
+      userSignIn();
+      }
     } , [location.search, userSignIn]);
 
   const handleSubmit = (event: any) => {
@@ -59,20 +64,6 @@ export default function Auth() {
       },
     };
  
-/*  // Create call back for query token
-  const userSignIn = useCallback(() => {
-    const { from } = (location.state as LocationState) || {
-      from: { pathname: "/" },
-    };
-    let email = localStorage.getItem("userEmail");
-    if (email)
-      auth.signin(email, () => {
-        navigate(from, { replace: true });
-      });
-    }, [navigate, auth, location.state]);
-*/
-
-
     event.preventDefault();
     if (GUserInputsRefs.username.current?.value)
       userInfo.username = GUserInputsRefs.username.current.value;
@@ -113,7 +104,7 @@ export default function Auth() {
               Your password must be 8-20 characters long.
             </Form.Text>
           </Form.Group>
-
+          {/* USE LINK TO GET USER FROM 42 API */}
           <Button variant="secondary" className="submit-button" size="sm" href="http://localhost:4000/auth/42">
             Sign in with 42
           </Button>
