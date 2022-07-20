@@ -1,9 +1,12 @@
-# ignore env file
+# environment variables
 .env.prod
 
 # compiled output
 /dist
 /node_modules
+
+# prisma migrations
+/prisma/migrations/*
 
 # Logs
 logs
