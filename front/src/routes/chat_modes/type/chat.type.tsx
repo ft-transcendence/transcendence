@@ -10,16 +10,18 @@ export type chatPreview = {
     id: number;
     dm: boolean;
     name: string;
+    isPassword: boolean;
     picture?: string;
     updateAt: string;
     lastMsg: string;
     unreadCount?: number;
-    ownerEmail: string; 
+    ownerEmail: string;
 }
 
 export type newChannel = {
     name: string;
     private: boolean;
+    isPassword: boolean;
     password: string;
     email: string | null;
     members: Tag[];

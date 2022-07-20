@@ -10,11 +10,12 @@ export type chatPreview = {
     id: number;
     dm: boolean;
     name: string;
+    isPassword: boolean;
     picture?: string;
     updateAt: string;
     lastMsg: string;
     unreadCount?: number;
-    ownerEmail: string; 
+    ownerEmail: string;
 }
 
 export type oneMsg = {

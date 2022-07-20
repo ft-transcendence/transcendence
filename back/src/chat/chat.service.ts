@@ -125,78 +125,79 @@ export class ChatService {
             {
                 let dmName = "";
                 if (source.owner[i].owners.length > 1)
+                {
                     if (source.owner[i].owners[0].email === email)
                         dmName = source.owner[i].owners[1].username;
                     else
                         dmName = source.owner[i].owners[0].username;
+                }
                 else
                     dmName = "No One"
                 let msgCount = source.owner[i].messages.length;
-                // let element: chatPreview = {
-                //     id: source.owner[i].id,
-                //     dm: source.owner[i].dm,
-                //     name: dmName,
-                //     picture: source.owner[i].picture,
-                //     updateAt: source.owner[i].picture,
-                //     lastMsg: msgCount > 0 ? 
-                //     source.owner[i].messages[msgCount - 1].msg : '',
-                //     ownerEmail: source.owner[i].owners[0].email
-                // };
-                // console.log(":::", source.owner[i].owners[0].email);
-                // data.push(element);
+                let element: chatPreview = {
+                    id: source.owner[i].id,
+                    dm: source.owner[i].dm,
+                    name: dmName,
+                    isPassword: source.owner[i].isPassword,
+                    picture: source.owner[i].picture,
+                    updateAt: source.owner[i].updateAt,
+                    lastMsg: msgCount > 0 ? 
+                    source.owner[i].messages[msgCount - 1].msg : '',
+                    ownerEmail: source.owner[i].owners[0].email
+                };
+                data.push(element);
             }
         }
         if (source.admin)
             for (let i = 0; i < source.admin.length; i++)
             {
                 let msgCount = source.admin[i].messages.length;
-                // let element: chatPreview = {
-                //     id: source.admin[i].id,
-                //     dm: source.admin[i].dm,
-                //     name: source.admin[i].name,
-                //     picture: source.admin[i].picture,
-                //     updateAt: source.admin[i].picture,
-                //     lastMsg: msgCount > 0 ? 
-                //     source.admin[i].messages[msgCount - 1].msg : '',
-                //     ownerEmail: source.admin[i].owners[0].email
-                // };
-                // console.log(":::", source.admin[i].owners[0].email);
-
-                // data.push(element);
+                let element: chatPreview = {
+                    id: source.admin[i].id,
+                    dm: source.admin[i].dm,
+                    isPassword: source.admin[i].isPassword,
+                    name: source.admin[i].name,
+                    picture: source.admin[i].picture,
+                    updateAt: source.admin[i].updateAt,
+                    lastMsg: msgCount > 0 ? 
+                    source.admin[i].messages[msgCount - 1].msg : '',
+                    ownerEmail: source.admin[i].owners[0].email
+                };
+                data.push(element);
             }
         if (source.member)
             for (let i = 0; i < source.member.length; i++)
             {
                 let msgCount = source.member[i].messages.length;
-                // let element: chatPreview = {
-                //     id: source.member[i].id,
-                //     dm: source.member[i].dm,
-                //     name: source.member[i].name,
-                //     picture: source.member[i].picture,
-                //     updateAt: source.member[i].picture,
-                //     lastMsg: msgCount > 0 ? 
-                //         source.member[i].messages[0].msg : '',
-                //     ownerEmail: source.member[i].owners[0].email
-                // };
-                // console.log(":::", source.member[i].owners[0].email);
-                // data.push(element);
+                let element: chatPreview = {
+                    id: source.member[i].id,
+                    dm: source.member[i].dm,
+                    name: source.member[i].name,
+                    isPassword: source.member[i].isPassword,
+                    picture: source.member[i].picture,
+                    updateAt: source.member[i].updateAt,
+                    lastMsg: msgCount > 0 ? 
+                        source.member[i].messages[0].msg : '',
+                    ownerEmail: source.member[i].owners[0].email
+                };
+                data.push(element);
             }
         if (source.invited)
             for (let i = 0; i < source.invited.length; i++)
             {
                 let msgCount = source.invited[i].messages.length;
-                // let element: chatPreview = {
-                //     id: source.invited[i].id,
-                //     dm: source.invited[i].dm,
-                //     name: source.invited[i].name,
-                //     picture: source.invited[i].picture,
-                //     updateAt: source.invited[i].picture,
-                //     lastMsg: msgCount > 0 ? 
-                //         source.invited[i].messages[0].msg : '',
-                //     ownerEmail: source.invited[i].owners[0].email
-                // };
-                // console.log(":::", source.member[i].owners[0].email);
-                // data.push(element);
+                let element: chatPreview = {
+                    id: source.invited[i].id,
+                    dm: source.invited[i].dm,
+                    name: source.invited[i].name,
+                    isPassword: source.invited[i].isPassword,
+                    picture: source.invited[i].picture,
+                    updateAt: source.invited[i].updateAt,
+                    lastMsg: msgCount > 0 ? 
+                        source.invited[i].messages[0].msg : '',
+                    ownerEmail: source.invited[i].owners[0].email
+                };
+                data.push(element);
             }
         return data;
     }
@@ -206,8 +207,7 @@ export class ChatService {
         try {
             const source = await this.get__chat__ByChannelId(channelId);
             const data = this.organize__onePreview(source);
-            console.log("get one pre:", data)
-            // return (data);
+            return (data);
         } catch (error) {
             console.log('get__onePreview error:', error);
             return null;
@@ -218,18 +218,18 @@ export class ChatService {
         let msgCount = 0;
         if (source.messages)
             msgCount = source.messages.length;
-        console.log(":::", source.owners)
-        // let data: chatPreview = {
-        //     id: source.id,
-        //     dm: source.dm,
-        //     name: source.name,
-        //     updateAt: source.updateAt,
-        //     lastMsg: msgCount > 0 ?
-        //         source.messages[0].msg : '',
-        //     ownerEmail: source.owners.length > 0 ? 
-        //         source.owners[0].email : ''
-        // }
-        // return data;
+        let data: chatPreview = {
+            id: source.id,
+            dm: source.dm,
+            name: source.name,
+            isPassword: source.isPassword,
+            updateAt: source.updateAt,
+            lastMsg: msgCount > 0 ?
+                source.messages[0].msg : '',
+            ownerEmail: source.owners.length > 0 ? 
+                source.owners[0].email : ''
+        }
+        return data;
     }
 
     async get__chat__ByChannelId(channelId: number)
@@ -245,6 +245,7 @@ export class ChatService {
                     id: true,
                     dm: true,
                     name: true,
+                    isPassword: true,
                     picture: true,
                     updatedAt: true,
                     owners:
@@ -296,6 +297,7 @@ export class ChatService {
                             dm: true,
                             name: true,
                             picture: true,
+                            isPassword: true,
                             updatedAt: true,
                             owners:
                             {
@@ -325,6 +327,7 @@ export class ChatService {
                             id: true,
                             dm: true,
                             name: true,
+                            isPassword: true,
                             picture: true,
                             updatedAt: true,
                             owners:
@@ -355,6 +358,7 @@ export class ChatService {
                             id: true,
                             dm: true,
                             name: true,
+                            isPassword: true,
                             picture: true,
                             updatedAt: true,
                             owners:
@@ -385,6 +389,7 @@ export class ChatService {
                             id: true,
                             dm: true,
                             name: true,
+                            isPassword: true,
                             picture: true,
                             updatedAt: true,
                             owners:
@@ -421,10 +426,13 @@ export class ChatService {
     async list__allUsers()
     {
         const users = await this.prisma.user.findMany();
-        let i = 0;
-        for (let user = users.at(i); user != null; user = users[i++])
-            console.log('   user %d: %s', i, user.email);
-        console.log('total %d users', i);
+        let count = 0;
+        for (let i = 0; i < users.length; i++)
+        {
+            console.log('   user %d: %s', i, users[i].email);
+            count = i;
+        }
+        console.log('total %d users', count);
         return ;
         
     }
@@ -432,10 +440,13 @@ export class ChatService {
     async list__allChannels()
     {
         const channels = await this.prisma.channel.findMany();
-        let i = 0;
-        for (let channel = channels.at(i); channel != null; channel = channels[i++])
-            console.log('   channel %d: %s', i, channel.name);
-        console.log('total %d channels', i);
+        let count = 0;
+        for (let i = 0; i < channels.length; i++)
+        {
+            console.log('   user %d: %s', i, channels[i].name);
+            count = i;
+        }
+        console.log('total %d channels', count);
         return ;
     }
 
@@ -473,6 +484,7 @@ export class ChatService {
                 {
                     name: info.name,
                     private: info.private,
+                    isPassword: info.isPassword,
                     password: info.password,
                     owners:
                     {
@@ -901,7 +913,7 @@ export class ChatService {
             const inviteds = this.organize__inviteds(source);
             return inviteds;
         } catch (error) {
-            console.log('fetch__members error:', error);
+            console.log('fetch__inviteds error:', error);
             throw new WsException(error)
         }
     }
