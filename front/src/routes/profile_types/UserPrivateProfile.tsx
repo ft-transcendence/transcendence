@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Button, Card, Col, Container, Modal, Row } from "react-bootstrap";
+import { Card, Col, Container, Row } from "react-bootstrap";
 import { ModifyEntry } from "./ModifyUserInfo";
 import IconPen from "../../ressources/icons/IconPen.svg";
-import ProfilePic from "../../ressources/imgs/mvaldes.jpeg";
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
 import { UsersRelations } from "./FriendsList";
 // import { useUsername } from "../../hooks/UserInfoHooks";
@@ -26,7 +25,6 @@ export default function UserPrivateProfile() {
 
   const [showFriends, setShowFriends] = useState(true);
   const onClickShowFriends = () => setShowFriends((curent) => !curent);
-  const hideFriends = () => setShowFriends(false);
 
   const userInfoInit = {
     email: localStorage.getItem("userEmail"),
@@ -63,6 +61,7 @@ export default function UserPrivateProfile() {
             >
               <input
                 type="image"
+                alt="avatar of user"
                 src={IconPen}
                 className="edit-round-icon float-end"
                 onClick={() => setModalShow(true)}

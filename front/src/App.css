@@ -64,7 +64,7 @@
   font-family: "Roboto" sans-serif;
   font-style: normal;
   letter-spacing: -0.4px;
- color: var(--text-color-white);
+  color: var(--text-color-white);
 }
 
 .wrapper {
@@ -212,17 +212,17 @@
 
 /* visited link */
 /* a:visited { */
-  /* color: var(--buttons-color-blue); */
+/* color: var(--buttons-color-blue); */
 /* } */
 
 /* mouse over link */
 /* a:hover { */
-  /* color: var(--buttons-color-blue-disabled); */
+/* color: var(--buttons-color-blue-disabled); */
 /* } */
 
 /* selected link */
 /* a:active { */
-  /* color: var(--basic-color-green); */
+/* color: var(--basic-color-green); */
 /* } */
 
 .active-class {
