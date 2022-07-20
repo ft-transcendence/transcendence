@@ -96,18 +96,19 @@ export class UserService {
 		const user = await this.prisma.user.findUnique({where: {id: id1}});
 		const index = user.friends.indexOf(id2);
 		if (index != -1) {
-			return (false)
+			return (true)
 		}
-		return (true);
+		return (false);
 	}
 
 	async isBlocked(id1: number, id2: number){
+
 		const user = await this.prisma.user.findUnique({where: {id: id1}});
 		const index = user.blocks.indexOf(id2);
 		if (index != -1) {
-			return (false)
+			return (true)
 		}
-		return (true);
+		return (false);
 	}
 
 	async idCheck(id: number, password: string) {
