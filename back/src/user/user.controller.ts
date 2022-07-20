@@ -25,7 +25,6 @@ export class UserController {
 
 	/*	READ	*/
 
-	@UseGuards(JwtGuard)
 	@Get('me') 
 	getMe(@Req() request: Request) {
 			// log in console

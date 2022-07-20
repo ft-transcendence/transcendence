@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import { useCallback, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-=======
-import React from "react";
-import { useNavigate } from "react-router-dom";
->>>>>>> Mvaldes/feature/user private profile (#25)
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { Outlet } from "react-router-dom";
@@ -12,22 +7,15 @@ import { IUserInfo } from "../../globals/Interfaces";
 import { signUp, signIn } from "../../queries/authQueries";
 import { GUserInputsRefs } from "../../globals/variables";
 import { useAuth } from "../../globals/contexts";
-<<<<<<< HEAD
 import { getUserData } from "../../queries/userQueries";
-=======
->>>>>>> Mvaldes/feature/user private profile (#25)
 
 export default function Auth() {
   let navigate = useNavigate();
   let auth = useAuth();
-<<<<<<< HEAD
   let location = useLocation();
   
   // Use a callback to avoid re-rendering
   const userSignIn = useCallback(() => {
-=======
-  function userSignIn() {
->>>>>>> Mvaldes/feature/user private profile (#25)
     let username = localStorage.getItem("userName");
     console.log("username: ", username);
     if (username)
@@ -35,7 +23,6 @@ export default function Auth() {
         navigate("/app/private-profile", { replace: true });
       });
       console.log("user is signed in");
-<<<<<<< HEAD
   }, [navigate, auth]);
 
   // useEffect to get access token from URL
@@ -60,9 +47,6 @@ export default function Auth() {
       }
     } , [location.search, userSignIn]);
 
-=======
-  }
->>>>>>> Mvaldes/feature/user private profile (#25)
 
   const handleSubmit = (event: any) => {
     let userInfo: IUserInfo = {
@@ -75,11 +59,7 @@ export default function Auth() {
         this.password = null;
       },
     };
-<<<<<<< HEAD
  
-=======
-
->>>>>>> Mvaldes/feature/user private profile (#25)
     event.preventDefault();
     if (GUserInputsRefs.username.current?.value)
       userInfo.username = GUserInputsRefs.username.current.value;
@@ -120,13 +100,8 @@ export default function Auth() {
               Your password must be 8-20 characters long.
             </Form.Text>
           </Form.Group>
-<<<<<<< HEAD
           {/* USE LINK TO GET USER FROM 42 API */}
           <Button variant="secondary" className="submit-button" size="sm" href="http://localhost:4000/auth/42">
-=======
-
-          <Button variant="secondary" className="submit-button" size="sm">
->>>>>>> Mvaldes/feature/user private profile (#25)
             Sign in with 42
           </Button>
           <Button
