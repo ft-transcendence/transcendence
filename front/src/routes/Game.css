@@ -1,274 +1,274 @@
 .Radial-background {
-    margin: auto autp;
-    height: 100vh;
-    background-image: radial-gradient(circle at 50% 0%, rgba(192,69,69,1) 0%, rgba(57,80,127,0.85) 40%, rgba(25,48,49,1) 100%);
+  margin: auto autp;
+  height: 100vh;
+  background-image: radial-gradient(
+    circle at 50% 0%,
+    rgba(192, 69, 69, 1) 0%,
+    rgba(57, 80, 127, 0.85) 40%,
+    rgba(25, 48, 49, 1) 100%
+  );
 }
-    .Page-top {
-        height: 20%;
-        display: inline-flex;
-    }
-
-    .Page-mid {
-        margin: auto;
-        height: 60%;
-    }
-
-    .Page-foot {
-        /* background-color: black; */
-        margin: auto;
-        width: 40%;
-        height: 8%;
-        position: relative;
-    }
-
-.innerFoot
-{
-    display: inline-flex;
-    margin: auto -5%;
-    width: 100%;
-    opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.5s ease;
+.Page-top {
+  height: 20%;
+  display: inline-flex;
 }
 
-.Page-foot:hover .innerFoot
-{
-    opacity: 1;
-    transform: scale(1);
+.Page-mid {
+  margin: auto;
+  height: 60%;
+}
 
+.Page-foot {
+  /* background-color: black; */
+  margin: auto;
+  width: 40%;
+  height: 8%;
+  position: relative;
+}
+
+.innerFoot {
+  display: inline-flex;
+  margin: auto -5%;
+  width: 100%;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.5s ease;
+}
+
+.Page-foot:hover .innerFoot {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .Info-card {
-    position: absolute;
-    top: 10%;
-    left: 0;
-    right: 0;
-    margin:auto;
-    display: inline-flex;
-    height: 7vh;
-    width: 25%;
-    /*background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -180%, rgb(57,80,127) 270%);*/
-    border: 2px solid rgb(0, 255, 255);
-    border-radius: 15px;
-    box-shadow: 0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 4px rgb(0, 190, 255);
-    display: unset;
+  position: absolute;
+  top: 10%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: inline-flex;
+  height: 7vh;
+  width: 25%;
+  /*background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -180%, rgb(57,80,127) 270%);*/
+  border: 2px solid rgb(0, 255, 255);
+  border-radius: 15px;
+  box-shadow: 0px 0px 5px 5px rgb(80, 200, 255),
+    inset 0px 0px 5px 4px rgb(0, 190, 255);
+  display: unset;
 }
 
-    .Player-left {
-        /* background-color:lawngreen; */
-        width: 50%;
-        height: 100%;
-        display: inline-flex;
-        vertical-align: top;
-    }
+.Player-left {
+  /* background-color:lawngreen; */
+  width: 50%;
+  height: 100%;
+  display: inline-flex;
+  vertical-align: top;
+}
 
-    .Player-right {
-        /* background-color:ivory; */
-        width: 50%;
-        height: 100%;
-        display: inline-flex;
-        vertical-align: top;
-    }
-    
-        .Score {
-            /* background-color: green; */
-            /*margin: 4% auto;*/
-            width: 20%;
-            height: 70%;
-            font-size: 4.5vh;
-            color: white;
-            display: inline-flex;
-            vertical-align: top;
-        }
+.Player-right {
+  /* background-color:ivory; */
+  width: 50%;
+  height: 100%;
+  display: inline-flex;
+  vertical-align: top;
+}
 
-        .Info {
-            /* background-color: orange; */
-            margin: auto;
-            width: 70%;
-            height: 80%;
-            display: inline-flex;
-        }
+.Score {
+  /* background-color: green; */
+  /*margin: 4% auto;*/
+  width: 20%;
+  height: 70%;
+  font-size: 4.5vh;
+  color: white;
+  display: inline-flex;
+  vertical-align: top;
+}
 
-            .Photo {
-                /* background-color: black; */
-                margin: auto;
-                width: 3vh;
-                height: 3vh;
-                border: 2px solid #F9F9F9;
-                border-radius: 50%;
-                /* background: #D8D8D8; */
-            }
+.Info {
+  /* background-color: orange; */
+  margin: auto;
+  width: 70%;
+  height: 80%;
+  display: inline-flex;
+}
 
-            .Login {
-                /* background-color: navy; */
-                margin: auto;
-                width: 40%;
-                font-size: 1.5vh;
-                color: white;
-            }
+.Photo {
+  /* background-color: black; */
+  margin: auto;
+  width: 3vh;
+  height: 3vh;
+  border: 2px solid #f9f9f9;
+  border-radius: 50%;
+  /* background: #D8D8D8; */
+}
+
+.Login {
+  /* background-color: navy; */
+  margin: auto;
+  width: 40%;
+  font-size: 1.5vh;
+  color: white;
+}
 
 .Field {
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin: auto;
-    /*display: inline-flex;*/
-    height: 45%;
-    width: calc(177vh * 0.45);
-    /*background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -10%, rgb(57,80,127) 65%, rgb(25,48,49) 184%);*/
-    border: 0px solid rgb(0, 255, 255);
-    border-radius: 20px;
-    box-shadow: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  /*display: inline-flex;*/
+  height: 45%;
+  width: calc(177vh * 0.45);
+  /*background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -10%, rgb(57,80,127) 65%, rgb(25,48,49) 184%);*/
+  border: 0px solid rgb(0, 255, 255);
+  border-radius: 20px;
+  box-shadow: 0;
 }
 
-    .Pad-left {
-        position: absolute;
-        left: 3%;
-        top: 50%;
-        height: 10%;
-        width: 0;
-        background-color: rgb(93,210,204);
-        border: .2vh solid rgb(93,210,204);
-        box-shadow: 1px 0 2px 2px rgb(93,210,204);
-        display: none;
-    }
+.Pad-left {
+  position: absolute;
+  left: 3%;
+  top: 50%;
+  height: 10%;
+  width: 0;
+  background-color: rgb(93, 210, 204);
+  border: 0.2vh solid rgb(93, 210, 204);
+  box-shadow: 1px 0 2px 2px rgb(93, 210, 204);
+  display: none;
+}
 
-    .Center-zone {
-        margin: auto;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center
-       
-        /* background-color:lightseagreen; */
-    }
+.Center-zone {
+  margin: auto;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-        .Middle-line-top {
-            /*margin: auto auto;*/
-            position: absolute;
-            top: 0%;
-            height: calc(49.00% - 4vh);
-            width: 0;
-            background-color: rgb(0, 255, 255);
-            border: 1px solid rgb(0, 255, 255);
-            box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);
-            display: none;
-        }
+  /* background-color:lightseagreen; */
+}
 
-        .Middle-line-bottom {
-            /*margin: auto auto;*/
-            position: absolute;
-            bottom: 0%;
-            height: calc(49.00% - 4vh);
-            width: 0;
-            background-color: rgb(0, 255, 255);
-            border: 1px solid rgb(0, 255, 255);
-            box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);
-            display: none;
-        }
-        .Center-circle {
-            margin: 0 0;
-            height: 8vh;
-            width: 8vh;
-            border: 1px solid rgb(0, 255, 255);
-            border-radius: 50%;
-           box-shadow: 0px 0px 8px 4px rgb(0, 190, 255), inset 0 0px 8px 6px rgb(0, 190, 255);
-           display: none;
-        }
+.Middle-line-top {
+  /*margin: auto auto;*/
+  position: absolute;
+  top: 0%;
+  height: calc(49% - 4vh);
+  width: 0;
+  background-color: rgb(0, 255, 255);
+  border: 1px solid rgb(0, 255, 255);
+  box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);
+  display: none;
+}
 
-    .Pad-right {
-        position: absolute;
-        right: 3%;
-        top: 50%;
-        height: 10%;
-        width: 0;
-        background-color: rgb(93,210,204);
-        border: .2vh solid rgb(93,210,204);
-        box-shadow: 1px 0 2px 2px rgb(93,210,204);
-        display: none;
-    }
-    
-        
-    .Ball {
-        position: absolute;
-        left: calc(50% - 1vh);
-        right: 0;
-        top: calc(50% - 1vh);
-        bottom: 0;
-        height: 2vh;
-        width: 2vh;
-        border-radius: 50%;
-        /*box-shadow: 0 0 5px 4px rgb(143,72,89), inset 0 0 10px 5px rgb(143,72,89);*/
-        background-color: rgb(93,210,204);
-        box-shadow: 1px 0 2px 2px rgb(93,210,204);
-        display: none;
-    }
+.Middle-line-bottom {
+  /*margin: auto auto;*/
+  position: absolute;
+  bottom: 0%;
+  height: calc(49% - 4vh);
+  width: 0;
+  background-color: rgb(0, 255, 255);
+  border: 1px solid rgb(0, 255, 255);
+  box-shadow: 0px 0px 5px 2px rgb(0, 160, 255);
+  display: none;
+}
+.Center-circle {
+  margin: 0 0;
+  height: 8vh;
+  width: 8vh;
+  border: 1px solid rgb(0, 255, 255);
+  border-radius: 50%;
+  box-shadow: 0px 0px 8px 4px rgb(0, 190, 255),
+    inset 0 0px 8px 6px rgb(0, 190, 255);
+  display: none;
+}
 
-    .Start_button {
-        background-color: Transparent;
-        margin: auto;
-        min-height: 50px;
-        width: 10em;
-        cursor: pointer;
-        border: 1px solid rgb(93,210,204);
-        color: white;
-        opacity: 1;
-        height: 2.3em;
-        border-radius: 5px;
-        transition: opacity 1s;
-        display: unset;
-    }
+.Pad-right {
+  position: absolute;
+  right: 3%;
+  top: 50%;
+  height: 10%;
+  width: 0;
+  background-color: rgb(93, 210, 204);
+  border: 0.2vh solid rgb(93, 210, 204);
+  box-shadow: 1px 0 2px 2px rgb(93, 210, 204);
+  display: none;
+}
 
-    .Message {
-        margin: auto;
-        font-size: 2.5vh;
-        font-weight: 300;
-        background-color: Transparent;
-        color: white;
-        display: none;
-    }
+.Ball {
+  position: absolute;
+  left: calc(50% - 1vh);
+  right: 0;
+  top: calc(50% - 1vh);
+  bottom: 0;
+  height: 2vh;
+  width: 2vh;
+  border-radius: 50%;
+  /*box-shadow: 0 0 5px 4px rgb(143,72,89), inset 0 0 10px 5px rgb(143,72,89);*/
+  background-color: rgb(93, 210, 204);
+  box-shadow: 1px 0 2px 2px rgb(93, 210, 204);
+  display: none;
+}
+
+.Start_button {
+  background-color: Transparent;
+  margin: auto;
+  min-height: 50px;
+  width: 10em;
+  cursor: pointer;
+  border: 1px solid rgb(93, 210, 204);
+  color: white;
+  opacity: 1;
+  height: 2.3em;
+  border-radius: 5px;
+  transition: opacity 1s;
+  display: unset;
+}
+
+.Message {
+  margin: auto;
+  font-size: 2.5vh;
+  font-weight: 300;
+  background-color: Transparent;
+  color: white;
+  display: none;
+}
 
 .Button {
-    /* background-color: tomato; */
-    margin: auto;
-    height: 50%;
-    padding: 18px;
-    font-size: 2.5vh;
-    font-weight: 300;
-    color: white;
-    text-decoration: rgba(25,48,49,1) underline;
-    transition: all 0.7s cubic-bezier(.45,1.71,.41,.97);
-    cursor: pointer;
-    user-select: none;
+  /* background-color: tomato; */
+  margin: auto;
+  height: 50%;
+  padding: 18px;
+  font-size: 2.5vh;
+  font-weight: 300;
+  color: white;
+  text-decoration: rgba(25, 48, 49, 1) underline;
+  transition: all 0.7s cubic-bezier(0.45, 1.71, 0.41, 0.97);
+  cursor: pointer;
+  user-select: none;
 }
 
 .Button:hover {
-    transform: scale(1.2);
+  transform: scale(1.2);
 }
 
-.Button:active
-{
-    transform: scale(0.9);
-    transition: all 0.2s cubic-bezier(.45,1.71,.41,.97);
+.Button:active {
+  transform: scale(0.9);
+  transition: all 0.2s cubic-bezier(0.45, 1.71, 0.41, 0.97);
 }
 
-.bar
-{
-    position: absolute;
-    top: 30px;
-    left: 0;
-    right: 0;
-    margin: auto;
-    width: 40px;
-    height: 2px;
-    background: white;
-    transition: all 0.5s ease-out;
+.bar {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 40px;
+  height: 2px;
+  background: white;
+  transition: all 0.5s ease-out;
 }
 
-.Page-foot:hover .bar
-{
-    transform: rotateZ(360deg) scale(1);
-    opacity: 0;
+.Page-foot:hover .bar {
+  transform: rotateZ(360deg) scale(1);
+  opacity: 0;
 }
 
 /* rgb(143,72,89) 
@@ -276,4 +276,3 @@ text-decoration: rgb(106, 204, 199) underline;
 
 
 */
-

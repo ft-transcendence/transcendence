@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Chat.css";
 import { socket } from "../App";
 import { useAuth } from "../globals/contexts";
