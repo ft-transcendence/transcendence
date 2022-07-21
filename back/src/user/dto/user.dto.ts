@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { IsNotEmpty, IsString, IsNumber, MaxLength } from 'class-validator'
 
 /*
@@ -21,7 +22,7 @@ export class UserDto {      //Data transfer object
 	@IsString()
 	@IsNotEmpty()
 	@MaxLength(65000)
-	picture: string; 
+	avatar: string; 
 
 	@IsNumber()
 	@IsNotEmpty()
@@ -42,5 +43,10 @@ export class UserDto {      //Data transfer object
 	blocked: 	number[];
 	blocking: 	number[];
 	blocks: 	number[];
-	
+
+	@Exclude()
+	hash: string;
+
+	@Exclude()
+	hashedRtoken: string;
 } 

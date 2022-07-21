@@ -2,10 +2,12 @@
 import { Injectable, ForbiddenException } from "@nestjs/common";
 import { User } from "@prisma/client";
 import * as argon from 'argon2'
+import { plainToClass } from "class-transformer";
 
 
 /* PRISMA */
 import { PrismaService } from "src/prisma/prisma.service";
+import { UserDto } from "./dto";
 /* USER Modules */
 
 
@@ -37,7 +39,10 @@ export class UserService {
 
 	async getMe(id: number) {
 		//returns a record of all the users, ordered by id in acending order
-		const user = await this.prisma.user.findUnique({where : {id: id}});
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: id
+			}});
 		return (user);
 	}
 
@@ -61,13 +66,17 @@ export class UserService {
 	}
 
 	async getUser(id: number){
-		try{
-			const user = await this.prisma.user.findFirst({where: {id: id}});
-			return (user);
-		} catch (error) {
-			console.log('getUser error:', error);
-			throw new ForbiddenException('getUser error')
-		}
+		// try{
+			const user = await this.prisma.user.findUnique({
+				where: {
+					id: id
+				}});
+			const dtoUser = plainToClass(UserDto, user)
+			return (dtoUser);
+		// } catch (error) {
+		// 	console.log('getUser error:', error);
+		// 	throw new ForbiddenException('getUser error')
+		// }
 	}
 
 	async getFriends(id: number){
@@ -79,13 +88,16 @@ export class UserService {
 				friends: true,
 			}
 		})
-		const	friendList: User[] = [];
+		const	friendList: UserDto[] = [];
+		// const	friendList: User[] = [];
 		for (const element of friendIdList) {
 			// console.log('fL')
 			for (let index = 0; index < element.friends.length; index++) {
 				// console.log('indx')
 				const friend = await this.prisma.user.findUnique({where: {id: element.friends[index]}})
-				friendList.push(friend);
+				const dtoUser = plainToClass(UserDto, friend)
+				friendList.push(dtoUser);
+				// friendList.push(friend);
 			}
 		}
 

@@ -8,6 +8,7 @@ import { User } from '@prisma/client';
 import { hash } from 'argon2';
 import { Request } from 'express';
 import { JwtGuard } from 'src/auth/guard';
+import { GetCurrentUserId } from 'src/decorators';
 /* USER MODULES */
 import { UserService } from "./user.service";
 
@@ -27,19 +28,20 @@ export class UserController {
 	/*	READ	*/
 
 	@Get('me') 
-	getMe(@Req() request: Request) {
+	getMe(@Req() request) {
 			// log in console
-			console.log({
-				user: request.user,
-			})
+			// console.log({
+			// 	user: request.user,
+			// })
 		const prismaUser  = (request.user as User);
-//		console.log(userE.id)
+		// console.log(userE.id)
+		// console.log('CURRENT USER ID = ' + id)
 		return this.userService.getUser(prismaUser.id);
 		// return request.user;
 	
 	}
 
-	@Get('him') //to change
+	@Get('get_user') //to change
 	getUser(id: number) {
 		console.log('Going through getUser in user.controller');
 		return this.userService.getUser(id);
@@ -80,11 +82,11 @@ export class UserController {
 	}
 
 	@Post('check_password')
-	async checkPassword(@Body('password') password: string, @Req() request) {
+	async checkPassword(@Body('password') password: string, @GetCurrentUserId() id: number) {
 		console.log('Going through checkPword in user.controller');
-		const prismaUser  = (request.user as User);
-		const fullUser = await this.userService.getUser(prismaUser.id);
-		const result = await this.userService.checkPassword(fullUser.id, password);
+		// const prismaUser  = (request.user as User);
+		// const fullUser = await this.userService.getUser(prismaUser.id);
+		const result = await this.userService.checkPassword(id, password);
 		return (result);
 	}
 
