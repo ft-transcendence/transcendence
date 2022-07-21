@@ -121,13 +121,13 @@ export class UserController {
 	@Post('/add_friend')
 	async addFriend(@Req() request, @Body('otherId') otherId: number){
 //		console.log('Going through addFriend in user.controller: ' + request.user.id + ' -> ' + otherId);
-		const result = await this.userService.addFriend(/*request.user.id, otherId*/2, 1);
+		const result = await this.userService.addFriend(request.user.id, otherId);
 
 		return (result);
 	}
 
 	@Post('/rm_friend')
-	async rmFriend(@Req() request, @Body('fotherId') otherId: number){
+	async rmFriend(@Req() request, @Body('otherId') otherId: number){
 //		console.log('Going through addFriend in user.controller: ' + request.user.id + ' -> ' + otherId);
 		const result = await this.userService.rmFriend(request.user.id, otherId);
 
