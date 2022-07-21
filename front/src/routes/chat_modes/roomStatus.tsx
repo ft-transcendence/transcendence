@@ -48,6 +48,7 @@ export default function RoomStatus({current}:{current: chatPreview | undefined})
         let update: updateChannel = {
             channelId: current!.id,
             email: email,
+            password: "",
             adminEmail: "",
             invitedId: member.id
         }
@@ -92,24 +93,55 @@ function JoinChannel({channelId, joinable}
     : { channelId: number | undefined,
         joinable: boolean}) {
     const email = useAuth().user;
+    const [password, setPass] = useState("");
 
     const handleJoin = () => {    
         let update: updateChannel = {
             channelId: channelId,
             email: email,
+            password: password,
             adminEmail: "",
             invitedId: ""
         }
-        socket.emit("join channel", update)
+        socket.emit("join channel", update);
+        setPass("");
+    }
+
+    const handleSetPass = (event: any) => {
+        setPass(event.taget.value);
     }
 
     return (
-    <div
-        style={{display: joinable ? "" : "none"}}
-        className="join-channel-button"
-        onMouseUp={handleJoin}>
-            join channel
-    </div>)
+        <div>
+            <div 
+                className="password-zone"
+                style={{display: joinable ? "" : "none"}}>
+                    <p
+                        className="protected-tag">
+                            PROTECTED
+                    </p>
+                    <p
+                        className="password-tag">
+                            password
+                    </p>
+                    <input
+                        id="password"
+                        value={password}
+                        onChange={handleSetPass}
+                        className="password-input"
+                        placeholder="********"
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter")
+                                handleJoin()}}/>
+            </div>
+            <div
+                className="join-channel-button"
+                style={{display: joinable ? "" : "none"}}
+                onMouseUp={handleJoin}>
+                join channel
+            </div>
+        </div>
+    )
 }
 
 function MemberStatus({current, joinable, setJoinable}
@@ -282,6 +314,7 @@ function Status({users, current, myRole}
         let update: updateChannel = {
             channelId: current!.id,
             email: email,
+            password: "",
             adminEmail: global.selectedData.email,
             invitedId: 0
         }
@@ -293,6 +326,7 @@ function Status({users, current, myRole}
         let update: updateChannel = {
             channelId: current!.id,
             email: email,
+            password: "",
             adminEmail: global.selectedData.email,
             invitedId: 0
         }
@@ -304,6 +338,7 @@ function Status({users, current, myRole}
         let update: updateChannel = {
             channelId: current!.id,
             email: global.selectedData.email,
+            password: "",
             adminEmail: "",
             invitedId: 0
         }
