@@ -10,12 +10,14 @@ import { FortyTwoStrategy } from './strategy/42.strategy';
 /* USER Module */
 import { UserModule } from 'src/user/user.module';
 import { UserService } from 'src/user/user.service';
+import { TwoFactorService } from './2FA/2fa.service';
 
 @Module({
 	imports: [JwtModule.register({}), UserModule],
 	controllers: [AuthController],
 	providers: [
 		AuthService,
+		TwoFactorService,
 		jwtStrategy,
 		RtStrategy,
 		FortyTwoStrategy,

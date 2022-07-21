@@ -1,6 +1,5 @@
 /* GLOBAL MODULES */
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 /* PRISMA */
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
@@ -22,7 +21,6 @@ export class AuthService {
 	constructor(
 		private prisma: PrismaService,
 		private jwtService: JwtService,
-		private config: ConfigService,
 		private userService: UserService,
 	) {}
 
@@ -177,7 +175,10 @@ export class AuthService {
 		// Verify hashed Refresh Token
 		const pwMatches = await argon.verify(user.hashedRtoken, refreshToken);
 		// Invalid refresh token
-		if (!pwMatches) throw new ForbiddenException('Invalid Credentials');
+		if (!pwMatches)
+			// throw 403 error
+			throw new ForbiddenException('Invalid Credentials');
+		// Generate new tokens
 		const tokens = await this.signin_jwt(user.id, user.email);
 		// Update Refresh Token - if user is logged in and valid
 		await this.updateRefreshToken(user.id, tokens.refresh_token);
