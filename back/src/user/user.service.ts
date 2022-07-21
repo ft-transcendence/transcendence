@@ -101,6 +101,28 @@ export class UserService {
 		return (false);
 	}
 
+	async getBlocks(id: number){
+		const BlocksIdList = await this.prisma.user.findMany({
+			where: {
+				id: id,
+			},
+			select : {
+				blocks: true,
+			}
+		})
+		const	blockList: User[] = [];
+		for (const element of BlocksIdList) {
+			// console.log('fL')
+			for (let index = 0; index < element.blocks.length; index++) {
+				// console.log('indx')
+				const block = await this.prisma.user.findUnique({where: {id: element.blocks[index]}})
+				blockList.push(block);
+			}
+		}
+
+		return (blockList);
+	}
+
 	async isBlocked(id1: number, id2: number){
 
 		const user = await this.prisma.user.findUnique({where: {id: id1}});
@@ -115,8 +137,10 @@ export class UserService {
 		const user = await this.prisma.user.findUnique({where: {id: id}});
 		const pwMatches = await argon.verify(user.hash, password);
 		// Invalid password
-		if (!pwMatches) 
+		if (!pwMatches){
+			console.log('Invalid password');
 			return (false);
+		}
 		return (true);
 	}
 
@@ -124,7 +148,9 @@ export class UserService {
 
 	//USER PROFILE RELATED FUNCTIONS
 
-	async updateUsername(id: number, newUsername: string) {
+	async updateUsername(id: number, newUsername: string, password: string) {
+		if ((!await this.checkPassword(id, password)))
+			throw new ForbiddenException('Invalid password')
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,
@@ -136,7 +162,9 @@ export class UserService {
 		return (updateUser)
 	}
 
-	async updateAvatar(id: number, newAvatar: string) {
+	async updateAvatar(id: number, newAvatar: string, password: string) {
+		if ((!await this.checkPassword(id, password)))
+			throw new ForbiddenException('Invalid password')
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,
@@ -148,7 +176,9 @@ export class UserService {
 		return (updateUser)
 	}
 
-	async updateEmail(id: number, newEmail: string) {
+	async updateEmail(id: number, newEmail: string, password: string) {
+		if ((!await this.checkPassword(id, password)))
+			throw new ForbiddenException('Invalid password')
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,

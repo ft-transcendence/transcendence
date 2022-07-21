@@ -94,23 +94,23 @@ export class UserController {
 	//USER PROFILE RELATED FUNCTIONS
 
 	@Post('/update_username')
-	async updateUsername(@Body('username') newUsername: string, @Req() request) {
+	async updateUsername(@Body('username') newUsername: string, @Body('password') password: string, @Req() request) {
 		console.log('Going through updateUsername in user.controller');
-		const result = await this.userService.updateUsername(request.user.id, newUsername);
+		const result = await this.userService.updateUsername(request.user.id, newUsername, password);
 		return (result);
 	}
 
 	@Post('/update_avatar')
-	async updateAvatar(@Body('avatar') newAvatar: string, @Req() request) {
+	async updateAvatar(@Body('avatar') newAvatar: string, @Body('password') password: string, @Req() request) {
 		console.log('Going through updateAvatar in user.controller');
-		const result = await this.userService.updateAvatar(request.user.id, newAvatar);
+		const result = await this.userService.updateAvatar(request.user.id, newAvatar, password);
 		return (result);
 	}
 
 	@Post('/update_email')
-	async updateEmail(@Body('email') newEmail: string, @Req() request) {
+	async updateEmail(@Body('email') newEmail: string, @Body('password') password: string, @Req() request) {
 		console.log('Going through updateEmail in user.controller');
-		const result = await this.userService.updateEmail(request.user.id, newEmail);
+		const result = await this.userService.updateEmail(request.user.id, newEmail, password);
 		return (result);
 	}
 
@@ -121,13 +121,13 @@ export class UserController {
 	@Post('/add_friend')
 	async addFriend(@Req() request, @Body('otherId') otherId: number){
 //		console.log('Going through addFriend in user.controller: ' + request.user.id + ' -> ' + otherId);
-		const result = await this.userService.addFriend(/*request.user.id, otherId*/2, 1);
+		const result = await this.userService.addFriend(request.user.id, otherId);
 
 		return (result);
 	}
 
 	@Post('/rm_friend')
-	async rmFriend(@Req() request, @Body('fotherId') otherId: number){
+	async rmFriend(@Req() request, @Body('otherId') otherId: number){
 //		console.log('Going through addFriend in user.controller: ' + request.user.id + ' -> ' + otherId);
 		const result = await this.userService.rmFriend(request.user.id, otherId);
 
