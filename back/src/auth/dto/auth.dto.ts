@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator'
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 /**
  * DTO - Data Transfer Object
@@ -6,40 +6,39 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator'
  */
 
 export class SignUpDto {
-    @IsEmail()
-    @IsNotEmpty()
-    email: string;
+	@IsEmail()
+	@IsNotEmpty()
+	email: string;
 
-    @IsString()
-    @IsNotEmpty()
-    password: string;
+	@IsString()
+	@IsNotEmpty()
+	password: string;
 
-    @IsString()
-    @IsNotEmpty()
-    username: string;
+	@IsString()
+	@IsNotEmpty()
+	username: string;
 }
 
 export class SignInDto {
-    @IsString()
-    @IsNotEmpty()
-    password: string;
+	@IsString()
+	@IsNotEmpty()
+	password: string;
 
-    @IsString()
-    @IsNotEmpty()
-    username: string;
+	@IsString()
+	@IsNotEmpty()
+	username: string;
 }
 
 export class Auth42Dto {
-    @IsEmail()
-    @IsNotEmpty()
-    email: string;
+	@IsEmail()
+	@IsNotEmpty()
+	email: string;
 
-    @IsString()
-    @IsNotEmpty()
-    username: string;
+	@IsString()
+	@IsNotEmpty()
+	username: string;
 
-    
-    @IsString()
-    @IsNotEmpty()
-    avatar: string;
+	@IsString()
+	@IsNotEmpty()
+	avatar: string;
 }
