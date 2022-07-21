@@ -11,6 +11,7 @@ import {
 	Post,
 	Req,
 	Res,
+	UnauthorizedException,
 	UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -23,12 +24,16 @@ import { AuthService } from './auth.service';
 import { FortyTwoAuthGuard } from './guard';
 import { RtGuard } from './guard';
 /* AUTH DTOs */
-import { SignUpDto, SignInDto } from './dto';
+import { SignUpDto, SignInDto, TwoFactorDto } from './dto';
+import { TwoFactorService } from './2FA/2fa.service';
 
 // AUTH CONTROLLER - /auth
 @Controller('auth')
 export class AuthController {
-	constructor(private authService: AuthService) {}
+	constructor(
+		private authService: AuthService,
+		private twoFAservice: TwoFactorService,
+	) {}
 
 	/**
 	 *	/signup - create account
@@ -119,6 +124,17 @@ export class AuthController {
 	) {
 		console.log('refresh route id:', userId, 'token:', refreshToken);
 		return this.authService.refresh_token(userId, refreshToken);
+	}
+
+	/**
+	 * /2FA/turn-on - turn on 2FA
+	 */
+	@Post('/2fa/turn-on')
+	async turn_on_2fa(
+		@Body() body: TwoFactorDto,
+		@GetCurrentUser('onetimepathurl') otp: string,
+	) {
+		await this.twoFAservice.turn_on_2fa(body, otp);
 	}
 
 	/**
