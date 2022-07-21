@@ -17,14 +17,14 @@ datasource db {
 }
 
 model User {
-	id				Int				@id @default(autoincrement())
+	id			Int			@id @default(autoincrement())
 
 	createdAt	DateTime	@default(now())
 	updatedAt	DateTime	@updatedAt
 
-	email		 	String    @unique
-	username	String?    @unique  
-	hash			String
+	email		String		@unique
+	username	String?		@unique  
+	hash		String
 	avatar		String?
 
 	hashedRtoken	String?
@@ -32,12 +32,18 @@ model User {
 	gamesWon		Int     @default(0)
 	gamesLost		Int     @default(0)
 	gamesPlayed	Int     @default(0)
+
 //game history ? Une partie = 2 id, un score
 
-	friends		User[]		@relation(name: "relationships")  //array of friends based on their id 
-	blocked		User[]		@relation(name: "relationships")  // it's blocked or blocking
+	friends		Int[]
+	adding		Int[]	
+	added		Int[]		
 
-	admin       Channel[] @relation("admin")  // the following three line i dont understand well. 
+	blocks		Int[]
+	blocking	Int[]
+	blocked		Int[]
+
+	admin       Channel[] @relation("admin") 
 	member      Channel[] @relation("member")
 	chanBlocked Channel[] @relation("blocked")
 
