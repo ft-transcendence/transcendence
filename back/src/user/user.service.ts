@@ -111,9 +111,9 @@ export class UserService {
 		return (false);
 	}
 
-	async idCheck(id: number, password: string) {
+	async checkPassword(id: number, password: string) {
 		const user = await this.prisma.user.findUnique({where: {id: id}});
-		const pwMatches = await argon.verify(JSON.stringify(user.hash), password);
+		const pwMatches = await argon.verify(user.hash, password);
 		// Invalid password
 		if (!pwMatches) 
 			return (false);

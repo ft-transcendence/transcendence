@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-import { IsEmail, IsNotEmpty, IsString, IsNumber, MaxLength } from 'class-validator'
-=======
+
 import { IsNotEmpty, IsString, IsNumber, MaxLength } from 'class-validator'
->>>>>>> Mvaldes/feature/user private profile (#25)
 
 /*
 *	DTO = Data Transfer Object

@@ -5,6 +5,7 @@ import { Body, Controller,
 	UseGuards,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
+import { hash } from 'argon2';
 import { Request } from 'express';
 import { JwtGuard } from 'src/auth/guard';
 /* USER MODULES */
@@ -65,28 +66,27 @@ export class UserController {
 	}
 
 	@Get('is_friend')
-	async isFriend(@Req() request, otherId: number) {
+	async isFriend(@Req() request, @Body('otherId') otherId: number) {
 		console.log('Going through isFriend in user.controller');
 		const result = await this.userService.isFriend(request.user.id, otherId);
 		return (result);
 	}
 
 	@Get('is_blocked')
-	async isBlocked(@Req() request, otherId: number) {
+	async isBlocked(@Req() request, @Body('otherId') otherId: number) {
 		console.log('Going through isFriend in user.controller');
 		const result = await this.userService.isBlocked(request.user.id, otherId);
 		return (result);
 	}
 
-	//idCheck (security to change user params)
-	@UseGuards(JwtGuard)
-	@Get('id_check')
-	async idCheck(password: string, @Req() request) {
-		console.log('Going through idCheck in user.controller');
+	@Post('check_password')
+	async checkPassword(@Body('password') password: string, @Req() request) {
+		console.log('Going through checkPword in user.controller');
 		const prismaUser  = (request.user as User);
 		const fullUser = await this.userService.getUser(prismaUser.id);
-		const result = await this.userService.idCheck(fullUser.id, password);
-		return (result);	}
+		const result = await this.userService.checkPassword(fullUser.id, password);
+		return (result);
+	}
 
 
 	/*	UPDATE	*/
@@ -119,7 +119,7 @@ export class UserController {
 	//RELATIONSHIP RELATED FUNCTIONS
 
 	@Post('/add_friend')
-	async addFriend(@Req() request, @Body('friendId') otherId: number){
+	async addFriend(@Req() request, @Body('otherId') otherId: number){
 //		console.log('Going through addFriend in user.controller: ' + request.user.id + ' -> ' + otherId);
 		const result = await this.userService.addFriend(/*request.user.id, otherId*/2, 1);
 
@@ -127,7 +127,7 @@ export class UserController {
 	}
 
 	@Post('/rm_friend')
-	async rmFriend(@Req() request, @Body('friendId') otherId: number){
+	async rmFriend(@Req() request, @Body('fotherId') otherId: number){
 //		console.log('Going through addFriend in user.controller: ' + request.user.id + ' -> ' + otherId);
 		const result = await this.userService.rmFriend(request.user.id, otherId);
 
@@ -135,21 +135,21 @@ export class UserController {
 	}
 
 	@Post('/cancel_invite')
-	async cancelInvite(@Req() request, @Body('friendId') otherId: number){
+	async cancelInvite(@Req() request, @Body('otherId') otherId: number){
 //		console.log('Going through cancelInvite in user.controller: ' + request.user.id + ' -> ' + otherId);
 		const result = await this.userService.cancelInvite(request.user.id, otherId);
 		return (result);		
 	}
 
 	@Post('/deny_invite')
-	async denyInvite(@Req() request, @Body('friendId') otherId: number){
+	async denyInvite(@Req() request, @Body('otherId') otherId: number){
 //		console.log('Going through denyInvite in user.controller: ' + request.user.id + ' -> ' + otherId);
 		const result = await this.userService.denyInvite(request.user.id, otherId);
 		return (result);		
 	}
 
 	@Post('/block_user')
-	async blockUser(@Req() request, @Body('friendId') otherId: number){
+	async blockUser(@Req() request, @Body('otherId') otherId: number){
 		console.log('Going through blockUser in user.controller: ' + request.user.id + ' -> ' + otherId);
 		const result = await this.userService.blockUser(request.user.id, otherId);
 
@@ -157,7 +157,7 @@ export class UserController {
 	}
 
 	@Post('/unblock_user')
-	async unblockUser(@Req() request, @Body('friendId') otherId: number){
+	async unblockUser(@Req() request, @Body('otherId') otherId: number){
 		console.log('Going through unblockUser in user.controller: ' + request.user.id + ' -> ' + otherId);
 		const result = await this.userService.unblockUser(request.user.id, otherId);
 
