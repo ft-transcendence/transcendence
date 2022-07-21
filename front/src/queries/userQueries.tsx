@@ -21,7 +21,7 @@ const authFileHeader = () => {
   return myHeaders;
 };
 
-const fetchGet = async (url: string, header: any, callback:any) => {
+const fetchGet = async (url: string, header: any, callback: any) => {
   let fetchUrl = "http://localhost:4000/users/" + url;
   try {
     const response = await fetch(fetchUrl, {
@@ -48,6 +48,6 @@ export const storeUserInfo = (result: any) => {
 };
 
 export const storeFriendsInfo = (result: any) => {
-  return (result);
+  return result;
   // add blocked users later
 };
