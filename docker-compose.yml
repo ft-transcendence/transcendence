@@ -2,6 +2,7 @@ version: '3.8'
 
 volumes:
   data:
+  mini-io:
 
 networks:
   backend:
@@ -72,18 +73,23 @@ services:
     - backend
     depends_on:
       - back
-# PGADMIN  - commented as prisma studio does the same thing as pgAdmin
-#  pgadmin:
-#    container_name: pgadmin4
-#    image: dpage/pgadmin4
-#    restart: always
-#    environment:
-#      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-#      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
-#      - PGADMIN_LISTEN_PORT=${PGADMIN_LISTEN_PORT}
-#    ports:
-#      - "5050:5050"
-#    networks:
-#      - backend
-#    depends_on:
-#      - postgres
+
+  miniio:
+    image: minio/minio:latest
+    container_name: miniio
+    command: minio server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    restart: unless-stopped
+    volumes:
+      - mini-io:/data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    networks:
+    - backend
+    depends_on:
+      - nginx
+      - postgres
+      - back
