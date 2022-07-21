@@ -1,14 +1,7 @@
 import { useState } from "react";
-<<<<<<< HEAD
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { ModifyEntry } from "./ModifyUserInfo";
 import IconPen from "../../ressources/icons/IconPen.svg";
-=======
-import { Button, Card, Col, Container, Modal, Row } from "react-bootstrap";
-import { ModifyEntry } from "./ModifyUserInfo";
-import IconPen from "../../ressources/icons/IconPen.svg";
-import ProfilePic from "../../ressources/imgs/mvaldes.jpeg";
->>>>>>> Mvaldes/feature/user private profile (#25)
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
 import { UsersRelations } from "./FriendsList";
 // import { useUsername } from "../../hooks/UserInfoHooks";
@@ -16,7 +9,6 @@ import { UsersRelations } from "./FriendsList";
 export default function UserPrivateProfile() {
   const [showUsername, setShowUsername] = useState(false);
   const onClickEditUsername = () => setShowUsername((curent) => !curent);
-<<<<<<< HEAD
 
   const [showEmail, setShowEmail] = useState(false);
   const onClickEditEmail = () => setShowEmail((curent) => !curent);
@@ -29,25 +21,6 @@ export default function UserPrivateProfile() {
 
   const [showFriends, setShowFriends] = useState(true);
   const onClickShowFriends = () => setShowFriends((curent) => !curent);
-=======
-  const hideUsername = () => setShowUsername(false);
-
-  const [showEmail, setShowEmail] = useState(false);
-  const onClickEditEmail = () => setShowEmail((curent) => !curent);
-  const hideEmail = () => setShowEmail(false);
-
-  const [showPhone, setShowPhone] = useState(false);
-  const onClickEditPhone = () => setShowPhone((curent) => !curent);
-  const hidePhone = () => setShowPhone(false);
-
-  const [showPass, setShowPass] = useState(false);
-  const onClickEditPass = () => setShowPass((curent) => !curent);
-  const hidePass = () => setShowPass(false);
-
-  const [showFriends, setShowFriends] = useState(true);
-  const onClickShowFriends = () => setShowFriends((curent) => !curent);
-  const hideFriends = () => setShowFriends(false);
->>>>>>> Mvaldes/feature/user private profile (#25)
 
   const userInfoInit = {
     email: localStorage.getItem("userEmail"),
@@ -84,10 +57,7 @@ export default function UserPrivateProfile() {
             >
               <input
                 type="image"
-<<<<<<< HEAD
                 alt="avatar of user"
-=======
->>>>>>> Mvaldes/feature/user private profile (#25)
                 src={IconPen}
                 className="edit-round-icon float-end"
                 onClick={() => setModalShow(true)}
@@ -122,19 +92,11 @@ export default function UserPrivateProfile() {
                         type="button"
                         className="btn btn-secondary btn-sm submit-button float-end"
                         onClick={() => {
-<<<<<<< HEAD
                           setShowUsername(true);
                           setShowFriends(false);
                           setShowEmail(false);
                           setShowPhone(false);
                           setShowPass(false);
-=======
-                          onClickEditUsername();
-                          onClickShowFriends();
-                          hideEmail();
-                          hidePhone();
-                          hidePass();
->>>>>>> Mvaldes/feature/user private profile (#25)
                         }}
                       >
                         Edit
@@ -158,19 +120,11 @@ export default function UserPrivateProfile() {
                         type="button"
                         className="btn btn-secondary btn-sm submit-button float-end"
                         onClick={() => {
-<<<<<<< HEAD
                           setShowEmail(true);
                           setShowFriends(false);
                           setShowUsername(false);
                           setShowPhone(false);
                           setShowPass(false);
-=======
-                          onClickEditEmail();
-                          onClickShowFriends();
-                          hideUsername();
-                          hidePhone();
-                          hidePass();
->>>>>>> Mvaldes/feature/user private profile (#25)
                         }}
                       >
                         Edit
@@ -202,19 +156,11 @@ export default function UserPrivateProfile() {
                         type="button"
                         className="btn btn-secondary btn-sm submit-button float-end"
                         onClick={() => {
-<<<<<<< HEAD
                           setShowPhone(true);
                           setShowFriends(false);
                           setShowUsername(false);
                           setShowEmail(false);
                           setShowPass(false);
-=======
-                          onClickEditPhone();
-                          onClickShowFriends();
-                          hideUsername();
-                          hideEmail();
-                          hidePass();
->>>>>>> Mvaldes/feature/user private profile (#25)
                         }}
                       >
                         Edit
@@ -228,19 +174,11 @@ export default function UserPrivateProfile() {
                       type="button"
                       className="col-5 btn btn-outline-primary btn-sm"
                       onClick={() => {
-<<<<<<< HEAD
                         setShowPass(true);
                         setShowFriends(false);
                         setShowUsername(false);
                         setShowEmail(false);
                         setShowPhone(false);
-=======
-                        onClickEditPass();
-                        onClickShowFriends();
-                        hideUsername();
-                        hideEmail();
-                        hidePhone();
->>>>>>> Mvaldes/feature/user private profile (#25)
                       }}
                     >
                       Change Password

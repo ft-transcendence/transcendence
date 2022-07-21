@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { ReactNode, useState } from "react";
-=======
-import React, { ReactNode, useState } from "react";
->>>>>>> Mvaldes/feature/user private profile (#25)
 import { useLocation, Navigate } from "react-router-dom";
 import { AuthContext, useAuth } from "../globals/contexts";
 
