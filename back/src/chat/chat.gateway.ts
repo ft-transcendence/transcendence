@@ -33,6 +33,7 @@ export class ChatGateway {
       for (let i = 0; i < channels.length; i++)
         client.join(channels[i]);
   }
+
   @SubscribeMessage('read preview')
   async handleReadPreview(
     @MessageBody() email: string,
@@ -69,10 +70,9 @@ export class ChatGateway {
   async joinChannel(
     @MessageBody() data: updateChannel,
     @ConnectedSocket() client: Socket) {
-    
     const channelId = await this.chatservice.join__channel(data);
     if (channelId == null)
-      client.emit('exception', {error: "channel not found"})
+      client.emit('exception', {error: "Wrong password"})
     else
     {
       const channelName = await this.chatservice.get__Cname__ByCId(data.channelId);
@@ -231,5 +231,4 @@ export class ChatGateway {
     const members = await this.chatservice.fetch__members(data.channelId);
     client.emit('fetch members', members);
   }
-
 }

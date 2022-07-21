@@ -109,7 +109,7 @@ export class ChatService {
     {
         try {
             const source = await this.get__chatList__ByEmail(email);
-            const data = await this.organize__preview(source, email);
+            const data = await this.organize__previews(source, email);
             return (data);
         } catch (error) {
             console.log('get__preview error:', error);
@@ -117,7 +117,7 @@ export class ChatService {
         }
     }
 
-    organize__preview(source: any, email: string) {
+    organize__previews(source: any, email: string) {
         let data = [];
         if (source.owner)
         {
@@ -193,8 +193,8 @@ export class ChatService {
                     isPassword: source.invited[i].isPassword,
                     picture: source.invited[i].picture,
                     updateAt: source.invited[i].updateAt,
-                    lastMsg: msgCount > 0 ? 
-                        source.invited[i].messages[0].msg : '',
+                    lastMsg: source.invited[i].isPassword ? (msgCount > 0 ? 
+                        source.invited[i].messages[0].msg : '') : '',
                     ownerEmail: source.invited[i].owners[0].email
                 };
                 data.push(element);
@@ -224,8 +224,8 @@ export class ChatService {
             name: source.name,
             isPassword: source.isPassword,
             updateAt: source.updateAt,
-            lastMsg: msgCount > 0 ?
-                source.messages[0].msg : '',
+            lastMsg: source.isPassword ? (msgCount > 0 ?
+                source.messages[0].msg : '') : '',
             ownerEmail: source.owners.length > 0 ? 
                 source.owners[0].email : ''
         }
@@ -518,6 +518,18 @@ export class ChatService {
     async join__channel(data: updateChannel): Promise<number>
     {
         try {
+            const database = await this.prisma.channel.findUnique ({
+                where:
+                {
+                    id: data.channelId
+                },
+                select:
+                {
+                    password: true
+                }
+            })
+            if (data.password === database.password)
+            {
             const channel =  await this.prisma.channel.update ({
                 where:
                 {
@@ -542,6 +554,7 @@ export class ChatService {
                 }
             })
             return (channel.id);
+            }
         } catch (error) {
             console.log('join__channel error:', error);
             throw new WsException(error.message)

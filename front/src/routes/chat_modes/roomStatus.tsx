@@ -20,10 +20,12 @@ declare var global: {
     selectedData: oneUser
 }
 
-export default function RoomStatus({current}:{current: chatPreview | undefined}) {
+export default function RoomStatus({current, outsider, setOutsider}
+    : { current: chatPreview | undefined,
+        outsider: boolean,
+        setOutsider:(value: boolean) => void}) {
     const [add, setAdd] = useState<boolean>(false);
     const [userTag, setUserTag] = useState<Tag[]>([]);
-    const [joinable, setJoinable] = useState(false);
 
     const email = useAuth().user;
 
@@ -58,8 +60,6 @@ export default function RoomStatus({current}:{current: chatPreview | undefined})
 
     const onDelete = (i: number) => {}
 
-    console.log("jnn ", joinable)
-
     return(
         <div className="chat-status-zone">
             <div className="status-top">
@@ -68,7 +68,7 @@ export default function RoomStatus({current}:{current: chatPreview | undefined})
                         <ReactTags
                             tags={[]}
                             suggestions={userTag}
-                            placeholderText="invite to chat..."
+                            placeholderText="invite to chat"
                             noSuggestionsText="user not found"
                             onAddition={handleInvite}
                             onDelete={onDelete}
@@ -83,17 +83,28 @@ export default function RoomStatus({current}:{current: chatPreview | undefined})
                         }}/>
                 </>}
             </div>
-            <MemberStatus current={current} joinable={joinable} setJoinable={setJoinable}/>
-            <JoinChannel channelId={current?.id} joinable={joinable}/>
+            <MemberStatus
+                current={current}
+                outsider={outsider}
+                setOutsider={setOutsider}/>
+            <JoinChannel
+                channelId={current?.id}
+                outsider={outsider}
+                isPassword={current?.isPassword}/>
         </div>
     )
 }
 
-function JoinChannel({channelId, joinable}
+function JoinChannel({channelId, outsider, isPassword}
     : { channelId: number | undefined,
-        joinable: boolean}) {
+        outsider: boolean,
+        isPassword: boolean | undefined}) {
     const email = useAuth().user;
     const [password, setPass] = useState("");
+    
+    const handleSetPass = (event: any) => {
+        setPass(event.target.value);
+    }
 
     const handleJoin = () => {    
         let update: updateChannel = {
@@ -107,15 +118,12 @@ function JoinChannel({channelId, joinable}
         setPass("");
     }
 
-    const handleSetPass = (event: any) => {
-        setPass(event.taget.value);
-    }
-
     return (
-        <div>
+        <div
+            style={{display: outsider ? "" : "none"}}>
             <div 
                 className="password-zone"
-                style={{display: joinable ? "" : "none"}}>
+                style={{display: isPassword ? "" : "none"}}>
                     <p
                         className="protected-tag">
                             PROTECTED
@@ -125,10 +133,10 @@ function JoinChannel({channelId, joinable}
                             password
                     </p>
                     <input
+                        className="password-input"
                         id="password"
                         value={password}
                         onChange={handleSetPass}
-                        className="password-input"
                         placeholder="********"
                         onKeyDown={(e) => {
                             if (e.key === "Enter")
@@ -136,7 +144,7 @@ function JoinChannel({channelId, joinable}
             </div>
             <div
                 className="join-channel-button"
-                style={{display: joinable ? "" : "none"}}
+                style={{display: outsider ? "" : "none"}}
                 onMouseUp={handleJoin}>
                 join channel
             </div>
@@ -144,10 +152,10 @@ function JoinChannel({channelId, joinable}
     )
 }
 
-function MemberStatus({current, joinable, setJoinable}
+function MemberStatus({current, outsider, setOutsider}
     : { current: chatPreview | undefined,
-        joinable: boolean,
-        setJoinable:(value: boolean) => void}) {
+        outsider: boolean,
+        setOutsider:(value: boolean) => void}) {
     const [owner, setOwner] = useState<oneUser[] | null>([]);
     const [admins, setAdmins] = useState<oneUser[] | null>([]);
     const [members, setMembers] = useState<oneUser[] | null>([]);
@@ -192,7 +200,8 @@ function MemberStatus({current, joinable, setJoinable}
     }, [owner, admins, members, inviteds]);
 
     useEffect(() => {
-        setJoinable((myRole === "invited" || myRole === "noRole") && current ? true : false);
+        setOutsider((myRole === "invited" || myRole === "noRole") ? true : false);
+        console.log("outsider:::", outsider)
     }, [myRole]);
 
     const setRole = () => {
