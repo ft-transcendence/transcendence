@@ -12,7 +12,8 @@ import {
     Item,
     useContextMenu
 } from "react-contexify";
-import { LockIcon } from "./icon";
+import { LockIcon, SettingIcon } from "./icon";
+import { SettingCard } from "./settingCard";
 
 const MENU_MSG = "menu_msg";
 
@@ -63,6 +64,8 @@ function BriefInfo({info}
             <div className="chat-name">
                 {info?.name}
             </div>
+            <div className="flex-empty-block"/>
+            <SettingIcon onClick={SettingCard}/>
         </div>
     )
 }
