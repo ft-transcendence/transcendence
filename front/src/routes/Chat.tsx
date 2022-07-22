@@ -23,6 +23,9 @@ export const socket = io("ws://localhost:4000", socketOptions);
 export default function Chat() {
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
     const [newRoomRequest, setNewRoomRequest] = useState(false);
+    const [outsider, setOutsider] = useState<boolean | undefined>(undefined);
+    const [show, setShow] = useState<boolean | undefined>(undefined);
+    const [role, setRole] = useState("");
 
     useEffect(() => {
 
@@ -31,14 +34,38 @@ export default function Chat() {
         });
 
         socket.on("exception", (data) => {
-            console.log("exception", data)
+            console.log("exception", data);
+        })
+
+        socket.on("fetch role", (data) => {
+            setRole(data);
+            console.log("role:::", data)
         })
 
         return (() => {
             socket.off("connect");
             socket.off("exception");
+            socket.off("fetch role");
         })
     }, [])
+
+    useEffect(() => {
+        if (selectedChat)
+        {
+            setOutsider((role === "invited" || role === "noRole") ? true : false);
+            console.log("in chat, role, ispassword, outsider:::", role, selectedChat?.isPassword, (role === "invited" || role === "noRole"));
+            
+        }
+    }, [selectedChat, role]);
+
+    useEffect(() => {
+        console.log("in chat, outsider:::", outsider)
+        if (selectedChat)
+        {
+            setShow((!selectedChat.isPassword) || !outsider)
+            console.log("in chat, show:::", (!selectedChat.isPassword) || !outsider)
+        }
+    }, [outsider])
 
     const cardDisappear = () => {
         setNewRoomRequest(old => {return !old})
@@ -46,21 +73,24 @@ export default function Chat() {
 
     return (
         <div className="zone-diff">
-            <Preview
-                current={selectedChat}
-                onSelect={(chat) => {
-                    setSelectedChat(chat)
-                }}
-                newRoomRequest={newRoomRequest}
-                onNewRoomRequest={() => {
-                    setNewRoomRequest(old => {return !old})
-                }}
-            />
-            <ChatRoom
-                current={selectedChat}/>
+                <Preview
+                    current={selectedChat}
+                    onSelect={(chat) => {
+                        setSelectedChat(chat)
+                    }}
+                    newRoomRequest={newRoomRequest}
+                    onNewRoomRequest={() => {
+                        setNewRoomRequest(old => {return !old})
+                    }}
+                />
+                <ChatRoom
+                    current={selectedChat}
+                    show={show}/>
             <div style={{display: selectedChat?.dm ? "none" : "", backgroundColor: "#003e60"}}>
                 <RoomStatus
-                    current={selectedChat}/>
+                    current={selectedChat}
+                    role={role}
+                    outsider={outsider}/>
             </div>
             <div
                 onClick={cardDisappear}
