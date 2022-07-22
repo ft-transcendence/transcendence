@@ -148,6 +148,8 @@ export default class Game extends React.Component < {}, StatePong > {
                         player1Score: 0,
                         player2Score: 0,
                         msgType: 0,
+                        player1Name: "player1",
+                        player2Name: "player2"
                     };
     }
 
@@ -157,7 +159,7 @@ export default class Game extends React.Component < {}, StatePong > {
         socket.on("game_started", () =>
             this.setState({gameStarted: true}));
         socket.on("update", (info: Game_data) =>
-            this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score}));
+            this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name}));
         socket.on("end_game", (winner: number) => 
             winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false}) : this.setState({msgType: 3, gameStarted: false}));
     }
@@ -180,6 +182,14 @@ export default class Game extends React.Component < {}, StatePong > {
             socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
     }
 
+    isPromise(val: any) {
+        if (typeof val === 'object' && typeof val.then === 'function') {
+          return true;
+        }
+      
+        return false;
+    }
+
     render() {
     const shoWField = this.state.gameStarted ? 'unset': 'none';
     const shoWInfo = this.state.gameStarted ? 'flex': 'none';
@@ -189,15 +199,23 @@ export default class Game extends React.Component < {}, StatePong > {
     const showShadow = '0';
     var leftName;
     var rightName;
-    if (this.state.playerNumber === 1)
-    {    
-        leftName = "you";
-        rightName = "opponent";
+    if (this.isPromise(this.state.player1Name))
+    {
+        if (this.state.playerNumber === 1)
+        {    
+            leftName = "you";
+            rightName = "opponent";
+        }
+        else
+        {    
+            rightName = "you";
+            leftName = "opponent";
+        }
     }
     else
-    {    
-        rightName = "you";
-        leftName = "opponent";
+    {
+        leftName = String(this.state.player1Name);
+        rightName = String(this.state.player2Name);
     }
     return (
         <div className='Radial-background'>

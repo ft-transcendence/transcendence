@@ -4,6 +4,9 @@ import { Room } from './interfaces/room.interface';
 import { Server } from 'socket.io';
 import { GameData } from './interfaces/gameData.interface'
 import { findIndex } from 'rxjs';
+import { UserService } from 'src/user/user.service';
+import { User } from '@prisma/client';
+
 
 const refreshRate = 10;
 const paddleSpeed = 1;
@@ -13,7 +16,7 @@ const ballSpeed = 0.5;
 @Injectable()
 export class GameService {
 
-    constructor(private schedulerRegistry: SchedulerRegistry) {}
+    constructor(private schedulerRegistry: SchedulerRegistry, private userService: UserService) {}
 
     rooms: Room[] = [];
     
@@ -131,7 +134,7 @@ export class GameService {
     * game init
     */
 
-    startGame(rid: number, server: Server) {
+    async startGame(rid: number, server: Server) {
         var game_data: GameData = {
             paddleLeft: 45,
             paddleRight: 45,
@@ -139,6 +142,10 @@ export class GameService {
             yBall: 50,
             player1Score: 0,
             player2Score: 0,
+            player1Name: await this.userService.getUser(this.rooms.find(room => room.id === rid).player1.data.id).then((value: User) => value.username),
+            player2Name: await this.userService.getUser(this.rooms.find(room => room.id === rid).player2.data.id).then((value: User) => value.username),
+            player1Avatar: await this.userService.getUser(this.rooms.find(room => room.id === rid).player1.data.id).then((value: User) => value.avatar),
+            player2Avater: await this.userService.getUser(this.rooms.find(room => room.id === rid).player2.data.id).then((value: User) => value.avatar),
         }
         this.initBall(rid);
         var t = this;

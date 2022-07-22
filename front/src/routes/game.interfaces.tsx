@@ -3,6 +3,10 @@ export interface Game_data {
   paddleRight: number;
   xBall: number;
   yBall: number;
+  player1Name: string;
+  player2Name: string;
+  player1Avatar: string;
+  player2Avater: string;
   player1Score: number;
   player2Score: number;
 }
@@ -30,6 +34,8 @@ export interface StatePong {
   player1Score: number;
   player2Score: number;
   msgType: number;
+  player1Name: string;
+  player2Name: string;
 }
 
 export interface Button {
