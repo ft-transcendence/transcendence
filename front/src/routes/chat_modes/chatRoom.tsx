@@ -21,9 +21,11 @@ declare var global: {
     selectedData: oneMsg
 }
 
-export default function ChatRoom({current, show}
+export default function ChatRoom({current, show, settingRequest, setSettingRequest}
     : { current: chatPreview | undefined,
-        show: boolean | undefined }) {
+        show: boolean | undefined,
+        settingRequest: boolean,
+        setSettingRequest: () => void}) {
 
     const email = useAuth().user;
 
@@ -39,7 +41,7 @@ export default function ChatRoom({current, show}
     return(
         <>
             <div className="chat-room-zone">
-                <BriefInfo info = {current}/>
+                <BriefInfo info = {current} settingRequest={settingRequest} setSettingRequest={setSettingRequest}/>
                 {
                 current ?
                     (show ? 
@@ -57,15 +59,18 @@ export default function ChatRoom({current, show}
     )
 }
 
-function BriefInfo({info}
-    :{info: chatPreview | undefined}) {
+function BriefInfo({info, settingRequest, setSettingRequest}
+    : { info: chatPreview | undefined,
+        settingRequest: boolean,
+        setSettingRequest: () => void}) {
+        
     return (
         <div className="brief-info">
             <div className="chat-name">
                 {info?.name}
             </div>
             <div className="flex-empty-block"/>
-            <SettingIcon onClick={SettingCard}/>
+            <SettingIcon onClick={() => {setSettingRequest()}}/>
         </div>
     )
 }

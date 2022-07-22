@@ -1,63 +1,36 @@
 import "./newRoomCard.css";
 import "./tags.css"
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { socket } from "../../App";
-import { newChannel } from "./type/chat.type";
+import { newChannel, updateChannel } from "./type/chat.type";
 import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
 import Switch from "react-switch";
-import ReactTags, { Tag } from "react-tag-autocomplete";
-import { matchSorter } from "match-sorter";
 import { useAuth } from "../..";
 
-export function NewRoomCard({newRoomRequest, onNewRoomRequest}
-    : { newRoomRequest: boolean,
-        onNewRoomRequest: () => void}) {
+export function SettingCard({settingRequest, onSettingRequest}
+    : { settingRequest: boolean,
+        onSettingRequest: () => void}) {
     const email = useAuth().user;
-    const [userTag, setUserTag] = useState<Tag[]>([]);
     const [roomName, setRoomName] = useState("");
     const [roomPass, setRoomPass] = useState("");
     const [isPrivate, setPrivate] = useState(false);
     const [isPassword, setIsPassword] = useState(false);
-    const [addedMember, setAddMember] = useState<Tag[]>([]);
-    const scroll = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        console.log("new room : request:", newRoomRequest)
+        console.log("settingCard : request:", settingRequest)
 
-        if (newRoomRequest === false)
+        if (settingRequest === false)
         {   
             initVars();
-            console.log("new room : request:", newRoomRequest)
+            console.log("settingCard : request:", settingRequest)
         }
 
-        socket.emit("get user tags");
-        socket.on("user tags", (data: Tag[]) => {
-            setUserTag(data);
-            console.log("tags", data);
-        })
-
         return  (() => {
-            socket.off("user tags");
+            
         })
         // @ts-ignore-next-line
-    }, [newRoomRequest])
-
-    const onAddMember = (member: Tag) => {
-        const members = addedMember.concat(member)
-        setAddMember(members);
-        console.log("added a member", members)
-    }
-
-    const onDeleteMember = (i: number) => {
-        const members = addedMember.slice(0);
-        members.splice(i, 1);
-        setAddMember(members);
-    }
-
-    const suggestionsFilter = (searching: string, suggestions: Tag[]) => {
-        return matchSorter(suggestions, searching, { keys: ["name"] });
-    }
+    }, [settingRequest])
 
     const handleString = (value: string, setValue: (value: string) => void) => {
         setValue(value);
@@ -71,34 +44,24 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
         setIsPassword(old => {return !old});
     }
 
-    const onCreate = () => {
-        let data: newChannel = {
-            name: roomName,
-            private: isPrivate,
-            isPassword: isPassword,
-            password: roomPass,
-            email: email,
-            members: addedMember,
+    const onUpdate = () => {
+        let data: updateChannel = {
+            channelId: undefined,
+            email: null,
+            password: "",
+            adminEmail: "",
+            invitedId: ""
         }
-        socket.emit("new channel", data);
+        socket.emit("update channel", data);
         initVars();
-        onNewRoomRequest();
-        socket.emit("get search suggest", email);
+        onSettingRequest();
     }
 
     const initVars = () => {
         setRoomName("");
-        setAddMember([]);
         setPrivate(false);
         setIsPassword(false);
         setRoomPass("");
-    }
-
-    const autoScroll = () => {
-        setTimeout(() => {
-            if (scroll.current)
-                scroll.current.scrollTop = scroll.current.scrollHeight;
-        }, 30);
     }
 
     return (
@@ -109,20 +72,6 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
                     onChange={(e) => handleString(e.target.value, setRoomName)}
                     className="room-name-input"
                     placeholder="room name"
-                />
-            </div>
-            <div 
-                className="browse-users"
-                ref={scroll}>
-                <ReactTags
-                    tags={addedMember}
-                    suggestions={userTag.filter(v => {return addedMember.filter(v1 => {return v1.id === v.id}).length === 0})}
-                    placeholderText="To:"
-                    onAddition={onAddMember}
-                    onDelete={onDeleteMember}
-                    onInput={autoScroll}
-                    suggestionsTransform={suggestionsFilter}
-                    noSuggestionsText="user not found"
                 />
             </div>
             <div className="div-switch">
@@ -159,9 +108,9 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
 
             </div>
             <div
-                onMouseUp={onCreate}
+                onMouseUp={onUpdate}
                 className="create-room-button">
-                    create room
+                    update setting
             </div>
         </div>
     )
