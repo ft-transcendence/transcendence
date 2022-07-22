@@ -134,6 +134,21 @@
   border-radius: 50%;
 }
 
+.profile-pic-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
+
+.profile-pic-inside-sm {
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+}
+
 .edit-round-icon {
   width: 30px;
   height: 30px;

@@ -1,6 +1,7 @@
 import { executionAsyncId } from "async_hooks";
+import React from "react";
 import { useEffect, useState } from "react";
-import { Col, Card, Container, Nav, Navbar } from "react-bootstrap";
+import { Col, Card, Container, Nav, Navbar, Row } from "react-bootstrap";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { getUserFriends } from "../../queries/userQueries";
 
@@ -41,7 +42,7 @@ export const UsersRelations = () => {
 };
 
 interface ItableRow {
-  id: number;
+  key: number;
   userModel: { username: string; avatar: string };
 }
 
@@ -60,7 +61,7 @@ export const FriendsList = () => {
 
       for (let i = 0; i < fetchedFriends.length; i++) {
         let newRow: ItableRow = {
-          id: i,
+          key: i,
           userModel: { username: "", avatar: "" },
         };
         newRow.userModel.username = fetchedFriends[i].username;
@@ -69,20 +70,21 @@ export const FriendsList = () => {
       }
       setFriendsList(friends);
       console.log("friendsList", friendsList);
+      setFetched(true);
     };
 
     fetchData();
-    // setFetched(true);
   }, [isFetched]);
 
   return (
     <div>
-      <div>this is a test: </div>
-      {/* <DisplayRow id={1} userModel={friends[0].userModel} /> */}
-      {friends.map((h) => {
-        return <DisplayRow userModel={h.userModel} id={h.id} />;
-      })}
-      : This is the end of test
+      {isFetched ? (
+        friendsList!.map((h, index) => {
+          return <DisplayRow key={index} userModel={h.userModel} />;
+        })
+      ) : (
+        <div>No Data available, please reload.</div>
+      )}
     </div>
   );
 };
@@ -94,11 +96,45 @@ export const BlockedList = () => {
 const DisplayRow = (props: ItableRow) => {
   return (
     <main>
-      <div>HELLO THERE</div>
-      <div>
-        username = {props.userModel.username}
-        avatar = {props.userModel.avatar}
-      </div>
+      <Container className="p-2">
+        <Row className="" style={{ alignItems: "center", display: "flex" }}>
+          <Col className="p-1 border float-end">
+            <div className="profile-pic-wrapper">
+              <div
+                className="profile-pic-inside-sm"
+                style={{
+                  backgroundImage: `url("https://cdn.intra.42.fr/users/mvaldes.JPG")`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              ></div>
+            </div>
+          </Col>
+          <Col className=" content " style={{ paddingLeft: "0px" }}>
+            <div className="profile-username-text" style={{ fontSize: "18px" }}>
+              @{props.userModel.username}
+            </div>
+          </Col>
+          <Col className="">
+            <button
+              type="button"
+              className="IBM-text btn btn-sm"
+              style={{ fontSize: "15px" }}
+            >
+              Remove
+            </button>
+          </Col>
+          <Col className="">
+            <button
+              type="button"
+              className="IBM-text btn btn-sm"
+              style={{ fontSize: "15px" }}
+            >
+              Block
+            </button>
+          </Col>
+        </Row>
+      </Container>
     </main>
   );
 };
