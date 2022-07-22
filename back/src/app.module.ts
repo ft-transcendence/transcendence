@@ -9,29 +9,46 @@ import { GameGateway } from './game/game.gateway';
 import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
 
-/* Modules are classes, here app.module, annotated with the module decorator.
-* Like any decorator, this adds metadata to a class or function.
-* Modules can import other mmodules - here, UsersModule, DbModule, etc.
-* They import controllers and providers too (see in users controllers and providers for defs)
+// Set the env file path
+let envFilePath = '.env';
+
+if (process.env.ENVIRONMENT === 'PRODUCTION') {
+	envFilePath = '.env.prod';
+} else if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
+	envFilePath = '.env.dev';
+}
+
+// Log
+console.log(`Running in ` + process.env.ENVIRONMENT + ` mode`);
+console.log(`Running on port ` + process.env.PORT );
+
+/*
 * This one is the main module, it will import all the others.
 */
 
 @Module({
-	imports:
-	[
+	imports: 
+	[	
 		AuthModule, 
 		UserModule, 
 		PrismaModule,
 		ChatModule,
-		ConfigModule.forRoot
-		({
+		GameModule,
+		ConfigModule.forRoot({
+			// set path to .env file
+			envFilePath,
+			// global import
 			isGlobal: true
-		}), 
-		GameModule,	
+		}),
 	],
-
 	providers: [GameService, GameGateway],		
+	// NOT USED AS OF YET
+	// controllers: [AppController],
 
 })
-// export to enable globally
+
 export class AppModule {}
+
+console.log(`API KEY: ` + process.env.FORTYTWO_SECRET);
+console.log(`API UID: ` + process.env.FORTYTWO_ID);
+console.log(`API CALLBACK: ` + process.env.FORTYTWO_CALLBACK);

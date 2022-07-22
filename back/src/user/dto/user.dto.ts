@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, IsNumber } from 'class-validator'
+import { IsNotEmpty, IsString, IsNumber, MaxLength } from 'class-validator'
 
 /*
 *	DTO = Data Transfer Object
@@ -12,10 +12,15 @@ export class UserDto {      //Data transfer object
 
 	@IsString()
 	@IsNotEmpty()
-	username: string;  
+	username: string; 
 
 	@IsString()
 	@IsNotEmpty()
+	email: string;
+
+	@IsString()
+	@IsNotEmpty()
+	@MaxLength(65000)
 	picture: string; 
 
 	@IsNumber()
@@ -30,15 +35,12 @@ export class UserDto {      //Data transfer object
 	@IsNotEmpty()
 	gamesPlayed: number; 
 
+	added: 		number[];
+	adding: 	number[];
+	friends: 	number[];
 
+	blocked: 	number[];
+	blocking: 	number[];
+	blocks: 	number[];
 	
-
-//   game history
-
-//       friends		User[]		@relation(name: "relationships", references: [id])  
-//       blocked		User[]		@relation(name: "relationships", references: [id])
-
-//     admin       Channel[] @relation("admin")
-//     member      Channel[] @relation("member")
-//     chanBlocked Channel[] @relation("blocked")
 } 

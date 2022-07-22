@@ -47,12 +47,98 @@
   );
 }
 
+.modify-card {
+  background: #2e3238;
+  box-shadow: inset 5px 4px 30px #23262b, inset -4px -5px 30px #434851;
+  border-radius: 10px;
+}
+
+.IBM-text {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  letter-spacing: -0.4px;
+  color: var(--text-color-white);
+}
+
+.ROBOTO-text {
+  font-family: "Roboto" sans-serif;
+  font-style: normal;
+  letter-spacing: -0.4px;
+ color: var(--text-color-white);
+}
+
+.wrapper {
+  align-items: center;
+  display: flex;
+}
+
+.content {
+  font-family: "Roboto" sans-serif;
+  font-style: normal;
+  padding-left: 20px;
+  letter-spacing: -0.4px;
+}
+
+.profile-username-text {
+  font-weight: 500;
+  font-size: 25px;
+  line-height: 20px;
+  color: var(--text-color-white);
+}
+
+.caption {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  padding-top: 5px;
+  font-size: 12px;
+}
+
 .App {
   background-color: var(--basic-color-background);
   font-family: "Roboto" sans-serif;
   color: var(--text-color-white);
   width: 100vw;
   height: 100vh;
+}
+
+.app-title {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 20px;
+  letter-spacing: -0.4px;
+  color: var(--text-color-white);
+}
+
+.profile-card {
+  background: #31353c;
+  box-shadow: -10px -5px 30px 5px #34373c, 10px 5px 30px 5px #24282d;
+  border-radius: 10px;
+}
+
+.profile-pic-round {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  background: var(--buttons-color-gray-disabled);
+  box-shadow: 7px 7px 30px #1f2427, -7px -7px 30px #485057;
+}
+
+.profile-pic-inside {
+  height: 98%;
+  width: 98%;
+  border-radius: 50%;
+}
+
+.edit-round-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #5d76ec;
 }
 
 .Auth-form-container {
@@ -120,25 +206,31 @@
   cursor: pointer;
 }
 
-a:link {
+/* a:link {
   color: var(--buttons-color-blue);
 }
 
 /* visited link */
-a:visited {
-  color: var(--buttons-color-blue);
-}
+/* a:visited { */
+/* color: var(--buttons-color-blue); */
+/* } */
 
 /* mouse over link */
-a:hover {
-  color: var(--buttons-color-blue-disabled);
-}
+/* a:hover { */
+/* color: var(--buttons-color-blue-disabled); */
+/* } */
 
 /* selected link */
-a:active {
-  color: var(--buttons-color-blue-selected);
-}
+/* a:active { */
+/* color: var(--basic-color-green); */
+/* } */
 
+.active-class {
+  color: red;
+}
+.not-active-class {
+  color: white;
+}
 .Auth-form-title {
   font-family: "Roboto" sans-serif;
   font-style: normal;
