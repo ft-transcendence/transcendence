@@ -1,9 +1,6 @@
 import React from 'react';
 import { io } from "socket.io-client";
 import "./Game.css";
-import {Particles} from "react-tsparticles";
-import { loadFull } from "tsparticles";
-import type { Container } from "tsparticles-engine";
 import { Link } from "react-router-dom";
 import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle } from './game.interfaces';
 
@@ -87,10 +84,10 @@ class Message extends React.Component< Msg, MsgState > {
                     message = "Please wait for another player";
                     break;
                 case 2:
-                    message = "You win :)";
+                    message = "You win";
                     break;
                 case 3:
-                    message = "You lose :(";
+                    message = "You lose";
                     break;
                 default:
                     message = "error";
@@ -165,15 +162,6 @@ export default class Game extends React.Component < {}, StatePong > {
             winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false}) : this.setState({msgType: 3, gameStarted: false}));
     }
 
-    particlesInit = async (main: any) => {
-        console.log(main);
-        await loadFull(main);
-    };
-
-    particlesLoaded = async (container?: Container | undefined) => {
-        console.log(container);
-    };
-
     startButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
         socket.emit("start", {}, (player: Player) => 
           this.setState({roomId: player.roomId, playerNumber: player.playerNb, showStartButton: false, msgType: 1}));  
@@ -195,8 +183,10 @@ export default class Game extends React.Component < {}, StatePong > {
     render() {
     const shoWField = this.state.gameStarted ? 'unset': 'none';
     const shoWInfo = this.state.gameStarted ? 'flex': 'none';
-    const showBorder = this.state.gameStarted ? '2px solid rgb(0, 255, 255)' : '0px solid rgb(0, 255, 255)';
-    const showShadow = this.state.gameStarted ? '0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 5px rgb(0, 190, 255)' : '0';
+    /*const showBorder = this.state.gameStarted ? '2px solid rgb(0, 255, 255)' : '0px solid rgb(0, 255, 255)';*/
+    const showBorder = this.state.gameStarted ? '2px solid rgb(255, 255, 255)' : '0px solid rgb(255, 255, 255)';
+    /*const showShadow = this.state.gameStarted ? '0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 5px rgb(0, 190, 255)' : '0';*/
+    const showShadow = '0';
     var leftName;
     var rightName;
     if (this.state.playerNumber === 1)
@@ -211,8 +201,6 @@ export default class Game extends React.Component < {}, StatePong > {
     }
     return (
         <div className='Radial-background'>
-            <Particles id="tsparticles" url="particlesjs-config.json" init={this.particlesInit} loaded={this.particlesLoaded} />
-
             <div className='Page-top'>
             <div style={{display: `${shoWInfo}`,}} className='Info-card'>
                     <div className='Player-left'>
