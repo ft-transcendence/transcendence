@@ -1,8 +1,5 @@
-import { executionAsyncId } from "async_hooks";
-import { useEffect, useState } from "react";
-import { Col, Card, Container, Nav, Navbar } from "react-bootstrap";
-import { Link, NavLink, Outlet } from "react-router-dom";
-import { getUserFriends } from "../../queries/userQueries";
+import { Col, Card, Navbar, Container, Nav } from "react-bootstrap";
+import { NavLink, Outlet } from "react-router-dom";
 
 export const UsersRelations = () => {
   return (

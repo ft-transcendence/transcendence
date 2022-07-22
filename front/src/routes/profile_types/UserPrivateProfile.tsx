@@ -4,7 +4,10 @@ import { ModifyEntry } from "./ModifyUserInfo";
 import IconPen from "../../ressources/icons/IconPen.svg";
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
 import { UsersRelations } from "./users_relations/UsersRelations";
+<<<<<<< HEAD
 import { TwoFA } from "./TwoFA";
+=======
+>>>>>>> 🚧 pending and blocked lists
 // import { useUsername } from "../../hooks/UserInfoHooks";
 
 export default function UserPrivateProfile() {
