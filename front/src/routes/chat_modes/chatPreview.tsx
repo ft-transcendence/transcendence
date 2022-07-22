@@ -185,7 +185,7 @@ function ChatSearch( { onSearchMyChat, onSearchPublicChat }
         return  (() => {
             socket.off("search suggest");
         })
-    
+
     }, [email])
 
     const handleOnSelect = (data: oneSuggestion) => {
