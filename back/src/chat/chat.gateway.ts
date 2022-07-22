@@ -11,7 +11,7 @@ import { ChatService } from './chat.service';
 import { UseMsgDto, ChannelDto, DMDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
-import { updateChannel } from './type/chat.type';
+import { oneUser, updateChannel } from './type/chat.type';
 
 // @UseGuards(JwtGuard)
 @UsePipes(new ValidationPipe())
@@ -113,6 +113,8 @@ export class ChatGateway {
     client.emit('fetch members', members);
     const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
     client.emit('fetch inviteds', inviteds);
+    const users = await this.chatservice.get__searchSuggest(data.email);
+    client.emit('search suggest', users);
   }
 
   @SubscribeMessage('new dm')
@@ -151,19 +153,55 @@ export class ChatGateway {
     client.emit('update preview', preview)
   }
 
+  async get__role(
+    email: string, owners: oneUser[], admins: oneUser[], members: oneUser[], inviteds: oneUser[]) {
+      let role = "noRole";
+      if (inviteds && inviteds.length > 0)
+      {   
+          const isInvited: number = inviteds.filter((invited) => { 
+              return invited.email === email }).length;
+          if (isInvited > 0)
+            role = "invited";
+      }
+      if (members && members.length > 0)
+      {
+          const isMember: number = members.filter((member) => { 
+              return member.email === email }).length;
+          if (isMember > 0)
+            role = "member";
+      }
+      if (admins && admins.length > 0)
+      {
+          const isAdmin: number = admins.filter((admin) => { 
+              return admin.email === email }).length;
+          if (isAdmin > 0)
+            role = "admin";
+      }
+      if (owners && owners.length > 0)
+      {
+          const isOwner: number = owners.filter((owner) => { 
+              return owner.email === email }).length;
+          if (isOwner > 0)
+            role = "owner";
+      }
+      return role;
+  }
+
   @SubscribeMessage('read room status')
   async handleFetchStatus(
-    @MessageBody() channelId: number,
+    @MessageBody() data: any,
     @ConnectedSocket() client: Socket
   ) {
-    const owners = await this.chatservice.fetch__owners(channelId);
+    const owners = await this.chatservice.fetch__owners(data.id);
     client.emit('fetch owner', owners);
-    const admins = await this.chatservice.fetch__admins(channelId);
+    const admins = await this.chatservice.fetch__admins(data.id);
     client.emit('fetch admins', admins);
-    const members = await this.chatservice.fetch__members(channelId);
+    const members = await this.chatservice.fetch__members(data.id);
     client.emit('fetch members', members);
-    const inviteds = await this.chatservice.fetch__inviteds(channelId);
+    const inviteds = await this.chatservice.fetch__inviteds(data.id);
     client.emit('fetch inviteds', inviteds);
+    const role = await this.get__role(data.email, owners, admins, members, inviteds);
+    client.emit('fetch role', role);
   }
 
 
