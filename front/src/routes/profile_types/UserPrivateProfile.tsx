@@ -3,7 +3,7 @@ import { Card, Col, Container, Row } from "react-bootstrap";
 import { ModifyEntry } from "./ModifyUserInfo";
 import IconPen from "../../ressources/icons/IconPen.svg";
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
-import { UsersRelations } from "./FriendsList";
+import { UsersRelations } from "./users_relations/UsersRelations";
 // import { useUsername } from "../../hooks/UserInfoHooks";
 
 export default function UserPrivateProfile() {

@@ -1,13 +1,13 @@
-export const addFriendQuery = (friendId: number) => {
+export const addFriendQuery = (otherId: number) => {
   let body = JSON.stringify({
-    otherId: friendId,
+    otherId: otherId,
   });
   return fetchGet("add_friend", authFileHeader, body);
 };
 
-export const removeFriendQuery = (friendId: number) => {
+export const removeFriendQuery = (otherId: number) => {
   let body = JSON.stringify({
-    otherId: friendId,
+    otherId: otherId,
   });
   return fetchGet("rm_friend", authFileHeader, body);
 };
@@ -17,6 +17,27 @@ export const blockUserQuery = (otherId: number) => {
     otherId: otherId,
   });
   return fetchGet("block_user", authFileHeader, body);
+};
+
+export const unblockUserQuery = (otherId: number) => {
+  let body = JSON.stringify({
+    otherId: otherId,
+  });
+  return fetchGet("/unblock_user", authFileHeader, body);
+};
+
+export const cancelInviteQuery = (otherId: number) => {
+  let body = JSON.stringify({
+    otherId: otherId,
+  });
+  return fetchGet("cancel_invite", authFileHeader, body);
+};
+
+export const denyInviteQuery = (otherId: number) => {
+  let body = JSON.stringify({
+    otherId: otherId,
+  });
+  return fetchGet("deny_invite", authFileHeader, body);
 };
 
 const authFileHeader = () => {
