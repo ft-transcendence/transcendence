@@ -220,8 +220,8 @@ export class ChatService {
                     isPassword: source.invited[i].isPassword,
                     picture: source.invited[i].picture,
                     updateAt: source.invited[i].updateAt,
-                    lastMsg: source.invited[i].isPassword ? (msgCount > 0 ? 
-                        source.invited[i].messages[0].msg : '') : '',
+                    lastMsg: source.invited[i].isPassword ? '' : (msgCount > 0 ? 
+                        source.invited[i].messages[0].msg : ''),
                     ownerEmail: source.invited[i].owners[0].email
                 };
                 data.push(element);
@@ -251,8 +251,8 @@ export class ChatService {
             name: source.name,
             isPassword: source.isPassword,
             updateAt: source.updateAt,
-            lastMsg: source.isPassword ? (msgCount > 0 ?
-                source.messages[0].msg : '') : '',
+            lastMsg: source.isPassword ? '' : (msgCount > 0 ?
+                source.messages[0].msg : ''),
             ownerEmail: source.owners.length > 0 ? 
                 source.owners[0].email : ''
         }
@@ -592,17 +592,69 @@ export class ChatService {
                         {
                             email: data.email
                         }
+                    },
+                    inviteds:
+                    {
+                        disconnect:
+                        {
+                            email: data.email
+                        }
                     }
                 }
             })
             const channel = await this.get__chat__ByChannelId(data.channelId)
             if (channel.owners.length === 0)
+            {
+                await this.prisma.msg.deleteMany ({
+                    where:
+                    {
+                        cid: data.channelId
+                    }
+                })
+                await this.prisma.user.update({
+                    where:
+                    {
+                        email: data.email
+                    },
+                    data:
+                    {
+                        owner:
+                        {
+                            disconnect:
+                            {
+                                id: data.channelId
+                            }
+                        },
+                        admin:
+                        {
+                            disconnect:
+                            {
+                                id: data.channelId
+                            }
+                        },
+                        member:
+                        {
+                            disconnect:
+                            {
+                                id: data.channelId
+                            }
+                        },
+                        invited:
+                        {
+                            disconnect:
+                            {
+                                id: data.channelId
+                            }
+                        }
+                    }
+                })
                 await this.prisma.channel.delete ({
                     where:
                     {
                         id: data.channelId
-                    }
+                    }  
                 })
+            }
         } catch (error) {
             console.log('delete__channel error:', error);
             throw new WsException(error.message)
@@ -852,7 +904,7 @@ export class ChatService {
     organize__admins(source: any)
     {
         let admins = [];
-        if (source.admins)
+        if (source && source.admins)
             for (let i = 0; i < source.admins.length; i++)
             {    
                 let admin: oneUser = {
@@ -894,7 +946,7 @@ export class ChatService {
     organize__members(source: any)
     {
         let members = [];
-        if (source.members)
+        if (source && source.members)
             for (let i = 0; i < source.members.length; i++)
             {    
                 let member: oneUser = {
@@ -936,7 +988,7 @@ export class ChatService {
     organize__inviteds(source: any)
     {
         let inviteds = [];
-        if (source.inviteds)
+        if (source && source.inviteds)
             for (let i = 0; i < source.inviteds.length; i++)
             {    
                 let member: oneUser = {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useAuth } from "../..";
 import { socket } from "../../App";
 import "./chatRoom.css";
@@ -12,6 +12,7 @@ import {
     Item,
     useContextMenu
 } from "react-contexify";
+import { LockIcon } from "./icon";
 
 const MENU_MSG = "menu_msg";
 
@@ -19,17 +20,18 @@ declare var global: {
     selectedData: oneMsg
 }
 
-export default function ChatRoom({current}
-    : { current: chatPreview | undefined} ) {
+export default function ChatRoom({current, show}
+    : { current: chatPreview | undefined,
+        show: boolean | undefined }) {
 
     const email = useAuth().user;
 
-    useEffect(()=> {
-        if (current)
+    useEffect(() => {
+        if (show && current)
         {
-            const cId = current.id;
-            console.log("current selected")
+            const cId = current!.id;
             socket.emit("read msgs", cId);
+            console.log("reading msgs", show)
         }
     }, [current])
 
@@ -37,12 +39,18 @@ export default function ChatRoom({current}
         <>
             <div className="chat-room-zone">
                 <BriefInfo info = {current}/>
-                {current ? 
-                    <>
-                        <MsgStream email={email} channelId={current!.id}/>
-                        <InputArea email = {email} channelId = {current!.id}/>
-                    </>
-                : <></>}
+                {
+                current ?
+                    (show ? 
+                        <>
+                            <MsgStream email={email} channelId={current!.id}/>
+                            <InputArea email = {email} channelId = {current!.id}/>
+                        </>
+                        :   
+                        <LockIcon/>
+                    )
+                    : <></>
+                }
             </div>
         </>
     )
@@ -61,17 +69,17 @@ function BriefInfo({info}
 
 function MsgStream({email, channelId}
     : { email: string | null,
-        channelId: number }) {
+        channelId: number}) {
 
     const [msgs, setMsgs] = useState<oneMsg[]>([]);
     const scroll = useRef<HTMLDivElement>(null);
 
     useEffect( () => {
-
         socket.on("fetch msgs", (data: oneMsg[]) => {
             console.log("got fetched msgs", data)
             setMsgs(data);
         })
+
         return (() => {
             socket.off("fetch msgs");
         })
@@ -106,7 +114,8 @@ function MsgStream({email, channelId}
 
 
     return (
-        <div className="msg-stream" ref={scroll}>
+        <div 
+            className="msg-stream" ref={scroll}>
             {msgs.map((value, index) => {
                 return (
                     <div key={index}>
@@ -154,7 +163,8 @@ function OneMessage({data, email}
 }
 
 function InputArea({channelId, email}
-    :{channelId: number, email: string | null}) {
+    : { channelId: number,
+        email: string | null }) {
     const [msg, setMsg] = useState("");
 
     const handleSetMsg = (event:any) => {
@@ -173,7 +183,8 @@ function InputArea({channelId, email}
     }
 
     return (
-        <div className="msg-input-zone">
+        <div
+            className="msg-input-zone">
             <input
                 id="msg"
                 value={msg}

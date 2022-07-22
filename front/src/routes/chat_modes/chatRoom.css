@@ -9,6 +9,10 @@
     flex-direction: column;
 }
 
+.lock-icon {
+    margin: auto;
+}
+
 .brief-info {
     background-color: inherit;
     height: 60px;

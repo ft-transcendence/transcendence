@@ -18,7 +18,7 @@ declare var global: {
     selectedData: chatPreview
 }
 
-export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomRequest }
+export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomRequest}
     : { current: chatPreview | undefined, 
         onSelect: (chatPreview:chatPreview) => void,
         newRoomRequest: boolean,
@@ -30,7 +30,6 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
     useEffect(() => {
 
         socket.on("connect", () => {
-            console.log("front Connected");
             socket.emit("read preview", email);
         });
 
@@ -59,9 +58,10 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
         })
 
         return (() => {
-            socket.off("set preview")
-            socket.off("add preview")
-            socket.off("update preview")
+            socket.off("connect");
+            socket.off("set preview");
+            socket.off("add preview");
+            socket.off("update preview");
         })
 
     }, [email]);
@@ -86,6 +86,7 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
         let update: updateChannel = {
             channelId: global.selectedData.id,
             email: email,
+            password: "",
             adminEmail: "",
             invitedId: 0
         }
@@ -96,6 +97,7 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
         let update: updateChannel = {
             channelId: global.selectedData.id,
             email: email,
+            password: "",
             adminEmail: "",
             invitedId: 0
         }
@@ -107,6 +109,7 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
         let update: updateChannel = {
             channelId: global.selectedData.id,
             email: email,
+            password: "",
             adminEmail: "",
             invitedId: 0
         }

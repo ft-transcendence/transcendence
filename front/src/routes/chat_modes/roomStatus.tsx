@@ -20,10 +20,10 @@ declare var global: {
     selectedData: oneUser
 }
 
-export default function RoomStatus({current, outsider, setOutsider}
+export default function RoomStatus({current, role, outsider}
     : { current: chatPreview | undefined,
-        outsider: boolean,
-        setOutsider:(value: boolean) => void}) {
+        role: string,
+        outsider: boolean | undefined}) {
     const [add, setAdd] = useState<boolean>(false);
     const [userTag, setUserTag] = useState<Tag[]>([]);
 
@@ -32,7 +32,7 @@ export default function RoomStatus({current, outsider, setOutsider}
     useEffect(()=> {
 
         if (current)
-            socket.emit("read room status", current?.id);
+            socket.emit("read room status", {id: current?.id, email: email});
 
         socket.on("user tags", function(data: Tag[]) {
             setUserTag(data);
@@ -85,8 +85,7 @@ export default function RoomStatus({current, outsider, setOutsider}
             </div>
             <MemberStatus
                 current={current}
-                outsider={outsider}
-                setOutsider={setOutsider}/>
+                role={role}/>
             <JoinChannel
                 channelId={current?.id}
                 outsider={outsider}
@@ -97,7 +96,7 @@ export default function RoomStatus({current, outsider, setOutsider}
 
 function JoinChannel({channelId, outsider, isPassword}
     : { channelId: number | undefined,
-        outsider: boolean,
+        outsider: boolean | undefined,
         isPassword: boolean | undefined}) {
     const email = useAuth().user;
     const [password, setPass] = useState("");
@@ -152,37 +151,35 @@ function JoinChannel({channelId, outsider, isPassword}
     )
 }
 
-function MemberStatus({current, outsider, setOutsider}
+function MemberStatus({current, role}
     : { current: chatPreview | undefined,
-        outsider: boolean,
-        setOutsider:(value: boolean) => void}) {
+        role: string }) {
     const [owner, setOwner] = useState<oneUser[] | null>([]);
     const [admins, setAdmins] = useState<oneUser[] | null>([]);
     const [members, setMembers] = useState<oneUser[] | null>([]);
     const [inviteds, setInviteds] = useState<oneUser[] | null>([]);
-    const [myRole, setMyRole] = useState("");;
     const email = useAuth().user;
 
     
     useEffect( () => {
 
         socket.on("fetch owner", (data: oneUser[] | null) => {
-            console.log("got fetched owner", data)
+            // console.log("got fetched owner", data)
             setOwner(data);
         })
 
         socket.on("fetch admins", (data: oneUser[] | null) => {
-            console.log("got fetched admins", data)
+            // console.log("got fetched admins", data)
             setAdmins(data);
         })
 
         socket.on("fetch members", (data: oneUser[] | null) => {
-            console.log("got fetched members", data)
+            // console.log("got fetched members", data)
             setMembers(data);
         })
 
         socket.on("fetch inviteds", (data: oneUser[] | null) => {
-            console.log("got fetched inviteds", data)
+            // console.log("got fetched inviteds", data)
             setInviteds(data);
         })
 
@@ -195,50 +192,6 @@ function MemberStatus({current, outsider, setOutsider}
         
     }, [current])
 
-    useEffect(() => {
-        setRole();
-    }, [owner, admins, members, inviteds]);
-
-    useEffect(() => {
-        setOutsider((myRole === "invited" || myRole === "noRole") ? true : false);
-        console.log("outsider:::", outsider)
-    }, [myRole]);
-
-    const setRole = () => {
-        setMyRole("noRole")
-        if (inviteds && inviteds.length > 0)
-        {   
-            const isInvited: number = inviteds.filter((invited) => { 
-                return invited.email === email }).length;
-            if (isInvited > 0)
-                setMyRole("invited")
-        }
-        if (members && members.length > 0)
-        {
-            const isMember: number = members.filter((member) => { 
-                return member.email === email }).length;
-            if (isMember > 0)
-                setMyRole("member")
-        }
-        if (admins && admins.length > 0)
-        {
-            const isAdmin: number = admins.filter((admin) => { 
-                return admin.email === email }).length;
-            if (isAdmin > 0)
-                setMyRole("admin")
-        }
-        if (owner && owner.length > 0)
-        {
-            const isOwner: number = owner.filter((owner) => { 
-                return owner.email === email }).length;
-            if (isOwner > 0)
-                setMyRole("owner")
-        }
-        console.log("roleee", myRole)
-    }
-
-    
-
     return (
         <div className="member-status">
             <p 
@@ -246,33 +199,33 @@ function MemberStatus({current, outsider, setOutsider}
                 style={{display: owner?.length ? "" : "none"}}>
                 OWNER
             </p>
-            <Status users={owner} current={current} myRole={myRole}/>
+            <Status users={owner} current={current} role={role}/>
             <p 
                 className="status-type"
                 style={{display: admins?.length ? "" : "none"}}>
                 ADMINS
             </p>
-            <Status users={admins} current={current} myRole={myRole}/>
+            <Status users={admins} current={current} role={role}/>
             <p
                 className="status-type"
                 style={{display: members?.length ? "" : "none"}}>
                 MEMBERS
             </p>
-            <Status users={members} current={current} myRole={myRole}/>
+            <Status users={members} current={current} role={role}/>
             <p
                 className="status-type"
                 style={{display: inviteds?.length ? "" : "none"}}>
                 Invited Users
             </p>
-            <Status users={inviteds} current={current} myRole={myRole}/>
+            <Status users={inviteds} current={current} role={role}/>
         </div>
     )
 }
 
-function Status({users, current, myRole}
+function Status({users, current, role}
     : { users: oneUser[] | null,
         current: chatPreview | undefined,
-        myRole: string }) {
+        role: string }) {
     
     const email = useAuth().user;
 
@@ -374,7 +327,7 @@ function Status({users, current, myRole}
                         block user
                     </Item>
                     <Separator/>
-                    {myRole === "owner" && 
+                    {role === "owner" && 
                         (global.selectedData?.isInvited === false) ?
                     <>
                         <Item 
@@ -390,7 +343,7 @@ function Status({users, current, myRole}
                             unset admin right
                         </Item>
                     </> : <></>}
-                    {(myRole === "admin" || myRole === "owner") && 
+                    {(role === "admin" || role === "owner") && 
                         (global.selectedData?.isInvited === false) ? 
                     <>
                         <Submenu label="mute">
