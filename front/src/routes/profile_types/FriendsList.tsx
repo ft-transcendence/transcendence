@@ -3,12 +3,13 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { Col, Card, Container, Nav, Navbar, Row } from "react-bootstrap";
 import { Link, NavLink, Outlet } from "react-router-dom";
+import { blockUserQuery, removeFriendQuery } from "../../queries/userFriendsQueries";
 import { getUserFriends } from "../../queries/userQueries";
 
 export const UsersRelations = () => {
   return (
     <Col className="col-6">
-      <Card className="p-5 modify-card">
+      <Card className="p-5 modify-card" style={{ overflow: "overlay" }}>
         <Navbar className="IBM-text" style={{ fontSize: "15px" }} expand="lg">
           <Container>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -43,7 +44,7 @@ export const UsersRelations = () => {
 
 interface ItableRow {
   key: number;
-  userModel: { username: string; avatar: string };
+  userModel: { username: string; avatar: string; id: number};
 }
 
 export const FriendsList = () => {
@@ -52,6 +53,7 @@ export const FriendsList = () => {
   );
 
   const [isFetched, setFetched] = useState(false);
+  const [isUpdated, setUpdate] = useState(false);
 
   let friends: ItableRow[] = [];
 
@@ -62,8 +64,9 @@ export const FriendsList = () => {
       for (let i = 0; i < fetchedFriends.length; i++) {
         let newRow: ItableRow = {
           key: i,
-          userModel: { username: "", avatar: "" },
+          userModel: { username: "", avatar: "", id: 0 },
         };
+        newRow.userModel.id = fetchedFriends[i].id;
         newRow.userModel.username = fetchedFriends[i].username;
         newRow.userModel.avatar = fetchedFriends[i].avatar;
         friends.push(newRow);
@@ -71,16 +74,19 @@ export const FriendsList = () => {
       setFriendsList(friends);
       console.log("friendsList", friendsList);
       setFetched(true);
+      setUpdate(false);
     };
 
     fetchData();
-  }, [isFetched]);
+  }, [isFetched, isUpdated]);
 
   return (
     <div>
       {isFetched ? (
         friendsList!.map((h, index) => {
-          return <DisplayRow key={index} userModel={h.userModel} />;
+          return (
+            <DisplayRow hook={setUpdate} key={index} userModel={h.userModel} />
+          );
         })
       ) : (
         <div>No Data available, please reload.</div>
@@ -89,16 +95,14 @@ export const FriendsList = () => {
   );
 };
 
-export const BlockedList = () => {
-  return <div>Here are my foes</div>;
-};
+const DisplayRow = (props: any) => {
 
-const DisplayRow = (props: ItableRow) => {
+
   return (
     <main>
       <Container className="p-2">
         <Row className="" style={{ alignItems: "center", display: "flex" }}>
-          <Col className="p-1 border float-end">
+          <Col className="p-1 float-end">
             <div className="profile-pic-wrapper">
               <div
                 className="profile-pic-inside-sm"
@@ -110,7 +114,7 @@ const DisplayRow = (props: ItableRow) => {
               ></div>
             </div>
           </Col>
-          <Col className=" content " style={{ paddingLeft: "0px" }}>
+          <Col className=" content col-5" style={{ paddingLeft: "0px" }}>
             <div className="profile-username-text" style={{ fontSize: "18px" }}>
               @{props.userModel.username}
             </div>
@@ -120,6 +124,10 @@ const DisplayRow = (props: ItableRow) => {
               type="button"
               className="IBM-text btn btn-sm"
               style={{ fontSize: "15px" }}
+              onClick={async () => {
+                await removeFriendQuery(props.userModel.id);
+                props.hook(true);
+              }}
             >
               Remove
             </button>
@@ -129,6 +137,10 @@ const DisplayRow = (props: ItableRow) => {
               type="button"
               className="IBM-text btn btn-sm"
               style={{ fontSize: "15px" }}
+              onClick={async () => {
+                await blockUserQuery(props.userModel.id);
+                props.hook(true);
+              }}
             >
               Block
             </button>
@@ -137,4 +149,8 @@ const DisplayRow = (props: ItableRow) => {
       </Container>
     </main>
   );
+};
+
+export const BlockedList = () => {
+  return <div>Here are my foes</div>;
 };
