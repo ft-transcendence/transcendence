@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
-import { isEmail } from 'class-validator';
+import * as argon from 'argon2'
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChannelDto, DMDto, UseMsgDto } from './dto/chat.dto';
 import { chatPreview, oneMsg, oneSuggestion, oneUser, updateChannel } from './type/chat.type';
@@ -9,6 +9,33 @@ import { chatPreview, oneMsg, oneSuggestion, oneUser, updateChannel } from './ty
 export class ChatService {
 
     constructor(private readonly prisma: PrismaService) {}
+
+    async list__allUsers()
+    {
+        const users = await this.prisma.user.findMany();
+        let count = 0;
+        for (let i = 0; i < users.length; i++)
+        {
+            console.log('   user %d: %s', i, users[i].email);
+            count = i + 1;
+        }
+        console.log('total %d users', count);
+        return ;
+        
+    }
+
+    async list__allChannels()
+    {
+        const channels = await this.prisma.channel.findMany();
+        let count = 0;
+        for (let i = 0; i < channels.length; i++)
+        {
+            console.log('   user %d: %s', i, channels[i].name);
+            count = i + 1;
+        }
+        console.log('total %d channels', count);
+        return ;
+    }
 
     async get__id__ByEmail(email: string)
     {
@@ -423,33 +450,6 @@ export class ChatService {
             
     }
 
-    async list__allUsers()
-    {
-        const users = await this.prisma.user.findMany();
-        let count = 0;
-        for (let i = 0; i < users.length; i++)
-        {
-            console.log('   user %d: %s', i, users[i].email);
-            count = i;
-        }
-        console.log('total %d users', count);
-        return ;
-        
-    }
-
-    async list__allChannels()
-    {
-        const channels = await this.prisma.channel.findMany();
-        let count = 0;
-        for (let i = 0; i < channels.length; i++)
-        {
-            console.log('   user %d: %s', i, channels[i].name);
-            count = i;
-        }
-        console.log('total %d channels', count);
-        return ;
-    }
-
     async new__DM(info: DMDto)
     {
         try {
@@ -479,13 +479,14 @@ export class ChatService {
     async new__channel(info: ChannelDto)
     {
         try {
+            const password = await argon.hash(info.password);
             const channel =  await this.prisma.channel.create({
                 data:
                 {
                     name: info.name,
                     private: info.private,
                     isPassword: info.isPassword,
-                    password: info.password,
+                    password: password,
                     owners:
                     {
                         connect:
@@ -528,32 +529,33 @@ export class ChatService {
                     password: true
                 }
             })
-            if (data.password === database.password)
+            const pwMatches = await argon.verify(database.password, data.password);
+            if (pwMatches)
             {
-            const channel =  await this.prisma.channel.update ({
-                where:
-                {
-                    id: data.channelId
-                },
-                data:
-                {
-                    members:
+                const channel =  await this.prisma.channel.update ({
+                    where:
                     {
-                        connect:
-                        {
-                            email: data.email,
-                        }
+                        id: data.channelId
                     },
-                    inviteds:
+                    data:
                     {
-                        disconnect:
+                        members:
                         {
-                            email: data.email,
+                            connect:
+                            {
+                                email: data.email,
+                            }
+                        },
+                        inviteds:
+                        {
+                            disconnect:
+                            {
+                                email: data.email,
+                            }
                         }
                     }
-                }
-            })
-            return (channel.id);
+                })
+                return (channel.id);
             }
         } catch (error) {
             console.log('join__channel error:', error);
