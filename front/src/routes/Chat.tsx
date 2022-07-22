@@ -7,10 +7,12 @@ import ChatRoom from "./chat_modes/chatRoom";
 import RoomStatus from "./chat_modes/roomStatus";
 import { chatPreview } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
+import { SettingCard } from "./chat_modes/settingCard";
 
 export default function Chat() {
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
     const [newRoomRequest, setNewRoomRequest] = useState(false);
+    const [settingRequest, setSettingRequest] = useState(false);
     const [outsider, setOutsider] = useState<boolean | undefined>(undefined);
     const [show, setShow] = useState<boolean | undefined>(undefined);
     const [role, setRole] = useState("");
@@ -55,8 +57,12 @@ export default function Chat() {
         }
     }, [outsider])
 
-    const cardDisappear = () => {
+    const newRoomCardDisappear = () => {
         setNewRoomRequest(old => {return !old})
+    }
+
+    const settingCardDisappear = () => {
+        setSettingRequest(old => {return !old})
     }
 
     return (
@@ -73,7 +79,9 @@ export default function Chat() {
                 />
                 <ChatRoom
                     current={selectedChat}
-                    show={show}/>
+                    show={show}
+                    settingRequest={settingRequest}
+                    setSettingRequest={() => {setSettingRequest(old => {return !old})}}/>
             <div style={{display: selectedChat?.dm ? "none" : "", backgroundColor: "#003e60"}}>
                 <RoomStatus
                     current={selectedChat}
@@ -81,7 +89,7 @@ export default function Chat() {
                     outsider={outsider}/>
             </div>
             <div
-                onClick={cardDisappear}
+                onClick={newRoomCardDisappear}
                 className="card-disappear-click-zone"
                 style={{display: newRoomRequest ? "" : "none"}}>
                 <div 
@@ -91,6 +99,20 @@ export default function Chat() {
                             newRoomRequest={newRoomRequest}
                             onNewRoomRequest={() => {
                                 setNewRoomRequest(old => {return !old})
+                        }}/>
+                </div>
+            </div>
+            <div
+                onClick={settingCardDisappear}
+                className="card-disappear-click-zone"
+                style={{display: settingRequest ? "" : "none"}}>
+                <div 
+                    className="add-zone"
+                    onClick={event => event.stopPropagation()}>
+                        <SettingCard
+                            settingRequest={settingRequest}
+                            onSettingRequest={() => {
+                                setSettingRequest(old => {return !old})
                         }}/>
                 </div>
             </div>

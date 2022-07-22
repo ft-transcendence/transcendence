@@ -126,8 +126,7 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
                 />
                 <AddRoom
                     onRequest={() => {onNewRoomRequest()}}
-                    requested={newRoomRequest}
-                />
+                    />
             </div>
             <div className="preview-chat-list">
                 {roomPreview.map((value, index) => {
@@ -167,7 +166,7 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
     )
 }
 
-function ChatSearch( { onSearchMyChat, onSearchPublicChat }
+function ChatSearch({onSearchMyChat, onSearchPublicChat}
     : { onSearchMyChat: (channelId: number) => void,
         onSearchPublicChat: (channelId: number) => void }) {
 
@@ -240,14 +239,15 @@ function ChatSearch( { onSearchMyChat, onSearchPublicChat }
     );
 }
 
-function AddRoom({onRequest, requested}
-    : {onRequest: () => void, requested: boolean}){
+function AddRoom({onRequest}
+    : { onRequest: () => void}){
 
     return (
         <div
             onMouseUp={onRequest}
-            className="add-room-button"
-            style={{opacity: requested? 1 : 0.6}}>+</div>
+            className="add-room-button">
+                +
+            </div>
         
     )
 }
