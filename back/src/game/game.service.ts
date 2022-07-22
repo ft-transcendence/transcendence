@@ -175,6 +175,17 @@ export class GameService {
             const winner = this.rooms.find(room => room.id === id).player1Score > this.rooms.find(room => room.id === id).player2Score ? 1 : 2;
             this.schedulerRegistry.deleteInterval(String(id));
             server.to(this.rooms.find(room => room.id === id).name).emit("end_game", winner);
+            if (winner == 1)
+            {
+                this.userService.hasWon(this.rooms.find(room => room.id === id).player1.data.id);
+                this.userService.hasLost(this.rooms.find(room => room.id === id).player2.data.id);
+            }
+            else
+            {
+                this.userService.hasWon(this.rooms.find(room => room.id === id).player2.data.id);
+                this.userService.hasLost(this.rooms.find(room => room.id === id).player1.data.id);
+            }
+            this.rooms.splice(this.rooms.findIndex(room => room.id === id));
         }
         return;
     }
