@@ -31,9 +31,10 @@ export class GameGateway {
     }
 
     if (this.gameService.rooms.length == 0 || this.gameService.rooms[this.gameService.rooms.length - 1].player2){ // no player in the queue
+      let newId = this.gameService.generate_new_id();
       var newRoom: Room = {
-        id: this.gameService.rooms.length,
-        name: this.gameService.rooms.length.toString(),
+        id: newId,
+        name: newId.toString(),
         player1: client,
         paddleLeft: 45,
         paddleRight: 45,
@@ -52,7 +53,7 @@ export class GameGateway {
     this.gameService.rooms[this.gameService.rooms.length - 1].player2 = client;
     client.join(this.gameService.rooms[this.gameService.rooms.length - 1].name);
     this.server.to(this.gameService.rooms[this.gameService.rooms.length - 1].name).emit("game_started", {}); // inform clients that the game is starting
-    this.gameService.startGame(this.gameService.rooms.length - 1, this.server);
+    this.gameService.startGame(this.gameService.rooms[this.gameService.rooms.length - 1].id, this.server);
     player.playerNb = 2;
   }
 

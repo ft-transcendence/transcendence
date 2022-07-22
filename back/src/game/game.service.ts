@@ -3,6 +3,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { Room } from './interfaces/room.interface';
 import { Server } from 'socket.io';
 import { GameData } from './interfaces/gameData.interface'
+import { findIndex } from 'rxjs';
 
 const refreshRate = 10;
 const paddleSpeed = 1;
@@ -21,16 +22,17 @@ export class GameService {
     */
 
     initBall(roomId: number)  {
-        this.rooms[roomId].xball = 50;
-        this.rooms[roomId].yball = 50;
-        this.rooms[roomId].xSpeed = ballSpeed;
-        this.rooms[roomId].ySpeed = 0.15 + Math.random() * ballSpeed;
+        console.log(this.rooms.findIndex(room => room.id === roomId));
+        this.rooms.find(room => room.id === roomId).xball = 50;
+        this.rooms.find(room => room.id === roomId).yball = 50;
+        this.rooms.find(room => room.id === roomId).xSpeed = ballSpeed;
+        this.rooms.find(room => room.id === roomId).ySpeed = 0.15 + Math.random() * ballSpeed;
         let dir = Math.round(Math.random());
         if (dir)
-            this.rooms[roomId].xSpeed *= -1;
+            this.rooms.find(room => room.id === roomId).xSpeed *= -1;
         dir = Math.round(Math.random());
         if (dir)
-            this.rooms[roomId].ySpeed *= -1;
+            this.rooms.find(room => room.id === roomId).ySpeed *= -1;
         };
 
     /**
@@ -39,45 +41,45 @@ export class GameService {
 
     updateBall(roomId: number) {
 
-        this.rooms[roomId].xball += this.rooms[roomId].xSpeed;
-        this.rooms[roomId].yball += this.rooms[roomId].ySpeed;
+        this.rooms.find(room => room.id === roomId).xball += this.rooms.find(room => room.id === roomId).xSpeed;
+        this.rooms.find(room => room.id === roomId).yball += this.rooms.find(room => room.id === roomId).ySpeed;
 
         // game windows is 16/9 format - so 1.77, ball radius is 1vh
 
         // ball collision with floor or ceilling
-        if (this.rooms[roomId].yball >= 98 || this.rooms[roomId].yball <= 2)
-            this.rooms[roomId].ySpeed *= -1;
+        if (this.rooms.find(room => room.id === roomId).yball >= 98 || this.rooms.find(room => room.id === roomId).yball <= 2)
+            this.rooms.find(room => room.id === roomId).ySpeed *= -1;
 
         // ball collision with right paddle (paddle position is 3% from the border, paddle height is 10% of the game windows)
-        if (this.rooms[roomId].xball >= (97 - (2 / 1.77)))
+        if (this.rooms.find(room => room.id === roomId).xball >= (97 - (2 / 1.77)))
         {
-            if (this.rooms[roomId].yball >= this.rooms[roomId].paddleRight - 1 && this.rooms[roomId].yball <= this.rooms[roomId].paddleRight + 11) // ball radius is 1vh
+            if (this.rooms.find(room => room.id === roomId).yball >= this.rooms.find(room => room.id === roomId).paddleRight - 1 && this.rooms.find(room => room.id === roomId).yball <= this.rooms.find(room => room.id === roomId).paddleRight + 11) // ball radius is 1vh
             {
-                this.rooms[roomId].xball = (97 - (2 / 1.77));
-                this.rooms[roomId].xSpeed *= -1;
-                this.rooms[roomId].ySpeed = ((this.rooms[roomId].yball - this.rooms[roomId].paddleRight) - 5) / 6 * ballSpeed; // make ball go up, straight or down based on  the part of the paddle touched
+                this.rooms.find(room => room.id === roomId).xball = (97 - (2 / 1.77));
+                this.rooms.find(room => room.id === roomId).xSpeed *= -1;
+                this.rooms.find(room => room.id === roomId).ySpeed = ((this.rooms.find(room => room.id === roomId).yball - this.rooms.find(room => room.id === roomId).paddleRight) - 5) / 6 * ballSpeed; // make ball go up, straight or down based on  the part of the paddle touched
             }
         }
         // ball collision with left paddle
-        if (this.rooms[roomId].xball <= (3 + (2 / 1.77)))
+        if (this.rooms.find(room => room.id === roomId).xball <= (3 + (2 / 1.77)))
         {
-            if (this.rooms[roomId].yball >= this.rooms[roomId].paddleLeft - 1 && this.rooms[roomId].yball <= this.rooms[roomId].paddleLeft + 11)
+            if (this.rooms.find(room => room.id === roomId).yball >= this.rooms.find(room => room.id === roomId).paddleLeft - 1 && this.rooms.find(room => room.id === roomId).yball <= this.rooms.find(room => room.id === roomId).paddleLeft + 11)
             {
-                this.rooms[roomId].xball = (3 + (2 / 1.77));
-                this.rooms[roomId].xSpeed *= -1;
-                this.rooms[roomId].ySpeed = ((this.rooms[roomId].yball - this.rooms[roomId].paddleLeft) - 5) / 6 * ballSpeed;
+                this.rooms.find(room => room.id === roomId).xball = (3 + (2 / 1.77));
+                this.rooms.find(room => room.id === roomId).xSpeed *= -1;
+                this.rooms.find(room => room.id === roomId).ySpeed = ((this.rooms.find(room => room.id === roomId).yball - this.rooms.find(room => room.id === roomId).paddleLeft) - 5) / 6 * ballSpeed;
             }
         }
         // end of point management
-        if (this.rooms[roomId].xball >= (100 + (2 / 1.77)))
+        if (this.rooms.find(room => room.id === roomId).xball >= (100 + (2 / 1.77)))
         {
-            this.rooms[roomId].player1Score += 1;
-            this.initBall(roomId);
+            this.rooms.find(room => room.id === roomId).player1Score += 1;
+            this.initBall(this.rooms.find(room => room.id === roomId).id);
         }
-        if (this.rooms[roomId].xball <= (0 - (2 / 1.77)))
+        if (this.rooms.find(room => room.id === roomId).xball <= (0 - (2 / 1.77)))
         {
-            this.rooms[roomId].player2Score += 1;
-            this.initBall(roomId);
+            this.rooms.find(room => room.id === roomId).player2Score += 1;
+            this.initBall(this.rooms.find(room => room.id === roomId).id);
         }
     }
 
@@ -85,12 +87,12 @@ export class GameService {
     * set paddle direction (0 = none, 1 = up, 2 = down) based on data received from clients
     */
 
-    updateRoom(player:number, room: number, dir: number)
+    updateRoom(player:number, roomId: number, dir: number)
     {
         if (player == 1)
-            this.rooms[room].paddleLeftDir = dir;
+            this.rooms.find(room => room.id === roomId).paddleLeftDir = dir;
         else
-            this.rooms[room].paddleRightDir = dir;
+            this.rooms.find(room => room.id === roomId).paddleRightDir = dir;
     }
 
     /**
@@ -99,29 +101,29 @@ export class GameService {
 
     updatePaddles(roomId: number)
     {
-        if (this.rooms[roomId].paddleLeftDir == 1)
+        if (this.rooms.find(room => room.id === roomId).paddleLeftDir == 1)
         {
-            this.rooms[roomId].paddleLeft -= paddleSpeed;
-            if (this.rooms[roomId].paddleLeft < 0)
-                this.rooms[roomId].paddleLeft = 0
+            this.rooms.find(room => room.id === roomId).paddleLeft -= paddleSpeed;
+            if (this.rooms.find(room => room.id === roomId).paddleLeft < 0)
+                this.rooms.find(room => room.id === roomId).paddleLeft = 0
         }
-        else if (this.rooms[roomId].paddleLeftDir == 2)
+        else if (this.rooms.find(room => room.id === roomId).paddleLeftDir == 2)
         {
-            this.rooms[roomId].paddleLeft += paddleSpeed;
-            if (this.rooms[roomId].paddleLeft > 90)
-                this.rooms[roomId].paddleLeft = 90
+            this.rooms.find(room => room.id === roomId).paddleLeft += paddleSpeed;
+            if (this.rooms.find(room => room.id === roomId).paddleLeft > 90)
+                this.rooms.find(room => room.id === roomId).paddleLeft = 90
         }
-        if (this.rooms[roomId].paddleRightDir == 1)
+        if (this.rooms.find(room => room.id === roomId).paddleRightDir == 1)
         {
-            this.rooms[roomId].paddleRight -= paddleSpeed;
-            if (this.rooms[roomId].paddleRight < 0)
-                this.rooms[roomId].paddleRight = 0
+            this.rooms.find(room => room.id === roomId).paddleRight -= paddleSpeed;
+            if (this.rooms.find(room => room.id === roomId).paddleRight < 0)
+                this.rooms.find(room => room.id === roomId).paddleRight = 0
         }
-        else if (this.rooms[roomId].paddleRightDir == 2)
+        else if (this.rooms.find(room => room.id === roomId).paddleRightDir == 2)
         {
-            this.rooms[roomId].paddleRight += paddleSpeed;
-            if (this.rooms[roomId].paddleRight > 90)
-                this.rooms[roomId].paddleRight = 90
+            this.rooms.find(room => room.id === roomId).paddleRight += paddleSpeed;
+            if (this.rooms.find(room => room.id === roomId).paddleRight > 90)
+                this.rooms.find(room => room.id === roomId).paddleRight = 90
         }
     }
 
@@ -148,26 +150,33 @@ export class GameService {
     * game loop: update ball, update paddles, prepare data for clients, send data to clients
     */
 
-    gameLoop(rid: number, server: Server, game_data: GameData) {
+    gameLoop(id: number, server: Server, game_data: GameData) {  
+        this.updateBall(id);
+        this.updatePaddles(id);
 
-        this.updateBall(rid);
-        this.updatePaddles(rid);
+        game_data.yBall = this.rooms.find(room => room.id === id).yball;
+        game_data.xBall = this.rooms.find(room => room.id === id).xball;
+        game_data.paddleLeft = this.rooms.find(room => room.id === id).paddleLeft;
+        game_data.paddleRight = this.rooms.find(room => room.id === id).paddleRight;
+        game_data.player1Score = this.rooms.find(room => room.id === id).player1Score;
+        game_data.player2Score = this.rooms.find(room => room.id === id).player2Score;
 
-        game_data.yBall = this.rooms[rid].yball;
-        game_data.xBall = this.rooms[rid].xball;
-        game_data.paddleLeft = this.rooms[rid].paddleLeft;
-        game_data.paddleRight = this.rooms[rid].paddleRight;
-        game_data.player1Score = this.rooms[rid].player1Score;
-        game_data.player2Score = this.rooms[rid].player2Score;
+        server.to(this.rooms.find(room => room.id === id).name).emit("update", game_data);
 
-        server.to(this.rooms[rid].name).emit("update", game_data);
-
-        if (this.rooms[rid].player1Score == 11 || this.rooms[rid].player2Score == 11)
+        if (this.rooms.find(room => room.id === id).player1Score == 11 || this.rooms.find(room => room.id === id).player2Score == 11)
         {   
-            const winner = this.rooms[rid].player1Score > this.rooms[rid].player2Score ? 1 : 2;
-            this.schedulerRegistry.deleteInterval(String(rid));
-            server.to(this.rooms[rid].name).emit("end_game", winner);
+            const winner = this.rooms.find(room => room.id === id).player1Score > this.rooms.find(room => room.id === id).player2Score ? 1 : 2;
+            this.schedulerRegistry.deleteInterval(String(id));
+            server.to(this.rooms.find(room => room.id === id).name).emit("end_game", winner);
         }
         return;
+    }
+
+    generate_new_id(): number {
+        let id = Math.floor((Math.random() * 1000000) + 1);
+        console.log(id);
+        if((this.rooms.find(room => room.id === id)) === undefined)
+            return (id);
+        return (this.generate_new_id());
     }
 }
