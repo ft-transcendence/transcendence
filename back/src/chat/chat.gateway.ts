@@ -1,4 +1,4 @@
-import { UseFilters, UseGuards, WsExceptionFilter } from '@nestjs/common';
+import { Injectable, UseFilters, UseGuards, WsExceptionFilter } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -26,27 +26,6 @@ export class ChatGateway {
   server: Server;
 
   constructor(private readonly chatservice: ChatService) {}
-
-  chatClients = [];
-
-  handleConnection(client: Socket)
-  {
-    //console.log('client connected: ', this.server.engine.clientsCount);
-    this.chatClients.push(client);
-    // this.chatservice.listUser();
-    // this.chatservice.listChannel()
-  }
-
-  handleDisconnect(client: Socket)
-  {
-    for (let i = 0; i < this.chatClients.length; i++) {
-      if (this.chatClients[i] === client) {
-        this.chatClients.splice(i, 1);
-        break;
-      }
-    }
-  //console.log('a client disconnect, client connected:', this.chatClients.length);
-  }
 
   @SubscribeMessage('readId')
   async handleReadId(

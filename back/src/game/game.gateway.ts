@@ -1,24 +1,29 @@
-import { SubscribeMessage, WebSocketGateway, MessageBody, ConnectedSocket, WebSocketServer } from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, MessageBody, ConnectedSocket, WebSocketServer, WsException } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { Room } from './interfaces/room.interface';
 import { GameService } from './game.service';
 import { Player } from './interfaces/player.interface';
+import { JwtService } from "@nestjs/jwt";
+import { UserService } from 'src/user/user.service'; 
+import { Client } from './interfaces/client.interface';
 
 
 @WebSocketGateway({cors: {
   origin: "http://localhost:3000"}})
 
 export class GameGateway {
-  constructor(private gameService: GameService) {}
+  constructor(private gameService: GameService, private readonly jwtService: JwtService, private userService: UserService) {}
   
 
   @WebSocketServer()
   server: Server;
   
-
   @SubscribeMessage('start')
-  handleStart(@ConnectedSocket() client: Socket) : Player {
-    
+  async handleStart(@ConnectedSocket() client: Client, context: any) : Promise<Player> {
+
+    const user = await this.userService.getUser(client.data.id);
+    console.log(user);
+
     // data to be provided to the client
     var player: Player = {
       playerNb: 0,

@@ -1,4 +1,3 @@
-import { io } from "socket.io-client";
 import { Outlet } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -11,8 +10,6 @@ let LoginStatus = {
 };
 
 export const UsernameCxt = createContext(LoginStatus);
-
-export const socket = io("ws://localhost:4000");
 
 export default function App() {
   return (

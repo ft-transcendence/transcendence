@@ -9,7 +9,9 @@ export class WsGuard implements CanActivate {
   constructor(private userService: UserService, private readonly jwtService: JwtService) {}
 
   async canActivate(context: any): Promise<any> {
-    const user = await this.userService.getUser((this.jwtService.verify(context.args[0].handshake.headers.token.split(' ')[1]).userId));
+    const token = String(context.args[0].handshake.headers.token);
+    const UserId: number = await this.jwtService.verify(token, {secret: process.env.JWT_SECRET}).userId;
+    const user = await this.userService.getUser(UserId);
     if (!user) {
       throw new UnauthorizedException();                                        
     }
