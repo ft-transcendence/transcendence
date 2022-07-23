@@ -3,7 +3,7 @@ import { authenticator } from 'otplib';
 import { GetCurrentUserId } from 'src/decorators';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { toDataURL, toFileStream } from 'qrcode';
-import { TwoFactorDto } from '../dto';
+import { TwoFactorDto, TwoFactorUserDto } from '../dto';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 
@@ -18,11 +18,11 @@ export class TwoFactorService {
 	) {}
 
 	// Turn on 2FA for existing user
-	async turn_on_2fa(dto: TwoFactorDto, otp: string) {
+	async turn_on_2fa(twoFAcode: any, user: TwoFactorUserDto) {
 		// destructure data
-		const { email, twoFAcode } = dto;
+		const { email, twoFAsecret } = user;
 		// Check is 2FA code is valid
-		const isValid = await this.verify2FAcode(twoFAcode, otp);
+		const isValid = await this.verify2FAcode(twoFAcode, twoFAsecret);
 		// If invalid, throw error 401
 		if (!isValid) throw new UnauthorizedException('Invalid 2FA code');
 		// Enable 2FA for user (add method to user module ?)
@@ -31,7 +31,7 @@ export class TwoFactorService {
 			data: { twoFA: true },
 		});
 		// LOG
-		console.log('turn_on_2fa', dto, isValid);
+		console.log('turn_on_2fa', user, isValid);
 	}
 
 	// Turn off 2FA for existing user
@@ -80,10 +80,10 @@ export class TwoFactorService {
 	}
 
 	// Verify 2FA code
-	async verify2FAcode(otp: string, onetimepathurl: string) {
+	async verify2FAcode(code: string, twoFAsecret: string) {
 		return authenticator.verify({
-			token: onetimepathurl,
-			secret: otp,
+			token: code,
+			secret: twoFAsecret,
 		});
 	}
 
