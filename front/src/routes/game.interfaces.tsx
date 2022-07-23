@@ -1,14 +1,15 @@
 export interface Game_data {
-  paddleLeft: number;
-  paddleRight: number;
-  xBall: number;
-  yBall: number;
+  paddleLeft?: number;
+  paddleRight?: number;
+  xBall?: number;
+  yBall?: number;
   player1Name: string;
   player2Name: string;
   player1Avatar: string;
   player2Avater: string;
   player1Score: number;
   player2Score: number;
+  gameID?: number;
 }
 
 export interface Player {
@@ -17,16 +18,16 @@ export interface Player {
 }
 
 export interface Coordinates {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
   showBall: boolean;
 }
 
 export interface StatePong {
-  ballX: number;
-  ballY: number;
-  paddleLeftY: number;
-  paddleRightY: number;
+  ballX?: number;
+  ballY?: number;
+  paddleLeftY?: number;
+  paddleRightY?: number;
   gameStarted: boolean;
   roomId: number;
   showStartButton: boolean;
@@ -36,6 +37,7 @@ export interface StatePong {
   msgType: number;
   player1Name: string;
   player2Name: string;
+  game_list: Game_data[];
 }
 
 export interface Button {
@@ -58,14 +60,14 @@ export interface MsgState {
 }
 
 export interface PaddleProps {
-  ystart: number;
-  y: number;
+  ystart?: number;
+  y?: number;
   side: string;
   show: boolean;
 }
 
 export interface StatePaddle {
-  y: number;
+  y?: number;
   side: string;
   show: boolean;
 }

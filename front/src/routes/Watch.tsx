@@ -132,7 +132,7 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
 
 
 
-export default class Game extends React.Component < {}, StatePong > {
+export default class Watch extends React.Component < {}, StatePong > {
 
     constructor(none = {}) 
     {
@@ -155,10 +155,13 @@ export default class Game extends React.Component < {}, StatePong > {
     }
 
     componentDidMount() {
-        document.onkeydown = this.keyDownInput;
-        document.onkeyup = this.keyUpInput;
-        socket.on("game_started", () =>
-            this.setState({gameStarted: true}));
+        var t = this;
+        fetch("http://localhost:4000/watch").then((response) => {
+            if (response.ok) {
+                response.json()
+                .then((data: Game_data[]) => this.setState({game_list: data})); 
+            };
+        })
         socket.on("update", (info: Game_data) =>
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name}));
         socket.on("end_game", (winner: number) => 
@@ -166,25 +169,9 @@ export default class Game extends React.Component < {}, StatePong > {
     }
 
     startButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-        if (!this.state.showStartButton)
-            return;
-        this.setState({showStartButton: false});
         socket.emit("start", {}, (player: Player) => 
-          this.setState({roomId: player.roomId, playerNumber: player.playerNb, msgType: 1}));  
+          this.setState({roomId: player.roomId, playerNumber: player.playerNb, showStartButton: false, msgType: 1}));  
         }
-     
-   
-    keyDownInput = (e: KeyboardEvent) => {
-    if (e.key === MOVE_UP && this.state.gameStarted)
-        socket.emit("move", {dir: 1, room: this.state.roomId, player: this.state.playerNumber});
-    if (e.key === MOVE_DOWN)
-        socket.emit("move", {dir: 2, room: this.state.roomId, player: this.state.playerNumber});
-    }
-    
-    keyUpInput = (e: KeyboardEvent) => {
-        if ((e.key === MOVE_UP || e.key === MOVE_DOWN) && this.state.gameStarted)
-            socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
-    }
 
     isPromise(val: any) {
         if (typeof val === 'object' && typeof val.then === 'function') {
@@ -255,7 +242,31 @@ export default class Game extends React.Component < {}, StatePong > {
                 </div>
             </div>
             <div className='Page-mid'>
-                               
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Player 1</th>
+                            <th></th>
+                            <th></th>
+                            <th>Player 2</th>
+                        </tr>
+                        </thead>
+                    <tbody>
+                        {this.state.game_list.map(item => {
+                            return (
+                                <tr>
+                                    <td>{ item.player1Avatar }</td>
+                                    <td>{ item.player1Name }</td>
+                                    <td>{ item.player1Score }</td>
+                                    <td>{ item.player2Score }</td>
+                                    <td>{ item.player2Name }</td>
+                                    <td>{ item.player2Avater }</td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table> 
                 <div style={{   border: `${showBorder}`, 
                                 boxShadow: `${showShadow}`,}} className='Field'>
                

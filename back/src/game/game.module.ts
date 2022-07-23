@@ -5,6 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { GameGateway } from './game.gateway';
 import { UserModule } from 'src/user/user.module';
 import { UserService } from 'src/user/user.service';
+import { WatchController } from './watch/watch.controller';
 
 @Module({
   imports: [
@@ -12,6 +13,8 @@ import { UserService } from 'src/user/user.service';
   ],
 
   providers: [GameService, UserService],
+
+  controllers: [WatchController],
 })
 
 export class GameModule {}

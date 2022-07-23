@@ -18,24 +18,24 @@ export class GameService {
 
     constructor(private schedulerRegistry: SchedulerRegistry, private userService: UserService) {}
 
-    rooms: Room[] = [];
+    static rooms: Room[] = [];
     
     /**
     * init ball position and direction with some randomness at the beginning of each point
     */
 
     initBall(roomId: number)  {
-        console.log(this.rooms.findIndex(room => room.id === roomId));
-        this.rooms.find(room => room.id === roomId).xball = 50;
-        this.rooms.find(room => room.id === roomId).yball = 50;
-        this.rooms.find(room => room.id === roomId).xSpeed = ballSpeed;
-        this.rooms.find(room => room.id === roomId).ySpeed = 0.15 + Math.random() * ballSpeed;
+        console.log(GameService.rooms.findIndex(room => room.id === roomId));
+        GameService.rooms.find(room => room.id === roomId).xball = 50;
+        GameService.rooms.find(room => room.id === roomId).yball = 50;
+        GameService.rooms.find(room => room.id === roomId).xSpeed = ballSpeed;
+        GameService.rooms.find(room => room.id === roomId).ySpeed = 0.15 + Math.random() * ballSpeed;
         let dir = Math.round(Math.random());
         if (dir)
-            this.rooms.find(room => room.id === roomId).xSpeed *= -1;
+            GameService.rooms.find(room => room.id === roomId).xSpeed *= -1;
         dir = Math.round(Math.random());
         if (dir)
-            this.rooms.find(room => room.id === roomId).ySpeed *= -1;
+            GameService.rooms.find(room => room.id === roomId).ySpeed *= -1;
         };
 
     /**
@@ -44,45 +44,45 @@ export class GameService {
 
     updateBall(roomId: number) {
 
-        this.rooms.find(room => room.id === roomId).xball += this.rooms.find(room => room.id === roomId).xSpeed;
-        this.rooms.find(room => room.id === roomId).yball += this.rooms.find(room => room.id === roomId).ySpeed;
+        GameService.rooms.find(room => room.id === roomId).xball += GameService.rooms.find(room => room.id === roomId).xSpeed;
+        GameService.rooms.find(room => room.id === roomId).yball += GameService.rooms.find(room => room.id === roomId).ySpeed;
 
         // game windows is 16/9 format - so 1.77, ball radius is 1vh
 
         // ball collision with floor or ceilling
-        if (this.rooms.find(room => room.id === roomId).yball >= 98 || this.rooms.find(room => room.id === roomId).yball <= 2)
-            this.rooms.find(room => room.id === roomId).ySpeed *= -1;
+        if (GameService.rooms.find(room => room.id === roomId).yball >= 98 || GameService.rooms.find(room => room.id === roomId).yball <= 2)
+            GameService.rooms.find(room => room.id === roomId).ySpeed *= -1;
 
         // ball collision with right paddle (paddle position is 3% from the border, paddle height is 10% of the game windows)
-        if (this.rooms.find(room => room.id === roomId).xball >= (97 - (2 / 1.77)))
+        if (GameService.rooms.find(room => room.id === roomId).xball >= (97 - (2 / 1.77)))
         {
-            if (this.rooms.find(room => room.id === roomId).yball >= this.rooms.find(room => room.id === roomId).paddleRight - 1 && this.rooms.find(room => room.id === roomId).yball <= this.rooms.find(room => room.id === roomId).paddleRight + 11) // ball radius is 1vh
+            if (GameService.rooms.find(room => room.id === roomId).yball >= GameService.rooms.find(room => room.id === roomId).paddleRight - 1 && GameService.rooms.find(room => room.id === roomId).yball <= GameService.rooms.find(room => room.id === roomId).paddleRight + 11) // ball radius is 1vh
             {
-                this.rooms.find(room => room.id === roomId).xball = (97 - (2 / 1.77));
-                this.rooms.find(room => room.id === roomId).xSpeed *= -1;
-                this.rooms.find(room => room.id === roomId).ySpeed = ((this.rooms.find(room => room.id === roomId).yball - this.rooms.find(room => room.id === roomId).paddleRight) - 5) / 6 * ballSpeed; // make ball go up, straight or down based on  the part of the paddle touched
+                GameService.rooms.find(room => room.id === roomId).xball = (97 - (2 / 1.77));
+                GameService.rooms.find(room => room.id === roomId).xSpeed *= -1;
+                GameService.rooms.find(room => room.id === roomId).ySpeed = ((GameService.rooms.find(room => room.id === roomId).yball - GameService.rooms.find(room => room.id === roomId).paddleRight) - 5) / 6 * ballSpeed; // make ball go up, straight or down based on  the part of the paddle touched
             }
         }
         // ball collision with left paddle
-        if (this.rooms.find(room => room.id === roomId).xball <= (3 + (2 / 1.77)))
+        if (GameService.rooms.find(room => room.id === roomId).xball <= (3 + (2 / 1.77)))
         {
-            if (this.rooms.find(room => room.id === roomId).yball >= this.rooms.find(room => room.id === roomId).paddleLeft - 1 && this.rooms.find(room => room.id === roomId).yball <= this.rooms.find(room => room.id === roomId).paddleLeft + 11)
+            if (GameService.rooms.find(room => room.id === roomId).yball >= GameService.rooms.find(room => room.id === roomId).paddleLeft - 1 && GameService.rooms.find(room => room.id === roomId).yball <= GameService.rooms.find(room => room.id === roomId).paddleLeft + 11)
             {
-                this.rooms.find(room => room.id === roomId).xball = (3 + (2 / 1.77));
-                this.rooms.find(room => room.id === roomId).xSpeed *= -1;
-                this.rooms.find(room => room.id === roomId).ySpeed = ((this.rooms.find(room => room.id === roomId).yball - this.rooms.find(room => room.id === roomId).paddleLeft) - 5) / 6 * ballSpeed;
+                GameService.rooms.find(room => room.id === roomId).xball = (3 + (2 / 1.77));
+                GameService.rooms.find(room => room.id === roomId).xSpeed *= -1;
+                GameService.rooms.find(room => room.id === roomId).ySpeed = ((GameService.rooms.find(room => room.id === roomId).yball - GameService.rooms.find(room => room.id === roomId).paddleLeft) - 5) / 6 * ballSpeed;
             }
         }
         // end of point management
-        if (this.rooms.find(room => room.id === roomId).xball >= (100 + (2 / 1.77)))
+        if (GameService.rooms.find(room => room.id === roomId).xball >= (100 + (2 / 1.77)))
         {
-            this.rooms.find(room => room.id === roomId).player1Score += 1;
-            this.initBall(this.rooms.find(room => room.id === roomId).id);
+            GameService.rooms.find(room => room.id === roomId).player1Score += 1;
+            this.initBall(GameService.rooms.find(room => room.id === roomId).id);
         }
-        if (this.rooms.find(room => room.id === roomId).xball <= (0 - (2 / 1.77)))
+        if (GameService.rooms.find(room => room.id === roomId).xball <= (0 - (2 / 1.77)))
         {
-            this.rooms.find(room => room.id === roomId).player2Score += 1;
-            this.initBall(this.rooms.find(room => room.id === roomId).id);
+            GameService.rooms.find(room => room.id === roomId).player2Score += 1;
+            this.initBall(GameService.rooms.find(room => room.id === roomId).id);
         }
     }
 
@@ -93,9 +93,9 @@ export class GameService {
     updateRoom(player:number, roomId: number, dir: number)
     {
         if (player == 1)
-            this.rooms.find(room => room.id === roomId).paddleLeftDir = dir;
+            GameService.rooms.find(room => room.id === roomId).paddleLeftDir = dir;
         else
-            this.rooms.find(room => room.id === roomId).paddleRightDir = dir;
+            GameService.rooms.find(room => room.id === roomId).paddleRightDir = dir;
     }
 
     /**
@@ -104,29 +104,29 @@ export class GameService {
 
     updatePaddles(roomId: number)
     {
-        if (this.rooms.find(room => room.id === roomId).paddleLeftDir == 1)
+        if (GameService.rooms.find(room => room.id === roomId).paddleLeftDir == 1)
         {
-            this.rooms.find(room => room.id === roomId).paddleLeft -= paddleSpeed;
-            if (this.rooms.find(room => room.id === roomId).paddleLeft < 0)
-                this.rooms.find(room => room.id === roomId).paddleLeft = 0
+            GameService.rooms.find(room => room.id === roomId).paddleLeft -= paddleSpeed;
+            if (GameService.rooms.find(room => room.id === roomId).paddleLeft < 0)
+                GameService.rooms.find(room => room.id === roomId).paddleLeft = 0
         }
-        else if (this.rooms.find(room => room.id === roomId).paddleLeftDir == 2)
+        else if (GameService.rooms.find(room => room.id === roomId).paddleLeftDir == 2)
         {
-            this.rooms.find(room => room.id === roomId).paddleLeft += paddleSpeed;
-            if (this.rooms.find(room => room.id === roomId).paddleLeft > 90)
-                this.rooms.find(room => room.id === roomId).paddleLeft = 90
+            GameService.rooms.find(room => room.id === roomId).paddleLeft += paddleSpeed;
+            if (GameService.rooms.find(room => room.id === roomId).paddleLeft > 90)
+                GameService.rooms.find(room => room.id === roomId).paddleLeft = 90
         }
-        if (this.rooms.find(room => room.id === roomId).paddleRightDir == 1)
+        if (GameService.rooms.find(room => room.id === roomId).paddleRightDir == 1)
         {
-            this.rooms.find(room => room.id === roomId).paddleRight -= paddleSpeed;
-            if (this.rooms.find(room => room.id === roomId).paddleRight < 0)
-                this.rooms.find(room => room.id === roomId).paddleRight = 0
+            GameService.rooms.find(room => room.id === roomId).paddleRight -= paddleSpeed;
+            if (GameService.rooms.find(room => room.id === roomId).paddleRight < 0)
+                GameService.rooms.find(room => room.id === roomId).paddleRight = 0
         }
-        else if (this.rooms.find(room => room.id === roomId).paddleRightDir == 2)
+        else if (GameService.rooms.find(room => room.id === roomId).paddleRightDir == 2)
         {
-            this.rooms.find(room => room.id === roomId).paddleRight += paddleSpeed;
-            if (this.rooms.find(room => room.id === roomId).paddleRight > 90)
-                this.rooms.find(room => room.id === roomId).paddleRight = 90
+            GameService.rooms.find(room => room.id === roomId).paddleRight += paddleSpeed;
+            if (GameService.rooms.find(room => room.id === roomId).paddleRight > 90)
+                GameService.rooms.find(room => room.id === roomId).paddleRight = 90
         }
     }
 
@@ -142,10 +142,10 @@ export class GameService {
             yBall: 50,
             player1Score: 0,
             player2Score: 0,
-            player1Name: await this.userService.getUser(this.rooms.find(room => room.id === rid).player1.data.id).then((value: User) => value.username),
-            player2Name: await this.userService.getUser(this.rooms.find(room => room.id === rid).player2.data.id).then((value: User) => value.username),
-            player1Avatar: await this.userService.getUser(this.rooms.find(room => room.id === rid).player1.data.id).then((value: User) => value.avatar),
-            player2Avater: await this.userService.getUser(this.rooms.find(room => room.id === rid).player2.data.id).then((value: User) => value.avatar),
+            player1Name: GameService.rooms.find(room => room.id === rid).player1Name,
+            player2Name: GameService.rooms.find(room => room.id === rid).player2Name,
+            player1Avatar: GameService.rooms.find(room => room.id === rid).player1Avatar,
+            player2Avater: GameService.rooms.find(room => room.id === rid).player2Avatar,
         }
         this.initBall(rid);
         var t = this;
@@ -161,31 +161,31 @@ export class GameService {
         this.updateBall(id);
         this.updatePaddles(id);
 
-        game_data.yBall = this.rooms.find(room => room.id === id).yball;
-        game_data.xBall = this.rooms.find(room => room.id === id).xball;
-        game_data.paddleLeft = this.rooms.find(room => room.id === id).paddleLeft;
-        game_data.paddleRight = this.rooms.find(room => room.id === id).paddleRight;
-        game_data.player1Score = this.rooms.find(room => room.id === id).player1Score;
-        game_data.player2Score = this.rooms.find(room => room.id === id).player2Score;
+        game_data.yBall = GameService.rooms.find(room => room.id === id).yball;
+        game_data.xBall = GameService.rooms.find(room => room.id === id).xball;
+        game_data.paddleLeft = GameService.rooms.find(room => room.id === id).paddleLeft;
+        game_data.paddleRight = GameService.rooms.find(room => room.id === id).paddleRight;
+        game_data.player1Score = GameService.rooms.find(room => room.id === id).player1Score;
+        game_data.player2Score = GameService.rooms.find(room => room.id === id).player2Score;
 
-        server.to(this.rooms.find(room => room.id === id).name).emit("update", game_data);
+        server.to(GameService.rooms.find(room => room.id === id).name).emit("update", game_data);
 
-        if (this.rooms.find(room => room.id === id).player1Score == 11 || this.rooms.find(room => room.id === id).player2Score == 11)
+        if (GameService.rooms.find(room => room.id === id).player1Score == 11 || GameService.rooms.find(room => room.id === id).player2Score == 11)
         {   
-            const winner = this.rooms.find(room => room.id === id).player1Score > this.rooms.find(room => room.id === id).player2Score ? 1 : 2;
+            const winner = GameService.rooms.find(room => room.id === id).player1Score > GameService.rooms.find(room => room.id === id).player2Score ? 1 : 2;
             this.schedulerRegistry.deleteInterval(String(id));
-            server.to(this.rooms.find(room => room.id === id).name).emit("end_game", winner);
+            server.to(GameService.rooms.find(room => room.id === id).name).emit("end_game", winner);
             if (winner == 1)
             {
-                this.userService.hasWon(this.rooms.find(room => room.id === id).player1.data.id);
-                this.userService.hasLost(this.rooms.find(room => room.id === id).player2.data.id);
+                this.userService.hasWon(GameService.rooms.find(room => room.id === id).player1.data.id);
+                this.userService.hasLost(GameService.rooms.find(room => room.id === id).player2.data.id);
             }
             else
             {
-                this.userService.hasWon(this.rooms.find(room => room.id === id).player2.data.id);
-                this.userService.hasLost(this.rooms.find(room => room.id === id).player1.data.id);
+                this.userService.hasWon(GameService.rooms.find(room => room.id === id).player2.data.id);
+                this.userService.hasLost(GameService.rooms.find(room => room.id === id).player1.data.id);
             }
-            this.rooms.splice(this.rooms.findIndex(room => room.id === id));
+            GameService.rooms.splice(GameService.rooms.findIndex(room => room.id === id));
         }
         return;
     }
@@ -193,8 +193,31 @@ export class GameService {
     generate_new_id(): number {
         let id = Math.floor((Math.random() * 1000000) + 1);
         console.log(id);
-        if((this.rooms.find(room => room.id === id)) === undefined)
+        if((GameService.rooms.find(room => room.id === id)) === undefined)
             return (id);
         return (this.generate_new_id());
+    }
+
+    getGameList(): GameData[] {
+        let list: GameData[] = [];
+        GameService.rooms.forEach(room => {
+            console.log(room.id);
+            if (room.player2)
+            {
+                let data: GameData =  {
+                    player1Name: room.player1Name,
+                    player2Name: room.player2Name,
+                    player1Avatar: room.player1Avatar,
+                    player2Avater: room.player2Avatar,
+                    player1Score: room.player1Score,
+                    player2Score: room.player2Score,
+                    GameID: room.id,
+                };
+                console.log(data);
+                list.push(data);
+            }
+        })
+        console.log(list);
+        return list;
     }
 }

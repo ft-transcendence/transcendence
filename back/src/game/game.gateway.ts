@@ -6,6 +6,7 @@ import { Player } from './interfaces/player.interface';
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from 'src/user/user.service'; 
 import { Client } from './interfaces/client.interface';
+import { User } from '.prisma/client';
 
 
 @WebSocketGateway({cors: {
@@ -30,12 +31,14 @@ export class GameGateway {
       roomId: 0,
     }
 
-    if (this.gameService.rooms.length == 0 || this.gameService.rooms[this.gameService.rooms.length - 1].player2){ // no player in the queue
+    if (GameService.rooms.length == 0 || GameService.rooms[GameService.rooms.length - 1].player2){ // no player in the queue
       let newId = this.gameService.generate_new_id();
       var newRoom: Room = {
         id: newId,
         name: newId.toString(),
         player1: client,
+        player1Name: await this.userService.getUser(client.data.id).then((value: User) => value.username),
+        player1Avatar: await this.userService.getUser(client.data.id).then((value: User) => value.avatar),
         paddleLeft: 45,
         paddleRight: 45,
         paddleLeftDir: 0,
@@ -43,21 +46,23 @@ export class GameGateway {
         player1Score: 0,
         player2Score: 0,
       } 
-      this.gameService.rooms.push(newRoom);
-      client.join(this.gameService.rooms[this.gameService.rooms.length - 1].name); // create a new websocket room
+      GameService.rooms.push(newRoom);
+      client.join(GameService.rooms[GameService.rooms.length - 1].name); // create a new websocket room
       player.playerNb = 1;
     }
 
   else { // one player is already waiting for an opponent
 
-    this.gameService.rooms[this.gameService.rooms.length - 1].player2 = client;
-    client.join(this.gameService.rooms[this.gameService.rooms.length - 1].name);
-    this.server.to(this.gameService.rooms[this.gameService.rooms.length - 1].name).emit("game_started", {}); // inform clients that the game is starting
-    this.gameService.startGame(this.gameService.rooms[this.gameService.rooms.length - 1].id, this.server);
+    GameService.rooms[GameService.rooms.length - 1].player2 = client;
+    GameService.rooms[GameService.rooms.length - 1].player2Name = await this.userService.getUser(client.data.id).then((value: User) => value.username);
+    GameService.rooms[GameService.rooms.length - 1].player2Avatar = await this.userService.getUser(client.data.id).then((value: User) => value.avatar);
+    client.join(GameService.rooms[GameService.rooms.length - 1].name);
+    this.server.to(GameService.rooms[GameService.rooms.length - 1].name).emit("game_started", {}); // inform clients that the game is starting
+    this.gameService.startGame(GameService.rooms[GameService.rooms.length - 1].id, this.server);
     player.playerNb = 2;
   }
 
-  player.roomId = this.gameService.rooms[this.gameService.rooms.length - 1].id;
+  player.roomId = GameService.rooms[GameService.rooms.length - 1].id;
 
   return player; // send data to client
   }
