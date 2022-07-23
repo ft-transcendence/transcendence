@@ -11,6 +11,7 @@ import {
 	Post,
 	Req,
 	Res,
+	UnauthorizedException,
 	UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -129,11 +130,38 @@ export class AuthController {
 	 * /2FA/turn-on - turn on 2FA
 	 */
 	@Post('/2fa/turn-on')
+	@HttpCode(200)
 	async turn_on_2fa(
 		@Body() body: TwoFactorDto,
 		@GetCurrentUser('onetimepathurl') otp: string,
 	) {
 		await this.twoFAservice.turn_on_2fa(body, otp);
+	}
+
+	/**
+	 * /2fa/authenticate - authenticate 2FA
+	 */
+
+	@Post('/2fa/authenticate')
+	async authenticate_2fa(@Req() request: any, @Body() body: any) {
+		const isValidCode = this.twoFAservice.verify2FA(
+			body.twoFAcode,
+			request.user,
+		);
+		console.log('is valid code:', isValidCode);
+		if (!isValidCode) throw new UnauthorizedException('Invalid 2FA code');
+		return this.twoFAservice.login_with_2fa(request.user);
+	}
+
+	@Post('/2fa/generate')
+	async generate_2fa(
+		@Res() response: Response,
+		@GetCurrentUser() user: TwoFactorDto,
+	) {
+		const { onetimepathurl } = await this.twoFAservice.generate2FA(user);
+		return response.json(
+			await this.twoFAservice.generate2FAQRCode(onetimepathurl),
+		);
 	}
 
 	/**

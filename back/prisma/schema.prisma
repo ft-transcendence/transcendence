@@ -28,7 +28,7 @@ model User {
 	avatar		String?
 
 	hashedRtoken	String?
-	onetimepathurl	String?
+	twoFAsecret		String?
 	twoFA			Boolean?	@default(false)
 
 	gamesWon		Int     @default(0)

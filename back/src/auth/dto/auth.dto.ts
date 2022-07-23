@@ -46,9 +46,9 @@ export class Auth42Dto {
 export class TwoFactorDto {
 	@IsNotEmpty()
 	@IsString()
-	twoFAcode: string;
+	email: string;
 
 	@IsNotEmpty()
-	@IsNumber()
-	userId: number;
+	@IsString()
+	twoFAcode: string;
 }

@@ -25,7 +25,7 @@ export class jwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 	/**
 	 * Validate function used by Passport Module
 	 */
-	async validate(data: { sub: number; email: string }) {
+	async validate(data: { sub: number; email: string; istwoFA: boolean }) {
 		// log in console
 		console.log({
 			data,
@@ -39,6 +39,11 @@ export class jwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 		if (user) delete user.hash;
 		// if the user is not found user == NULL
 		// 401 forbidden is returned.
-		return user;
+		if (!user.twoFA) {
+			return user;
+		}
+		if (data.istwoFA) {
+			return user;
+		}
 	}
 }
