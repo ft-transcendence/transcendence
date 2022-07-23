@@ -22,14 +22,16 @@ export class TwoFactorService {
 		// destructure data
 		const { email, twoFAcode } = dto;
 		// Check is 2FA code is valid
-		const isValid = await this.verify2FA(twoFAcode, otp);
+		const isValid = await this.verify2FAcode(twoFAcode, otp);
 		// If invalid, throw error 401
 		if (!isValid) throw new UnauthorizedException('Invalid 2FA code');
-		// Enable 2FA for user
+		// Enable 2FA for user (add method to user module ?)
 		await this.prisma.user.update({
 			where: { email: email },
 			data: { twoFA: true },
 		});
+		// LOG
+		console.log('turn_on_2fa', dto, isValid);
 	}
 
 	// Turn off 2FA for existing user
@@ -78,7 +80,7 @@ export class TwoFactorService {
 	}
 
 	// Verify 2FA code
-	async verify2FA(otp: string, onetimepathurl: string) {
+	async verify2FAcode(otp: string, onetimepathurl: string) {
 		return authenticator.verify({
 			token: onetimepathurl,
 			secret: otp,
