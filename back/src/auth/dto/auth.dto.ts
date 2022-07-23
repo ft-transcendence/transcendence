@@ -52,3 +52,13 @@ export class TwoFactorDto {
 	@IsString()
 	twoFAcode: string;
 }
+
+export class TwoFactorUserDto {
+	@IsNotEmpty()
+	@IsString()
+	email: string;
+
+	@IsNotEmpty()
+	@IsString()
+	twoFAsecret: string;
+}

@@ -24,7 +24,7 @@ import { AuthService } from './auth.service';
 import { FortyTwoAuthGuard } from './guard';
 import { RtGuard } from './guard';
 /* AUTH DTOs */
-import { SignUpDto, SignInDto, TwoFactorDto } from './dto';
+import { SignUpDto, SignInDto, TwoFactorDto, TwoFactorUserDto } from './dto';
 import { TwoFactorService } from './2FA/2fa.service';
 
 // AUTH CONTROLLER - /auth
@@ -132,26 +132,26 @@ export class AuthController {
 	@Post('/2fa/turn-on')
 	@HttpCode(200)
 	async turn_on_2fa(
-		@Body() body: TwoFactorDto,
-		@GetCurrentUser('onetimepathurl') otp: string,
+		@Body() { twoFAcode }: any,
+		@GetCurrentUser() user: TwoFactorUserDto,
 	) {
-		await this.twoFAservice.turn_on_2fa(body, otp);
+		await this.twoFAservice.turn_on_2fa(twoFAcode, user);
 	}
 
 	/**
 	 * /2fa/authenticate - authenticate 2FA
 	 */
 
-	@Post('/2fa/authenticate')
-	async authenticate_2fa(@Req() request: any, @Body() body: any) {
-		const isValidCode = this.twoFAservice.verify2FAcode(
-			body.twoFAcode,
-			request.user,
-		);
-		console.log('is valid code:', isValidCode);
-		if (!isValidCode) throw new UnauthorizedException('Invalid 2FA code');
-		return this.twoFAservice.login_with_2fa(request.user);
-	}
+	// @Post('/2fa/authenticate')
+	// async authenticate_2fa(@Req() request: any, @Body() body: any) {
+	// 	const isValidCode = this.twoFAservice.verify2FAcode(
+	// 		body.twoFAcode,
+	// 		request.user,
+	// 	);
+	// 	console.log('is valid code:', isValidCode);
+	// 	if (!isValidCode) throw new UnauthorizedException('Invalid 2FA code');
+	// 	return this.twoFAservice.login_with_2fa(request.user);
+	// }
 
 	@Post('/2fa/generate')
 	async generate_2fa(
