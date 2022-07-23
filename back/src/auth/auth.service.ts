@@ -61,13 +61,19 @@ export class AuthService {
 			where: { OR: [{ email: username }, { username: username }] },
 		});
 		// if !unique throw error
-		if (!user) throw new ForbiddenException('Invalid Credentials');
-
+		if (!user) {
+			throw new ForbiddenException('Invalid Credentials');
+		}
 		const pwMatches = await argon.verify(user.hash, password);
 		// Invalid password
-		if (!pwMatches) throw new ForbiddenException('Invalid Credentials');
-		const tokens = await this.signin_jwt(user.id, user.email);
+		if (!pwMatches) {
+			throw new ForbiddenException('Invalid Credentials');
+		}
+		// generate token
+		const tokens = await this.signin_jwt(user.id, user.email, user.twoFA);
+		// update refresh token
 		await this.updateRefreshToken(user.id, tokens.refresh_token);
+
 		return tokens;
 	}
 
@@ -135,11 +141,13 @@ export class AuthService {
 	async signin_jwt(
 		userId: number,
 		email: string,
+		is2FA = false,
 	): Promise<{ access_token: string; refresh_token: string }> {
 		// get login data
 		const login_data = {
 			sub: userId,
 			email,
+			is2FA,
 		};
 		// generate jwt secret
 		const secret = process.env.JWT_SECRET;

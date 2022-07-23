@@ -1,11 +1,14 @@
+/* GLOBAL MODULES */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { authenticator } from 'otplib';
-import { GetCurrentUserId } from 'src/decorators';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { toDataURL, toFileStream } from 'qrcode';
+import { AuthService } from '../auth.service';
+/* Decorators */
+import { GetCurrentUserId } from 'src/decorators';
+/* 2FA Modules */
+import { authenticator } from 'otplib';
+import { toDataURL } from 'qrcode';
+/* DTOs */
 import { TwoFactorDto, TwoFactorUserDto } from '../dto';
-import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
 
 /**
  * TWO FACTOR AUTHENTICATION SERVICE
@@ -14,7 +17,7 @@ import { Response } from 'express';
 export class TwoFactorService {
 	constructor(
 		private prisma: PrismaService,
-		private jwtService: JwtService,
+		private authservice: AuthService,
 	) {}
 
 	// Turn on 2FA for existing user
@@ -67,15 +70,12 @@ export class TwoFactorService {
 		};
 	}
 
-	async login_with_2fa(user: any) {
-		const data = {
-			id: user.id,
-			email: user.email,
-			istwoFA: true,
-		};
+	async login_with_2fa(user: TwoFactorUserDto) {
+		// destructure data
+		const { email, userId } = user;
 		return {
-			id: user.id,
-			access_token: this.jwtService.sign(data),
+			id: userId,
+			tokens: this.authservice.signin_jwt(userId, email, true),
 		};
 	}
 
