@@ -144,7 +144,7 @@ export class AuthController {
 
 	@Post('/2fa/authenticate')
 	async authenticate_2fa(@Req() request: any, @Body() body: any) {
-		const isValidCode = this.twoFAservice.verify2FA(
+		const isValidCode = this.twoFAservice.verify2FAcode(
 			body.twoFAcode,
 			request.user,
 		);
