@@ -85,11 +85,12 @@ handlejoin(@MessageBody('roomId') rid: number, @ConnectedSocket() client: Client
 }
 
 @SubscribeMessage('unjoin')
-handleunjoin(@MessageBody('roomId') rid: number, @ConnectedSocket() client: Client) : boolean{
+async handleunjoin(@MessageBody('roomId') rid: number, @ConnectedSocket() client: Client) : Promise<boolean>{
   if (this.server.sockets.adapter.rooms.has(String(rid))) {
-    client.leave(String(rid));
+    await client.leave(String(rid));
+    //client.disconnect();
     return true;
-  } 
+  }
   else {
     return false;
   }

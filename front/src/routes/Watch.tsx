@@ -5,19 +5,6 @@ import "./Watch.css";
 import { Link } from "react-router-dom";
 import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle } from './game.interfaces';
 
-const socketOptions = {
-    transportOptions: {
-      polling: {
-        extraHeaders: {
-            Token: localStorage.getItem("userToken"),
-        }
-      }
-    }
- };
- 
-
-const socket = io("ws://localhost:4000", socketOptions);
-
 
 class RefreshButton extends React.Component< Button, ButtonState > {
 
@@ -95,6 +82,19 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
 
 export default class Watch extends React.Component < {}, StatePong > {
 
+    socketOptions = {
+        transportOptions: {
+          polling: {
+            extraHeaders: {
+                Token: localStorage.getItem("userToken"),
+            }
+          }
+        }
+     };
+     
+    
+    socket = io("ws://localhost:4000", this.socketOptions);
+
     constructor(none = {}) 
     {
         super({});
@@ -129,9 +129,9 @@ export default class Watch extends React.Component < {}, StatePong > {
                 .then((data: Game_data[]) => this.setState({game_list: data})); 
             };
         })
-        socket.on("update", (info: Game_data) =>
+        this.socket.on("update", (info: Game_data) =>
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name}));
-        socket.on("end_game", (winner: number) => 
+        this.socket.on("end_game", (winner: number) => 
             this.setState({gameStarted: false}));
     }
 
@@ -157,11 +157,14 @@ export default class Watch extends React.Component < {}, StatePong > {
     
     
     joinGame(roomId: number): ((e: React.MouseEvent<HTMLElement>) => void) {
-        return(e) => {
+        return (e) => {
         if (this.state.gameStarted)
-            socket.emit("unjoin", {roomId: roomId}, () => {});
-
-        socket.emit("join", {roomId: roomId}, (ok: boolean) => {
+        {    
+            this.socket.emit("unjoin", {roomId: roomId}, () => {});
+            this.socket.disconnect();
+            this.socket.connect();
+        }
+        this.socket.emit("join", {roomId: roomId}, (ok: boolean) => {
             if (ok) {
                 this.setState({gameStarted: true, roomId: roomId
                 });
