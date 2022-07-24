@@ -262,6 +262,9 @@ export class UserService {
 	}
 
 	async addFriend(id: number, otherId: number){
+		if (id == otherId || await this.isFriend(id, otherId)) {
+			throw new ForbiddenException('Cannot invite this user')
+		}
 		const user = await this.prisma.user.update({
 			where: {
 				id: id
@@ -291,7 +294,9 @@ export class UserService {
 	}
 
 	async rmFriend(id: number, otherId: number){
-
+		if (id == otherId || !await this.isFriend(id, otherId)) {
+			throw new ForbiddenException('Cannot remove this user')
+		}
 		//removing otherUser from User.friends
 		const user = await this.prisma.user.findUnique({
 			where: {
@@ -338,7 +343,9 @@ export class UserService {
 	}
 	
 	async cancelInvite(id: number, otherId: number){
-
+		if (id == otherId) {
+			throw new ForbiddenException('Cannot execute this action on the user')
+		}
 		//removing otherUser from User.adding
 		const user = await this.prisma.user.findUnique({
 			where: {
@@ -435,6 +442,9 @@ export class UserService {
 	}
 
 	async blockUser(id: number, otherId: number){
+		if (id == otherId || await this.isBlocked(id, otherId)) {
+			throw new ForbiddenException('Cannot block this user')
+		}		
 		this.rmFriend(id, otherId);
 		const user = await this.prisma.user.update({
 			where: {
@@ -466,7 +476,9 @@ export class UserService {
 
 
 	async unblockUser(id: number, otherId: number){
-		//removing otherUser from User.blocks
+		if (id == otherId || !await this.isBlocked(id, otherId)) {
+			throw new ForbiddenException('Cannot unblock this user')
+		}		//removing otherUser from User.blocks
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id: id
