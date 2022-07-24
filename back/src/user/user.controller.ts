@@ -66,6 +66,13 @@ export class UserController {
 		return (result);
 	}
 
+	@Get('get_pending')
+	async getPending(@Req() request) {
+		console.log('Going through getPending in user.controller');
+		const result = await this.userService.getPending(request.user.id);
+		return (result);
+	}
+
 	@Get('get_blocked')
 	async getBlocked(@Req() request) {
 		console.log('Going through getBlocked in user.controller');
@@ -90,8 +97,6 @@ export class UserController {
 	@Post('check_password')
 	async checkPassword(@Body('password') password: string, @GetCurrentUserId() id: number) {
 		console.log('Going through checkPword in user.controller');
-		// const prismaUser  = (request.user as User);
-		// const fullUser = await this.userService.getUser(prismaUser.id);
 		const result = await this.userService.checkPassword(id, password);
 		return (result);
 	}
