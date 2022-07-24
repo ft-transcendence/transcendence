@@ -64,7 +64,13 @@ export class UserController {
 		console.log('Going through getFriends in user.controller');
 		const result = await this.userService.getFriends(request.user.id);
 		return (result);
+	}
 
+	@Get('get_blocked')
+	async getBlocked(@Req() request) {
+		console.log('Going through getBlocked in user.controller');
+		const result = await this.userService.getBlocks(request.user.id);
+		return (result);
 	}
 
 	@Get('is_friend')
