@@ -29,7 +29,6 @@ export default function Chat() {
 
         socket.on("fetch role", (data) => {
             setRole(data);
-            console.log("role:::", data)
         })
 
         return (() => {
@@ -80,7 +79,7 @@ export default function Chat() {
                 <ChatRoom
                     current={selectedChat}
                     show={show}
-                    settingRequest={settingRequest}
+                    role={role}
                     setSettingRequest={() => {setSettingRequest(old => {return !old})}}/>
             <div style={{display: selectedChat?.dm ? "none" : "", backgroundColor: "#003e60"}}>
                 <RoomStatus
