@@ -89,19 +89,34 @@ export class UserService {
 			}
 		})
 		const	friendList: UserDto[] = [];
-		// const	friendList: User[] = [];
 		for (const element of friendIdList) {
-			// console.log('fL')
 			for (let index = 0; index < element.friends.length; index++) {
-				// console.log('indx')
 				const friend = await this.prisma.user.findUnique({where: {id: element.friends[index]}})
 				const dtoUser = plainToClass(UserDto, friend)
 				friendList.push(dtoUser);
-				// friendList.push(friend);
 			}
 		}
-
 		return (friendList);
+	}
+
+	async getPending(id: number){
+		const PendingIdList = await this.prisma.user.findMany({
+			where: {
+				id: id,
+			},
+			select : {
+				adding: true,
+			}
+		})
+		const	userList: UserDto[] = [];
+		for (const element of PendingIdList) {
+			for (let index = 0; index < element.adding.length; index++) {
+				const user = await this.prisma.user.findUnique({where: {id: element.adding[index]}})
+				const dtoUser = plainToClass(UserDto, user)
+				userList.push(dtoUser);
+			}
+		}
+		return (userList);
 	}
 
 	async isFriend(id1: number, id2: number){
@@ -122,16 +137,14 @@ export class UserService {
 				blocks: true,
 			}
 		})
-		const	blockList: User[] = [];
+		const	blockList: UserDto[] = [];
 		for (const element of BlocksIdList) {
-			// console.log('fL')
 			for (let index = 0; index < element.blocks.length; index++) {
-				// console.log('indx')
 				const block = await this.prisma.user.findUnique({where: {id: element.blocks[index]}})
-				blockList.push(block);
+				const dtoUser = plainToClass(UserDto, block)
+				blockList.push(dtoUser);
 			}
 		}
-
 		return (blockList);
 	}
 
