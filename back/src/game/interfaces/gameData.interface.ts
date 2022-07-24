@@ -11,6 +11,6 @@ export interface GameData {
     player2Avater: string;
     player1Score: number;
     player2Score: number;
-    GameID?: number;
+    gameID?: number;
    }
 

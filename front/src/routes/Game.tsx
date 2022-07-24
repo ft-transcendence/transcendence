@@ -186,14 +186,6 @@ export default class Game extends React.Component < {}, StatePong > {
             socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
     }
 
-    isPromise(val: any) {
-        if (typeof val === 'object' && typeof val.then === 'function') {
-          return true;
-        }
-      
-        return false;
-    }
-
     render() {
     const shoWField = this.state.gameStarted ? 'unset': 'none';
     const shoWInfo = this.state.gameStarted ? 'flex': 'none';
@@ -201,26 +193,10 @@ export default class Game extends React.Component < {}, StatePong > {
     const showBorder = this.state.gameStarted ? '2px solid rgb(255, 255, 255)' : '0px solid rgb(255, 255, 255)';
     /*const showShadow = this.state.gameStarted ? '0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 5px rgb(0, 190, 255)' : '0';*/
     const showShadow = '0';
-    var leftName;
-    var rightName;
-    if (this.isPromise(this.state.player1Name))
-    {
-        if (this.state.playerNumber === 1)
-        {    
-            leftName = "you";
-            rightName = "opponent";
-        }
-        else
-        {    
-            rightName = "you";
-            leftName = "opponent";
-        }
-    }
-    else
-    {
-        leftName = String(this.state.player1Name);
-        rightName = String(this.state.player2Name);
-    }
+
+    var leftName = String(this.state.player1Name);
+    var rightName = String(this.state.player2Name);
+
     return (
         <div className='Radial-background'>
             <div className='Page-top'>

@@ -185,6 +185,8 @@ export class GameService {
                 this.userService.hasWon(GameService.rooms.find(room => room.id === id).player2.data.id);
                 this.userService.hasLost(GameService.rooms.find(room => room.id === id).player1.data.id);
             }
+            // delete the room
+            server.sockets.in(GameService.rooms.find(room => room.id === id).name).socketsLeave(GameService.rooms.find(room => room.id === id).name);
             GameService.rooms.splice(GameService.rooms.findIndex(room => room.id === id));
         }
         return;
@@ -192,7 +194,6 @@ export class GameService {
 
     generate_new_id(): number {
         let id = Math.floor((Math.random() * 1000000) + 1);
-        console.log(id);
         if((GameService.rooms.find(room => room.id === id)) === undefined)
             return (id);
         return (this.generate_new_id());
@@ -201,7 +202,6 @@ export class GameService {
     getGameList(): GameData[] {
         let list: GameData[] = [];
         GameService.rooms.forEach(room => {
-            console.log(room.id);
             if (room.player2)
             {
                 let data: GameData =  {
@@ -211,13 +211,11 @@ export class GameService {
                     player2Avater: room.player2Avatar,
                     player1Score: room.player1Score,
                     player2Score: room.player2Score,
-                    GameID: room.id,
+                    gameID: room.id,
                 };
-                console.log(data);
                 list.push(data);
             }
         })
-        console.log(list);
         return list;
     }
 }

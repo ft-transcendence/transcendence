@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import { io } from "socket.io-client";
 import "./Game.css";
+import "./Watch.css";
 import { Link } from "react-router-dom";
 import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle } from './game.interfaces';
 
@@ -17,11 +18,8 @@ const socketOptions = {
 
 const socket = io("ws://localhost:4000", socketOptions);
 
-const MOVE_UP   = "ArrowUp";  
-const MOVE_DOWN = "ArrowDown";  
 
-
-class StartButton extends React.Component< Button, ButtonState > {
+class RefreshButton extends React.Component< Button, ButtonState > {
 
     constructor(props: Button){
       super(props);
@@ -37,7 +35,7 @@ class StartButton extends React.Component< Button, ButtonState > {
     render() {
          const btt = this.state.showButton ? 'unset': 'none';
       return (
-            <button onClick={this.props.clickHandler} style={{display: `${btt}`,}} className="Start_button">Start</button>
+            <button onClick={this.props.clickHandler} style={{display: `${btt}`,}} className="Refresh_button">Refresh</button>
         )
     }
     } 
@@ -60,43 +58,6 @@ class Ball extends React.Component< Coordinates, {} >
       );
    }
 }
-
-class Message extends React.Component< Msg, MsgState > {
-
-    constructor(props: Msg){
-        super(props);
-        this.state = {showMsg: false,
-                      type: 0};
-        }
-      
-        static getDerivedStateFromProps(props: Msg, state: MsgState){
-          return {
-            showMsg: props.showMsg,
-            type: props.type
-          };
-        }
-      
-        render() {
-             const disp = this.state.showMsg ? 'unset': 'none';
-             var message: string;
-             switch(this.state.type) {
-                case 1:
-                    message = "Please wait for another player";
-                    break;
-                case 2:
-                    message = "You win";
-                    break;
-                case 3:
-                    message = "You lose";
-                    break;
-                default:
-                    message = "error";
-             }
-          return (
-                <div style={{display: `${disp}`,}} className="Message">{message}</div>
-            )
-        }
-        } 
 
 class Paddle extends React.Component< PaddleProps, StatePaddle > {
     constructor(props: PaddleProps){
@@ -156,7 +117,13 @@ export default class Watch extends React.Component < {}, StatePong > {
 
     componentDidMount() {
         var t = this;
-        fetch("http://localhost:4000/watch").then((response) => {
+        fetch("http://localhost:4000/watch", {
+            method: "GET",
+            headers: authFileHeader(),
+            body: null,
+            redirect: "follow",
+          })
+        .then((response) => {
             if (response.ok) {
                 response.json()
                 .then((data: Game_data[]) => this.setState({game_list: data})); 
@@ -165,52 +132,59 @@ export default class Watch extends React.Component < {}, StatePong > {
         socket.on("update", (info: Game_data) =>
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name}));
         socket.on("end_game", (winner: number) => 
-            winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false}) : this.setState({msgType: 3, gameStarted: false}));
+            this.setState({gameStarted: false}));
     }
 
-    startButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-        socket.emit("start", {}, (player: Player) => 
-          this.setState({roomId: player.roomId, playerNumber: player.playerNb, showStartButton: false, msgType: 1}));  
-        }
-
-    isPromise(val: any) {
-        if (typeof val === 'object' && typeof val.then === 'function') {
-          return true;
-        }
-      
-        return false;
+    refreshButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+        this.refreshGameList();
     }
+    
+    refreshGameList() {
+        this.state.game_list.length = 0;
+        fetch("http://localhost:4000/watch", {
+            method: "GET",
+            headers: authFileHeader(),
+            body: null,
+            redirect: "follow",
+          })
+        .then((response) => {
+            if (response.ok) {
+                response.json()
+                .then((data: Game_data[]) => this.setState({game_list: data})); 
+            };
+        })
+        }
+    
+    
+    joinGame(roomId: number): ((e: React.MouseEvent<HTMLElement>) => void) {
+        return(e) => {
+        if (this.state.gameStarted)
+            socket.emit("unjoin", {roomId: roomId}, () => {});
 
-    render() {
+        socket.emit("join", {roomId: roomId}, (ok: boolean) => {
+            if (ok) {
+                this.setState({gameStarted: true, roomId: roomId
+                });
+            }
+            else {
+                this.refreshGameList();
+            }
+        })
+        }}
+     
+    render() {                                                                                      
     const shoWField = this.state.gameStarted ? 'unset': 'none';
     const shoWInfo = this.state.gameStarted ? 'flex': 'none';
     /*const showBorder = this.state.gameStarted ? '2px solid rgb(0, 255, 255)' : '0px solid rgb(0, 255, 255)';*/
     const showBorder = this.state.gameStarted ? '2px solid rgb(255, 255, 255)' : '0px solid rgb(255, 255, 255)';
     /*const showShadow = this.state.gameStarted ? '0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 5px rgb(0, 190, 255)' : '0';*/
     const showShadow = '0';
-    var leftName;
-    var rightName;
-    if (this.isPromise(this.state.player1Name))
-    {
-        if (this.state.playerNumber === 1)
-        {    
-            leftName = "you";
-            rightName = "opponent";
-        }
-        else
-        {    
-            rightName = "you";
-            leftName = "opponent";
-        }
-    }
-    else
-    {
-        leftName = String(this.state.player1Name);
-        rightName = String(this.state.player2Name);
-    }
+ 
+    var leftName = this.state.player1Name;
+    var rightName = this.state.player2Name;
+
     return (
         <div className='Radial-background'>
-            <div className='Page-top'>
             <div style={{display: `${shoWInfo}`,}} className='Info-card'>
                     <div className='Player-left'>
                         <div className='Info'>
@@ -240,33 +214,24 @@ export default class Watch extends React.Component < {}, StatePong > {
                         </div>
                     </div>
                 </div>
-            </div>
             <div className='Page-mid'>
                 <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Player 1</th>
-                            <th></th>
-                            <th></th>
-                            <th>Player 2</th>
-                        </tr>
-                        </thead>
+                    <caption>Ongoing game</caption>
                     <tbody>
-                        {this.state.game_list.map(item => {
+                        {this.state.game_list.map((item) => {
                             return (
-                                <tr>
+                                <tr onClick={this.joinGame(item.gameID!)} className="Row">
                                     <td>{ item.player1Avatar }</td>
                                     <td>{ item.player1Name }</td>
-                                    <td>{ item.player1Score }</td>
-                                    <td>{ item.player2Score }</td>
+                                    <td> VS </td>
                                     <td>{ item.player2Name }</td>
                                     <td>{ item.player2Avater }</td>
                                 </tr>
                             );
                         })}
                     </tbody>
-                </table> 
+                </table>
+                <RefreshButton showButton={this.state.showStartButton} clickHandler={this.refreshButtonHandler} />
                 <div style={{   border: `${showBorder}`, 
                                 boxShadow: `${showShadow}`,}} className='Field'>
                
@@ -274,11 +239,7 @@ export default class Watch extends React.Component < {}, StatePong > {
                     <Paddle show={this.state.gameStarted} side={"left"} y={this.state.paddleLeftY} ystart={this.state.paddleLeftY} />
                     <Paddle show={this.state.gameStarted} side={"right"} y={this.state.paddleRightY} ystart={this.state.paddleRightY} />
 
-                    <div className='Center-zone'>
-                    <StartButton showButton={this.state.showStartButton} clickHandler={this.startButtonHandler} />
-                    <Message showMsg={!this.state.showStartButton && !this.state.gameStarted} type={this.state.msgType} />
-
-                
+                    <div className='Center-zone'>           
                         
                         <div style={{display: `${shoWField}`,}} className='Middle-line-top'>
 
@@ -300,24 +261,14 @@ export default class Watch extends React.Component < {}, StatePong > {
                 </div>
          
             </div>
-            <div className='Page-foot'>
-                <div className='bar'>
-                </div>
-                <div className='innerFoot'>
-                    <Link to="/" className='Button'>
-                        home
-                    </Link>
-                    <Link to="/leaderboard" className='Button'>
-                        leaderboard
-                    </Link>
-                    <div className='Button'>
-                        chat
-                    </div>
-                    <div className='Button'>
-                        setting
-                    </div>
-                </div>
-            </div>
+       
         </div>
     )}
+}
+
+function authFileHeader(): HeadersInit | undefined {
+    let token = "bearer " + localStorage.getItem("userToken");
+    let myHeaders = new Headers();
+    myHeaders.append("Authorization", token);
+    return myHeaders;
 }

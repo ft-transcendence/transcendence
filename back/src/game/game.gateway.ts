@@ -23,7 +23,6 @@ export class GameGateway {
   async handleStart(@ConnectedSocket() client: Client, context: any) : Promise<Player> {
 
     const user = await this.userService.getUser(client.data.id);
-    console.log(user);
 
     // data to be provided to the client
     var player: Player = {
@@ -73,5 +72,26 @@ handlemove(@MessageBody('room') rid: number, @MessageBody('player') pid: number,
   this.gameService.updateRoom(pid, rid, dir);
 }
 
+@SubscribeMessage('join')
+handlejoin(@MessageBody('roomId') rid: number, @ConnectedSocket() client: Client) : boolean{
+  if (this.server.sockets.adapter.rooms.has(String(rid))) {
+    client.join(String(rid));
+    return true;
+  } 
+  else {
+    return false;
+  }
+}
+
+@SubscribeMessage('unjoin')
+handleunjoin(@MessageBody('roomId') rid: number, @ConnectedSocket() client: Client) : boolean{
+  if (this.server.sockets.adapter.rooms.has(String(rid))) {
+    client.leave(String(rid));
+    return true;
+  } 
+  else {
+    return false;
+  }
+}
 
 }

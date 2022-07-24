@@ -8,7 +8,7 @@ export class WatchController {
 
 constructor(private gameService: GameService) {} 
 
-@Public()
+//@Public()
 @Get('/')
 getOngoingGame() {
     return JSON.stringify(this.gameService.getGameList());

@@ -1,0 +1,14 @@
+.Row {
+    cursor: pointer;
+}
+
+.Row:hover {
+    transform: scale(1.2);
+}
+
+.Row:active
+{
+    transform: scale(0.9);
+    transition: all 0.2s cubic-bezier(.45,1.71,.41,.97);
+}
+
