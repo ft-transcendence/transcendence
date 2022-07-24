@@ -1,8 +1,9 @@
-import { SubscribeMessage, WebSocketGateway, MessageBody, ConnectedSocket, WebSocketServer, WsException, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, MessageBody, ConnectedSocket, WebSocketServer, WsException, OnGatewayConnection, OnGatewayDisconnect, BaseWsExceptionFilter  } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from 'src/user/user.service'; 
 import { ChatService } from './chat/chat.service';
+import { ArgumentsHost, Catch } from '@nestjs/common';
 
 
 @WebSocketGateway({cors: {
@@ -11,19 +12,22 @@ import { ChatService } from './chat/chat.service';
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   constructor(private readonly jwtService: JwtService, private userService: UserService, private chatService: ChatService) {}
   
-  async handleConnection(client: Socket, ...args: any[]) {
-    try {
-    const token = String(client.handshake.headers.token);
-    const UserId: number = await this.jwtService.verify(token, {secret: process.env.JWT_SECRET}).userId;
-    const user = await this.userService.getUser(UserId);
+
+
+  handleConnection(client: Socket, ...args: any[]) {
+  try {  
+    const UserId: number = this.jwtService.verify(String(client.handshake.headers.token), {secret: process.env.JWT_SECRET}).sub;
+    const user = this.userService.getUser(UserId);
     client.data.id = UserId;
     this.chatService.chatClients.push(client);
     
     if (!user)
       throw new WsException('Invalid token.');
-    }
-    catch(e)
-    {}
+  }
+  catch(e)
+  {
+    return false;
+  }
   }
 
   handleDisconnect(client: Socket)
@@ -36,4 +40,11 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
     }
   }
 
+}
+
+@Catch()
+export class AllExceptionsFilter extends BaseWsExceptionFilter {
+  catch(exception: unknown, host: ArgumentsHost) {
+    super.catch(exception, host);
+  }
 }

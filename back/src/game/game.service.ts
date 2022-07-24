@@ -26,7 +26,6 @@ export class GameService {
     */
 
     initBall(roomId: number)  {
-        console.log(GameService.rooms.findIndex(room => room.id === roomId));
         GameService.rooms.find(room => room.id === roomId).xball = 50;
         GameService.rooms.find(room => room.id === roomId).yball = 50;
         GameService.rooms.find(room => room.id === roomId).xSpeed = ballSpeed;

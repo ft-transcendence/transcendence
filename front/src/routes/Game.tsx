@@ -4,18 +4,7 @@ import "./Game.css";
 import { Link } from "react-router-dom";
 import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle } from './game.interfaces';
 
-const socketOptions = {
-    transportOptions: {
-      polling: {
-        extraHeaders: {
-            Token: localStorage.getItem("userToken"),
-        }
-      }
-    }
- };
- 
 
-const socket = io("ws://localhost:4000", socketOptions);
 
 const MOVE_UP   = "ArrowUp";  
 const MOVE_DOWN = "ArrowDown";  
@@ -134,6 +123,19 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
 
 export default class Game extends React.Component < {}, StatePong > {
 
+    socketOptions = {
+        transportOptions: {
+          polling: {
+            extraHeaders: {
+                Token: localStorage.getItem("userToken"),
+            }
+          }
+        }
+     };
+     
+    
+    socket = io("ws://localhost:4000", this.socketOptions);
+
     constructor(none = {}) 
     {
         super({});
@@ -157,11 +159,11 @@ export default class Game extends React.Component < {}, StatePong > {
     componentDidMount() {
         document.onkeydown = this.keyDownInput;
         document.onkeyup = this.keyUpInput;
-        socket.on("game_started", () =>
+        this.socket.on("game_started", () =>
             this.setState({gameStarted: true}));
-        socket.on("update", (info: Game_data) =>
+        this.socket.on("update", (info: Game_data) =>
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name}));
-        socket.on("end_game", (winner: number) => 
+        this.socket.on("end_game", (winner: number) => 
             winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false}) : this.setState({msgType: 3, gameStarted: false}));
     }
 
@@ -169,21 +171,21 @@ export default class Game extends React.Component < {}, StatePong > {
         if (!this.state.showStartButton)
             return;
         this.setState({showStartButton: false});
-        socket.emit("start", {}, (player: Player) => 
+        this.socket.emit("start", {}, (player: Player) => 
           this.setState({roomId: player.roomId, playerNumber: player.playerNb, msgType: 1}));  
         }
      
    
     keyDownInput = (e: KeyboardEvent) => {
     if (e.key === MOVE_UP && this.state.gameStarted)
-        socket.emit("move", {dir: 1, room: this.state.roomId, player: this.state.playerNumber});
+        this.socket.emit("move", {dir: 1, room: this.state.roomId, player: this.state.playerNumber});
     if (e.key === MOVE_DOWN)
-        socket.emit("move", {dir: 2, room: this.state.roomId, player: this.state.playerNumber});
+        this.socket.emit("move", {dir: 2, room: this.state.roomId, player: this.state.playerNumber});
     }
     
     keyUpInput = (e: KeyboardEvent) => {
         if ((e.key === MOVE_UP || e.key === MOVE_DOWN) && this.state.gameStarted)
-            socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
+            this.socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
     }
 
     render() {
