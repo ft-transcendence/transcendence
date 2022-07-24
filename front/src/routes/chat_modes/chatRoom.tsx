@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../..";
 import { socket } from "../../App";
 import "./chatRoom.css";
@@ -13,7 +13,6 @@ import {
     useContextMenu
 } from "react-contexify";
 import { LockIcon, SettingIcon } from "./icon";
-import { SettingCard } from "./settingCard";
 
 const MENU_MSG = "menu_msg";
 
@@ -21,10 +20,10 @@ declare var global: {
     selectedData: oneMsg
 }
 
-export default function ChatRoom({current, show, settingRequest, setSettingRequest}
+export default function ChatRoom({current, show, role, setSettingRequest}
     : { current: chatPreview | undefined,
         show: boolean | undefined,
-        settingRequest: boolean,
+        role: string,
         setSettingRequest: () => void}) {
 
     const email = useAuth().user;
@@ -41,7 +40,10 @@ export default function ChatRoom({current, show, settingRequest, setSettingReque
     return(
         <>
             <div className="chat-room-zone">
-                <BriefInfo info = {current} settingRequest={settingRequest} setSettingRequest={setSettingRequest}/>
+                <BriefInfo
+                    info = {current}
+                    role={role}
+                    setSettingRequest={setSettingRequest}/>
                 {
                 current ?
                     (show ? 
@@ -59,9 +61,9 @@ export default function ChatRoom({current, show, settingRequest, setSettingReque
     )
 }
 
-function BriefInfo({info, settingRequest, setSettingRequest}
+function BriefInfo({info, role, setSettingRequest}
     : { info: chatPreview | undefined,
-        settingRequest: boolean,
+        role: string,
         setSettingRequest: () => void}) {
         
     return (
@@ -70,7 +72,11 @@ function BriefInfo({info, settingRequest, setSettingRequest}
                 {info?.name}
             </div>
             <div className="flex-empty-block"/>
+            <div
+                style={{display: role === "owner" && !info?.dm ? "" : "none"}}>
             <SettingIcon onClick={() => {setSettingRequest()}}/>
+
+            </div>
         </div>
     )
 }
