@@ -162,7 +162,10 @@ export class GameService {
     async gameLoop(id: number, server: Server, game_data: GameData, mutex: Mutex) {  
         const release = await mutex.acquire();
         if (!GameService.rooms.find(room => room.id === id))
+        {
+            release();
             return;
+        }
         this.updateBall(id);
         this.updatePaddles(id);
 
@@ -192,7 +195,7 @@ export class GameService {
             }
             // delete the room
             //server.sockets.in(GameService.rooms.find(room => room.id === id).name).socketsLeave(GameService.rooms.find(room => room.id === id).name);
-            GameService.rooms.splice(GameService.rooms.findIndex(room => room.id === id));
+            GameService.rooms.splice(GameService.rooms.findIndex(room => room.id === id), 1);
         }
         release();
         return;
