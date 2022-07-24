@@ -6,6 +6,7 @@ import { GameData } from './interfaces/gameData.interface'
 import { findIndex } from 'rxjs';
 import { UserService } from 'src/user/user.service';
 import { User } from '@prisma/client';
+import { Mutex } from 'async-mutex';
 
 
 const refreshRate = 10;
@@ -147,9 +148,10 @@ export class GameService {
             player1Avatar: GameService.rooms.find(room => room.id === rid).player1Avatar,
             player2Avater: GameService.rooms.find(room => room.id === rid).player2Avatar,
         }
+        var mutex = new Mutex();
         this.initBall(rid);
         var t = this;
-        const interval = setInterval(function() { t.gameLoop(rid, server, game_data); }, refreshRate); // create game loop
+        const interval = setInterval(function() { t.gameLoop(rid, server, game_data, mutex); }, refreshRate); // create game loop
         this.schedulerRegistry.addInterval(String(rid), interval); // add game loop to the schedulerRegistry
     }
 
@@ -157,7 +159,10 @@ export class GameService {
     * game loop: update ball, update paddles, prepare data for clients, send data to clients
     */
 
-    gameLoop(id: number, server: Server, game_data: GameData) {  
+    async gameLoop(id: number, server: Server, game_data: GameData, mutex: Mutex) {  
+        const release = await mutex.acquire();
+        if (!GameService.rooms.find(room => room.id === id))
+            return;
         this.updateBall(id);
         this.updatePaddles(id);
 
@@ -172,11 +177,11 @@ export class GameService {
 
         if (GameService.rooms.find(room => room.id === id).player1Score == 11 || GameService.rooms.find(room => room.id === id).player2Score == 11)
         {   
-            const winner = GameService.rooms.find(room => room.id === id).player1Score > GameService.rooms.find(room => room.id === id).player2Score ? 1 : 2;
             this.schedulerRegistry.deleteInterval(String(id));
+            const winner = GameService.rooms.find(room => room.id === id).player1Score > GameService.rooms.find(room => room.id === id).player2Score ? 1 : 2;
             server.to(GameService.rooms.find(room => room.id === id).name).emit("end_game", winner);
             if (winner == 1)
-            {
+            {   
                 this.userService.hasWon(GameService.rooms.find(room => room.id === id).player1.data.id);
                 this.userService.hasLost(GameService.rooms.find(room => room.id === id).player2.data.id);
             }
@@ -186,9 +191,10 @@ export class GameService {
                 this.userService.hasLost(GameService.rooms.find(room => room.id === id).player1.data.id);
             }
             // delete the room
-            server.sockets.in(GameService.rooms.find(room => room.id === id).name).socketsLeave(GameService.rooms.find(room => room.id === id).name);
+            //server.sockets.in(GameService.rooms.find(room => room.id === id).name).socketsLeave(GameService.rooms.find(room => room.id === id).name);
             GameService.rooms.splice(GameService.rooms.findIndex(room => room.id === id));
         }
+        release();
         return;
     }
 
