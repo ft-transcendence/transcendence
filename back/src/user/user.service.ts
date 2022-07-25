@@ -23,31 +23,28 @@ export class UserService {
 				hash,
 			},
 		});
-		//		console.log(user);
 		return user;
 	}
 
 	/*	READ	*/
-
-	async getMe(id: number) {
-		//returns a record of all the users, ordered by id in acending order
-		const user = await this.prisma.user.findUnique({
-			where: {
-				id: id,
-			},
-		});
-		return user;
-	}
 
 	async getAllUsers() {
 		//returns a record of all the users, ordered by id in acending order
 		const users = await this.prisma.user.findMany({
 			orderBy: { id: 'asc' },
 		});
-
-		console.log('All Users:'); //debug
-		console.log(users); //debug
-		return users;
+		const userListDtos: UserDto[] = [];
+		for (const user_ of users) {
+			const user = await this.prisma.user.findUnique({
+				where: {
+					id: user_.id,
+				},
+				rejectOnNotFound: true,
+			});
+			const dtoUser = plainToClass(UserDto, user);
+			userListDtos.push(dtoUser);
+		}
+		return userListDtos;
 	}
 
 	async getLeaderboard() {
@@ -56,24 +53,22 @@ export class UserService {
 			orderBy: { gamesWon: 'desc' },
 		});
 
-		console.log('Best Users:'); //debug
-		console.log(users); //debug
 		return users;
 	}
 
 	async getUser(id: number) {
-		// try{
-		const user = await this.prisma.user.findUnique({
-			where: {
-				id: id,
-			},
-		});
-		const dtoUser = plainToClass(UserDto, user);
-		return dtoUser;
-		// } catch (error) {
-		// 	console.log('getUser error:', error);
-		// 	throw new ForbiddenException('getUser error')
-		// }
+		try {
+			const user = await this.prisma.user.findUnique({
+				where: {
+					id: id,
+				},
+				rejectOnNotFound: true,
+			});
+			const dtoUser = plainToClass(UserDto, user);
+			return dtoUser;
+		} catch (error) {
+			throw new ForbiddenException('getUser error : ' + error);
+		}
 	}
 
 	async getFriends(id: number) {
@@ -121,12 +116,21 @@ export class UserService {
 	}
 
 	async isFriend(id1: number, id2: number) {
-		const user = await this.prisma.user.findUnique({ where: { id: id1 } });
-		const index = user.friends.indexOf(id2);
-		if (index != -1) {
-			return true;
+		try {
+			const user = await this.prisma.user.findUnique({
+				where: {
+					id: id1,
+				},
+				rejectOnNotFound: true,
+			});
+			const index = user.friends.indexOf(id2);
+			if (index != -1) {
+				return true;
+			}
+			return false;
+		} catch (error) {
+			throw new ForbiddenException('isFriend error : ' + error);
 		}
-		return false;
 	}
 
 	async getBlocks(id: number) {
@@ -152,23 +156,41 @@ export class UserService {
 	}
 
 	async isBlocked(id1: number, id2: number) {
-		const user = await this.prisma.user.findUnique({ where: { id: id1 } });
-		const index = user.blocks.indexOf(id2);
-		if (index != -1) {
-			return true;
+		try {
+			const user = await this.prisma.user.findUnique({
+				where: {
+					id: id1,
+				},
+				rejectOnNotFound: true,
+			});
+			const index = user.blocks.indexOf(id2);
+			if (index != -1) {
+				return true;
+			}
+			return false;
+		} catch (error) {
+			throw new ForbiddenException('isBlocked error : ' + error);
 		}
-		return false;
 	}
 
 	async checkPassword(id: number, password: string) {
-		const user = await this.prisma.user.findUnique({ where: { id: id } });
-		const pwMatches = await argon.verify(user.hash, password);
-		// Invalid password
-		if (!pwMatches) {
-			console.log('Invalid password');
-			return false;
+		try {
+			const user = await this.prisma.user.findUnique({
+				where: {
+					id: id,
+				},
+				rejectOnNotFound: true,
+			});
+			const pwMatches = await argon.verify(user.hash, password);
+			// Invalid password
+			if (!pwMatches) {
+				console.log('Invalid password');
+				return false;
+			}
+			return true;
+		} catch (error) {
+			throw new ForbiddenException('checkPassword error : ' + error);
 		}
-		return true;
 	}
 
 	/*	UPDATE	*/
@@ -220,7 +242,11 @@ export class UserService {
 	//RELATIONSHIP RELATED FUNCTIONS
 
 	async updateFriends(id: number) {
-		const user = await this.prisma.user.findUnique({ where: { id: id } });
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+		});
 		const adding = user.adding;
 		const added = user.added;
 
@@ -398,7 +424,11 @@ export class UserService {
 	}
 
 	async updateBlocks(id: number) {
-		const user = await this.prisma.user.findUnique({ where: { id: id } });
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+		});
 		const blocking = user.blocking;
 		const blocked = user.blocked;
 

@@ -4,6 +4,7 @@ import { hash } from 'argon2';
 import { Request } from 'express';
 import { JwtGuard } from 'src/auth/guard';
 import { GetCurrentUserId } from 'src/decorators';
+import { UserDto } from './dto';
 /* USER MODULES */
 import { UserService } from './user.service';
 
@@ -23,20 +24,21 @@ export class UserController {
 
 	@Get('me')
 	getMe(@Req() request) {
-		const prismaUser = request.user as User;
-		return this.userService.getUser(prismaUser.id);
+		const userDto = this.userService.getUser(request.user.id);
+		return userDto;
 	}
 
-	@Get('get_user') //to change
-	getUser(id: number) {
-		console.log('Going through getUser in user.controller');
-		return this.userService.getUser(id);
+	@Get('get_user')
+	getUser(@Body('otherId') otherId: number) {
+		const userDto = this.userService.getUser(otherId);
+		return userDto;
 	}
 
 	@Get('/') //default testing route, localhost:4000/users/
 	getAllUsers() {
 		console.log('Going through getAllUsers in user.controller');
-		return this.userService.getAllUsers();
+		const userListDtos = this.userService.getAllUsers();
+		return userListDtos;
 	}
 
 	@Get()
