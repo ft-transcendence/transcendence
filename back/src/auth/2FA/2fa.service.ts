@@ -79,6 +79,8 @@ export class TwoFactorService {
 
 	// Verify 2FA code
 	async verify2FAcode(code: string, twoFAsecret: string) {
+		console.log('verify2FAcode', code);
+		console.log('2FA Secret', twoFAsecret);
 		return authenticator.verify({
 			token: code,
 			secret: twoFAsecret,

@@ -26,14 +26,16 @@ export class AuthService {
 
 	/* SIGNUP */
 	async signup(dto: SignUpDto) {
+		// destructure dto
+		const { email, username, password } = dto;
 		// hash password using argon2
-		const hash = await argon.hash(dto.password);
+		const hash = await argon.hash(password);
 		// try to sign up using email
 		try {
 			const user = await this.prisma.user.create({
 				data: {
-					email: dto.email,
-					username: dto.username,
+					email: email,
+					username: username,
 					hash,
 				},
 			});
@@ -99,16 +101,14 @@ export class AuthService {
 	async signin_42(dto: Auth42Dto) {
 		// LOG
 		console.log('signin_42');
-
 		// DTO
-		const { email, username /*, avatar */ } = dto;
+		const { email, username, avatar } = dto;
 		// check if user exists
 		const user = await this.prisma.user.findUnique({
 			where: {
 				email: email,
 			},
 		});
-
 		// if user does not exist, create it
 		if (!user) {
 			// generate random password
@@ -123,6 +123,9 @@ export class AuthService {
 				username,
 				hash,
 			);
+			if (new_user) {
+				await this.userService.updateAvatar(new_user.id, avatar);
+			}
 			// LOG
 			console.log('create user :', username, email, rdm_string);
 			// return token
@@ -154,6 +157,7 @@ export class AuthService {
 		// Set expiration times
 		const access_token_expiration = process.env.ACCESS_TOKEN_EXPIRATION;
 		const refresh_token_expiration = process.env.REFRESH_TOKEN_EXPIRATION;
+
 		// set Auth Token params
 		const Atoken = await this.jwtService.signAsync(login_data, {
 			expiresIn: access_token_expiration,

@@ -4,6 +4,7 @@ import { ModifyEntry } from "./ModifyUserInfo";
 import IconPen from "../../ressources/icons/IconPen.svg";
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
 import { UsersRelations } from "./FriendsList";
+import { Activate2FA } from "../../modals/MActivateTwoFA";
 // import { useUsername } from "../../hooks/UserInfoHooks";
 
 export default function UserPrivateProfile() {
@@ -38,10 +39,12 @@ export default function UserPrivateProfile() {
   };
 
   const [modalShow, setModalShow] = useState(false);
+  const [modalShowAuth, setModalShowAuth] = useState(false);
 
   return (
     <main>
       <MUploadAvatar show={modalShow} onHide={() => setModalShow(false)} />
+      <Activate2FA show={modalShowAuth} onHide={() => setModalShowAuth(false)} />
 
       <h1 className="app-title">My account</h1>
       <Container className="p-5 h-100">
@@ -190,15 +193,16 @@ export default function UserPrivateProfile() {
                     <Col className="text-wrapper col-8">
                       <div className="IBM-text" style={{ fontSize: "15px" }}>
                         {" "}
-                        Two Factor authentifcation enabled{" "}
+                        Two Factor authentifcation disabled{" "}
                       </div>
                     </Col>
                     <Col>
                       <button
                         type="button"
                         className="btn btn-secondary btn-sm submit-button float-end"
+                        onClick={() => {setModalShowAuth(true)}}
                       >
-                        Remove 2FA
+                        Enable 2FA
                       </button>
                     </Col>
                   </Row>
