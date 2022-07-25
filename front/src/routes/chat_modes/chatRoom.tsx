@@ -31,11 +31,11 @@ export default function ChatRoom({current, show, role, setSettingRequest}
     useEffect(() => {
         if (show && current)
         {
-            const cId = current!.id;
+            const cId = current.id;
             socket.emit("read msgs", cId);
-            console.log("reading msgs", show)
+            socket.emit("get setting", cId);
         }
-    }, [current])
+    }, [show, current])
 
     return(
         <>

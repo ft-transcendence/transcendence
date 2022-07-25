@@ -1224,4 +1224,80 @@ export class ChatService {
             throw new WsException(error.message)
         }
     }
+
+    async get__setting(channelId: number) {
+        try {
+            const info = await this.prisma.channel.findUnique ({
+                where:
+                {
+                    id: channelId
+                },
+                select:
+                {
+                    private: true,
+                    isPassword: true,
+                }
+            })
+            return info;
+        } catch (error) {
+            console.log('get__setting error:', error);
+            throw new WsException(error.message)
+        }
+    }
+
+    
+    async verify__UpdateSettingRight(ownerHash: string, channelId: number)
+    {
+        const ownerPass = await this.prisma.channel.findUnique({
+            where:
+            {
+                id: channelId
+            },
+            select:
+            {
+                owners:
+                {
+                    select:
+                    {
+                        hash: true
+                    }
+                }
+            }
+        })
+        return await argon.verify(ownerPass.owners[0].hash, ownerHash);
+    }
+
+    async update__setting(data: updateChannel) {
+        try {
+            const verified = await this.verify__UpdateSettingRight(data.ownerPassword, data.channelId);
+            if (verified)
+            {
+                await this.prisma.channel.update ({
+                    where:
+                    {
+                        id: data.channelId
+                    },
+                    data:
+                    {
+                        private: data.private,
+                        isPassword: data.isPassword
+                    }
+                })
+                if (data.newPassword !== "")
+                    await this.prisma.channel.update ({
+                        where:
+                        {
+                            id: data.channelId
+                        },
+                        data:
+                        {
+                            password: data.newPassword
+                        }
+                    })
+            }
+        } catch (error) {
+            console.log('update__setting error:', error);
+            throw new WsException(error.message)
+        }
+    }
 }

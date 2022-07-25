@@ -50,4 +50,8 @@ export type updateChannel = {
     password: string;
     adminEmail: string;
     invitedId: number;
+    private: boolean;
+    isPassword: boolean;
+    ownerPassword: string;
+    newPassword: string;
 }
