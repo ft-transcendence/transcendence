@@ -5,4 +5,4 @@ dist/
 *.swp
 migrations/
 package-lock.json
-.vscode*
+.vscode/
