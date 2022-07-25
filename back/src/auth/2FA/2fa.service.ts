@@ -46,9 +46,7 @@ export class TwoFactorService {
 	}
 
 	// Generate a new 2FA fur user
-	async generate2FA(user: TwoFactorDto) {
-		// destructure data
-		const { email } = user;
+	async generate2FA(email: string) {
 		// Generate a 2FA secret
 		const secret = authenticator.generateSecret();
 		// Create a URL for the QR code

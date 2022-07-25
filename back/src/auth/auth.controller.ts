@@ -167,9 +167,9 @@ export class AuthController {
 	@Post('/2fa/generate')
 	async generate_2fa(
 		@Res() response: Response,
-		@GetCurrentUser() user: TwoFactorDto,
+		@GetCurrentUser('email') email: string,
 	) {
-		const { onetimepathurl } = await this.twoFAservice.generate2FA(user);
+		const { onetimepathurl } = await this.twoFAservice.generate2FA(email);
 		return response.json(
 			await this.twoFAservice.generate2FAQRCode(onetimepathurl),
 		);
