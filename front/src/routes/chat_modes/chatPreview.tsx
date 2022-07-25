@@ -89,7 +89,11 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
             email: email,
             password: "",
             adminEmail: "",
-            invitedId: 0
+            invitedId: 0,
+            private: false,
+            isPassword: false,
+            ownerPassword: "",
+            newPassword: ""
         }
         socket.emit("leave channel", update);
     }
@@ -100,7 +104,11 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
             email: email,
             password: "",
             adminEmail: "",
-            invitedId: 0
+            invitedId: 0,
+            private: false,
+            isPassword: false,
+            ownerPassword: "",
+            newPassword: ""
         }
         console.log("data", global.selectedData)
         socket.emit("block channel", update);
@@ -112,11 +120,14 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
             email: email,
             password: "",
             adminEmail: "",
-            invitedId: 0
+            invitedId: 0,
+            private: false,
+            isPassword: false,
+            ownerPassword: "",
+            newPassword: ""
         }
-        socket.emit("block channel", update);
+        socket.emit("block user", update);
     }
-
 
     return(
         <div className="preview-zone">

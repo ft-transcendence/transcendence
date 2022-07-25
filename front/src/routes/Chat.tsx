@@ -60,11 +60,10 @@ export default function Chat() {
     }, [selectedChat, role]);
 
     useEffect(() => {
-        console.log("in chat, outsider:::", outsider)
         if (selectedChat)
         {
             setShow((!selectedChat.isPassword) || !outsider)
-            console.log("in chat, show:::", (!selectedChat.isPassword) || !outsider)
+            console.log("in chat, show, selectedchat:::", ((!selectedChat.isPassword) || !outsider), selectedChat)
         }
     }, [outsider])
 
@@ -121,6 +120,7 @@ export default function Chat() {
                     className="add-zone"
                     onClick={event => event.stopPropagation()}>
                         <SettingCard
+                        channelId={selectedChat?.id}
                             settingRequest={settingRequest}
                             onSettingRequest={() => {
                                 setSettingRequest(old => {return !old})

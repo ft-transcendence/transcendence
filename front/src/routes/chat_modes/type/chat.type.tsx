@@ -44,6 +44,10 @@ export type updateChannel = {
     password: string;
     adminEmail: string;
     invitedId: number | string;
+    private: boolean;
+    isPassword: boolean;
+    ownerPassword: string;
+    newPassword: string;
 }
 
 export type useMsg = {
@@ -77,4 +81,9 @@ export type oneUser = {
 export type updateUser = {
     self: string | null;
     other: string;
+}
+
+export type setting = {
+    private: boolean;
+    isPassword: boolean;
 }

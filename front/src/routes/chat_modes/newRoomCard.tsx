@@ -1,4 +1,4 @@
-import "./newRoomCard.css";
+import "./card.css";
 import "./tags.css"
 import { useEffect, useRef, useState } from "react";
 import { socket } from "../../App";
@@ -103,30 +103,34 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
 
     return (
         <div className="card">
-            <div className="room-name">
+            <div className="card-title">
+                CREATE ROOM
+            </div>
+            <div className="input-zone">
                 <input
+                    id="create-room-name"
                     value={roomName}
                     onChange={(e) => handleString(e.target.value, setRoomName)}
-                    className="room-name-input"
-                    placeholder="room name"
+                    className="new-room-name-input"
+                    placeholder="NAME"
                 />
-            </div>
-            <div 
-                className="browse-users"
-                ref={scroll}>
-                <ReactTags
-                    tags={addedMember}
-                    suggestions={userTag.filter(v => {return addedMember.filter(v1 => {return v1.id === v.id}).length === 0})}
-                    placeholderText="To:"
-                    onAddition={onAddMember}
-                    onDelete={onDeleteMember}
-                    onInput={autoScroll}
-                    suggestionsTransform={suggestionsFilter}
-                    noSuggestionsText="user not found"
-                />
+                <div 
+                    className="browse-users"
+                    ref={scroll}>
+                    <ReactTags
+                        tags={addedMember}
+                        suggestions={userTag.filter(v => {return addedMember.filter(v1 => {return v1.id === v.id}).length === 0})}
+                        placeholderText="MEMBERS"
+                        onAddition={onAddMember}
+                        onDelete={onDeleteMember}
+                        onInput={autoScroll}
+                        suggestionsTransform={suggestionsFilter}
+                        noSuggestionsText="user not found"
+                    />
+                </div>
             </div>
             <div className="div-switch">
-                <label style={{color: isPrivate? "rgb(0, 136, 0)": ""}}>
+                <label style={{color: isPrivate? "rgb(0,136,0)" : "grey"}}>
                     private
                 </label>
                 <Switch
@@ -137,7 +141,7 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
                         uncheckedIcon={false}/>
             </div>
             <div className="div-switch">
-                <label style={{color: isPassword? "rgb(0, 136, 0)": ""}}>
+                <label style={{color: isPassword? "rgb(0,136,0)" : "grey"}}>
                     password
                 </label>
                 <Switch
@@ -149,19 +153,19 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
             </div>
             <div style={{display: isPassword? "" : "none"}}>
                 <input
+                    id="password"
                     value={roomPass}
                     onChange={(e) => handleString(e.target.value, setRoomPass)}
                     className="password"
-                    placeholder="********"
                 />
             </div>
-            <div className="flexBlock">
+            <div className="flex-block">
 
             </div>
             <div
                 onMouseUp={onCreate}
-                className="create-room-button">
-                    create room
+                className="card-confirm-button">
+                    CONFIRM
             </div>
         </div>
     )

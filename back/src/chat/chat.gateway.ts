@@ -269,4 +269,23 @@ export class ChatGateway {
     const members = await this.chatservice.fetch__members(data.channelId);
     client.emit('fetch members', members);
   }
+
+  @SubscribeMessage('get setting')
+  async handleGetSetting(
+    @MessageBody() channelId: number,
+    @ConnectedSocket() client: Socket
+  ) {
+    const info = await this.chatservice.get__setting(channelId);
+    client.emit('setting info', info);
+  }
+
+  @SubscribeMessage('update setting')
+  async handleUpdateSetting(
+    @MessageBody() data: updateChannel,
+    @ConnectedSocket() client: Socket
+  ) {
+    await this.chatservice.update__setting(data);
+    const info = await this.chatservice.get__setting(data.channelId);
+    client.emit('setting info', info);
+  }
 }

@@ -30,12 +30,18 @@
   
     /* shared font styles */
     font-size: 1em;
-    line-height: 1.2;
+    line-height: 1.5;
     /* clicking anywhere will focus the input */
     cursor: text;
   }
+
+  .react-tags input {
+    background: transparent;
+    color: white;
+  }
   
   .react-tags.is-focused {
+    height: 120px;
     border-color: #B1B1B1;
   }
   
@@ -119,9 +125,8 @@
   @media screen and (min-width: 30em) {
   
     .react-tags__suggestions {
-      width: 240px;
+      width: 160px;
     }
-  
   }
   
   .react-tags__suggestions ul {

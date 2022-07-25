@@ -43,7 +43,7 @@ export default function RoomStatus({current, role, outsider}
             socket.off("user tags");
         })
 
-    }, [current])
+    }, [current, email])
 
     const handleInvite = (member: Tag) => {
         setAdd(false);
@@ -52,7 +52,11 @@ export default function RoomStatus({current, role, outsider}
             email: email,
             password: "",
             adminEmail: "",
-            invitedId: member.id
+            invitedId: member.id,
+            private: false,
+            isPassword: false,
+            ownerPassword: "",
+            newPassword: ""
         }
         socket.emit("invite to channel", update);
         console.log("YOU ADD " + member.name);
@@ -111,7 +115,11 @@ function JoinChannel({channelId, outsider, isPassword}
             email: email,
             password: password,
             adminEmail: "",
-            invitedId: ""
+            invitedId: "",
+            private: false,
+            isPassword: false,
+            ownerPassword: "",
+            newPassword: ""
         }
         socket.emit("join channel", update);
         setPass("");
@@ -158,28 +166,22 @@ function MemberStatus({current, role}
     const [admins, setAdmins] = useState<oneUser[] | null>([]);
     const [members, setMembers] = useState<oneUser[] | null>([]);
     const [inviteds, setInviteds] = useState<oneUser[] | null>([]);
-    const email = useAuth().user;
-
     
     useEffect( () => {
 
         socket.on("fetch owner", (data: oneUser[] | null) => {
-            // console.log("got fetched owner", data)
             setOwner(data);
         })
 
         socket.on("fetch admins", (data: oneUser[] | null) => {
-            // console.log("got fetched admins", data)
             setAdmins(data);
         })
 
         socket.on("fetch members", (data: oneUser[] | null) => {
-            // console.log("got fetched members", data)
             setMembers(data);
         })
 
         socket.on("fetch inviteds", (data: oneUser[] | null) => {
-            // console.log("got fetched inviteds", data)
             setInviteds(data);
         })
 
@@ -238,7 +240,7 @@ function Status({users, current, role}
             show(selData.event, {id: JSON.stringify(selData.data)});
             selData.event = null;
         }
-    }, [selData]);
+    }, [selData, show]);
 
     function handleAddFriend(){
         let update: updateUser = {
@@ -278,7 +280,11 @@ function Status({users, current, role}
             email: email,
             password: "",
             adminEmail: global.selectedData.email,
-            invitedId: 0
+            invitedId: 0,
+            private: false,
+            isPassword: false,
+            ownerPassword: "",
+            newPassword: ""
         }
         console.log("myemail: %s, email: %s", email, global.selectedData.email)
         socket.emit("be admin", update);
@@ -290,7 +296,11 @@ function Status({users, current, role}
             email: email,
             password: "",
             adminEmail: global.selectedData.email,
-            invitedId: 0
+            invitedId: 0,
+            private: false,
+            isPassword: false,
+            ownerPassword: "",
+            newPassword: ""
         }
         console.log("myemail: %s, email: %s, ownerEmail: %s", email, global.selectedData.email, current?.ownerEmail)
         socket.emit("not admin", update);
@@ -302,7 +312,11 @@ function Status({users, current, role}
             email: global.selectedData.email,
             password: "",
             adminEmail: "",
-            invitedId: 0
+            invitedId: 0,
+            private: false,
+            isPassword: false,
+            ownerPassword: "",
+            newPassword: ""
         }
         socket.emit("leave channel", update);
     }
