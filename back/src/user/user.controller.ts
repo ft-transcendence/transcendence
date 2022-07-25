@@ -4,10 +4,6 @@ import { hash } from 'argon2';
 import { Request } from 'express';
 import { JwtGuard } from 'src/auth/guard';
 import { GetCurrentUserId } from 'src/decorators';
-<<<<<<< HEAD
-import { UserDto } from './dto';
-=======
->>>>>>> 4223156e1d553ca41350338d988c71a7ce62535e
 /* USER MODULES */
 import { UserService } from './user.service';
 
@@ -25,7 +21,6 @@ export class UserController {
 
 	/*	READ	*/
 
-<<<<<<< HEAD
 	@Get('me')
 	getMe(@Req() request) {
 		const userDto = this.userService.getUser(request.user.id);
@@ -39,29 +34,6 @@ export class UserController {
 	}
 
 	@Get('/') //default testing route, localhost:4000/users/
-=======
-	@Get('me') 
-	getMe(@Req() request) {
-			// log in console
-			// console.log({
-			// 	user: request.user,
-			// })
-		const prismaUser  = (request.user as User);
-		// console.log(userE.id)
-		// console.log('CURRENT USER ID = ' + id)
-		return this.userService.getUser(prismaUser.id);
-		// return request.user;
-	
-	}
-
-	@Get('get_user') //to change
-	getUser(id: number) {
-		console.log('Going through getUser in user.controller');
-		return this.userService.getUser(id);
-	}	
-
-	@Get('/')	//default testing route, localhost:4000/users/
->>>>>>> 4223156e1d553ca41350338d988c71a7ce62535e
 	getAllUsers() {
 		console.log('Going through getAllUsers in user.controller');
 		const userListDtos = this.userService.getAllUsers();
@@ -78,33 +50,21 @@ export class UserController {
 	async getFriends(@Req() request) {
 		console.log('Going through getFriends in user.controller');
 		const result = await this.userService.getFriends(request.user.id);
-<<<<<<< HEAD
 		return result;
-=======
-		return (result);
->>>>>>> 4223156e1d553ca41350338d988c71a7ce62535e
 	}
 
 	@Get('get_pending')
 	async getPending(@Req() request) {
 		console.log('Going through getPending in user.controller');
 		const result = await this.userService.getPending(request.user.id);
-<<<<<<< HEAD
 		return result;
-=======
-		return (result);
->>>>>>> 4223156e1d553ca41350338d988c71a7ce62535e
 	}
 
 	@Get('get_blocked')
 	async getBlocked(@Req() request) {
 		console.log('Going through getBlocked in user.controller');
 		const result = await this.userService.getBlocks(request.user.id);
-<<<<<<< HEAD
 		return result;
-=======
-		return (result);
->>>>>>> 4223156e1d553ca41350338d988c71a7ce62535e
 	}
 
 	@Get('is_friend')
@@ -128,7 +88,6 @@ export class UserController {
 	}
 
 	@Post('check_password')
-<<<<<<< HEAD
 	async checkPassword(
 		@Body('password') password: string,
 		@GetCurrentUserId() id: number,
@@ -136,12 +95,6 @@ export class UserController {
 		console.log('Going through checkPword in user.controller');
 		const result = await this.userService.checkPassword(id, password);
 		return result;
-=======
-	async checkPassword(@Body('password') password: string, @GetCurrentUserId() id: number) {
-		console.log('Going through checkPword in user.controller');
-		const result = await this.userService.checkPassword(id, password);
-		return (result);
->>>>>>> 4223156e1d553ca41350338d988c71a7ce62535e
 	}
 
 	/*	UPDATE	*/
@@ -149,7 +102,6 @@ export class UserController {
 	//USER PROFILE RELATED FUNCTIONS
 
 	@Post('/update_username')
-<<<<<<< HEAD
 	async updateUsername(
 		@Body('username') newUsername: string,
 		@Body('password') password: string,
@@ -192,26 +144,6 @@ export class UserController {
 			password,
 		);
 		return result;
-=======
-	async updateUsername(@Body('username') newUsername: string, @Body('password') password: string, @Req() request) {
-		console.log('Going through updateUsername in user.controller');
-		const result = await this.userService.updateUsername(request.user.id, newUsername, password);
-		return (result);
-	}
-
-	@Post('/update_avatar')
-	async updateAvatar(@Body('avatar') newAvatar: string, @Body('password') password: string, @Req() request) {
-		console.log('Going through updateAvatar in user.controller');
-		const result = await this.userService.updateAvatar(request.user.id, newAvatar, password);
-		return (result);
-	}
-
-	@Post('/update_email')
-	async updateEmail(@Body('email') newEmail: string, @Body('password') password: string, @Req() request) {
-		console.log('Going through updateEmail in user.controller');
-		const result = await this.userService.updateEmail(request.user.id, newEmail, password);
-		return (result);
->>>>>>> 4223156e1d553ca41350338d988c71a7ce62535e
 	}
 
 	//RELATIONSHIP RELATED FUNCTIONS
