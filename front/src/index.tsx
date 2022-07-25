@@ -11,6 +11,7 @@ import "./index.css";
 import UserPrivateProfile from "./routes/profile_types/UserPrivateProfile";
 import { BlockedList, FriendsList } from "./routes/profile_types/FriendsList";
 import { AuthProvider, RequireAuth } from "./hooks/AuthHooks";
+import Watch from "./routes/Watch";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
@@ -41,6 +42,7 @@ root.render(
             </Route>
             <Route path="chat" element={<Chat />} />
             <Route path="game" element={<Game />} />
+            <Route path="watch" element={<Watch />} />
             <Route path="*" element={<Navigate to="/app" />} />
           </Route>
           <Route path="*" element={<Navigate to="/auth/signin" />} />

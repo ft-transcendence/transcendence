@@ -1,10 +1,15 @@
 import { Socket } from 'socket.io';
+import { Client } from './client.interface';
 
 export interface Room {
     id: number,
     name: string,
-    player1: Socket,
-    player2?: Socket,
+    player1: Client,
+    player1Name: string,
+    player1Avatar: string,
+    player2?: Client,
+    player2Name?: string,
+    player2Avatar?: string,
     paddleLeft: number,
     paddleLeftDir: number,
     paddleRight: number,
@@ -15,4 +20,5 @@ export interface Room {
     yball?: number;
     xSpeed?: number;
     ySpeed?: number;
+    private: boolean;
 }
