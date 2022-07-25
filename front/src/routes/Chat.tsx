@@ -1,7 +1,19 @@
+import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import "./Chat.css";
-import { socket } from "../App";
 import { useAuth } from "../globals/contexts";
+
+const socketOptions = {
+  transportOptions: {
+    polling: {
+      extraHeaders: {
+          Token: localStorage.getItem("userToken"),
+      }
+    }
+  }
+};
+
+const socket = io("ws://localhost:4000", socketOptions);
 
 export default function Chat() {
   const id = useRef(0);
