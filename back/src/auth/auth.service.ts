@@ -151,14 +151,17 @@ export class AuthService {
 		};
 		// generate jwt secret
 		const secret = process.env.JWT_SECRET;
+		// Set expiration times
+		const access_token_expiration = process.env.ACCESS_TOKEN_EXPIRATION;
+		const refresh_token_expiration = process.env.REFRESH_TOKEN_EXPIRATION;
 		// set Auth Token params
 		const Atoken = await this.jwtService.signAsync(login_data, {
-			expiresIn: '10m',
+			expiresIn: access_token_expiration,
 			secret: secret,
 		});
 		// set Refresh Token params
 		const Rtoken = await this.jwtService.signAsync(login_data, {
-			expiresIn: '60m',
+			expiresIn: refresh_token_expiration,
 			secret: secret,
 		});
 		// return tokens

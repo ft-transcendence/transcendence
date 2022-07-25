@@ -24,7 +24,7 @@ import { AuthService } from './auth.service';
 import { FortyTwoAuthGuard } from './guard';
 import { RtGuard } from './guard';
 /* AUTH DTOs */
-import { SignUpDto, SignInDto, TwoFactorDto, TwoFactorUserDto } from './dto';
+import { SignUpDto, SignInDto, TwoFactorUserDto } from './dto';
 import { TwoFactorService } from './2FA/2fa.service';
 
 // AUTH CONTROLLER - /auth

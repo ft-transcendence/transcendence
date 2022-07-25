@@ -8,7 +8,7 @@ import { GetCurrentUserId } from 'src/decorators';
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
 /* DTOs */
-import { TwoFactorDto, TwoFactorUserDto } from '../dto';
+import { TwoFactorUserDto } from '../dto';
 
 /**
  * TWO FACTOR AUTHENTICATION SERVICE
