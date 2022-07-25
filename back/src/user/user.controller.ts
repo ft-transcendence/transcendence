@@ -88,12 +88,12 @@ export class UserController {
 	}
 
 	@Post('check_password')
-	async checkPassword(
-		@Body('password') password: string,
-		@GetCurrentUserId() id: number,
-	) {
+	async checkPassword(@Body('password') password: string, @Req() request) {
 		console.log('Going through checkPword in user.controller');
-		const result = await this.userService.checkPassword(id, password);
+		const result = await this.userService.checkPassword(
+			request.user.id,
+			password,
+		);
 		return result;
 	}
 
