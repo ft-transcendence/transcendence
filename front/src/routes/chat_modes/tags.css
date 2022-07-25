@@ -37,7 +37,7 @@
 
   .react-tags input {
     background: transparent;
-    color: white;
+    color: grey;
   }
   
   .react-tags.is-focused {

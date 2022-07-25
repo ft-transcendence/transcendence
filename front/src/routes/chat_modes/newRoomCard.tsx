@@ -31,7 +31,7 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
             console.log("new room : request:", newRoomRequest)
         }
 
-        socket.emit("get user tags");
+        socket.emit("get user tags", email);
         socket.on("user tags", (data: Tag[]) => {
             setUserTag(data);
             console.log("tags", data);

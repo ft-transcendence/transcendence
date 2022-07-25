@@ -240,9 +240,10 @@ export class ChatGateway {
 
   @SubscribeMessage('get user tags')
   async handleUserTags(
+    @MessageBody() email: string,
     @ConnectedSocket() client: Socket
   ) {
-    const tags = await this.chatservice.get__userTags();
+    const tags = await this.chatservice.get__userTags(email);
     client.emit('user tags', tags);
   }
 
