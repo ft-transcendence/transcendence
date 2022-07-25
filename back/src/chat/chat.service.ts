@@ -1025,27 +1025,31 @@ export class ChatService {
         }
     }
 
-    organize__tags(source: any) {
+    organize__tags(source: any, id: number) {
         let users = [];
         if (source.length)
         {
             for (let i = 0; i < source.length; i++)
             {
-                let user = {
-                    id: source[i].id,
-                    name: source[i].username,
+                if (source[i].id !== id)
+                {
+                    let user = {
+                        id: source[i].id,
+                        name: source[i].username,
+                    }
+                    users.push(user);
                 }
-                users.push(user);
             }
         }
         return users;
     }
 
-    async get__userTags()
+    async get__userTags(email: string)
     {
         try {
+            const id = await this.get__id__ByEmail(email);
             const source = await this.get__allUsers();
-            const tags = await this.organize__tags(source);
+            const tags = await this.organize__tags(source, id);
             return tags;
         } catch (error) {
             console.log('get__userTags error:', error);
@@ -1102,7 +1106,7 @@ export class ChatService {
                 const usersFiltered = users.filter((user) => {
 
                     return suggestion.filter((sug: oneSuggestion) => {
-                        return sug.name != user.name;
+                        return sug.name == user.name;
                     }).length == 0 && user.id != id;
                 })
     

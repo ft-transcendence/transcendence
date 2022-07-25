@@ -46,13 +46,13 @@
 }
 
     .msg-owner {
+        margin-top: 10px;
         margin-left: auto;
         margin-right: 18px;
-        margin-top: 10px;
         padding-top: 10px;
         padding-bottom: .5px;
-        padding-left: 20px;
-        padding-right: 20px;
+        padding-left: 15px;
+        padding-right: 15px;
         width: fit-content;
         background-color: white;
         text-align: right;
@@ -64,14 +64,19 @@
     }
 
     .msg-other {
+        margin-top: 10px;
+        margin-left: 8px;
         margin-right: auto;
         padding-top: 10px;
-        padding-bottom: 3px;
-        padding-left: 20px;
+        padding-bottom: 0.5px;
+        padding-left: 15px;
         padding-right: 20px;
         width: fit-content;
-        background-color: grey;
+        background-color: whitesmoke;
         text-align: left;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        border-radius: 10px;
         max-width: 70%;
         word-break: break-word;
     }
