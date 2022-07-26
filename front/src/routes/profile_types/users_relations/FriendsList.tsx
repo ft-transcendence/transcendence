@@ -39,6 +39,7 @@ export const FriendsList = () => {
   return (
     <div style={{ overflowY: "auto", overflowX: "hidden" }}>
       {isFetched ? (
+        friendsList?.length !== 0 ? 
         friendsList!.map((h, index) => {
           return (
             <DisplayRow
@@ -48,7 +49,7 @@ export const FriendsList = () => {
               userModel={h.userModel}
             />
           );
-        })
+        }) : <span>No friends.</span>
       ) : (
         <div>No Data available, please reload.</div>
       )}

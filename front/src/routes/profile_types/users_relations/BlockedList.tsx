@@ -39,16 +39,20 @@ export const BlockedList = () => {
   return (
     <div style={{ overflowY: "auto", overflowX: "hidden" }}>
       {isFetched ? (
-        blockedList!.map((h, index) => {
-          return (
-            <DisplayRow
-              listType={"blocked"}
-              hook={setUpdate}
-              key={index}
-              userModel={h.userModel}
-            />
-          );
-        })
+        blockedList?.length !== 0 ? (
+          blockedList!.map((h, index) => {
+            return (
+              <DisplayRow
+                listType={"blocked"}
+                hook={setUpdate}
+                key={index}
+                userModel={h.userModel}
+              />
+            );
+          })
+        ) : (
+          <span>No blocked users.</span>
+        )
       ) : (
         <div>No Data available, please reload.</div>
       )}

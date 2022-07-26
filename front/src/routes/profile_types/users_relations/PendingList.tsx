@@ -39,16 +39,20 @@ export const PendingList = () => {
   return (
     <div style={{ overflowY: "auto", overflowX: "hidden" }}>
       {isFetched ? (
-        pendingList!.map((h, index) => {
-          return (
-            <DisplayRow
-              listType={"pending"}
-              hook={setUpdate}
-              key={index}
-              userModel={h.userModel}
-            />
-          );
-        })
+        pendingList?.length !== 0 ? (
+          pendingList!.map((h, index) => {
+            return (
+              <DisplayRow
+                listType={"pending"}
+                hook={setUpdate}
+                key={index}
+                userModel={h.userModel}
+              />
+            );
+          })
+        ) : (
+          <span>No pending invitation.</span>
+        )
       ) : (
         <div>No Data available, please reload.</div>
       )}
