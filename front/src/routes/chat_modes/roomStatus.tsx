@@ -25,22 +25,21 @@ export default function RoomStatus({current, role, outsider}
         role: string,
         outsider: boolean | undefined}) {
     const [add, setAdd] = useState<boolean>(false);
-    const [userTag, setUserTag] = useState<Tag[]>([]);
-
+    const [invitationTag, setTag] = useState<Tag[]>([]);
+ 
     const email = useAuth().user;
 
-    useEffect(()=> {
+    useEffect(() => {
 
         if (current)
             socket.emit("read room status", {id: current?.id, email: email});
 
-        socket.on("user tags", function(data: Tag[]) {
-            setUserTag(data);
-            console.log("tags", data);
+        socket.on("invitation tags", (data: Tag[]) => {
+            setTag(data);
         })
 
         return (() => {
-            socket.off("user tags");
+            socket.off("invitation tags");
         })
 
     }, [current, email])
@@ -59,7 +58,6 @@ export default function RoomStatus({current, role, outsider}
             newPassword: ""
         }
         socket.emit("invite to channel", update);
-        console.log("YOU ADD " + member.name);
     }
 
     const onDelete = (i: number) => {}
@@ -67,11 +65,11 @@ export default function RoomStatus({current, role, outsider}
     return(
         <div className="chat-status-zone">
             <div className="status-top">
-                    {userTag && userTag.length > 0 && add ?
+                    {invitationTag && invitationTag.length > 0 && add ?
                     <div className="add-box">
                         <ReactTags
                             tags={[]}
-                            suggestions={userTag}
+                            suggestions={invitationTag}
                             placeholderText="invite to chat"
                             noSuggestionsText="user not found"
                             onAddition={handleInvite}
@@ -82,7 +80,7 @@ export default function RoomStatus({current, role, outsider}
                             setAdd(false) }}/>
                     </div> : <>
                         <AddUserIcon onClick={() => {
-                            socket.emit("get user tags");
+                            socket.emit("get invitation tags", current!.id);
                             setAdd(true);
                         }}/>
                 </>}
@@ -94,67 +92,6 @@ export default function RoomStatus({current, role, outsider}
                 channelId={current?.id}
                 outsider={outsider}
                 isPassword={current?.isPassword}/>
-        </div>
-    )
-}
-
-function JoinChannel({channelId, outsider, isPassword}
-    : { channelId: number | undefined,
-        outsider: boolean | undefined,
-        isPassword: boolean | undefined}) {
-    const email = useAuth().user;
-    const [password, setPass] = useState("");
-    
-    const handleSetPass = (event: any) => {
-        setPass(event.target.value);
-    }
-
-    const handleJoin = () => {    
-        let update: updateChannel = {
-            channelId: channelId,
-            email: email,
-            password: password,
-            adminEmail: "",
-            invitedId: "",
-            private: false,
-            isPassword: false,
-            ownerPassword: "",
-            newPassword: ""
-        }
-        socket.emit("join channel", update);
-        setPass("");
-    }
-
-    return (
-        <div
-            style={{display: outsider ? "" : "none"}}>
-            <div 
-                className="password-zone"
-                style={{display: isPassword ? "" : "none"}}>
-                    <p
-                        className="protected-tag">
-                            PROTECTED
-                    </p>
-                    <p
-                        className="password-tag">
-                            password
-                    </p>
-                    <input
-                        className="password-input"
-                        id="password"
-                        value={password}
-                        onChange={handleSetPass}
-                        placeholder="********"
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter")
-                                handleJoin()}}/>
-            </div>
-            <div
-                className="join-channel-button"
-                style={{display: outsider ? "" : "none"}}
-                onMouseUp={handleJoin}>
-                join channel
-            </div>
         </div>
     )
 }
@@ -405,6 +342,67 @@ function OneStatus({data, setSelData}
             onClick={goProfile}>
                 <p className="one-pic">{data?.picture}</p>
                 <p className="one-name">{data?.username}</p>
+        </div>
+    )
+}
+
+function JoinChannel({channelId, outsider, isPassword}
+    : { channelId: number | undefined,
+        outsider: boolean | undefined,
+        isPassword: boolean | undefined}) {
+    const email = useAuth().user;
+    const [password, setPass] = useState("");
+    
+    const handleSetPass = (event: any) => {
+        setPass(event.target.value);
+    }
+
+    const handleJoin = () => {    
+        let update: updateChannel = {
+            channelId: channelId,
+            email: email,
+            password: password,
+            adminEmail: "",
+            invitedId: "",
+            private: false,
+            isPassword: false,
+            ownerPassword: "",
+            newPassword: ""
+        }
+        socket.emit("join channel", update);
+        setPass("");
+    }
+
+    return (
+        <div
+            style={{display: outsider ? "" : "none"}}>
+            <div 
+                className="password-zone"
+                style={{display: isPassword ? "" : "none"}}>
+                    <p
+                        className="protected-tag">
+                            PROTECTED
+                    </p>
+                    <p
+                        className="password-tag">
+                            password
+                    </p>
+                    <input
+                        className="password-input"
+                        id="password"
+                        value={password}
+                        onChange={handleSetPass}
+                        placeholder="********"
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter")
+                                handleJoin()}}/>
+            </div>
+            <div
+                className="join-channel-button"
+                style={{display: outsider ? "" : "none"}}
+                onMouseUp={handleJoin}>
+                join channel
+            </div>
         </div>
     )
 }
