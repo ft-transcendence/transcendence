@@ -1,8 +1,9 @@
+import { Col, Row } from "react-bootstrap";
 import { Link, Outlet } from "react-router-dom";
 
 export default function Home() {
   return (
-    <main>
+    <main style={{height:'100%'}}>
       <h2>App</h2>
       <nav
         style={{
@@ -16,7 +17,9 @@ export default function Home() {
         <Link to="/app/game">Game</Link> |{"  "}
         <Link to="/app/watch">Watch</Link>
       </nav>
-      <Outlet></Outlet>
+      <div className="container-sm border">
+      </div>
+      {/* <Outlet></Outlet> */}
     </main>
   );
 }
