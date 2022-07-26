@@ -238,8 +238,8 @@ export class GameService {
 		userId2: number,
 		score1: number,
 		score2: number,
-		startTime: number,
-		endTime: number,
+		startTime: Date,
+		endTime: Date,
 	) {
 		const game = await this.prisma.game.create({
 			data: {
@@ -250,9 +250,25 @@ export class GameService {
 				score2,
 				startTime,
 				endTime,
-				duration: endTime - startTime,
 			},
 		});
+
+		//update time
+		const duration = Math.abs(
+			game.endTime.getTime() - game.startTime.getTime(),
+		);
+
+		const updateGame = await this.prisma.game.update({
+			where: {
+				id: id,
+			},
+			data: {
+				duration: duration,
+			},
+		});
+
+		this.userService.updatePlayTime(userId1, duration);
+		this.userService.updatePlayTime(userId2, duration);
 		// const user1 = this.prisma.user.findUnique({
 		// 	where: {
 		// 		id: userId1,
@@ -264,10 +280,8 @@ export class GameService {
 		// 	},
 		// });
 
-		if (score1 === score2) {
-			this.userService.hadADraw(userId1);
-			this.userService.hadADraw(userId2);
-		} else if (score1 > score2) {
+		// update scores and winRate
+		if (score1 > score2) {
 			this.userService.hasWon(userId1);
 			this.userService.hasLost(userId2);
 		} else {
@@ -277,5 +291,4 @@ export class GameService {
 
 		return game;
 	}
-
 }

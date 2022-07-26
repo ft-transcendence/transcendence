@@ -3,6 +3,7 @@ import { Injectable, ForbiddenException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import * as argon from 'argon2';
 import { plainToClass } from 'class-transformer';
+import { userInfo } from 'os';
 
 /* PRISMA */
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -50,7 +51,7 @@ export class UserService {
 	async getLeaderboard() {
 		//returns a record of all the users, ordered by gamesWon in descending order
 		const users = await this.prisma.user.findMany({
-			orderBy: { gamesWon: 'desc' },
+			orderBy: { winRate: 'desc' },
 		});
 
 		return users;
@@ -556,6 +557,39 @@ export class UserService {
 
 	//GAME RELATED FUNCTIONS
 
+	async updatePlayTime(id: number, duration: number){
+		const updateUser = await this.prisma.user.update({
+			where: {
+				id: id,
+			},
+			data: {
+				playTime: {
+					increment: duration,
+				},
+			},
+		});
+		return updateUser;
+	}
+
+	async updateWinRate(id: number) {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+		});
+		const winRate = user.gamesWon / user.gamesPlayed;
+
+		const updateUser = await this.prisma.user.update({
+			where: {
+				id: id,
+			},
+			data: {
+				winRate: winRate,
+			},
+		});
+		return updateUser;
+	}
+
 	async hasWon(id: number) {
 		//increments the number of won and played games by one
 		const updateUser = await this.prisma.user.updateMany({
@@ -571,6 +605,7 @@ export class UserService {
 				},
 			},
 		});
+		this.updateWinRate(id);
 		return updateUser;
 	}
 
@@ -589,21 +624,7 @@ export class UserService {
 				},
 			},
 		});
-		return updateUser;
-	}
-
-	async hadADraw(id: number) {
-		//increments the number played games by one
-		const updateUser = await this.prisma.user.update({
-			where: {
-				id: id,
-			},
-			data: {
-				gamesPlayed: {
-					increment: 1,
-				},
-			},
-		});
+		this.updateWinRate(id);
 		return updateUser;
 	}
 }
