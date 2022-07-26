@@ -649,12 +649,13 @@ export class ChatService {
                         }
                     }
                 })
-                await this.prisma.channel.delete ({
+                const deleted = await this.prisma.channel.delete ({
                     where:
                     {
                         id: data.channelId
                     }  
                 })
+                return deleted;
             }
         } catch (error) {
             console.log('delete__channel error:', error);
@@ -684,6 +685,35 @@ export class ChatService {
             return channel.id;
         } catch (error) {
             console.log('invite__toChannel error:', error);
+            throw new WsException(error.message)
+        } 
+    }
+
+    async block__channel(data: updateChannel)
+    {
+        try {
+            const deleted = await this.leave__channel(data);
+            if (!deleted)
+            {
+                await this.prisma.channel.update ({
+                    where:
+                    {
+                        id: data.channelId
+                    },
+                    data:
+                    {
+                        blocked:
+                        {
+                            connect:
+                            {
+                                email: data.email
+                            }
+                        }
+                    }
+                })
+            }
+        } catch (error) {
+            console.log('block__channel error:', error);
             throw new WsException(error.message)
         } 
     }
@@ -1025,6 +1055,32 @@ export class ChatService {
         }
     }
 
+    async get__allBlockers(channelId: number)
+    {
+        try {
+            const source = await this.prisma.channel.findUnique({
+                where:
+                {
+                    id: channelId
+                },
+                select:
+                {
+                    blocked:
+                    {
+                        select:
+                        {
+                            id: true
+                        }
+                    }
+                }
+            })
+            return source;
+        } catch (error) {
+            console.log('get__allBlockers error:', error);
+            throw new WsException(error)
+        }
+    }
+
     async get__allInsiders(channelId: number)
     {
         try {
@@ -1041,7 +1097,6 @@ export class ChatService {
                         {
                             id: true,
                             username: true,
-                            picture: true,
                         }
                     },
                     admins:
@@ -1050,7 +1105,6 @@ export class ChatService {
                         {
                             id: true,
                             username: true,
-                            picture: true,
                         }
                     },
                     members:
@@ -1059,7 +1113,6 @@ export class ChatService {
                         {
                             id: true,
                             username: true,
-                            picture: true,
                         }
                     },
                     inviteds:
@@ -1068,7 +1121,6 @@ export class ChatService {
                         {
                             id: true,
                             username: true,
-                            picture: true,
                         }
                     }
                 }
@@ -1166,9 +1218,11 @@ export class ChatService {
     async get__invitationTags(channelId: number)
     {
         try {
-            const allUsers = await this.get__allUsers();
+            const usersSource = await this.get__allUsers();
+            const allUsers = await this.organize__userTags(usersSource, -1);
             const allInsiders = await this.get__allInsiders(channelId);
-            const invitationTags = await this.organize__invitationTags(allUsers, allInsiders);
+            const allBlockers = await this.get__allBlockers(channelId);
+            const invitationTags = await this.organize__invitationTags(allUsers, allInsiders, allBlockers);
             return invitationTags;
         } catch (error) {
             console.log('get__invitationTags error:', error);
@@ -1176,14 +1230,27 @@ export class ChatService {
         }
     }
 
-    async organize__invitationTags(allUsers: any, allInsiders: any)
+    async organize__invitationTags(allUsers: any, allInsiders: any, allBlockers: any)
     {
-        const invitationTags = allUsers.filter((user) => {
-            return allInsiders.filter((insider) => {
+        const filterInsiders = allUsers.filter((user: any) => 
+        {
+            return !allInsiders.find((insider: any) => 
+            {
                 return user.id === insider.id;
-            }).length === 0;
+            });
         })
-        return invitationTags;
+        if (allBlockers.blocked.length > 0)
+        {
+            const filterBlockers = filterInsiders.filter((user: any) => 
+            {
+                return !allBlockers.blocked.find((blocker: any) => 
+                {
+                    return user.id === blocker.id;
+                });
+            })
+            return filterBlockers;
+        }
+        return filterInsiders;
     }
 
     async get__publicChats(email: string)
