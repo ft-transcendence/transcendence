@@ -115,10 +115,29 @@ export class ChatGateway {
     @MessageBody() data: updateChannel,
     @ConnectedSocket() client: Socket) {
 
-    const channelId = await this.chatservice.invite__toChannel(data)
-    console.log("channelID:::", channelId)
+    const channelId = await this.chatservice.invite__toChannel(data);
     const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
     client.emit('fetch inviteds', inviteds);
+  }
+
+  @SubscribeMessage('block channel')
+  async blockChannel(
+    @MessageBody() data: updateChannel,
+    @ConnectedSocket() client: Socket) {
+
+    await this.chatservice.block__channel(data);
+    const preview = await this.chatservice.get__previews(data.email);
+    client.emit('update preview', preview);
+    const owners = await this.chatservice.fetch__owners(data.channelId);
+    client.emit('fetch owner', owners);
+    const admins = await this.chatservice.fetch__admins(data.channelId);
+    client.emit('fetch admins', admins);
+    const members = await this.chatservice.fetch__members(data.channelId);
+    client.emit('fetch members', members);
+    const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
+    client.emit('fetch inviteds', inviteds);
+    const users = await this.chatservice.get__searchSuggest(data.email);
+    client.emit('search suggest', users);
   }
 
   @SubscribeMessage('leave channel')
@@ -253,6 +272,7 @@ export class ChatGateway {
     @ConnectedSocket() client: Socket
   ) {
     const invitationTags = await this.chatservice.get__invitationTags(channelId);
+    console.log(invitationTags)
     client.emit('invitation tags', invitationTags);
   }
 

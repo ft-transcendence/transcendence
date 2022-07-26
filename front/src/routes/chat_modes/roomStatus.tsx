@@ -32,10 +32,14 @@ export default function RoomStatus({current, role, outsider}
     useEffect(() => {
 
         if (current)
+        {
             socket.emit("read room status", {id: current?.id, email: email});
+            socket.emit("get invitation tags", current!.id);
+        }
 
         socket.on("invitation tags", (data: Tag[]) => {
             setTag(data);
+            console.log("invatation tags:::",data)
         })
 
         return (() => {
@@ -65,7 +69,7 @@ export default function RoomStatus({current, role, outsider}
     return(
         <div className="chat-status-zone">
             <div className="status-top">
-                    {invitationTag && invitationTag.length > 0 && add ?
+                    { add ?
                     <div className="add-box">
                         <ReactTags
                             tags={[]}
@@ -80,7 +84,6 @@ export default function RoomStatus({current, role, outsider}
                             setAdd(false) }}/>
                     </div> : <>
                         <AddUserIcon onClick={() => {
-                            socket.emit("get invitation tags", current!.id);
                             setAdd(true);
                         }}/>
                 </>}
