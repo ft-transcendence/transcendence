@@ -35,6 +35,8 @@ model User {
 
 	winRate			Float?
 	playTime		Int?	//@db.Date
+	rank			Int		@default(1200)
+
 //game history ? Une partie = 2 id, un score
 
 	friends		Int[]

@@ -269,25 +269,39 @@ export class GameService {
 
 		this.userService.updatePlayTime(userId1, duration);
 		this.userService.updatePlayTime(userId2, duration);
-		// const user1 = this.prisma.user.findUnique({
-		// 	where: {
-		// 		id: userId1,
-		// 	},
-		// });
-		// const user2 = this.prisma.user.findUnique({
-		// 	where: {
-		// 		id: userId2,
-		// 	},
-		// });
 
-		// update scores and winRate
+
+		// update scores and winRate, set winner and loser
 		if (score1 > score2) {
 			this.userService.hasWon(userId1);
 			this.userService.hasLost(userId2);
+			const winner = this.prisma.user.findUnique({
+				where: {
+					id: userId1,
+				},
+			});
+			const loser = this.prisma.user.findUnique({
+				where: {
+					id: userId2,
+				},
+			});	
 		} else {
 			this.userService.hasWon(userId2);
 			this.userService.hasLost(userId1);
+			const winner = this.prisma.user.findUnique({
+				where: {
+					id: userId2,
+				},
+			});
+			const loser = this.prisma.user.findUnique({
+				where: {
+					id: userId1,
+				},
+			});
 		}
+
+		// const oldRanks = [winner.rank, loser.rank] //can't find in this scope
+		// const newRanks = this.userService.calculateRanks(oldRanks);
 
 		return game;
 	}

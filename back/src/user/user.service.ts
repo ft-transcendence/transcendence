@@ -3,7 +3,7 @@ import { Injectable, ForbiddenException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import * as argon from 'argon2';
 import { plainToClass } from 'class-transformer';
-import { userInfo } from 'os';
+import { userInfo } from 'node:os';
 
 /* PRISMA */
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -58,6 +58,14 @@ export class UserService {
 	}
 
 	async getUser(id: number) {
+		//testou//
+		console.log('test game functions in getUser - REMOVE THIS');
+		let ranks = await this.calculateRanks([1200, 1200]);
+		for (let index = 0; index < 10; index++) {
+			console.log(ranks);
+			ranks = await this.calculateRanks(ranks);
+		}
+
 		try {
 			const user = await this.prisma.user.findUnique({
 				where: {
@@ -557,7 +565,16 @@ export class UserService {
 
 	//GAME RELATED FUNCTIONS
 
-	async updatePlayTime(id: number, duration: number){
+	async calculateRanks([...ratings]) {
+		const [a, b] = ratings;
+		const expectedScore = (self, opponent) =>
+			1 / (1 + 10 ** ((opponent - self) / 400));
+		const newRating = (rating, index) =>
+			rating + 32 * (index - expectedScore(index ? a : b, index ? b : a));
+		return [newRating(a, 1), newRating(b, 0)];
+	}
+
+	async updatePlayTime(id: number, duration: number) {
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,
