@@ -219,8 +219,17 @@ export class ChatGateway {
     @MessageBody() email: string,
     @ConnectedSocket() client: Socket
   ) {
-    const tags = await this.chatservice.get__userTags(email);
-    client.emit('user tags', tags);
+    const userTags = await this.chatservice.get__userTags(email);
+    client.emit('user tags', userTags);
+  }
+
+  @SubscribeMessage('get invitation tags')
+  async handleInvitationTags(
+    @MessageBody() channelId: number,
+    @ConnectedSocket() client: Socket
+  ) {
+    const invitationTags = await this.chatservice.get__invitationTags(channelId);
+    client.emit('invitation tags', invitationTags);
   }
 
   @SubscribeMessage('delete msg')

@@ -31,7 +31,7 @@ export class ChatService {
         let count = 0;
         for (let i = 0; i < channels.length; i++)
         {
-            console.log('   user %d: %s', i, channels[i].name);
+            console.log('   channel %d: %s', i, channels[i].name);
             count = i + 1;
         }
         console.log('total %d channels', count);
@@ -1025,7 +1025,113 @@ export class ChatService {
         }
     }
 
-    organize__tags(source: any, id: number) {
+    async get__allInsiders(channelId: number)
+    {
+        try {
+            const source = await this.prisma.channel.findUnique({
+                where:
+                {
+                    id: channelId
+                },
+                select:
+                {
+                    owners:
+                    {
+                        select:
+                        {
+                            id: true,
+                            username: true,
+                            picture: true,
+                        }
+                    },
+                    admins:
+                    {
+                        select:
+                        {
+                            id: true,
+                            username: true,
+                            picture: true,
+                        }
+                    },
+                    members:
+                    {
+                        select:
+                        {
+                            id: true,
+                            username: true,
+                            picture: true,
+                        }
+                    },
+                    inviteds:
+                    {
+                        select:
+                        {
+                            id: true,
+                            username: true,
+                            picture: true,
+                        }
+                    }
+                }
+            })
+            const suggestion = this.organize__allInsider(source);
+            return suggestion;
+        } catch (error) {
+            console.log('get__allInsiders error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    organize__allInsider(source: any)
+    {
+        let insiders = [];
+        if (source.owners)
+        {
+            for (let i = 0; i < source.owners.length; i++)
+            {
+                let insider = {
+                    id: source.owners[i].id,
+                    name: source.owners[i].name
+                }
+                insiders.push(insider);
+            }
+        }
+        if (source.admins)
+        {
+            for (let i = 0; i < source.admins.length; i++)
+            {
+                let insider = {
+                    id: source.admins[i].id,
+                    name: source.admins[i].name
+                }
+                insiders.push(insider);
+            }
+        }
+        if (source.members)
+        {
+            for (let i = 0; i < source.members.length; i++)
+            {
+                let insider = {
+                    id: source.members[i].id,
+                    name: source.members[i].name
+                }
+                insiders.push(insider);
+            }
+        }
+        if (source.inviteds)
+        {
+            for (let i = 0; i < source.inviteds.length; i++)
+            {
+                let insider = {
+                    id: source.inviteds[i].id,
+                    name: source.inviteds[i].name
+                }
+                insiders.push(insider);
+            }
+        }
+        return insiders;
+    }
+
+    organize__userTags(source: any, id: number) {
         let users = [];
         if (source.length)
         {
@@ -1049,14 +1155,37 @@ export class ChatService {
         try {
             const id = await this.get__id__ByEmail(email);
             const source = await this.get__allUsers();
-            const tags = await this.organize__tags(source, id);
+            const tags = await this.organize__userTags(source, id);
             return tags;
         } catch (error) {
             console.log('get__userTags error:', error);
             throw new WsException(error)
         }
     }
-    
+
+    async get__invitationTags(channelId: number)
+    {
+        try {
+            const allUsers = await this.get__allUsers();
+            const allInsiders = await this.get__allInsiders(channelId);
+            const invitationTags = await this.organize__invitationTags(allUsers, allInsiders);
+            return invitationTags;
+        } catch (error) {
+            console.log('get__invitationTags error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    async organize__invitationTags(allUsers: any, allInsiders: any)
+    {
+        const invitationTags = allUsers.filter((user) => {
+            return allInsiders.filter((insider) => {
+                return user.id === insider.id;
+            }).length === 0;
+        })
+        return invitationTags;
+    }
+
     async get__publicChats(email: string)
     {
         try {
