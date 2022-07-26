@@ -6,6 +6,7 @@ import { GameGateway } from './game.gateway';
 import { UserModule } from 'src/user/user.module';
 import { UserService } from 'src/user/user.service';
 import { WatchController } from './watch/watch.controller';
+import { GameController } from './game.controller'
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { WatchController } from './watch/watch.controller';
 
   providers: [GameService, UserService],
 
-  controllers: [WatchController],
+  controllers: [WatchController, GameController],
 })
 
 export class GameModule {}

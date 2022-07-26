@@ -31,7 +31,9 @@ model User {
 
 	gamesWon		Int     @default(0)
 	gamesLost		Int     @default(0)
-	gamesPlayed	Int     @default(0)
+	gamesPlayed		Int     @default(0)
+
+	winRate			Float?
 
 //game history ? Une partie = 2 id, un score
 
@@ -90,3 +92,17 @@ model Msg {
 }
 
 
+model Game {
+	id	Int			@id @unique
+
+	player1	Int
+	player2 Int
+	score1	Int
+	score2	Int
+
+	startTime	Int	//not an int maybe
+	endTime		Int
+	duration	Int
+
+
+}
