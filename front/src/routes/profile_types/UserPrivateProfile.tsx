@@ -4,6 +4,7 @@ import { ModifyEntry } from "./ModifyUserInfo";
 import IconPen from "../../ressources/icons/IconPen.svg";
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
 import { UsersRelations } from "./users_relations/UsersRelations";
+import { TwoFA } from "./TwoFA";
 // import { useUsername } from "../../hooks/UserInfoHooks";
 
 export default function UserPrivateProfile() {
@@ -27,6 +28,7 @@ export default function UserPrivateProfile() {
     userName: localStorage.getItem("userName"),
     phone: "",
     pass: localStorage.getItem("userPassword"),
+    auth: localStorage.getItem("userAuth"),
   };
 
   const [userInfo, setUserInfo] = useState(userInfoInit);
@@ -185,24 +187,7 @@ export default function UserPrivateProfile() {
                     </button>
                   </Row>
                 </div>
-                <div>
-                  <Row className="wrapper p-3">
-                    <Col className="text-wrapper col-8">
-                      <div className="IBM-text" style={{ fontSize: "15px" }}>
-                        {" "}
-                        Two Factor authentifcation enabled{" "}
-                      </div>
-                    </Col>
-                    <Col>
-                      <button
-                        type="button"
-                        className="btn btn-secondary btn-sm submit-button float-end"
-                      >
-                        Remove 2FA
-                      </button>
-                    </Col>
-                  </Row>
-                </div>
+                <TwoFA auth={userInfo.auth} />
               </Card.Body>
             </Card>
           </Col>
