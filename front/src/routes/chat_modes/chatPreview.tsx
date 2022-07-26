@@ -12,16 +12,16 @@ import {
 import "./context.css";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
-const MENU_CHAT = "menu_chat";
+const MENU_CHANNEL = "menu_channel";
+const MENU_DM = "menu_dm";
 
 declare var global: {
     selectedData: chatPreview
 }
 
-export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomRequest}
+export default function Preview ({ current, onSelect, onNewRoomRequest}
     : { current: chatPreview | undefined, 
         onSelect: (chatPreview:chatPreview) => void,
-        newRoomRequest: boolean,
         onNewRoomRequest: () => void }) {
 
     const [roomPreview, setPreviews] = useState<chatPreview[]>([]);
@@ -113,20 +113,20 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
         socket.emit("block channel", update);
     }
 
-    function handleBlockUser(){
-        let update: updateChannel = {
-            channelId: global.selectedData.id,
-            email: email,
-            password: "",
-            adminEmail: "",
-            invitedId: 0,
-            private: false,
-            isPassword: false,
-            ownerPassword: "",
-            newPassword: ""
-        }
-        socket.emit("block user", update);
-    }
+    // function handleBlockUser(){
+    //     let update: updateChannel = {
+    //         channelId: global.selectedData.id,
+    //         email: email,
+    //         password: "",
+    //         adminEmail: "",
+    //         invitedId: 0,
+    //         private: false,
+    //         isPassword: false,
+    //         ownerPassword: "",
+    //         newPassword: ""
+    //     }
+    //     socket.emit("block user", update);
+    // }
 
     return(
         <div className="preview-zone">
@@ -144,31 +144,31 @@ export default function Preview ({ current, onSelect, newRoomRequest, onNewRoomR
                     return (
                     <div key={index}>
                         <PreviewChat
+                            MENU_ID={current?.dm ? MENU_DM : MENU_CHANNEL}
                             data={value} 
                             onClick={()=>{onSelect(value)}}
                             selected={value === current}/>
                     </div>);
                 })
                 }
-                <Menu id={MENU_CHAT} theme={theme.dark}>
+                <Menu id={MENU_CHANNEL} theme={theme.dark}>
                     <Item
-                        style={{display: global.selectedData?.dm === true ?  "" : "none" }}
                         onClick={handleLeave}>
                         Leave chat
                     </Item>
+                    <Item 
+                        onClick={handleBlockChannel}>
+                        Block channel
+                    </Item>
+                </Menu>
+                <Menu id={MENU_DM} theme={theme.dark}>
                     <Item
-                        style={{display: global.selectedData?.dm === true ? "none" : "" }}
                         onClick={handleLeave}>
                         delete message
                     </Item>
                     <Item 
-                        style={{display: global.selectedData?.dm === true ? "" : "none"}}
-                        onClick={handleBlockChannel}>
-                        Block channel
-                    </Item>
-                    <Item 
-                        style={{display: global.selectedData?.dm === true ? "none" : "" }}
-                        onClick={handleBlockUser}>
+                        // onClick={handleBlockUser}
+                    >
                         Block user
                     </Item>
                 </Menu>
@@ -251,7 +251,7 @@ function ChatSearch({onSearchMyChat, onSearchPublicChat}
 }
 
 function AddRoom({onRequest}
-    : { onRequest: () => void}){
+    : { onRequest: () => void }){
 
     return (
         <div
@@ -263,21 +263,20 @@ function AddRoom({onRequest}
     )
 }
 
-function PreviewChat({ data, onClick, selected }
-    : { data: chatPreview,
+function PreviewChat({ MENU_ID, data, onClick, selected }
+    : { MENU_ID: string,
+        data: chatPreview,
         onClick?: () => void,
         selected: boolean }) {
 
-    const { show } = useContextMenu({
-        id: MENU_CHAT
-    });
+    const { show } = useContextMenu();
 
     return (
         <>
             <div
             className="preview-chat"
             onMouseDown={onClick} style={{backgroundColor: selected ? "rgb(255 255 255 / 29%)" : ""}}
-            onContextMenu={(e) => {global.selectedData = data; show(e)}}>
+            onContextMenu={(e) => {global.selectedData = data; show(e, {id: MENU_ID})}}>
                 <div>
                     <div className="preview-chat-img">{data.picture? data.picture : null}</div>
                     <div className="preview-chat-info">

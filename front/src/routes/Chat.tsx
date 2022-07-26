@@ -69,7 +69,6 @@ export default function Chat() {
                     onSelect={(chat) => {
                         setSelectedChat(chat)
                     }}
-                    newRoomRequest={newRoomRequest}
                     onNewRoomRequest={() => {
                         setNewRoomRequest(old => {return !old})
                     }}
