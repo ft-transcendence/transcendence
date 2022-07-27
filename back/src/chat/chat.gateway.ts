@@ -165,9 +165,10 @@ export class ChatGateway {
   async newDM(
     @MessageBody() data: DMDto,
     @ConnectedSocket() client: Socket) {
-    await this.chatservice.new__DM(data);
-    const ret = await this.chatservice.get__previews(data.email);
-    client.emit('update preview', ret)
+    const channelId = await this.chatservice.new__DM(data);
+    const preview = await this.chatservice.get__onePreview(channelId);
+    client.join(preview.name);
+    client.emit('add preview', preview);
   }
 
   @SubscribeMessage('test')
