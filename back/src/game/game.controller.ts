@@ -32,5 +32,14 @@ export class GameController {
 
 	/*	READ	*/
 
+	@Get('get_game')
+	getGame(@Body('otherId') otherId: number) {
+		return this.gameService.getGame(otherId);
+	}
 
+	@Get('get_last_games')
+	getLeaderboard() {
+		console.log('Going through getLastGames in game.controller');
+		return this.gameService.getLastGames();
+	}
 }

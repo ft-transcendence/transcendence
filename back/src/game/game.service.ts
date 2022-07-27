@@ -320,6 +320,7 @@ export class GameService {
 					},
 				},
 			});
+
 			return game;
 		} catch (error) {
 			throw new ForbiddenException('saveGame error : ' + error);
@@ -328,5 +329,26 @@ export class GameService {
 
 	// READ
 
+	async getGame(id: number) {
+		try {
+			const game = await this.prisma.game.findUnique({
+				where: {
+					id: id,
+				},
+				rejectOnNotFound: true,
+			});
+			return game;
+		} catch (error) {
+			throw new ForbiddenException('getGame error : ' + error);
+		}
+	}
 
+	async getLastGames() {
+		//returns a record of all the users, ordered by rank in descending order
+		const games = await this.prisma.game.findMany({
+			orderBy: { endTime: 'desc' },
+		});
+
+		return games;
+	}
 }
