@@ -113,20 +113,24 @@ export class ChatGateway {
     await this.chatservice.block__channel(data);
     const preview = await this.chatservice.get__previews(data.email);
     client.emit('update preview', preview);
-    const owners = await this.chatservice.fetch__owners(data.channelId);
-    client.emit('fetch owner', owners);
-    const admins = await this.chatservice.fetch__admins(data.channelId);
-    client.emit('fetch admins', admins);
-    const members = await this.chatservice.fetch__members(data.channelId);
-    client.emit('fetch members', members);
-    const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
-    client.emit('fetch inviteds', inviteds);
     const users = await this.chatservice.get__searchSuggest(data.email);
     client.emit('search suggest', users);
   }
 
   @SubscribeMessage('leave channel')
   async handleDeleteChannel(
+    @MessageBody() data: updateChannel,
+    @ConnectedSocket() client: Socket
+  ) {
+    await this.chatservice.leave__channel(data);
+    const preview = await this.chatservice.get__previews(data.email);
+    client.emit('update preview', preview);
+    const users = await this.chatservice.get__searchSuggest(data.email);
+    client.emit('search suggest', users);
+  }
+
+  @SubscribeMessage('kick out channel')
+  async handleKickOutChannel(
     @MessageBody() data: updateChannel,
     @ConnectedSocket() client: Socket
   ) {

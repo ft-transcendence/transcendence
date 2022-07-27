@@ -266,7 +266,7 @@ function Status({users, current, role}
             ownerPassword: "",
             newPassword: ""
         }
-        socket.emit("leave channel", update);
+        socket.emit("'kick out channel", update);
     }
 
     return (

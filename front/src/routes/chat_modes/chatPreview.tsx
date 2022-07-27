@@ -22,7 +22,7 @@ declare var global: {
 
 export default function Preview ({ current, onSelect, onNewRoomRequest}
     : { current: chatPreview | undefined, 
-        onSelect: (chatPreview:chatPreview) => void,
+        onSelect: (chatPreview:chatPreview | undefined) => void,
         onNewRoomRequest: () => void }) {
 
     const [roomPreview, setPreviews] = useState<chatPreview[]>([]);
@@ -96,6 +96,8 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
             newPassword: ""
         }
         socket.emit("leave channel", update);
+        onSelect(undefined);
+
     }
 
     function handleBlockChannel(){
@@ -110,8 +112,8 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
             ownerPassword: "",
             newPassword: ""
         }
-        console.log("data", global.selectedData)
         socket.emit("block channel", update);
+        onSelect(undefined);
     }
 
     // function handleBlockUser(){
