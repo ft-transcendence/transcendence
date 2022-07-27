@@ -34,7 +34,7 @@ model User {
 	gamesPlayed		Int     @default(0)
 
 	winRate			Float?
-	playTime		Int?	//@db.Date
+	playTime		Int		@default(0)
 	rank			Int		@default(1200)
 
 //game history ? Une partie = 2 id, un score

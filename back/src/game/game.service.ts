@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { Room } from './interfaces/room.interface';
 import { Server } from 'socket.io';
@@ -232,6 +232,8 @@ export class GameService {
 
 	/*  GAME DATABASE RELATED FUNCTIONS */
 
+	// CREATE
+
 	async saveGame(
 		id: number,
 		userId1: number,
@@ -257,7 +259,6 @@ export class GameService {
 		const duration = Math.abs(
 			game.endTime.getTime() - game.startTime.getTime(),
 		);
-
 		const updateGame = await this.prisma.game.update({
 			where: {
 				id: id,
@@ -270,39 +271,54 @@ export class GameService {
 		this.userService.updatePlayTime(userId1, duration);
 		this.userService.updatePlayTime(userId2, duration);
 
-
 		// update scores and winRate, set winner and loser
-		if (score1 > score2) {
-			this.userService.hasWon(userId1);
-			this.userService.hasLost(userId2);
-			const winner = this.prisma.user.findUnique({
+		try {
+			const winnerId = score1 > score2 ? userId1 : userId2;
+			const loserId = score1 > score2 ? userId2 : userId1;
+
+			this.userService.hasWon(winnerId);
+			this.userService.hasLost(loserId);
+
+			const winner = await this.prisma.user.findUnique({
 				where: {
-					id: userId1,
+					id: winnerId,
+				},
+				rejectOnNotFound: true,
+			});
+			const loser = await this.prisma.user.findUnique({
+				where: {
+					id: loserId,
+				},
+				rejectOnNotFound: true,
+			});
+
+			// update ranks
+			const oldRanks = [winner.rank, loser.rank];
+			const newRanks = await this.userService.calculateRanks(oldRanks);
+
+			const updatedWinner = await this.prisma.user.update({
+				where: {
+					id: winnerId,
+				},
+				data: {
+					rank: Math.floor(newRanks[0]),
 				},
 			});
-			const loser = this.prisma.user.findUnique({
+			const updatedLoser = await this.prisma.user.update({
 				where: {
-					id: userId2,
+					id: loserId,
 				},
-			});	
-		} else {
-			this.userService.hasWon(userId2);
-			this.userService.hasLost(userId1);
-			const winner = this.prisma.user.findUnique({
-				where: {
-					id: userId2,
+				data: {
+					rank: Math.floor(newRanks[1]),
 				},
 			});
-			const loser = this.prisma.user.findUnique({
-				where: {
-					id: userId1,
-				},
-			});
+			return game;
+		} catch (error) {
+			throw new ForbiddenException('saveGame error : ' + error);
 		}
-
-		// const oldRanks = [winner.rank, loser.rank] //can't find in this scope
-		// const newRanks = this.userService.calculateRanks(oldRanks);
-
-		return game;
 	}
+
+	// READ
+
+
 }

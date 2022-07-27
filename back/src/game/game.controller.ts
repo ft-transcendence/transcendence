@@ -1,7 +1,5 @@
 import { Body, Controller, Get, Post, Req } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
 import { GameService } from './game.service';
-import { PrismaClient } from '@prisma/client';
 
 @Controller('game')
 export class GameController {
@@ -18,7 +16,6 @@ export class GameController {
 		@Body('score2') score2: number,
 		@Body('startTime') startTime: Date,
 		@Body('endTime') endTime: Date,
-		@Req() request,
 	) {
 		console.log('Going through saveGame in game.controller');
 		const result = await this.gameService.saveGame(
@@ -34,4 +31,6 @@ export class GameController {
 	}
 
 	/*	READ	*/
+
+
 }

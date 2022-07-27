@@ -49,23 +49,15 @@ export class UserService {
 	}
 
 	async getLeaderboard() {
-		//returns a record of all the users, ordered by gamesWon in descending order
+		//returns a record of all the users, ordered by rank in descending order
 		const users = await this.prisma.user.findMany({
-			orderBy: { winRate: 'desc' },
+			orderBy: { rank: 'desc' },
 		});
 
 		return users;
 	}
 
 	async getUser(id: number) {
-		//testou//
-		console.log('test game functions in getUser - REMOVE THIS');
-		let ranks = await this.calculateRanks([1200, 1200]);
-		for (let index = 0; index < 10; index++) {
-			console.log(ranks);
-			ranks = await this.calculateRanks(ranks);
-		}
-
 		try {
 			const user = await this.prisma.user.findUnique({
 				where: {
