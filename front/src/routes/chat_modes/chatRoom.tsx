@@ -94,8 +94,14 @@ function MsgStream({email, channelId}
             setMsgs(data);
         })
 
+        socket.on("broadcast", (msg: oneMsg) => {
+            setMsgs(oldMsgs => [...oldMsgs, msg]);
+            console.log("got new msg", msg)
+        })
+
         return (() => {
             socket.off("fetch msgs");
+            socket.off("broadcast");
         })
         
     }, [])
@@ -152,17 +158,26 @@ function MsgStream({email, channelId}
 function OneMessage({data, email}
     : { data: oneMsg,
         email: string | null}) {
+    const [sender, setSender] = useState("");
 
     const { show } = useContextMenu({
         id: MENU_MSG
     });
 
+    useEffect(() => {
+        if (data.email === email)
+            setSender("self")
+        else
+            setSender("other")
+        console.log("reset sender:::", data)
+    }, [data])
+
     return (
-        <div className={data.email === email? "msg-owner" : "msg-other"}>
+        <div className={sender}>
             <div
                 className="msg-block"
-                onContextMenu={data.email === email? (e) => {global.selectedData = data; show(e)}: undefined}>
-                <p className="msg-sender" style={{display: (data.email === email) ? "none" : ""}}>
+                onContextMenu={sender === "self" ? (e) => {global.selectedData = data; show(e)}: undefined}>
+                <p className="msg-sender" style={{display: sender === "self" ? "none" : ""}}>
                     {data.username}
                 </p>
                 <p className="msg-string">
