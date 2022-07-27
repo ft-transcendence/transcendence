@@ -5,6 +5,7 @@ import IconPen from "../../ressources/icons/IconPen.svg";
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
 import { UsersRelations } from "./FriendsList";
 import { Activate2FA } from "../../modals/MActivateTwoFA";
+import { TwoFA } from "./TwoFA";
 // import { useUsername } from "../../hooks/UserInfoHooks";
 
 export default function UserPrivateProfile() {
@@ -28,6 +29,7 @@ export default function UserPrivateProfile() {
     userName: localStorage.getItem("userName"),
     phone: "",
     pass: localStorage.getItem("userPassword"),
+    auth: localStorage.getItem("userAuth"),
   };
 
   const [userInfo, setUserInfo] = useState(userInfoInit);
@@ -44,7 +46,10 @@ export default function UserPrivateProfile() {
   return (
     <main>
       <MUploadAvatar show={modalShow} onHide={() => setModalShow(false)} />
-      <Activate2FA show={modalShowAuth} onHide={() => setModalShowAuth(false)} />
+      <Activate2FA
+        show={modalShowAuth}
+        onHide={() => setModalShowAuth(false)}
+      />
 
       <h1 className="app-title">My account</h1>
       <Container className="p-5 h-100">
@@ -188,25 +193,10 @@ export default function UserPrivateProfile() {
                     </button>
                   </Row>
                 </div>
-                <div>
-                  <Row className="wrapper p-3">
-                    <Col className="text-wrapper col-8">
-                      <div className="IBM-text" style={{ fontSize: "15px" }}>
-                        {" "}
-                        Two Factor authentifcation disabled{" "}
-                      </div>
-                    </Col>
-                    <Col>
-                      <button
-                        type="button"
-                        className="btn btn-secondary btn-sm submit-button float-end"
-                        onClick={() => {setModalShowAuth(true)}}
-                      >
-                        Enable 2FA
-                      </button>
-                    </Col>
-                  </Row>
-                </div>
+                <TwoFA
+                  auth={userInfo.auth}
+                  onClick={() => setModalShowAuth(true)}
+                />
               </Card.Body>
             </Card>
           </Col>
