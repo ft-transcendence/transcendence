@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { twoFAGenerate } from "../queries/twoFAQueries";
-
-const handleSubmit = (event: any) => {
-  event.preventDefault();
-};
+import { twoFAGenerate, twoFAOn } from "../queries/twoFAQueries";
 
 // Enable 2FA modal
 
 export function Activate2FA(props: any) {
   const [image, setImage] = useState<string>("");
+  const [FACodeModal, setCodeModal] = useState("");
+
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setCodeModal(value);
+  };
 
   useEffect(() => {
     if (props.show) {
@@ -21,6 +23,15 @@ export function Activate2FA(props: any) {
         .then(() => console.log("hellow"));
     }
   }, [props.show]);
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log("", FACodeModal);
+    const twoFAActivate = async () => {
+      return await twoFAOn(FACodeModal);
+    };
+    twoFAActivate();
+  };
 
   return (
     <Modal
@@ -44,7 +55,13 @@ export function Activate2FA(props: any) {
         )}
         <Form.Group className="mb-3" controlId="formbasicString">
           <Form.Label> Enter Code </Form.Label>
-          <Form.Control type="email" placeholder="6-digit-code" />
+          <Form.Control
+            type="text"
+            placeholder="6-digit-code"
+            onChange={handleInputChange}
+            value={FACodeModal}
+            name="code"
+          />
           <Form.Text className="text-muted">
             Enter code from your authenticator app.
           </Form.Text>
@@ -52,7 +69,15 @@ export function Activate2FA(props: any) {
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>
-        <Button variant="primary" type="submit" onClick={handleSubmit}>
+        <Button
+          variant="primary"
+          type="submit"
+          className="submit-button"
+          size="sm"
+          onClick={(e: any) => {
+            handleSubmit(e);
+          }}
+        >
           Submit
         </Button>
       </Modal.Footer>
