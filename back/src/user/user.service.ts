@@ -54,7 +54,15 @@ export class UserService {
 			orderBy: { rank: 'desc' },
 		});
 
-		return users;
+		const usersDTO: UserDto[] = [];
+		for (const user of users) {
+			if (user.rank !== 1200) {
+				const userDtO = plainToClass(UserDto, user);
+				usersDTO.push(userDtO);
+			}
+		}
+
+		return usersDTO;
 	}
 
 	async getUser(id: number) {

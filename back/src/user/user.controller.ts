@@ -40,7 +40,7 @@ export class UserController {
 		return userListDtos;
 	}
 
-	@Get()
+	@Get('get_leaderboard')
 	getLeaderboard() {
 		console.log('Going through getLeaderboard in user.controller');
 		return this.userService.getLeaderboard();
