@@ -757,6 +757,7 @@ export class ChatService {
                             {
                                 select:
                                 {
+                                    id: true,
                                     email: true,
                                     username: true,
                                 }
@@ -782,6 +783,7 @@ export class ChatService {
                 {   
                     let element: oneMsg = {
                         msgId: source.messages[i].id,
+                        id: source.messages[i].owner.id,
                         email: source.messages[i].owner.email,
                         username: source.messages[i].owner.username,
                         msg: source.messages[i].msg,
@@ -847,13 +849,13 @@ export class ChatService {
                     {
                         select:
                         {
+                            id: true,
                             email: true,
                             username: true,
                         }
                     }
                 }
             })
-            console.log("msg:::", msg)
             return msg;
         } catch (error) {
             console.log('get__oneNewMsg error:', error);
@@ -869,6 +871,7 @@ export class ChatService {
             {
                 let element: oneMsg = {
                     msgId: source.id,
+                    id: source.owner.id,
                     email: source.owner.email,
                     username: source.owner.username,
                     msg: source.msg,
@@ -1238,7 +1241,7 @@ export class ChatService {
         return insiders;
     }
 
-    organize__userTags(source: any, id: number) {
+    organize__tags(source: any, id: number) {
         let users = [];
         if (source.length)
         {
@@ -1262,7 +1265,7 @@ export class ChatService {
         try {
             const id = await this.get__id__ByEmail(email);
             const source = await this.get__allUsers();
-            const tags = await this.organize__userTags(source, id);
+            const tags = await this.organize__tags(source, id);
             return tags;
         } catch (error) {
             console.log('get__userTags error:', error);
@@ -1274,7 +1277,7 @@ export class ChatService {
     {
         try {
             const usersSource = await this.get__allUsers();
-            const allUsers = await this.organize__userTags(usersSource, -1);
+            const allUsers = await this.organize__tags(usersSource, -1);
             const allInsiders = await this.get__allInsiders(channelId);
             const allBlockers = await this.get__allBlockers(channelId);
             const invitationTags = await this.organize__invitationTags(allUsers, allInsiders, allBlockers);
@@ -1306,6 +1309,45 @@ export class ChatService {
             return filterBlockers;
         }
         return filterInsiders;
+    }
+
+    async get__blockedTags(email: string)
+    {
+        try {
+            const id = await this.get__id__ByEmail(email);
+            const source = await this.get__allBlocked(id);
+            const tags = await this.organize__tags(source, -1);
+            return tags;
+        } catch (error) {
+            console.log('get__userTags error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    async get__allBlocked(id: number) {
+        try {
+            const source = await this.prisma.user.findUnique({
+                where:
+                {
+                    id: id
+                },
+                select:
+                {
+                    blocked:
+                    {
+                        select:
+                        {
+                            id: true,
+                            username: true,
+                        }
+                    }
+                }
+            })
+            return source;
+        } catch (error) {
+            console.log('get__allBlocked error:', error);
+            throw new WsException(error)
+        }
     }
 
     async get__publicChats(email: string)

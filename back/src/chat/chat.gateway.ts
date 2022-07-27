@@ -76,6 +76,14 @@ export class ChatGateway {
     client.emit('add preview', preview);
   }
 
+  @SubscribeMessage('read blocked')
+  async handleReadBlocked(
+    @MessageBody() email: string,
+    @ConnectedSocket() client: Socket) {
+    const data = await this.chatservice.get__blockedTags(email);
+    client.emit('fetch blocked', data)
+  }
+
   @SubscribeMessage('new channel')
   async handleNewChannel(
     @MessageBody() data: ChannelDto,

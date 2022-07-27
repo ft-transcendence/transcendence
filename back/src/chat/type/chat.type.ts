@@ -20,6 +20,7 @@ export type chatPreview = {
 
 export type oneMsg = {
     msgId: number;
+    id: number;
     email: string;
     username: string;
     msg: string;

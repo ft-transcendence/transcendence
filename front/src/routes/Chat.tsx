@@ -39,19 +39,12 @@ export default function Chat() {
 
     useEffect(() => {
         if (selectedChat)
-        {
             setOutsider((role === "invited" || role === "noRole") ? true : false);
-            console.log("in chat, role, ispassword, outsider:::", role, selectedChat?.isPassword, (role === "invited" || role === "noRole"));
-            
-        }
     }, [selectedChat, role]);
 
     useEffect(() => {
         if (selectedChat)
-        {
             setShow((!selectedChat.isPassword) || !outsider)
-            console.log("in chat, show, selectedchat:::", ((!selectedChat.isPassword) || !outsider), selectedChat)
-        }
     }, [outsider])
 
     const newRoomCardDisappear = () => {
