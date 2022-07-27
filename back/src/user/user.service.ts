@@ -99,14 +99,14 @@ export class UserService {
 				id: id,
 			},
 			select: {
-				adding: true,
+				added: true,
 			},
 		});
 		const userList: UserDto[] = [];
 		for (const element of PendingIdList) {
-			for (let index = 0; index < element.adding.length; index++) {
+			for (let index = 0; index < element.added.length; index++) {
 				const user = await this.prisma.user.findUnique({
-					where: { id: element.adding[index] },
+					where: { id: element.added[index] },
 				});
 				const dtoUser = plainToClass(UserDto, user);
 				userList.push(dtoUser);
@@ -198,8 +198,6 @@ export class UserService {
 	//USER PROFILE RELATED FUNCTIONS
 
 	async updateUsername(id: number, newUsername: string, password: string) {
-		if (!(await this.checkPassword(id, password)))
-			throw new ForbiddenException('Invalid password');
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,
@@ -212,8 +210,6 @@ export class UserService {
 	}
 
 	async updateAvatar(id: number, newAvatar: string, password: string) {
-		if (!(await this.checkPassword(id, password)))
-			throw new ForbiddenException('Invalid password');
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,
@@ -226,8 +222,6 @@ export class UserService {
 	}
 
 	async updateEmail(id: number, newEmail: string, password: string) {
-		if (!(await this.checkPassword(id, password)))
-			throw new ForbiddenException('Invalid password');
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,
