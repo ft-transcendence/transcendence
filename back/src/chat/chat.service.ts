@@ -88,7 +88,7 @@ export class ChatService {
     async get__channelsToJoin(email: string)
     {
         try {
-            const source = this.prisma.user.findMany({
+            const source = await this.prisma.user.findUnique({
                 where:
                 {
                     email: email
@@ -109,7 +109,7 @@ export class ChatService {
         
     }
 
-    async organize__channelToJoin(source: any)
+    organize__channelToJoin(source: any)
     {
         const channels = [];
         if (source.admin)
@@ -822,11 +822,67 @@ export class ChatService {
                     updatedAt: msg.createdAt,
                 }
             })
-            return msg;
+            const source = await this.get__oneNewMsg(msg.id);
+            const one = this.organize__oneMsg(source); 
+            return one;
         } catch (error) {
             console.log('new__msg error:', error);
             throw new WsException(error)
         } 
+    }
+
+    async get__oneNewMsg(msgId: number) {
+        try {
+            const msg = await this.prisma.msg.findUnique({
+                where:
+                {
+                    id: msgId,
+                },
+                select:
+                {
+                    id: true,
+                    msg: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    owner:
+                    {
+                        select:
+                        {
+                            email: true,
+                            username: true,
+                        }
+                    }
+                }
+            })
+            console.log("msg:::", msg)
+            return msg;
+        } catch (error) {
+            console.log('get__oneNewMsg error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    async organize__oneMsg(source: any): Promise<oneMsg>
+    {
+        try
+        {
+            if (source)
+            {
+                let element: oneMsg = {
+                    msgId: source.id,
+                    email: source.owner.email,
+                    username: source.owner.username,
+                    msg: source.msg,
+                    createAt: source.createdAt,
+                    updateAt: source.updateAt,
+                    isInvite: false
+                };
+                return element;
+            }
+        } catch (error) {
+            console.log('organize__msgs error:', error);
+            throw new WsException(error);
+        }
     }
 
     async delete__msg(data: UseMsgDto) {

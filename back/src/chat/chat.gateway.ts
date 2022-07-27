@@ -11,7 +11,7 @@ import { ChatService } from './chat.service';
 import { UseMsgDto, ChannelDto, DMDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
-import { oneUser, updateChannel } from './type/chat.type';
+import { oneMsg, oneUser, updateChannel } from './type/chat.type';
 
 // @UseGuards(JwtGuard)
 @UsePipes(new ValidationPipe())
@@ -61,8 +61,9 @@ export class ChatGateway {
       client.emit('exception', {error: "channel exist, try another channel name!"})
     else
     {
-      const ret = await this.chatservice.get__previews(data.email);
-      client.emit('update preview', ret)
+      const preview = await this.chatservice.get__onePreview(channelId);
+      client.join(preview.name);
+      client.emit('add preview', preview);
     }
   }
 
@@ -165,11 +166,15 @@ export class ChatGateway {
   async handleNewMsg(@MessageBody() data: UseMsgDto,
   @ConnectedSocket() client: Socket
   ) {
-    await this.chatservice.new__msg(data);
-    const fetch = await this.chatservice.fetch__msgs(data.channelId);
-    client.emit('fetch msgs', fetch);
+    const msg = await this.chatservice.new__msg(data);
+    this.broadcast('broadcast', msg, data.channelId);
     const preview = await this.chatservice.get__previews(data.email);
     client.emit('update preview', preview)
+  }
+
+  async broadcast(event: string, msg: oneMsg, channelId: number) {
+    const cName = await this.chatservice.get__Cname__ByCId(channelId);
+    this.server.in(cName).emit(event, msg)
   }
 
   async get__role(
@@ -248,7 +253,6 @@ export class ChatGateway {
     @ConnectedSocket() client: Socket
   ) {
     const invitationTags = await this.chatservice.get__invitationTags(channelId);
-    console.log(invitationTags)
     client.emit('invitation tags', invitationTags);
   }
 
