@@ -1,9 +1,10 @@
 /* GLOBAL MODULES */
 import { Injectable, ForbiddenException } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { Game, User } from '@prisma/client';
 import * as argon from 'argon2';
 import { plainToClass } from 'class-transformer';
 import { userInfo } from 'node:os';
+import { GameService } from 'src/game/game.service';
 
 /* PRISMA */
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -12,7 +13,10 @@ import { UserDto } from './dto';
 
 @Injectable()
 export class UserService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		// private gameService: GameService,
+	) {}
 
 	/*	CREATE	*/
 
@@ -63,6 +67,24 @@ export class UserService {
 		}
 
 		return usersDTO;
+	}
+
+	async getGameHistory(id: number) {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+		});
+
+		const gameHistoryInt: number[] = user.gameHistory;
+		if (gameHistoryInt.length === 0) return [];
+
+		const gameHistory: Game[] = [];
+		// for (const gameId of gameHistoryInt) {
+		// 	gameHistory.push(await this.gameService.getGame(gameId))
+		// }
+
+		return gameHistory;
 	}
 
 	async getUser(id: number) {
