@@ -1,5 +1,5 @@
 /* GLOBAL MODULES */
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import { Injectable, ForbiddenException, Inject, forwardRef } from '@nestjs/common';
 import { Game, User } from '@prisma/client';
 import * as argon from 'argon2';
 import { plainToClass } from 'class-transformer';
@@ -15,7 +15,7 @@ import { UserDto } from './dto';
 export class UserService {
 	constructor(
 		private prisma: PrismaService,
-		// private gameService: GameService,
+		@Inject(forwardRef(() => GameService)) private gameService: GameService,
 	) {}
 
 	/*	CREATE	*/
@@ -80,9 +80,9 @@ export class UserService {
 		if (gameHistoryInt.length === 0) return [];
 
 		const gameHistory: Game[] = [];
-		// for (const gameId of gameHistoryInt) {
-		// 	gameHistory.push(await this.gameService.getGame(gameId))
-		// }
+		for (const gameId of gameHistoryInt) {
+			gameHistory.push(await this.gameService.getGame(gameId));
+		}
 
 		return gameHistory;
 	}
@@ -597,6 +597,8 @@ export class UserService {
 	}
 
 	async updatePlayTime(id: number, duration: number) {
+		console.log('id = ' + id);
+		console.log('duration = ' + duration);
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,

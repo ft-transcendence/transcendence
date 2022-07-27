@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { GameService } from './game.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { JwtModule } from '@nestjs/jwt';
@@ -10,7 +10,9 @@ import { GameController } from './game.controller'
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(), JwtModule.register({secret: process.env.JWT_SECRET}), UserModule
+		ScheduleModule.forRoot(),
+		JwtModule.register({ secret: process.env.JWT_SECRET }),
+		
   ],
 
   providers: [GameService, UserService],

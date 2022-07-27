@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { Room } from './interfaces/room.interface';
 import { Server } from 'socket.io';
@@ -18,7 +18,7 @@ const ballSpeed = 0.5;
 export class GameService {
 	constructor(
 		private schedulerRegistry: SchedulerRegistry,
-		private userService: UserService,
+		@Inject(forwardRef(() => UserService)) private userService: UserService,
 		private prisma: PrismaService,
 	) {}
 

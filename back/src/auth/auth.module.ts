@@ -10,6 +10,7 @@ import { FortyTwoStrategy } from "./strategy/42.strategy";
 /* USER Module */
 import { UserModule } from "src/user/user.module";
 import { UserService } from "src/user/user.service";
+import { GameService } from "src/game/game.service";
 
 @Module({
     imports: 
@@ -27,7 +28,8 @@ import { UserService } from "src/user/user.service";
         jwtStrategy,
         RtStrategy, 
         FortyTwoStrategy, 
-        UserService
+        UserService,
+        GameService
     ],
 })
 
