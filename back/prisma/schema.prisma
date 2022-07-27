@@ -30,16 +30,17 @@ model User {
 	gamesWon		Int?
 	gamesLost		Int?
 	gamesPlayed	Int?
-//game history ? Une partie = 2 id, un score
 
-	friends		User[]		@relation(name: "relationships")  //array of friends based on their id 
-	blocked		User[]		@relation(name: "relationships")  // it's blocked or blocking
+	friends		User[]		@relation(name: "relationships")
+	blocked		User[]		@relation(name: "relationships")
 
   owner       Channel[] @relation("owner")
-  admin       Channel[] @relation("admin")  // the following three line i dont understand well. 
+  admin       Channel[] @relation("admin")
   member      Channel[] @relation("member")
   invited     Channel[] @relation("invite")
   chanBlocked Channel[] @relation("blocked")
+
+  Muted       Mute[]
 
   messages    Msg[]
 
@@ -60,31 +61,47 @@ model Channel {
   isPassword  Boolean   @default(false)
   password    String?
 
-  owners    User[]      @relation("owner")
-  admins    User[]      @relation("admin")
-  members   User[]      @relation("member")
-  inviteds    User[]    @relation("invite")
-  blocked   User[]      @relation("blocked")
-  messages  Msg[]
+  owners      User[]      @relation("owner")
+  admins      User[]      @relation("admin")
+  members     User[]      @relation("member")
+  inviteds    User[]      @relation("invite")
+  blocked     User[]      @relation("blocked")
+
+  muted       Mute[]
+
+  messages    Msg[]
 
   @@unique([id, name])
 }
 
 model Msg {
-  id    Int     @id  @default(autoincrement())
+  id          Int     @id  @default(autoincrement())
 
-  msg  String
-  history String[]
+  msg         String
+  history     String[]
 
-  unsent    Boolean   @default(false)
+  unsent      Boolean   @default(false)
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  owner     User      @relation(fields: [userId], references: [id])
-  userId    Int
-  channel   Channel   @relation(fields: [cid], references: [id])
-  cid       Int
+  owner       User      @relation(fields: [userId], references: [id])
+  userId      Int
+  channel     Channel   @relation(fields: [cid], references: [id])
+  cid         Int
 
   @@unique([id])
+}
+
+model Mute {
+  id          Int       @id   @default(autoincrement())
+
+  finishAt    DateTime
+  checkAt     DateTime  @default(now())
+  finished    Boolean   @default(false)
+
+  muted       User      @relation(fields: [userId], references: [id])
+  userId      Int
+  channel     Channel   @relation(fields: [cid], references: [id])
+  cid         Int
 }
