@@ -88,3 +88,9 @@ export type setting = {
     private: boolean;
     isPassword: boolean;
 }
+
+export type mute = {
+    duration: number;
+    email: string;
+    chanelId: number;
+}

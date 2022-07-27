@@ -3,8 +3,10 @@ import { WsException } from '@nestjs/websockets';
 import * as argon from 'argon2'
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChannelDto, DMDto, UseMsgDto } from './dto/chat.dto';
-import { chatPreview, oneMsg, oneSuggestion, oneUser, updateChannel } from './type/chat.type';
- 
+import { chatPreview, mute, oneMsg, oneSuggestion, oneUser, updateChannel } from './type/chat.type';
+import * as moment from 'moment';
+
+
 @Injectable()
 export class ChatService {
 
@@ -45,7 +47,6 @@ export class ChatService {
                     email: email,
                 }
             })
-            this.list__allUsers()
             return (user.id);
         } catch (error) {
             console.log('get__id__ByEmail error:', error);
@@ -803,6 +804,9 @@ export class ChatService {
     async new__msg(data: UseMsgDto)
     {
         try {
+            const isMuted = await this.check__isMuted(data.email, data.channelId);
+            if (isMuted)
+                return ;
             const id = await this.get__id__ByEmail(data.email);
             const msg =  await this.prisma.msg.create({
                 data:
@@ -831,6 +835,86 @@ export class ChatService {
             throw new WsException(error)
         } 
     }
+
+    async update__muteCheckAt(id: number, channelId: number) {
+        try {
+            await this.prisma.mute.updateMany({
+                where:
+                {
+                    AND: [
+                        {userId: id},
+                        {cid: channelId},
+                        {finished: false}
+                    ]
+                },
+                data:
+                {
+                    checkAt: new Date()
+                }
+            })
+        } catch (error) {
+            console.log('update__muteCheckAt error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    async get__mutedRecord(id: number, channelId: number) {
+        try {
+            const mutedRecord = await this.prisma.mute.findMany({
+                where:
+                {
+                    AND: [
+                        {userId: id},
+                        {cid: channelId},
+                        {finished: false}
+                    ]
+                }
+            })
+            return mutedRecord;
+        } catch (error) {
+            console.log('get__mutedRecord error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    async update__mute(id: number) {
+        try {
+            await this.prisma.mute.update({
+                where:
+                {
+                    id: id
+                },
+                data:
+                {
+                    finished: true
+                }
+            })
+        } catch (error) {
+            console.log('check__isMuted error:', error);
+            throw new WsException(error)
+        }
+    }
+
+    async check__isMuted(email: string, channelId: number) {
+        try {
+            const id = await this.get__id__ByEmail(email);
+            await this.update__muteCheckAt(id, channelId);
+            const mutedRecord = await this.get__mutedRecord(id, channelId);
+            if (mutedRecord.length > 0)
+            {
+                const isMuted = mutedRecord.find(async (record) => {
+                    if (record.checkAt > record.finishAt)
+                        await this.update__mute(record.id);
+                    return record.finishAt > record.checkAt
+                })
+                return isMuted;
+            }
+        } catch (error) {
+            console.log('check__isMuted error:', error);
+            throw new WsException(error)
+        }
+    }
+
 
     async get__oneNewMsg(msgId: number) {
         try {
@@ -917,7 +1001,6 @@ export class ChatService {
                 {
                     msg: data.msg,
                     history: [data.msg],
-                    updatedAt: new Date(),
                 }
             })
         } catch (error) {
@@ -1595,6 +1678,23 @@ export class ChatService {
             }
         } catch (error) {
             console.log('update__setting error:', error);
+            throw new WsException(error.message)
+        }
+    }
+
+    async new__mute(data: mute) {
+        try {
+            const id = await this.get__id__ByEmail(data.email)
+            await this.prisma.mute.create({
+                data:
+                {
+                    finishAt: moment.utc(new Date()).add(data.duration, 'minute').toISOString(),
+                    userId: id,
+                    cid: data.chanelId
+                }
+            })
+        } catch (error) {
+            console.log('new__mute error:', error);
             throw new WsException(error.message)
         }
     }
