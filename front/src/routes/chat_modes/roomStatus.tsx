@@ -234,7 +234,6 @@ function Status({users, current, role}
             ownerPassword: "",
             newPassword: ""
         }
-        console.log("myemail: %s, email: %s", email, global.selectedData.email)
         socket.emit("be admin", update);
     }
 
@@ -250,11 +249,10 @@ function Status({users, current, role}
             ownerPassword: "",
             newPassword: ""
         }
-        console.log("myemail: %s, email: %s, ownerEmail: %s", email, global.selectedData.email, current?.ownerEmail)
         socket.emit("not admin", update);
     }
 
-    function handleLeave(){
+    function handleKickOut(){
         let update: updateChannel = {
             channelId: current!.id,
             email: global.selectedData.email,
@@ -266,7 +264,7 @@ function Status({users, current, role}
             ownerPassword: "",
             newPassword: ""
         }
-        socket.emit("'kick out channel", update);
+        socket.emit("kick out", update);
     }
 
     return (
@@ -326,7 +324,7 @@ function Status({users, current, role}
                             20 mins
                         </Item>
                     </Submenu>
-                    <Item onClick={handleLeave}>
+                    <Item onClick={handleKickOut}>
                         kick out
                     </Item>
                         </> : <></>}

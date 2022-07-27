@@ -139,6 +139,10 @@ export class ChatGateway {
     client.emit('update preview', preview);
     const users = await this.chatservice.get__searchSuggest(data.email);
     client.emit('search suggest', users);
+    client.emit('fetch owner', []);
+    client.emit('fetch admins', []);
+    client.emit('fetch members', []);
+    client.emit('fetch inviteds', []);
   }
 
   @SubscribeMessage('leave channel')
@@ -151,18 +155,18 @@ export class ChatGateway {
     client.emit('update preview', preview);
     const users = await this.chatservice.get__searchSuggest(data.email);
     client.emit('search suggest', users);
+    client.emit('fetch owner', []);
+    client.emit('fetch admins', []);
+    client.emit('fetch members', []);
+    client.emit('fetch inviteds', []);
   }
 
-  @SubscribeMessage('kick out channel')
+  @SubscribeMessage('kick out')
   async handleKickOutChannel(
     @MessageBody() data: updateChannel,
     @ConnectedSocket() client: Socket
   ) {
     await this.chatservice.leave__channel(data);
-    const preview = await this.chatservice.get__previews(data.email);
-    client.emit('update preview', preview);
-    const owners = await this.chatservice.fetch__owners(data.channelId);
-    client.emit('fetch owner', owners);
     const admins = await this.chatservice.fetch__admins(data.channelId);
     client.emit('fetch admins', admins);
     const members = await this.chatservice.fetch__members(data.channelId);
