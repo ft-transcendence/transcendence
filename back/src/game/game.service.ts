@@ -3,7 +3,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { Room } from './interfaces/room.interface';
 import { Server } from 'socket.io';
 import { GameData } from './interfaces/gameData.interface'
-import { findIndex } from 'rxjs';
+import { findIndex, NotFoundError } from 'rxjs';
 import { UserService } from 'src/user/user.service';
 import { User } from '@prisma/client';
 import { Mutex } from 'async-mutex';
@@ -292,9 +292,11 @@ export class GameService {
 				rejectOnNotFound: true,
 			});
 
-			// update ranks
+			// update ranks, should not be equal to 1200
 			const oldRanks = [winner.rank, loser.rank];
 			const newRanks = await this.userService.calculateRanks(oldRanks);
+			if (Math.floor(newRanks[0]) === 1200) newRanks[0]++;
+			if (Math.floor(newRanks[1]) === 1200) newRanks[0]--;
 
 			const updatedWinner = await this.prisma.user.update({
 				where: {
@@ -302,6 +304,9 @@ export class GameService {
 				},
 				data: {
 					rank: Math.floor(newRanks[0]),
+					gameHistory: {
+						push: id,
+					},
 				},
 			});
 			const updatedLoser = await this.prisma.user.update({
@@ -310,6 +315,9 @@ export class GameService {
 				},
 				data: {
 					rank: Math.floor(newRanks[1]),
+					gameHistory: {
+						push: id,
+					},
 				},
 			});
 			return game;
