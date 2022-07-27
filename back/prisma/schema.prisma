@@ -49,7 +49,9 @@ model User {
   invited     Channel[] @relation("invite")
   chanBlocked Channel[] @relation("blocked")
 
-	messages    Msg[]
+  Muted       Mute[]
+
+  messages    Msg[]
 
 	@@unique([id, email])
 	@@map("users")    //mapped to another name
@@ -68,33 +70,47 @@ model Channel {
   isPassword  Boolean   @default(false)
   password    String?
 
-  owners    User[]      @relation("owner")
-  admins    User[]      @relation("admin")
-  members   User[]      @relation("member")
-  inviteds    User[]    @relation("invite")
-  blocked   User[]      @relation("blocked")
-  messages  Msg[]
+  owners      User[]      @relation("owner")
+  admins      User[]      @relation("admin")
+  members     User[]      @relation("member")
+  inviteds    User[]      @relation("invite")
+  blocked     User[]      @relation("blocked")
+
+  muted       Mute[]
+
+  messages    Msg[]
 
 	@@unique([id, name])
 }
 
 model Msg {
-	id    Int     @id  @default(autoincrement())
+  id          Int     @id  @default(autoincrement())
 
-	msg  String
-	history String[]
+  msg         String
+  history     String[]
 
-  unsent    Boolean   @default(false)
+  unsent      Boolean   @default(false)
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-	owner     User      @relation(fields: [userId], references: [id])
-	userId    Int
-	channel   Channel   @relation(fields: [cid], references: [id])
-	cid       Int
+  owner       User      @relation(fields: [userId], references: [id])
+  userId      Int
+  channel     Channel   @relation(fields: [cid], references: [id])
+  cid         Int
 
 	@@unique([id])
 }
 
+model Mute {
+  id          Int       @id   @default(autoincrement())
 
+  finishAt    DateTime
+  checkAt     DateTime  @default(now())
+  finished    Boolean   @default(false)
+
+  muted       User      @relation(fields: [userId], references: [id])
+  userId      Int
+  channel     Channel   @relation(fields: [cid], references: [id])
+  cid         Int
+}
