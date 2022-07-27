@@ -1,8 +1,9 @@
 .chat-room-zone {
-    background-color: #071330;
+    background-color: inherit;
     flex: 1;
     display: flex;
     flex-direction: column;
+    box-shadow: 0px 0px 96px 0px rgb(0 0 0 / 18%);
 }
 
 .lock-icon {
@@ -10,9 +11,9 @@
 }
 
 .brief-info {
-    background-color: inherit;
+    background-color: #191e1e;
     height: 60px;
-    border-bottom: 1px solid;
+    /* border-bottom: 1px solid; */
     display: flex;
 }
 
@@ -39,8 +40,8 @@
     }
 
 .msg-stream {
-    background-color: #071330;
-    border-right: 1px solid;
+    background-color: #273438;
+    padding: 10px;
     flex: 1;
     overflow: overlay;
 }
@@ -96,31 +97,24 @@
         color: black;
     }
 
-    .msg-input-zone {
-        padding-bottom: 5px;
-        margin-bottom: 3px;
-        display: flex;
-        height:60px;
-        width: 100%;
-        border-radius: 12px;
-        border-right: 1px solid;
-    }
+.msg-input-zone {
+    background-color: #334a50;
+    padding: 10px;
+    display: flex;
+    box-shadow: 0px 0px 35px 0px rgb(0 0 0 / 5%);
+}
 
-    .msg-input-area {
-        margin: auto;
-        margin-bottom: 3px;
-        padding: 20px;
-        background-color: #738FA7;
-        height: 40px;
-        border-radius: 12px;
-        margin-left: 12px;
-        margin-right: 12px;
-        outline: none;
-        border: none;
-        color: white;
-        flex:1;
-    }
+.msg-input-area {
+    background-color: transparent;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    height: 35px;
+    outline: none;
+    border: none;
+    color: white;
+    flex: 1;
+}
 
-    #msg::placeholder {
-        color: white;
-    }
+#msg::placeholder {
+    color: white;
+}
