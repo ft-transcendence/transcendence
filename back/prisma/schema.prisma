@@ -32,7 +32,8 @@ model User {
 	gamesWon		Int     @default(0)
 	gamesLost		Int     @default(0)
 	gamesPlayed		Int     @default(0)
-	gameHistory		Int[]	
+	gameHistory		Int[]
+	
 
 	winRate			Float?
 	playTime		Int		@default(0)

@@ -9,6 +9,7 @@ import { GameService } from 'src/game/game.service';
 /* PRISMA */
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from './dto';
+import { SubjectiveGameDto } from 'src/game/dto';
 /* USER Modules */
 
 @Injectable()
@@ -84,7 +85,37 @@ export class UserService {
 			gameHistory.push(await this.gameService.getGame(gameId));
 		}
 
-		return gameHistory;
+		// gameHistory stores PrismaGames[], need to transform them into a SubjectiveGameDtos[]
+		const gameDTOs: SubjectiveGameDto[] = [];
+
+		for (const game of gameHistory) {
+			// identify the opponent
+			let opponentId: number;
+			let userScore: number;
+			let opponentScore: number;
+			
+			game.player1 === id ? opponentId = game.player2 : opponentId = game.player1;
+			game.player1 === id ? userScore = game.score1 : userScore = game.score2;
+			game.player1 === id ? opponentScore = game.score2 : opponentScore = game.score1;
+			const opponent: UserDto = await this.getUser(opponentId);
+
+			// fill the SubjectiveGameDto
+			const gameDTO: SubjectiveGameDto = {
+				userId: id,
+				opponentId: opponent.id,
+				opponentAvatar: opponent.avatar,
+				opponentUsername: opponent.username,
+				opponentUser: opponent,
+				opponentRank: opponent.rank,
+				duration: game.duration,
+				userScore: userScore,
+				opponentScore: opponentScore,
+				victory: userScore > opponentScore ? true : false,
+			};
+			gameDTOs.push(gameDTO);
+		}
+
+		return gameDTOs;
 	}
 
 	async getUser(id: number) {
