@@ -1,14 +1,14 @@
 .preview-zone {
     background-color: inherit;
     width: 250px;
-    border-right: 1px solid;
+    /* border-right: 1px solid; */
 }
 
 .preview-chat-search {
     /* background-color: palevioletred; */
     display: flex;
     height: 60px;
-    border-bottom: 1px solid;
+    /* border-bottom: 1px solid; */
 }
 
 .input-search {

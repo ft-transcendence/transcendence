@@ -67,8 +67,6 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
                     (show ? 
                         <>
                             <MsgStream email={email} channelId={current!.id} blocked={blocked}/>
-                            :
-                            <></>
                         </>
                         :   
                         <LockIcon/>
@@ -158,19 +156,21 @@ function MsgStream({email, channelId, blocked}
     return (
         <div 
             className="msg-stream" ref={scroll}>
-            {msgs.map((value, index) => {
-                const isBlocked = blocked.find((blocked) => {
-                    return value.id === blocked.id
-                });
-                return (
-                    isBlocked ?
-                    <></> :
-                    <div key={index}>
-                        <OneMessage data={value} email={email}/>
-                    </div>
-                    
-                )
-            })}
+            {
+                msgs.map((value, index) => {
+                    const isBlocked = blocked.find((blocked) => {
+                        return value.id === blocked.id
+                    });
+                    return (
+                        isBlocked ?
+                        <></> :
+                        <div key={index}>
+                            <OneMessage data={value} email={email}/>
+                        </div>
+                        
+                    )
+                })
+            }
             <Menu id={MENU_MSG}>
                 <Item onClick={handleDeleteMsg}>
                     unsend
