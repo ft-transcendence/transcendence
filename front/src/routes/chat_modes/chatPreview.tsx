@@ -1,7 +1,7 @@
 import "./chatPreview.css";
 import { useEffect, useState } from "react";
 import "./chatPreview.css";
-import {socket} from "../Chat";
+import { socket } from "../Chat";
 import { chatPreview, newDM, oneSuggestion, updateChannel } from "./type/chat.type";
 import {
     Menu,

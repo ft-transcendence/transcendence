@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { socket } from "../../App";
 import "./roomStatus.css";
 import { chatPreview, oneUser, Tag, updateChannel, updateUser } from "./type/chat.type";
 import {
@@ -12,9 +11,10 @@ import {
 } from "react-contexify";
 import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
-import { useAuth } from "../..";
 import { AddUserIcon, QuitIcon } from "./icon";
 import ReactTags from "react-tag-autocomplete";
+import { useAuth } from "../../globals/contexts";
+import { socket } from "../Chat";
 
 declare var global: {
     selectedData: oneUser

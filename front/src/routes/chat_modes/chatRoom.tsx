@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useAuth } from "../..";
-import { socket } from "../../App";
+import { socket } from "../Chat";
 import "./chatRoom.css";
 import { 
     chatPreview,
     oneMsg,
+    Tag,
     useMsg
 } from "./type/chat.type";
 import {
@@ -13,6 +13,7 @@ import {
     useContextMenu
 } from "react-contexify";
 import { LockIcon, SettingIcon } from "./icon";
+import { useAuth } from "../../globals/contexts";
 
 const MENU_MSG = "menu_msg";
 
@@ -27,15 +28,31 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
         outsider: boolean | undefined,
         setSettingRequest: () => void}) {
 
-    const email = useAuth().user;
+        const [blocked, setBlocked] = useState<Tag[]>([]);
+        const email = useAuth().user;
 
     useEffect(() => {
+
+        socket.on("connect", () => {
+            socket.emit("read blocked", email);
+        });
+
+        socket.on("fetch blocked", (data: Tag[]) => {
+            setBlocked(data);
+        })
+
         if (show && current)
         {
             const cId = current.id;
             socket.emit("read msgs", cId);
             socket.emit("get setting", cId);
         }
+
+        return (() => {
+            socket.off("connect")
+            socket.off("fetch blocked");
+        })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show, current])
 
     return(
@@ -49,7 +66,7 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
                 current ?
                     (show ? 
                         <>
-                            <MsgStream email={email} channelId={current!.id}/>
+                            <MsgStream email={email} channelId={current!.id} blocked={blocked}/>
                             :
                             <></>
                         </>
@@ -87,22 +104,22 @@ function BriefInfo({info, role, setSettingRequest}
     )
 }
 
-function MsgStream({email, channelId}
+function MsgStream({email, channelId, blocked}
     : { email: string | null,
-        channelId: number}) {
+        channelId: number,
+        blocked: Tag[]}) {
 
     const [msgs, setMsgs] = useState<oneMsg[]>([]);
     const scroll = useRef<HTMLDivElement>(null);
 
     useEffect( () => {
+       
         socket.on("fetch msgs", (data: oneMsg[]) => {
-            console.log("got fetched msgs", data)
             setMsgs(data);
         })
 
         socket.on("broadcast", (msg: oneMsg) => {
             setMsgs(oldMsgs => [...oldMsgs, msg]);
-            console.log("got new msg", msg)
         })
 
         return (() => {
@@ -119,7 +136,6 @@ function MsgStream({email, channelId}
             msgId: global.selectedData.msgId,
             msg: global.selectedData.msg
         }
-        console.log("msg", msg)
         socket.emit("delete msg", msg)
     }
 
@@ -143,10 +159,16 @@ function MsgStream({email, channelId}
         <div 
             className="msg-stream" ref={scroll}>
             {msgs.map((value, index) => {
+                const isBlocked = blocked.find((blocked) => {
+                    return value.id === blocked.id
+                });
                 return (
+                    isBlocked ?
+                    <></> :
                     <div key={index}>
                         <OneMessage data={value} email={email}/>
                     </div>
+                    
                 )
             })}
             <Menu id={MENU_MSG}>
@@ -175,7 +197,7 @@ function OneMessage({data, email}
             setSender("self")
         else
             setSender("other")
-        console.log("reset sender:::", data)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data])
 
     return (

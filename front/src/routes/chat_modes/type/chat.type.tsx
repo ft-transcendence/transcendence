@@ -59,6 +59,7 @@ export type useMsg = {
 
 export type oneMsg = {
     msgId: number;
+    id: number;
     email: string;
     username: string;
     msg: string;

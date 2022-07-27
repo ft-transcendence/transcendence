@@ -1,14 +1,14 @@
 import "./card.css";
 import "./tags.css"
 import { useEffect, useRef, useState } from "react";
-import { socket } from "../../App";
+import { socket } from "../Chat";
 import { newChannel } from "./type/chat.type";
 import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
 import Switch from "react-switch";
 import ReactTags, { Tag } from "react-tag-autocomplete";
 import { matchSorter } from "match-sorter";
-import { useAuth } from "../..";
+import { useAuth } from "../../globals/contexts";
 
 export function NewRoomCard({newRoomRequest, onNewRoomRequest}
     : { newRoomRequest: boolean,
@@ -40,7 +40,7 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
         return  (() => {
             socket.off("user tags");
         })
-        // @ts-ignore-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newRoomRequest])
 
     const onAddMember = (member: Tag) => {
