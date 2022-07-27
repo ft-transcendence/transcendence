@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getUserFriends } from "../../../queries/userQueries";
+import { getUserPending } from "../../../queries/userQueries";
 import { ItableRow } from "../../../globals/Interfaces";
 import { DisplayRow } from "./DisplayRowUsers";
 
@@ -15,7 +15,7 @@ export const PendingList = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      let fetchedPending = await getUserFriends(); ////// GET PENDING
+      let fetchedPending = await getUserPending();
 
       for (let i = 0; i < fetchedPending.length; i++) {
         let newRow: ItableRow = {

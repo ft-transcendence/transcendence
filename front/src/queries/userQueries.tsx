@@ -2,6 +2,14 @@ export const getUserFriends = () => {
   return fetchGet("get_friends", authFileHeader, storeFriendsInfo);
 };
 
+export const getUserBlocked = () => {
+  return fetchGet("get_blocked", authFileHeader, storeFriendsInfo);
+};
+
+export const getUserPending = () => {
+  return fetchGet("get_pending", authFileHeader, storeFriendsInfo);
+};
+
 export const getUserData = () => {
   return fetchGet("me", authFileHeader, storeUserInfo);
 };

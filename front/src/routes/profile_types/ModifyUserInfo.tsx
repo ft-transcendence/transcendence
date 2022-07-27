@@ -57,10 +57,10 @@ export const ModifyEntry = (props: any) => {
                   setUserInput={handleInputChange}
                   userInput={userInput}
                 />
-                <CurrentPasswordValidation
+                {/* <CurrentPasswordValidation
                   setUserInput={handleInputChange}
                   userInput={userInput.pass}
-                />
+                /> */}
                 <Row>
                   <Col></Col>
                   <Col>
@@ -206,21 +206,21 @@ const EntryIsPassword = (props: any) => {
   );
 };
 
-const CurrentPasswordValidation = (props: any) => {
-  return (
-    <div>
-      <Form.Group className="mb-3">
-        <Form.Label className="IBM-text" style={{ fontSize: "20px" }}>
-          PASSWORD
-        </Form.Label>
-        <Form.Control
-          type="password"
-          placeholder="current password"
-          onChange={props.setUserInput}
-          value={props.modifyInput}
-          name="pass"
-        />
-      </Form.Group>
-    </div>
-  );
-};
+// const CurrentPasswordValidation = (props: any) => {
+//   return (
+//     <div>
+//       <Form.Group className="mb-3">
+//         <Form.Label className="IBM-text" style={{ fontSize: "20px" }}>
+//           PASSWORD
+//         </Form.Label>
+//         <Form.Control
+//           type="password"
+//           placeholder="current password"
+//           onChange={props.setUserInput}
+//           value={props.modifyInput}
+//           name="pass"
+//         />
+//       </Form.Group>
+//     </div>
+//   );
+// };

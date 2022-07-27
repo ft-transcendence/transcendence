@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getUserFriends } from "../../../queries/userQueries";
+import { getUserBlocked } from "../../../queries/userQueries";
 import { ItableRow } from "../../../globals/Interfaces";
 import { DisplayRow } from "./DisplayRowUsers";
 
@@ -15,7 +15,7 @@ export const BlockedList = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      let fetchedBlocked = await getUserFriends(); ////// GET BLOCKED
+      let fetchedBlocked = await getUserBlocked();
 
       for (let i = 0; i < fetchedBlocked.length; i++) {
         let newRow: ItableRow = {
