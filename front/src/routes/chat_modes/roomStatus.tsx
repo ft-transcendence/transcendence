@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import "./roomStatus.css";
-import { chatPreview, oneUser, Tag, updateChannel, updateUser } from "./type/chat.type";
+import { 
+    chatPreview, 
+    mute, 
+    oneUser, 
+    Tag, 
+    updateChannel, 
+    updateUser
+} from "./type/chat.type";
 import {
     Menu,
     Item,
@@ -199,14 +206,15 @@ function Status({users, current, role}
     }
 
     function handleMute(mins: number){
-        let update: updateUser = {
-            self: email,
-            other: global.selectedData.username
+        let update: mute = {
+            duration: mins,
+            email: global.selectedData.email,
+            chanelId: current!.id
         }
         socket.emit("mute user", update);
     }
 
-    function handleBlock(){
+    function handleBlockUser(){
         let update: updateUser = {
             self: email,
             other: global.selectedData.username
@@ -277,7 +285,7 @@ function Status({users, current, role}
                     <Item onClick={handleInviteGame}>
                         invite to a game!
                     </Item>
-                    <Item onClick={handleBlock}>
+                    <Item onClick={handleBlockUser}>
                         block user
                     </Item>
                     <Separator/>

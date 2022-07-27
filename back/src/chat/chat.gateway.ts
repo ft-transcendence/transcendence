@@ -11,7 +11,7 @@ import { ChatService } from './chat.service';
 import { UseMsgDto, ChannelDto, DMDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
-import { oneMsg, oneUser, updateChannel } from './type/chat.type';
+import { mute, oneMsg, oneUser, updateChannel } from './type/chat.type';
 
 // @UseGuards(JwtGuard)
 @UsePipes(new ValidationPipe())
@@ -176,9 +176,12 @@ export class ChatGateway {
   @ConnectedSocket() client: Socket
   ) {
     const msg = await this.chatservice.new__msg(data);
-    this.broadcast('broadcast', msg, data.channelId);
-    const preview = await this.chatservice.get__previews(data.email);
-    client.emit('update preview', preview)
+    if (msg)
+    {
+      this.broadcast('broadcast', msg, data.channelId);
+      const preview = await this.chatservice.get__previews(data.email);
+      client.emit('update preview', preview)
+    }
   }
 
   async broadcast(event: string, msg: oneMsg, channelId: number) {
@@ -331,4 +334,13 @@ export class ChatGateway {
     const info = await this.chatservice.get__setting(data.channelId);
     client.emit('setting info', info);
   }
+
+  @SubscribeMessage('mute user')
+  async handleMuteUser(
+    @MessageBody() data: mute,
+    @ConnectedSocket() client: Socket
+  ) {
+    await this.chatservice.new__mute(data);
+  }
+
 }

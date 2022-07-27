@@ -56,3 +56,9 @@ export type updateChannel = {
     ownerPassword: string;
     newPassword: string;
 }
+
+export type mute = {
+    duration: number;
+    email: string;
+    chanelId: number;
+}
