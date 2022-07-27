@@ -90,6 +90,7 @@ export default function Chat() {
                     current={selectedChat}
                     show={show}
                     role={role}
+                    outsider={outsider}
                     setSettingRequest={() => {setSettingRequest(old => {return !old})}}/>
             <div style={{display: selectedChat?.dm ? "none" : "", backgroundColor: "#003e60"}}>
                 <RoomStatus

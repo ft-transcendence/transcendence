@@ -20,10 +20,11 @@ declare var global: {
     selectedData: oneMsg
 }
 
-export default function ChatRoom({current, show, role, setSettingRequest}
+export default function ChatRoom({current, show, role, outsider, setSettingRequest}
     : { current: chatPreview | undefined,
         show: boolean | undefined,
         role: string,
+        outsider: boolean | undefined,
         setSettingRequest: () => void}) {
 
     const email = useAuth().user;
@@ -49,13 +50,18 @@ export default function ChatRoom({current, show, role, setSettingRequest}
                     (show ? 
                         <>
                             <MsgStream email={email} channelId={current!.id}/>
-                            <InputArea email = {email} channelId = {current!.id}/>
+                            :
+                            <></>
                         </>
                         :   
                         <LockIcon/>
                     )
                     : <></>
                 }
+                {current && show && !outsider ? 
+                    <>
+                        <InputArea email = {email} channelId = {current!.id}/>
+                    </> : <></>}
             </div>
         </>
     )
