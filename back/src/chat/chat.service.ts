@@ -804,10 +804,14 @@ export class ChatService {
     async new__msg(data: UseMsgDto)
     {
         try {
-            const isMuted = await this.check__isMuted(data.email, data.channelId);
-            if (isMuted)
-                return ;
             const id = await this.get__id__ByEmail(data.email);
+            const isMuted = await this.check__isMuted(data.email, data.channelId);
+            const allInsiders = await this.get__allInsiders(data.channelId);
+            const isInsider = allInsiders.find((insider) => {
+                return insider.id === id;
+            })
+            if (isMuted || !isInsider)
+            return ;
             const msg =  await this.prisma.msg.create({
                 data:
                 {
