@@ -8,7 +8,6 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-// eslint-disable-next-line unicorn/prevent-abbreviations
 import { UseMessageDto, ChannelDto, DMDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { HttpToWsFilter, ProperWsFilter } from './filter/transformation-filter';
@@ -48,10 +47,13 @@ export class ChatGateway {
 
 	@SubscribeMessage('add preview')
 	async handleChatSearch(
-		@MessageBody() channelId: number,
+		@MessageBody() data: any,
 		@ConnectedSocket() client: Socket,
 	) {
-		const preview = await this.chatservice.get__onePreview(channelId);
+		const preview = await this.chatservice.get__onePreview(
+			data.channelId,
+			data.email,
+		);
 		client.join(preview.name);
 		client.emit('add preview', preview);
 	}
@@ -76,7 +78,10 @@ export class ChatGateway {
 				error: 'channel exist, try another channel name!',
 			});
 		else {
-			const preview = await this.chatservice.get__onePreview(channelId);
+			const preview = await this.chatservice.get__onePreview(
+				channelId,
+				data.email,
+			);
 			client.join(preview.name);
 			client.emit('add preview', preview);
 		}
@@ -181,7 +186,10 @@ export class ChatGateway {
 	@SubscribeMessage('new dm')
 	async newDM(@MessageBody() data: DMDto, @ConnectedSocket() client: Socket) {
 		const channelId = await this.chatservice.new__DM(data);
-		const preview = await this.chatservice.get__onePreview(channelId);
+		const preview = await this.chatservice.get__onePreview(
+			channelId,
+			data.email,
+		);
 		client.join(preview.name);
 		client.emit('add preview', preview);
 	}

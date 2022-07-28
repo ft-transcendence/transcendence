@@ -217,23 +217,33 @@ export class ChatService {
 		return data;
 	}
 
-	async get__onePreview(channelId: number): Promise<chatPreview> {
+	async get__onePreview(
+		channelId: number,
+		email: string,
+	): Promise<chatPreview> {
 		try {
 			const source = await this.get__chat__ByChannelId(channelId);
-			const data = this.organize__onePreview(source);
+			const data = this.organize__onePreview(source, email);
 			return data;
 		} catch (error) {
 			console.log('get__onePreview error:', error);
 		}
 	}
 
-	organize__onePreview(source: any) {
+	organize__onePreview(source: any, email: string) {
 		let messageCount = 0;
 		if (source.messages) messageCount = source.messages.length;
+		let dmName = '';
+		if (source.owners.length > 1) {
+			dmName =
+				source.owners[0].email === email
+					? source.owners[1].username
+					: source.owners[0].username;
+		} else dmName = 'No One';
 		const data: chatPreview = {
 			id: source.id,
 			dm: source.dm,
-			name: source.name,
+			name: source.dm ? dmName : source.name,
 			isPassword: source.isPassword,
 			updateAt: source.updateAt,
 			// eslint-disable-next-line unicorn/no-nested-ternary, prettier/prettier

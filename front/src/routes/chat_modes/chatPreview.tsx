@@ -59,7 +59,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
     }, [email]);
 
     const addPreview = (channelId: number) => {
-        socket.emit("add preview", channelId)
+        socket.emit("add preview", {channelId: channelId, email: email})
     }
 
     const search = (channelId: number) => {
@@ -161,6 +161,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
                     </Item>
                     <Item 
                         // onClick={handleBlockUser}
+                        style={{backgroundColor: "grey"}}
                     >
                         Block user
                     </Item>
