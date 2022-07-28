@@ -190,7 +190,8 @@ export class ChatGateway {
 			channelId,
 			data.email,
 		);
-		client.join(preview.name);
+		const channelName = await this.chatservice.get__Cname__ByCId(channelId);
+		client.join(channelName);
 		client.emit('add preview', preview);
 	}
 
