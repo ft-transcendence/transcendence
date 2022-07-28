@@ -1,5 +1,19 @@
 export const twoFAGenerate = () => {
-  return fetchPost("2fa/generate");
+  return fetchPost(null, "generate");
+};
+
+export const twoFAAuth = (code: string) => {
+  let raw = JSON.stringify({
+    twoFAcode: code,
+  });
+  return fetchPost(raw, "authenticate");
+};
+
+export const twoFAOn = (code: string) => {
+  let raw = JSON.stringify({
+    twoFAcode: code,
+  });
+  return fetchPost(raw, "turn-on");
 };
 
 const authRawHeader = () => {
@@ -10,14 +24,14 @@ const authRawHeader = () => {
   return myHeaders;
 };
 
-const fetchPost = async (url: string) => {
-  let fetchUrl = "http://localhost:4000/auth/" + url;
+const fetchPost = async (body: any, url: string) => {
+  let fetchUrl = "http://localhost:4000/auth/2fa/" + url;
 
   try {
     const response = await fetch(fetchUrl, {
       method: "POST",
       headers: authRawHeader(),
-      body: null,
+      body: body,
       redirect: "follow",
     });
     const result_1 = await response.json();

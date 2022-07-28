@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { twoFAGenerate, twoFAValidate } from "../queries/twoFAQueries";
-
-
+import { twoFAGenerate, twoFAOn } from "../queries/twoFAQueries";
 
 // Enable 2FA modal
 
 export function Activate2FA(props: { show: boolean, onHide: () => void }) {
   const [image, setImage] = useState<string>("");
-  const [code, setCode] = useState<string>("");
+  const [FACodeModal, setCodeModal] = useState("");
 
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    twoFAValidate(code);
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setCodeModal(value);
   };
 
   useEffect(() => {
@@ -26,6 +24,15 @@ export function Activate2FA(props: { show: boolean, onHide: () => void }) {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.show]);
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log("", FACodeModal);
+    const twoFAActivate = async () => {
+      return await twoFAOn(FACodeModal);
+    };
+    twoFAActivate();
+  };
 
   return (
     <Modal
@@ -49,7 +56,13 @@ export function Activate2FA(props: { show: boolean, onHide: () => void }) {
         )}
         <Form.Group className="mb-3" controlId="formbasicString">
           <Form.Label> Enter Code </Form.Label>
-          <Form.Control type="string" onChange={(e) => { setCode(e.target.value); console.log(e.target.value)}} value={code} placeholder="6-digit-code" />
+          <Form.Control
+            type="text"
+            placeholder="6-digit-code"
+            onChange={handleInputChange}
+            value={FACodeModal}
+            name="code"
+          />
           <Form.Text className="text-muted">
             Enter code from your authenticator app.
           </Form.Text>
@@ -57,7 +70,15 @@ export function Activate2FA(props: { show: boolean, onHide: () => void }) {
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>
-        <Button variant="primary" type="submit" onClick={handleSubmit}>
+        <Button
+          variant="primary"
+          type="submit"
+          className="submit-button"
+          size="sm"
+          onClick={(e: any) => {
+            handleSubmit(e);
+          }}
+        >
           Submit
         </Button>
       </Modal.Footer>
