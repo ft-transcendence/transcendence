@@ -11,7 +11,6 @@ import {
 } from "react-contexify";
 import "./context.css";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
-import { useAuth } from "../../globals/contexts";
 
 const MENU_CHANNEL = "menu_channel";
 const MENU_DM = "menu_dm";
@@ -26,7 +25,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
         onNewRoomRequest: () => void }) {
 
     const [roomPreview, setPreviews] = useState<chatPreview[]>([]);
-    const email = useAuth().user;
+    const email = localStorage.getItem("userEmail");
     
     useEffect(() => {
 
@@ -185,7 +184,7 @@ function ChatSearch({onSearchMyChat, onSearchPublicChat}
         onSearchPublicChat: (channelId: number) => void }) {
 
     const [suggestion, setSug] = useState<oneSuggestion[]>([]);
-    const email = useAuth().user;
+    const email = localStorage.getItem("userEmail");
 
     useEffect(() => {
         socket.emit("get search suggest", email);

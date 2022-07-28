@@ -13,7 +13,6 @@ import {
     useContextMenu
 } from "react-contexify";
 import { LockIcon, SettingIcon } from "./icon";
-import { useAuth } from "../../globals/contexts";
 
 const MENU_MSG = "menu_msg";
 
@@ -29,7 +28,7 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
         setSettingRequest: () => void}) {
 
         const [blocked, setBlocked] = useState<Tag[]>([]);
-        const email = useAuth().user;
+        const email = localStorage.getItem("userEmail");
 
     useEffect(() => {
 
