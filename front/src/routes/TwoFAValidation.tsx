@@ -1,10 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
+import { useLocation, useNavigate } from "react-router-dom";
 import { twoFAAuth } from "../queries/twoFAQueries";
 
 export default function TwoFAValidation() {
+
+  let location = useLocation();
+  let navigate = useNavigate();
   const [FACode, setCode] = useState("");
 
+  useEffect(() => {
+    const email = location.search.split("=")[1];
+    if (email) {
+      console.log(email);
+      navigate("/2FA");
+    }
+  }, [location.search]);
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
@@ -15,7 +26,7 @@ export default function TwoFAValidation() {
     e.preventDefault();
     console.log("", FACode);
     const twoFAValid = async () => {
-      return await twoFAAuth(FACode);
+      return await twoFAAuth(FACode, email);
     };
     twoFAValid();
   };

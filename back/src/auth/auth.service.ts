@@ -159,7 +159,7 @@ export class AuthService {
 	async signin_2FA(response: Response, user: Auth42Dto) {
 		const url = new URL('http://localhost');
 		url.port = process.env.FRONT_PORT;
-		url.pathname = '/auth/authenticate';
+		url.pathname = '2FA';
 		url.searchParams.append('email', user.email);
 		response.status(302).redirect(url.href);
 		return {

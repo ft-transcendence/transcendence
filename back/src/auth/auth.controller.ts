@@ -90,14 +90,15 @@ export class AuthController {
 			request.user as Profile_42,
 			response,
 		);
-
+		tokens['response'];
+		/*
 		// SEND TOKEN TO FRONT in URL
 		const url = new URL(`${request.protocol}` + '://localhost');
 		url.port = process.env.FRONT_PORT;
 		url.pathname = '/auth';
 		url.searchParams.append('access_token', tokens['access_token']);
 		response.status(302).redirect(url.href);
-
+		*/
 		// SEND TOKEN TO FRONT
 		//console.log('callback_42', tokens);
 		//return response.status(201).send(tokens['access_token']);

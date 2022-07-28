@@ -6,7 +6,7 @@ import {
 	Res,
 	UnauthorizedException,
 } from '@nestjs/common';
-import { GetCurrentUser } from 'src/decorators';
+import { GetCurrentUser, Public } from 'src/decorators';
 import { TwoFactorUserDto } from '../dto';
 import { TwoFactorService } from './2fa.service';
 import { Response } from 'express';
@@ -35,7 +35,7 @@ export class TwoFAController {
 	/**
 	 * /2fa/authenticate - authenticate 2FA
 	 */
-
+	@Public()
 	@Post('/authenticate')
 	async authenticate_2fa(
 		@Body() { twoFAcode }: any,
