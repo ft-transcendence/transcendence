@@ -15,6 +15,7 @@ import { GameService } from 'src/game/game.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from './dto';
 import { SubjectiveGameDto } from 'src/game/dto';
+import { use } from 'passport';
 /* USER Modules */
 
 @Injectable()
@@ -59,14 +60,14 @@ export class UserService {
 	}
 
 	async getLeaderboard() {
-		//returns a record of all the users, ordered by rank in descending order
+		//returns a record of all the users, ordered by rank in ascending order
 		const users = await this.prisma.user.findMany({
-			orderBy: { rank: 'desc' },
+			orderBy: { rank: 'asc' },
 		});
 
 		const usersDTO: UserDto[] = [];
 		for (const user of users) {
-			if (user.rank !== 1200) {
+			if (user.score !== 1200) {
 				const userDtO = plainToClass(UserDto, user);
 				usersDTO.push(userDtO);
 			}
@@ -623,7 +624,37 @@ export class UserService {
 
 	//GAME RELATED FUNCTIONS
 
-	async calculateRanks([...ratings]) {
+	async updateRanks() {
+		const users = await this.prisma.user.findMany({
+			orderBy: {
+				score: 'desc',
+			},
+			select: {
+				id: true,
+				score: true,
+			},
+		});
+		const usersId: number[] = [];
+		for (const user of users) {
+			if (user.score !== 1200) usersId.push(user.id);
+		}
+
+		let index = 1;
+		for (const id of usersId) {
+			const usersUpdate = await this.prisma.user.update({
+				where: {
+					id: id,
+				},
+				data: {
+					rank: index,
+				},
+			});
+			index++;
+		}
+		return;
+	}
+
+	async calculateScores([...ratings]) {
 		const [a, b] = ratings;
 		const expectedScore = (self, opponent) =>
 			1 / (1 + 10 ** ((opponent - self) / 400));
@@ -645,6 +676,8 @@ export class UserService {
 				},
 			},
 		});
+		console.log('id done = ' + id);
+
 		return updateUser;
 	}
 

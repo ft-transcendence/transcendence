@@ -37,7 +37,8 @@ model User {
 
 	winRate			Float?
 	playTime		Int		@default(0)
-	rank			Int		@default(1200)
+	score			Int		@default(1200)
+	rank			Int?
 
 	friends		Int[]
 	adding		Int[]	

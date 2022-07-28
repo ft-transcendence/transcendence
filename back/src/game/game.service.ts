@@ -292,18 +292,18 @@ export class GameService {
 				rejectOnNotFound: true,
 			});
 
-			// update ranks, should not be equal to 1200
-			const oldRanks = [winner.rank, loser.rank];
-			const newRanks = await this.userService.calculateRanks(oldRanks);
-			if (Math.floor(newRanks[0]) === 1200) newRanks[0]++;
-			if (Math.floor(newRanks[1]) === 1200) newRanks[0]--;
+			// update scores, should not be equal to 1200
+			const oldScores = [winner.score, loser.score];
+			const newScores = await this.userService.calculateScores(oldScores);
+			if (Math.floor(newScores[0]) === 1200) newScores[0]++;
+			if (Math.floor(newScores[1]) === 1200) newScores[0]--;
 
 			const updatedWinner = await this.prisma.user.update({
 				where: {
 					id: winnerId,
 				},
 				data: {
-					rank: Math.floor(newRanks[0]),
+					score: Math.floor(newScores[0]),
 					gameHistory: {
 						push: id,
 					},
@@ -314,13 +314,14 @@ export class GameService {
 					id: loserId,
 				},
 				data: {
-					rank: Math.floor(newRanks[1]),
+					score: Math.floor(newScores[1]),
 					gameHistory: {
 						push: id,
 					},
 				},
 			});
 
+			this.userService.updateRanks();
 			return game;
 		} catch (error) {
 			throw new ForbiddenException('saveGame error : ' + error);
@@ -344,7 +345,7 @@ export class GameService {
 	}
 
 	async getLastGames() {
-		//returns a record of all the users, ordered by rank in descending order
+		//returns a record of all the users, ordered by endTime in descending order
 		const games = await this.prisma.game.findMany({
 			orderBy: { endTime: 'desc' },
 		});
