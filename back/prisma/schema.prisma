@@ -98,8 +98,6 @@ model Msg {
   userId      Int
   channel     Channel   @relation(fields: [cid], references: [id])
   cid         Int
-
-	@@unique([id])
 }
 
 model Mute {
