@@ -105,6 +105,14 @@ export class ChatGateway {
 				data.channelId,
 			);
 			client.emit('fetch inviteds', inviteds);
+			const role = await this.get__role(
+				data.email,
+				[],
+				[],
+				members,
+				inviteds,
+			);
+			client.emit('fetch role', role);
 		}
 	}
 
