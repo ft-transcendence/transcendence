@@ -1,5 +1,10 @@
 /* GLOBAL MODULES */
-import { Injectable, ForbiddenException, Inject, forwardRef } from '@nestjs/common';
+import {
+	Injectable,
+	ForbiddenException,
+	Inject,
+	forwardRef,
+} from '@nestjs/common';
 import { Game, User } from '@prisma/client';
 import * as argon from 'argon2';
 import { plainToClass } from 'class-transformer';
@@ -93,10 +98,16 @@ export class UserService {
 			let opponentId: number;
 			let userScore: number;
 			let opponentScore: number;
-			
-			game.player1 === id ? opponentId = game.player2 : opponentId = game.player1;
-			game.player1 === id ? userScore = game.score1 : userScore = game.score2;
-			game.player1 === id ? opponentScore = game.score2 : opponentScore = game.score1;
+
+			game.player1 === id
+				? (opponentId = game.player2)
+				: (opponentId = game.player1);
+			game.player1 === id
+				? (userScore = game.score1)
+				: (userScore = game.score2);
+			game.player1 === id
+				? (opponentScore = game.score2)
+				: (opponentScore = game.score1);
 			const opponent: UserDto = await this.getUser(opponentId);
 
 			// fill the SubjectiveGameDto

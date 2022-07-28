@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString, IsNumber, MaxLength } from 'class-validator';
 
 /*
  *	This is the type of game that is used in
- *	-Latest Games-
+ *	-Latest Games- for a user
  */
 export class SubjectiveGameDto {
 	@IsNumber()
