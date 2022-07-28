@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { ModifyEntry } from "./ModifyUserInfo";
-import IconPen from "../../ressources/icons/IconPen.svg";
+import IconPen from "../../ressources/icons/Icon_Pen.svg";
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
 //import { UsersRelations } from "./FriendsList";
 import { Activate2FA } from "../../modals/MActivateTwoFA";
