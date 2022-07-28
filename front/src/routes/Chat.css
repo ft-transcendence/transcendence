@@ -1,6 +1,9 @@
 .zone-diff {
     display: flex;
     height: 100vh;
+    position: absolute;
+    width: 100%;
+    top: 0;
     background-color: #252a2a;
     border-color: grey;
 }
