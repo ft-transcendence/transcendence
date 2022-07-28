@@ -4,7 +4,7 @@ import {
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
@@ -18,7 +18,6 @@ import { mute, oneMsg, oneUser, updateChannel } from './type/chat.type';
 @UseFilters(new HttpToWsFilter())
 @UseFilters(new ProperWsFilter())
 @WebSocketGateway()
-
 export class ChatGateway {
   @WebSocketServer()
   server: Server;
@@ -30,23 +29,24 @@ export class ChatGateway {
     @ConnectedSocket() client: Socket) {
     const channels = await this.chatservice.get__channelsToJoin(email);
     if (channels.length > 0)
-      for (let i = 0; i < channels.length; i++)
-        client.join(channels[i]);
+      for (let i = 0; i < channels.length; i++) client.join(channels[i]);
   }
 
   @SubscribeMessage('read preview')
   async handleReadPreview(
     @MessageBody() email: string,
-    @ConnectedSocket() client: Socket) {
+    @ConnectedSocket() client: Socket,
+  ) {
     await this.handleFetchChannel(email, client);
     const data = await this.chatservice.get__previews(email);
-    client.emit('set preview', data)
+    client.emit('set preview', data);
   }
 
   @SubscribeMessage('add preview')
   async handleChatSearch(
     @MessageBody() channelId: number,
-    @ConnectedSocket() client: Socket) {
+    @ConnectedSocket() client: Socket,
+  ) {
     const preview = await this.chatservice.get__onePreview(channelId);
     client.join(preview.name);
     client.emit('add preview', preview);
@@ -55,20 +55,23 @@ export class ChatGateway {
   @SubscribeMessage('read blocked')
   async handleReadBlocked(
     @MessageBody() email: string,
-    @ConnectedSocket() client: Socket) {
+    @ConnectedSocket() client: Socket,
+  ) {
     const data = await this.chatservice.get__blockedTags(email);
-    client.emit('fetch blocked', data)
+    client.emit('fetch blocked', data);
   }
 
   @SubscribeMessage('new channel')
   async handleNewChannel(
     @MessageBody() data: ChannelDto,
-    @ConnectedSocket() client: Socket) {
+    @ConnectedSocket() client: Socket,
+  ) {
     const channelId = await this.chatservice.new__channel(data);
     if (channelId == null)
-      client.emit('exception', {error: "channel exist, try another channel name!"})
-    else
-    {
+      client.emit('exception', {
+        error: 'channel exist, try another channel name!',
+      });
+    else {
       const preview = await this.chatservice.get__onePreview(channelId);
       client.join(preview.name);
       client.emit('add preview', preview);
@@ -78,13 +81,15 @@ export class ChatGateway {
   @SubscribeMessage('join channel')
   async joinChannel(
     @MessageBody() data: updateChannel,
-    @ConnectedSocket() client: Socket) {
+    @ConnectedSocket() client: Socket,
+  ) {
     const channelId = await this.chatservice.join__channel(data);
     if (channelId == null)
-      client.emit('exception', {error: "Wrong password"})
-    else
-    {
-      const channelName = await this.chatservice.get__Cname__ByCId(data.channelId);
+      client.emit('exception', { error: 'Wrong password' });
+    else {
+      const channelName = await this.chatservice.get__Cname__ByCId(
+        data.channelId,
+      );
       client.join(channelName);
       const preview = await this.chatservice.get__previews(data.email);
       client.emit('update preview', preview);
@@ -98,8 +103,8 @@ export class ChatGateway {
   @SubscribeMessage('invite to channel')
   async inviteToChannel(
     @MessageBody() data: updateChannel,
-    @ConnectedSocket() client: Socket) {
-
+    @ConnectedSocket() client: Socket,
+  ) {
     const channelId = await this.chatservice.invite__toChannel(data);
     const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
     client.emit('fetch inviteds', inviteds);
@@ -108,8 +113,8 @@ export class ChatGateway {
   @SubscribeMessage('block channel')
   async blockChannel(
     @MessageBody() data: updateChannel,
-    @ConnectedSocket() client: Socket) {
-
+    @ConnectedSocket() client: Socket,
+  ) {
     await this.chatservice.block__channel(data);
     const preview = await this.chatservice.get__previews(data.email);
     client.emit('update preview', preview);
@@ -124,7 +129,7 @@ export class ChatGateway {
   @SubscribeMessage('leave channel')
   async handleDeleteChannel(
     @MessageBody() data: updateChannel,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
     await this.chatservice.leave__channel(data);
     const preview = await this.chatservice.get__previews(data.email);
@@ -140,7 +145,7 @@ export class ChatGateway {
   @SubscribeMessage('kick out')
   async handleKickOutChannel(
     @MessageBody() data: updateChannel,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
     await this.chatservice.leave__channel(data);
     const admins = await this.chatservice.fetch__admins(data.channelId);
@@ -154,9 +159,7 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('new dm')
-  async newDM(
-    @MessageBody() data: DMDto,
-    @ConnectedSocket() client: Socket) {
+  async newDM(@MessageBody() data: DMDto, @ConnectedSocket() client: Socket) {
     const channelId = await this.chatservice.new__DM(data);
     const preview = await this.chatservice.get__onePreview(channelId);
     client.join(preview.name);
@@ -165,76 +168,78 @@ export class ChatGateway {
 
   @SubscribeMessage('test')
   handleTest(
-    @MessageBody() data: any,
-    @ConnectedSocket() client: Socket) {
-    console.log("test  ", data)
+    @MessageBody() data: UseMsgDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('test  ', data);
   }
 
   @SubscribeMessage('read msgs')
   async handleFetchMsgs(
     @MessageBody() channelId: number,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
     const data = await this.chatservice.fetch__msgs(channelId);
     client.emit('fetch msgs', data);
   }
 
   @SubscribeMessage('msg')
-  async handleNewMsg(@MessageBody() data: UseMsgDto,
-  @ConnectedSocket() client: Socket
+  async handleNewMsg(
+    @MessageBody() data: UseMsgDto,
+    @ConnectedSocket() client: Socket,
   ) {
     const msg = await this.chatservice.new__msg(data);
-    if (msg)
-    {
+    if (msg) {
       this.broadcast('broadcast', msg, data.channelId);
       const preview = await this.chatservice.get__previews(data.email);
-      client.emit('update preview', preview)
+      client.emit('update preview', preview);
     }
   }
 
   async broadcast(event: string, msg: oneMsg, channelId: number) {
     const cName = await this.chatservice.get__Cname__ByCId(channelId);
-    this.server.in(cName).emit(event, msg)
+    this.server.in(cName).emit(event, msg);
   }
 
   async get__role(
-    email: string, owners: oneUser[], admins: oneUser[], members: oneUser[], inviteds: oneUser[]) {
-      let role = "noRole";
-      if (inviteds && inviteds.length > 0)
-      {   
-          const isInvited: number = inviteds.filter((invited) => { 
-              return invited.email === email }).length;
-          if (isInvited > 0)
-            role = "invited";
-      }
-      if (members && members.length > 0)
-      {
-          const isMember: number = members.filter((member) => { 
-              return member.email === email }).length;
-          if (isMember > 0)
-            role = "member";
-      }
-      if (admins && admins.length > 0)
-      {
-          const isAdmin: number = admins.filter((admin) => { 
-              return admin.email === email }).length;
-          if (isAdmin > 0)
-            role = "admin";
-      }
-      if (owners && owners.length > 0)
-      {
-          const isOwner: number = owners.filter((owner) => { 
-              return owner.email === email }).length;
-          if (isOwner > 0)
-            role = "owner";
-      }
-      return role;
+    email: string,
+    owners: oneUser[],
+    admins: oneUser[],
+    members: oneUser[],
+    inviteds: oneUser[],
+  ) {
+    let role = 'noRole';
+    if (inviteds && inviteds.length > 0) {
+      const isInvited: number = inviteds.filter((invited) => {
+        return invited.email === email;
+      }).length;
+      if (isInvited > 0) role = 'invited';
+    }
+    if (members && members.length > 0) {
+      const isMember: number = members.filter((member) => {
+        return member.email === email;
+      }).length;
+      if (isMember > 0) role = 'member';
+    }
+    if (admins && admins.length > 0) {
+      const isAdmin: number = admins.filter((admin) => {
+        return admin.email === email;
+      }).length;
+      if (isAdmin > 0) role = 'admin';
+    }
+    if (owners && owners.length > 0) {
+      const isOwner: number = owners.filter((owner) => {
+        return owner.email === email;
+      }).length;
+      if (isOwner > 0) role = 'owner';
+    }
+    return role;
   }
 
   @SubscribeMessage('read room status')
   async handleFetchStatus(
     @MessageBody() data: any,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
     const owners = await this.chatservice.fetch__owners(data.id);
     client.emit('fetch owner', owners);
@@ -244,15 +249,20 @@ export class ChatGateway {
     client.emit('fetch members', members);
     const inviteds = await this.chatservice.fetch__inviteds(data.id);
     client.emit('fetch inviteds', inviteds);
-    const role = await this.get__role(data.email, owners, admins, members, inviteds);
+    const role = await this.get__role(
+      data.email,
+      owners,
+      admins,
+      members,
+      inviteds,
+    );
     client.emit('fetch role', role);
   }
-
 
   @SubscribeMessage('get search suggest')
   async handleSuggestUsers(
     @MessageBody() email: string,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
     const users = await this.chatservice.get__searchSuggest(email);
     client.emit('search suggest', users);
@@ -261,7 +271,7 @@ export class ChatGateway {
   @SubscribeMessage('get user tags')
   async handleUserTags(
     @MessageBody() email: string,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
     const userTags = await this.chatservice.get__userTags(email);
     client.emit('user tags', userTags);
@@ -270,40 +280,42 @@ export class ChatGateway {
   @SubscribeMessage('get invitation tags')
   async handleInvitationTags(
     @MessageBody() channelId: number,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
-    const invitationTags = await this.chatservice.get__invitationTags(channelId);
+    const invitationTags = await this.chatservice.get__invitationTags(
+      channelId,
+    );
     client.emit('invitation tags', invitationTags);
   }
 
   @SubscribeMessage('delete msg')
   async handleDeleteMsg(
     @MessageBody() data: UseMsgDto,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
     await this.chatservice.delete__msg(data);
     const fetch = await this.chatservice.fetch__msgs(data.channelId);
     client.emit('fetch msgs', fetch);
     const preview = await this.chatservice.get__previews(data.email);
-    client.emit('update preview', preview)
+    client.emit('update preview', preview);
   }
 
   @SubscribeMessage('edit msg')
   async handleEditMsg(
     @MessageBody() data: UseMsgDto,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
     await this.chatservice.edit__msg(data);
     const fetch = await this.chatservice.fetch__msgs(data.channelId);
     client.emit('fetch msgs', fetch);
     const preview = await this.chatservice.get__previews(data.email);
-    client.emit('update preview', preview)
+    client.emit('update preview', preview);
   }
 
   @SubscribeMessage('be admin')
   async handleBeAdmin(
     @MessageBody() data: updateChannel,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
     await this.chatservice.be__admin(data);
     const admins = await this.chatservice.fetch__admins(data.channelId);
@@ -315,7 +327,7 @@ export class ChatGateway {
   @SubscribeMessage('not admin')
   async handleNotAdmin(
     @MessageBody() data: updateChannel,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
     await this.chatservice.not__admin(data);
     const admins = await this.chatservice.fetch__admins(data.channelId);
@@ -327,7 +339,7 @@ export class ChatGateway {
   @SubscribeMessage('get setting')
   async handleGetSetting(
     @MessageBody() channelId: number,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
     const info = await this.chatservice.get__setting(channelId);
     client.emit('setting info', info);
@@ -336,7 +348,7 @@ export class ChatGateway {
   @SubscribeMessage('update setting')
   async handleUpdateSetting(
     @MessageBody() data: updateChannel,
-    @ConnectedSocket() client: Socket
+    @ConnectedSocket() client: Socket,
   ) {
     await this.chatservice.update__setting(data);
     const info = await this.chatservice.get__setting(data.channelId);
@@ -344,11 +356,7 @@ export class ChatGateway {
   }
 
   @SubscribeMessage('mute user')
-  async handleMuteUser(
-    @MessageBody() data: mute,
-    @ConnectedSocket() client: Socket
-  ) {
+  async handleMuteUser(@MessageBody() data: mute) {
     await this.chatservice.new__mute(data);
   }
-
 }

@@ -1,11 +1,13 @@
-import { ArgumentsHost, Catch, ExceptionFilter, GoneException, HttpException } from '@nestjs/common';
+import { ArgumentsHost, Catch, HttpException } from '@nestjs/common';
 import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets';
 
 @Catch(HttpException)
 export class HttpToWsFilter extends BaseWsExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
-    const properWsException = new WsException(exception.getResponse()['message']);
-    super.catch(properWsException, host)
+    const properWsException = new WsException(
+      exception.getResponse()['message'],
+    );
+    super.catch(properWsException, host);
   }
 }
 
@@ -13,6 +15,6 @@ export class HttpToWsFilter extends BaseWsExceptionFilter {
 export class ProperWsFilter extends BaseWsExceptionFilter {
   catch(exception: WsException, host: ArgumentsHost) {
     const properWsException = new WsException(exception.getError());
-    super.catch(properWsException, host)
+    super.catch(properWsException, host);
   }
 }
