@@ -1,6 +1,5 @@
 import "./chatPreview.css";
 import { useEffect, useState } from "react";
-import "./chatPreview.css";
 import { socket } from "../Chat";
 import { chatPreview, newDM, oneSuggestion, updateChannel } from "./type/chat.type";
 import {
@@ -210,19 +209,19 @@ function ChatSearch({onSearchMyChat, onSearchPublicChat}
         return (
             <div className="search-result">
                 <div className="result-type">
-                    <div style={{display: data.catagory === "my chat" ? "" : "none"}}>
+                    <p style={{display: data.catagory === "my chat" ? "" : "none"}}>
                         My Chat
-                    </div>
-                    <div style={{display: data.catagory === "public chat" ? "" : "none"}}>
+                    </p>
+                    <p style={{display: data.catagory === "public chat" ? "" : "none"}}>
                         Public Chat
-                    </div>
-                    <div style={{display: data.catagory === "user" ? "" : "none"}}>
+                    </p>
+                    <p style={{display: data.catagory === "user" ? "" : "none"}}>
                         User
-                    </div>
+                    </p>
+                </div>
                     <p className="result">
                         {data.picture} {data.name}
                     </p>
-                </div>
             </div>
           )
     }
