@@ -74,24 +74,28 @@ export default function RoomStatus({current, role, outsider}
     return(
         <div className="chat-status-zone">
             <div className="status-top">
-                    { add ?
-                    <div className="add-box">
-                        <ReactTags
-                            tags={[]}
-                            suggestions={invitationTag}
-                            placeholderText="invite to chat"
-                            noSuggestionsText="user not found"
-                            onAddition={handleInvite}
-                            onDelete={onDelete}
-                            autofocus={true}
-                        />
-                        <QuitIcon onClick={() => {
-                            setAdd(false) }}/>
-                    </div> : <>
-                        <AddUserIcon onClick={() => {
-                            setAdd(true);
-                        }}/>
-                </>}
+                { current ?
+                    add ?
+                        <div className="add-box">
+                            <ReactTags
+                                tags={[]}
+                                suggestions={invitationTag}
+                                placeholderText="invite to chat"
+                                noSuggestionsText="user not found"
+                                onAddition={handleInvite}
+                                onDelete={onDelete}
+                                autofocus={true}
+                            />
+                            <QuitIcon onClick={() => {
+                                setAdd(false) }}/>
+                        </div> :
+                        <>
+                            <AddUserIcon onClick={() => {
+                                setAdd(true);
+                            }}/>
+                        </>
+                    : <></>
+                }
             </div>
             <MemberStatus
                 current={current}
