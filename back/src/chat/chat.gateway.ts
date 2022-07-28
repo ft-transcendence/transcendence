@@ -10,11 +10,9 @@ import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { UseMsgDto, ChannelDto, DMDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guard';
 import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
 import { mute, oneMsg, oneUser, updateChannel } from './type/chat.type';
 
-// @UseGuards(JwtGuard)
 @UsePipes(new ValidationPipe())
 @UseFilters(new HttpToWsFilter())
 @UseFilters(new ProperWsFilter())
@@ -24,28 +22,6 @@ export class ChatGateway {
   server: Server;
 
   constructor(private readonly chatservice: ChatService) {}
-
-  chatClients = [];
-  handleConnection(client: Socket) {
-    console.log('client connected: ', this.server.engine.clientsCount);
-    this.chatClients.push(client);
-
-    // this.chatservice.list__allUsers();
-    // this.chatservice.list__allChannels()
-  }
-
-  handleDisconnect(client: Socket) {
-    for (let i = 0; i < this.chatClients.length; i++) {
-      if (this.chatClients[i] === client) {
-        this.chatClients.splice(i, 1);
-        break;
-      }
-    }
-    console.log(
-      'a client disconnect, client connected:',
-      this.chatClients.length,
-    );
-  }
 
   async handleFetchChannel(email: string, @ConnectedSocket() client: Socket) {
     const channels = await this.chatservice.get__channelsToJoin(email);
@@ -126,7 +102,7 @@ export class ChatGateway {
     @MessageBody() data: updateChannel,
     @ConnectedSocket() client: Socket,
   ) {
-    const channelId = await this.chatservice.invite__toChannel(data);
+    await this.chatservice.invite__toChannel(data);
     const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
     client.emit('fetch inviteds', inviteds);
   }
@@ -185,14 +161,6 @@ export class ChatGateway {
     const preview = await this.chatservice.get__onePreview(channelId);
     client.join(preview.name);
     client.emit('add preview', preview);
-  }
-
-  @SubscribeMessage('test')
-  handleTest(
-    @MessageBody() data: UseMsgDto,
-    @ConnectedSocket() client: Socket,
-  ) {
-    console.log('test  ', data);
   }
 
   @SubscribeMessage('read msgs')

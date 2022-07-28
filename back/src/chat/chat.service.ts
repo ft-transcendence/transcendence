@@ -1218,7 +1218,7 @@ export class ChatService {
     }
   }
 
-  async get__publicChats(email: string) {
+  async get__publicChats() {
     try {
       const rooms = await this.prisma.channel.findMany({
         where: {
@@ -1310,7 +1310,7 @@ export class ChatService {
     try {
       const id = await this.get__id__ByEmail(email);
       const users = await this.get__allUsers();
-      const publicChats = await this.get__publicChats(email);
+      const publicChats = await this.get__publicChats();
       const myChats = await this.get__previews(email);
       const suggestion = await this.organize__searchSuggest(
         id,
