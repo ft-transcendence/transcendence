@@ -170,6 +170,10 @@ export class ChatGateway {
 		client.emit('fetch members', members);
 		const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
 		client.emit('fetch inviteds', inviteds);
+		const invitationTags = await this.chatservice.get__invitationTags(
+			data.channelId,
+		);
+		client.emit('invitation tags', invitationTags);
 		const users = await this.chatservice.get__searchSuggest(data.email);
 		client.emit('search suggest', users);
 	}
