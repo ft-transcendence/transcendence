@@ -5,6 +5,7 @@ import { twoFAAuth } from "../queries/twoFAQueries";
 export default function TwoFAValidation() {
   const [FACode, setCode] = useState("");
 
+
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setCode(value);
@@ -18,7 +19,6 @@ export default function TwoFAValidation() {
     };
     twoFAValid();
   };
-
   return (
     <div>
       <Form.Group className="mb-3">

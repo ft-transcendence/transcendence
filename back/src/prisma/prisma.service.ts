@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class PrismaService extends PrismaClient {
+	[x: string]: any;
     private _message: any;      //prismaClient is an existing class allowing to connect to a db, it has some basic functions already
 	public get message(): any {
 		return this._message;

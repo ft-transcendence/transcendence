@@ -7,7 +7,9 @@ export const GetCurrentUser = createParamDecorator(
 		// Get request from context
 		const request = context.switchToHttp().getRequest();
 		// Extract user from request
-		if (!data) return request.user;
+		if (!data) {
+			return request.user;
+		}
 		// Extract user data from request
 		return request.user[data];
 	},
