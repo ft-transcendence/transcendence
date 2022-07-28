@@ -13,7 +13,6 @@ import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { HttpToWsFilter, ProperWsFilter } from './filter/TransformationFilter';
 import { mute, oneMsg, oneUser, updateChannel } from './type/chat.type';
 
-// @UseGuards(JwtGuard)
 @UsePipes(new ValidationPipe())
 @UseFilters(new HttpToWsFilter())
 @UseFilters(new ProperWsFilter())
@@ -24,9 +23,7 @@ export class ChatGateway {
 
   constructor(private readonly chatservice: ChatService) {}
 
-  async handleFetchChannel(
-    email: string,
-    @ConnectedSocket() client: Socket) {
+  async handleFetchChannel(email: string, @ConnectedSocket() client: Socket) {
     const channels = await this.chatservice.get__channelsToJoin(email);
     if (channels.length > 0)
       for (let i = 0; i < channels.length; i++) client.join(channels[i]);
@@ -105,7 +102,7 @@ export class ChatGateway {
     @MessageBody() data: updateChannel,
     @ConnectedSocket() client: Socket,
   ) {
-    const channelId = await this.chatservice.invite__toChannel(data);
+    await this.chatservice.invite__toChannel(data);
     const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
     client.emit('fetch inviteds', inviteds);
   }
@@ -164,14 +161,6 @@ export class ChatGateway {
     const preview = await this.chatservice.get__onePreview(channelId);
     client.join(preview.name);
     client.emit('add preview', preview);
-  }
-
-  @SubscribeMessage('test')
-  handleTest(
-    @MessageBody() data: UseMsgDto,
-    @ConnectedSocket() client: Socket,
-  ) {
-    console.log('test  ', data);
   }
 
   @SubscribeMessage('read msgs')
