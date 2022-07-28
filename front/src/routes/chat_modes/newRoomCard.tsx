@@ -22,18 +22,13 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
     const scroll = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        console.log("new room : request:", newRoomRequest)
 
         if (newRoomRequest === false)
-        {   
             initVars();
-            console.log("new room : request:", newRoomRequest)
-        }
 
         socket.emit("get user tags", email);
         socket.on("user tags", (data: Tag[]) => {
             setUserTag(data);
-            console.log("tags", data);
         })
 
         return  (() => {
@@ -45,7 +40,6 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
     const onAddMember = (member: Tag) => {
         const members = addedMember.concat(member)
         setAddMember(members);
-        console.log("added a member", members)
     }
 
     const onDeleteMember = (i: number) => {

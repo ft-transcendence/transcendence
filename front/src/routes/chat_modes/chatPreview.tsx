@@ -37,22 +37,15 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
 
         socket.on("set preview", (data: chatPreview[] | null) => {
             if (data)
-            {
-                console.log("chat preview", data);
                 setPreviews(data);
-            }
-            else
-                console.log("no preview")
         })
         
         socket.on("add preview", (data: chatPreview) => {
-            console.log("add preview", data)
             if (data)
                 setPreviews(oldPreviews => [...oldPreviews, data]);
         })
 
         socket.on("update preview", (data: chatPreview[] | null) => {
-            console.log("update preview", data)
             if (data)
                 setPreviews(data);
         })
@@ -67,7 +60,6 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
     }, [email]);
 
     const addPreview = (channelId: number) => {
-        console.log("add preview!!")
         socket.emit("add preview", channelId)
     }
 
@@ -190,7 +182,6 @@ function ChatSearch({onSearchMyChat, onSearchPublicChat}
         socket.emit("get search suggest", email);
         socket.on("search suggest", (data: oneSuggestion[]) => {
             setSug(data);
-            console.log("suggestion", data);
         })
 
         return  (() => {
@@ -207,7 +198,6 @@ function ChatSearch({onSearchMyChat, onSearchPublicChat}
                 email: email,
                 added_id: data.data_id,
             }
-            console.log("DM:", dm)
             socket.emit("new dm", dm);
         }
         else if (data.catagory === "my chat")

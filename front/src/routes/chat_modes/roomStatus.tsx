@@ -45,7 +45,6 @@ export default function RoomStatus({current, role, outsider}
 
         socket.on("invitation tags", (data: Tag[]) => {
             setTag(data);
-            console.log("invatation tags:::",data)
         })
 
         return (() => {
