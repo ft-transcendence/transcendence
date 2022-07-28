@@ -16,7 +16,6 @@ import {
     Submenu,
     theme
 } from "react-contexify";
-import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
 import { AddUserIcon, QuitIcon } from "./icon";
 import ReactTags from "react-tag-autocomplete";
@@ -85,6 +84,9 @@ export default function RoomStatus({current, role, outsider}
                                 onAddition={handleInvite}
                                 onDelete={onDelete}
                                 autofocus={true}
+                                onBlur={() => {
+                                    setAdd(false);
+                                }}
                             />
                             <QuitIcon onClick={() => {
                                 setAdd(false) }}/>
@@ -279,13 +281,13 @@ function Status({users, current, role}
                 )
             })}
             <Menu id={JSON.stringify(global.selectedData)} theme={theme.dark}>
-                    <Item onClick={handleAddFriend}>
+                    <Item onClick={handleAddFriend} style={{backgroundColor: "grey"}}>
                         add friend
                     </Item>
-                    <Item onClick={handleInviteGame}>
+                    <Item onClick={handleInviteGame} style={{backgroundColor: "grey"}}>
                         invite to a game!
                     </Item>
-                    <Item onClick={handleBlockUser}>
+                    <Item onClick={handleBlockUser} style={{backgroundColor: "grey"}}>
                         block user
                     </Item>
                     <Separator/>

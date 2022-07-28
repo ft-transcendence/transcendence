@@ -170,11 +170,11 @@ function MsgStream({email, channelId, blocked}
                     )
                 })
             }
-            <Menu id={MENU_MSG}>
+            <Menu id={MENU_MSG} style={{width: "120px", minWidth: "120px"}}>
                 <Item onClick={handleDeleteMsg}>
                     unsend
                 </Item>
-                <Item onClick={handleEditMsg}>
+                <Item onClick={handleEditMsg} style={{backgroundColor: "grey"}}>
                     edit
                 </Item>
             </Menu>
@@ -223,6 +223,10 @@ function InputArea({channelId, email}
         email: string | null }) {
     const [msg, setMsg] = useState("");
 
+    useEffect(() => {
+        setMsg("");
+    }, [channelId])
+
     const handleSetMsg = (event:any) => {
         setMsg(event.target.value);
     }
@@ -247,6 +251,7 @@ function InputArea({channelId, email}
                 onChange={handleSetMsg}
                 className="msg-input-area"
                 placeholder="Enter a message"
+                autoComplete="off"
                 onKeyDown={(e) => {
                     if (e.key === "Enter")
                         sendMsg()}}/>

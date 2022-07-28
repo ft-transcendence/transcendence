@@ -28,7 +28,7 @@
 
         .add-box > .react-tags input 
         {
-            padding-top: 10px;
+            padding-top: 5px;
             background-color: inherit;
             color: white;
             width: 180px;
