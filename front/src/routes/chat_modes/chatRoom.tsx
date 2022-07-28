@@ -12,7 +12,8 @@ import {
     Item,
     useContextMenu
 } from "react-contexify";
-import { LockIcon, SettingIcon } from "./icon";
+import { EmojiIcon, LockIcon, SettingIcon } from "./icon";
+import Picker from 'emoji-picker-react';
 
 const MENU_MSG = "menu_msg";
 
@@ -222,6 +223,7 @@ function InputArea({channelId, email}
     : { channelId: number,
         email: string | null }) {
     const [msg, setMsg] = useState("");
+    const [mypicker, setMyPicker] = useState(true);
 
     useEffect(() => {
         setMsg("");
@@ -242,19 +244,44 @@ function InputArea({channelId, email}
         setMsg("");
     }
 
+    const emojiDisappear = () => {
+        setMyPicker(old => {return !old})
+    }
+
+
     return (
-        <div
-            className="msg-input-zone">
-            <input
-                id="msg"
-                value={msg}
-                onChange={handleSetMsg}
-                className="msg-input-area"
-                placeholder="Enter a message"
-                autoComplete="off"
-                onKeyDown={(e) => {
-                    if (e.key === "Enter")
-                        sendMsg()}}/>
-        </div>
+        <>
+            {mypicker ?
+                <div onClick={emojiDisappear} className="emoji-disappear-click-zone"/>: <></>}
+            <div
+                className="msg-input-zone">
+                <input
+                    id="msg"
+                    value={msg}
+                    onChange={handleSetMsg}
+                    className="msg-input-area"
+                    placeholder="Enter a message"
+                    autoComplete="off"
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter")
+                            sendMsg()}}/>
+                <div className="emoji-button" onMouseDown={() => {
+                    setMyPicker(b => !b);
+                    console.log("HEY")}}>
+                    <EmojiIcon/>
+                </div>
+                {
+                    mypicker ?
+                        <div className="pickerBox" style={{display: mypicker ? "absolute" : "none"}}>
+                            <Picker onEmojiClick={(e, emoji)=>{
+                                setMsg(msg => msg + emoji?.emoji);
+                                setMyPicker(false);
+                            }} pickerStyle={{boxShadow: "0 5px 19px #00000024"}}/>
+                        </div>
+                        :
+                        <></>
+                }
+            </div>
+        </>
     )
 }
