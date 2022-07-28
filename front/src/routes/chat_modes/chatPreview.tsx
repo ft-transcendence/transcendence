@@ -1,6 +1,5 @@
 import "./chatPreview.css";
 import { useEffect, useState } from "react";
-import { useAuth } from "../..";
 import { socket } from "../../App";
 import { chatPreview, updateChannel, oneSuggestion, newDM } from "./type/chat.type";
 import {
@@ -25,7 +24,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
         onNewRoomRequest: () => void }) {
 
     const [roomPreview, setPreviews] = useState<chatPreview[]>([]);
-    const email = useAuth().user;
+    const email = localStorage.getItem("userEmail");
     
     useEffect(() => {
 
@@ -184,7 +183,7 @@ function ChatSearch({onSearchMyChat, onSearchPublicChat}
         onSearchPublicChat: (channelId: number) => void }) {
 
     const [suggestion, setSug] = useState<oneSuggestion[]>([]);
-    const email = useAuth().user;
+    const email = localStorage.getItem("userEmail");
 
     useEffect(() => {
         socket.emit("get search suggest", email);

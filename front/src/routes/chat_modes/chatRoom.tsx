@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useAuth } from "../..";
 import { socket } from "../../App";
 import "./chatRoom.css";
 import { 
@@ -29,7 +28,7 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
         setSettingRequest: () => void}) {
 
         const [blocked, setBlocked] = useState<Tag[]>([]);
-        const email = useAuth().user;
+        const email = localStorage.getItem("userEmail");
 
     useEffect(() => {
 

@@ -8,12 +8,11 @@ import "./context.css";
 import Switch from "react-switch";
 import ReactTags, { Tag } from "react-tag-autocomplete";
 import { matchSorter } from "match-sorter";
-import { useAuth } from "../..";
 
 export function NewRoomCard({newRoomRequest, onNewRoomRequest}
     : { newRoomRequest: boolean,
         onNewRoomRequest: () => void}) {
-    const email = useAuth().user;
+    const email = localStorage.getItem("userEmail");
     const [userTag, setUserTag] = useState<Tag[]>([]);
     const [roomName, setRoomName] = useState("");
     const [roomPass, setRoomPass] = useState("");

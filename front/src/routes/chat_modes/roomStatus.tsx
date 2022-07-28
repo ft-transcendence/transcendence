@@ -19,7 +19,6 @@ import {
 } from "react-contexify";
 import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
-import { useAuth } from "../..";
 import { AddUserIcon, QuitIcon } from "./icon";
 import ReactTags from "react-tag-autocomplete";
 
@@ -34,7 +33,7 @@ export default function RoomStatus({current, role, outsider}
     const [add, setAdd] = useState<boolean>(false);
     const [invitationTag, setTag] = useState<Tag[]>([]);
  
-    const email = useAuth().user;
+    const email = localStorage.getItem("userEmail");
 
     useEffect(() => {
 
@@ -176,7 +175,7 @@ function Status({users, current, role}
         current: chatPreview | undefined,
         role: string }) {
     
-    const email = useAuth().user;
+    const email = localStorage.getItem("userEmail");
 
     const [selData, setSelData] = useState<any>(null);
     const { show } = useContextMenu();
@@ -336,7 +335,7 @@ function Status({users, current, role}
 function OneStatus({data, setSelData}
     : { data: oneUser, setSelData: (d : any) => void }) {
 
-    const email = useAuth().user;
+    const email = localStorage.getItem("userEmail");
 
 
     const goProfile = () => {
@@ -359,7 +358,7 @@ function JoinChannel({channelId, outsider, isPassword}
     : { channelId: number | undefined,
         outsider: boolean | undefined,
         isPassword: boolean | undefined}) {
-    const email = useAuth().user;
+    const email = localStorage.getItem("userEmail");
     const [password, setPass] = useState("");
     
     const handleSetPass = (event: any) => {
