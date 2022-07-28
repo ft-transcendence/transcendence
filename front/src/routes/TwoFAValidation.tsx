@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Form } from "react-bootstrap";
 
-interface test
+//interface test
 
 export default function TwoFAValidation() { 
     let ref = React.createRef();
@@ -10,6 +10,7 @@ export default function TwoFAValidation() {
 
     return (
       <div>
+        {/* /*
         <Form.Group className="mb-3">
             <Form.Label className="form-test ">CODE 2FA</Form.Label>
             <Form.Control
@@ -25,6 +26,7 @@ export default function TwoFAValidation() {
             Submit
           </Button>
           </Form.Group>
+         */}
       </div>
     );
   }

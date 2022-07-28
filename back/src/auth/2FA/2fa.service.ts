@@ -45,7 +45,7 @@ export class TwoFactorService {
 		});
 	}
 
-	// Generate a new 2FA fur user
+	// Generate a new 2FA for user
 	async generate2FA(email: string) {
 		// Generate a 2FA secret
 		const secret = authenticator.generateSecret();
@@ -71,10 +71,9 @@ export class TwoFactorService {
 	async login_with_2fa(user: TwoFactorUserDto) {
 		// destructure data
 		const { email, userId } = user;
-		return {
-			id: userId,
-			tokens: this.authservice.signin_jwt(userId, email, true),
-		};
+		// generate tokens
+		const tokens = await this.authservice.signin_jwt(userId, email, true);
+		return tokens;
 	}
 
 	// Verify 2FA code

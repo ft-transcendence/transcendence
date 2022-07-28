@@ -1,18 +1,22 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { twoFAGenerate } from "../queries/twoFAQueries";
+import { twoFAGenerate, twoFAValidate } from "../queries/twoFAQueries";
 
-const handleSubmit = (event: any) => {
-  event.preventDefault();
-};
+
 
 // Enable 2FA modal
 
-export function Activate2FA(props: any) {
+export function Activate2FA(props: { show: boolean, onHide: () => void }) {
   const [image, setImage] = useState<string>("");
+  const [code, setCode] = useState<string>("");
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    twoFAValidate(code);
+  };
 
   useEffect(() => {
-    if (props.show) {
+    if (props.show && image === "") {
       const QRCode = async () => {
         return await twoFAGenerate();
       };
@@ -20,6 +24,7 @@ export function Activate2FA(props: any) {
         .then((data) => setImage(data))
         .then(() => console.log("hellow"));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.show]);
 
   return (
@@ -44,7 +49,7 @@ export function Activate2FA(props: any) {
         )}
         <Form.Group className="mb-3" controlId="formbasicString">
           <Form.Label> Enter Code </Form.Label>
-          <Form.Control type="email" placeholder="6-digit-code" />
+          <Form.Control type="string" onChange={(e) => { setCode(e.target.value); console.log(e.target.value)}} value={code} placeholder="6-digit-code" />
           <Form.Text className="text-muted">
             Enter code from your authenticator app.
           </Form.Text>
