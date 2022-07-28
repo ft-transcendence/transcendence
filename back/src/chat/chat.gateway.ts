@@ -31,7 +31,7 @@ export class ChatGateway {
 
 	async handleFetchChannel(email: string, @ConnectedSocket() client: Socket) {
 		const channels = await this.chatservice.get__channelsToJoin(email);
-		if (channels.length > 0)
+		if (channels)
 			for (let index = 0; index < channels.length; index++)
 				client.join(channels[index]);
 	}

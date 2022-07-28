@@ -100,21 +100,23 @@ export class ChatService {
 
 	organize__channelToJoin(source: any) {
 		const channels = [];
-		if (source.admin)
-			for (let index = 0; index < source.admin.length; index++) {
-				const channel = source.admin[index].name;
-				channels.push(channel);
-			}
-		if (source.member)
-			for (let index = 0; index < source.member.length; index++) {
-				const channel = source.member[index].name;
-				channels.push(channel);
-			}
-		if (source.invited)
-			for (let index = 0; index < source.invited.length; index++) {
-				const channel = source.invited[index].name;
-				channels.push(channel);
-			}
+		if (source) {
+			if (source.admin)
+				for (let index = 0; index < source.admin.length; index++) {
+					const channel = source.admin[index].name;
+					channels.push(channel);
+				}
+			if (source.member)
+				for (let index = 0; index < source.member.length; index++) {
+					const channel = source.member[index].name;
+					channels.push(channel);
+				}
+			if (source.invited)
+				for (let index = 0; index < source.invited.length; index++) {
+					const channel = source.invited[index].name;
+					channels.push(channel);
+				}
+		}
 		return channels;
 	}
 
@@ -130,84 +132,88 @@ export class ChatService {
 
 	organize__previews(source: any, email: string) {
 		const data = [];
-		if (source.owner) {
-			for (let index = 0; index < source.owner.length; index++) {
-				let dmName = '';
-				if (source.owner[index].owners.length > 1) {
-					dmName =
-						source.owner[index].owners[0].email === email
-							? source.owner[index].owners[1].username
-							: source.owner[index].owners[0].username;
-				} else dmName = 'No One';
-				const messageCount = source.owner[index].messages.length;
-				const element: chatPreview = {
-					id: source.owner[index].id,
-					dm: source.owner[index].dm,
-					name: dmName,
-					isPassword: source.owner[index].isPassword,
-					picture: source.owner[index].picture,
-					updateAt: source.owner[index].updateAt,
-					lastMsg:
-						messageCount > 0
-							? source.owner[index].messages[messageCount - 1].msg
-							: '',
-					ownerEmail: source.owner[index].owners[0].email,
-				};
-				data.push(element);
+		if (source) {
+			if (source.owner) {
+				for (let index = 0; index < source.owner.length; index++) {
+					let dmName = '';
+					if (source.owner[index].owners.length > 1) {
+						dmName =
+							source.owner[index].owners[0].email === email
+								? source.owner[index].owners[1].username
+								: source.owner[index].owners[0].username;
+					} else dmName = 'No One';
+					const messageCount = source.owner[index].messages.length;
+					const element: chatPreview = {
+						id: source.owner[index].id,
+						dm: source.owner[index].dm,
+						name: dmName,
+						isPassword: source.owner[index].isPassword,
+						picture: source.owner[index].picture,
+						updateAt: source.owner[index].updateAt,
+						lastMsg:
+							messageCount > 0
+								? source.owner[index].messages[messageCount - 1]
+										.msg
+								: '',
+						ownerEmail: source.owner[index].owners[0].email,
+					};
+					data.push(element);
+				}
 			}
-		}
-		if (source.admin)
-			for (let index = 0; index < source.admin.length; index++) {
-				const messageCount = source.admin[index].messages.length;
-				const element: chatPreview = {
-					id: source.admin[index].id,
-					dm: source.admin[index].dm,
-					isPassword: source.admin[index].isPassword,
-					name: source.admin[index].name,
-					picture: source.admin[index].picture,
-					updateAt: source.admin[index].updateAt,
-					lastMsg:
-						messageCount > 0
-							? source.admin[index].messages[messageCount - 1].msg
-							: '',
-					ownerEmail: source.admin[index].owners[0].email,
-				};
-				data.push(element);
-			}
-		if (source.member)
-			for (let index = 0; index < source.member.length; index++) {
-				const messageCount = source.member[index].messages.length;
-				const element: chatPreview = {
-					id: source.member[index].id,
-					dm: source.member[index].dm,
-					name: source.member[index].name,
-					isPassword: source.member[index].isPassword,
-					picture: source.member[index].picture,
-					updateAt: source.member[index].updateAt,
-					lastMsg:
-						messageCount > 0
-							? source.member[index].messages[0].msg
-							: '',
-					ownerEmail: source.member[index].owners[0].email,
-				};
-				data.push(element);
-			}
-		if (source.invited)
-			for (let index = 0; index < source.invited.length; index++) {
-				const messageCount = source.invited[index].messages.length;
-				const element: chatPreview = {
-					id: source.invited[index].id,
-					dm: source.invited[index].dm,
-					name: source.invited[index].name,
-					isPassword: source.invited[index].isPassword,
-					picture: source.invited[index].picture,
-					updateAt: source.invited[index].updateAt,
-					// eslint-disable-next-line unicorn/no-nested-ternary, prettier/prettier
+			if (source.admin)
+				for (let index = 0; index < source.admin.length; index++) {
+					const messageCount = source.admin[index].messages.length;
+					const element: chatPreview = {
+						id: source.admin[index].id,
+						dm: source.admin[index].dm,
+						isPassword: source.admin[index].isPassword,
+						name: source.admin[index].name,
+						picture: source.admin[index].picture,
+						updateAt: source.admin[index].updateAt,
+						lastMsg:
+							messageCount > 0
+								? source.admin[index].messages[messageCount - 1]
+										.msg
+								: '',
+						ownerEmail: source.admin[index].owners[0].email,
+					};
+					data.push(element);
+				}
+			if (source.member)
+				for (let index = 0; index < source.member.length; index++) {
+					const messageCount = source.member[index].messages.length;
+					const element: chatPreview = {
+						id: source.member[index].id,
+						dm: source.member[index].dm,
+						name: source.member[index].name,
+						isPassword: source.member[index].isPassword,
+						picture: source.member[index].picture,
+						updateAt: source.member[index].updateAt,
+						lastMsg:
+							messageCount > 0
+								? source.member[index].messages[0].msg
+								: '',
+						ownerEmail: source.member[index].owners[0].email,
+					};
+					data.push(element);
+				}
+			if (source.invited)
+				for (let index = 0; index < source.invited.length; index++) {
+					const messageCount = source.invited[index].messages.length;
+					const element: chatPreview = {
+						id: source.invited[index].id,
+						dm: source.invited[index].dm,
+						name: source.invited[index].name,
+						isPassword: source.invited[index].isPassword,
+						picture: source.invited[index].picture,
+						updateAt: source.invited[index].updateAt,
+						// eslint-disable-next-line unicorn/no-nested-ternary, prettier/prettier
 					lastMsg: source.invited[index].isPassword ? '' : (messageCount > 0 ? source.invited[index].messages[0].msg : ''),
-					ownerEmail: source.invited[index].owners[0].email,
-				};
-				data.push(element);
-			}
+						ownerEmail: source.invited[index].owners[0].email,
+					};
+					data.push(element);
+				}
+		}
 		return data;
 	}
 
