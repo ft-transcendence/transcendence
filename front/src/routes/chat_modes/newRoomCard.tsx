@@ -40,7 +40,7 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
         return  (() => {
             socket.off("user tags");
         })
-        // @ts-ignore-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newRoomRequest])
 
     const onAddMember = (member: Tag) => {

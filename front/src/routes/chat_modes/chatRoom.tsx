@@ -52,6 +52,7 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
             socket.off("connect")
             socket.off("fetch blocked");
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show, current])
 
     return(
@@ -196,6 +197,7 @@ function OneMessage({data, email}
             setSender("self")
         else
             setSender("other")
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data])
 
     return (

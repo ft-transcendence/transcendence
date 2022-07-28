@@ -45,6 +45,7 @@ export default function Chat() {
     useEffect(() => {
         if (selectedChat)
             setShow((!selectedChat.isPassword) || !outsider)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [outsider])
 
     const newRoomCardDisappear = () => {
