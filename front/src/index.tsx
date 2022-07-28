@@ -43,6 +43,7 @@ root.render(
             <Route path="chat" element={<Chat />} />
             <Route path="game" element={<Game />} />
             <Route path="watch" element={<Watch />} />
+            {/* <Route path="leaderboard" element={<Leaderboard />} /> */}
             <Route path="*" element={<Navigate to="/app" />} />
           </Route>
           <Route path="*" element={<Navigate to="/auth/signin" />} />
