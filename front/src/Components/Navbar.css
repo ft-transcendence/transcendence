@@ -1,10 +1,7 @@
+@im
+
 :root {
   --radius-size: 50px;
-}
-
-.Home {
-  height: 100%;
-  width: 100%;
 }
 
 .toolbar {
@@ -41,5 +38,9 @@
 
 .icons {
   height: 40px;
-  background-color: inherit;
+  /* background: #31353C;
+  box-shadow: 2px 2.5px 3.5px #1F2126, -2px -2px 3.5px #2F3655;
+  stroke-width: 0.5px;
+  stroke: blue; */
 }
+
