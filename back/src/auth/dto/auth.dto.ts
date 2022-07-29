@@ -1,10 +1,10 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 /**
  * DTO - Data Transfer Object
- * Used to create a new user
  */
 
+// SignUp DTO
 export class SignUpDto {
 	@IsEmail()
 	@IsNotEmpty()
@@ -19,6 +19,7 @@ export class SignUpDto {
 	username: string;
 }
 
+// Signin DTO
 export class SignInDto {
 	@IsString()
 	@IsNotEmpty()
@@ -29,6 +30,7 @@ export class SignInDto {
 	username: string;
 }
 
+// 42 API DTO
 export class Auth42Dto {
 	@IsEmail()
 	@IsNotEmpty()
@@ -41,28 +43,4 @@ export class Auth42Dto {
 	@IsString()
 	@IsNotEmpty()
 	avatar: string;
-}
-
-export class TwoFactorDto {
-	@IsNotEmpty()
-	@IsString()
-	email: string;
-
-	@IsNotEmpty()
-	@IsString()
-	twoFAcode: string;
-}
-
-export class TwoFactorUserDto {
-	@IsNotEmpty()
-	@IsString()
-	email: string;
-
-	@IsNotEmpty()
-	@IsNumber()
-	userId: number;
-
-	@IsNotEmpty()
-	@IsString()
-	twoFAsecret: string;
 }

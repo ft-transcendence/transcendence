@@ -12,6 +12,7 @@ import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 /* USER Modules */
 import { UserService } from 'src/user/user.service';
+import { Response } from 'express';
 
 /**
  * AUTHENTIFICATION SERVICE
@@ -26,14 +27,16 @@ export class AuthService {
 
 	/* SIGNUP */
 	async signup(dto: SignUpDto) {
+		// destructure dto
+		const { email, username, password } = dto;
 		// hash password using argon2
-		const hash = await argon.hash(dto.password);
+		const hash = await argon.hash(password);
 		// try to sign up using email
 		try {
 			const user = await this.prisma.user.create({
 				data: {
-					email: dto.email,
-					username: dto.username,
+					email: email,
+					username: username,
 					hash,
 				},
 			});
@@ -53,7 +56,7 @@ export class AuthService {
 	}
 
 	/* SIGNIN */
-	async signin(dto: SignInDto) {
+	async signin(dto: SignInDto, response: Response) {
 		// destructure dto (rafa tips :D)
 		const { username, password } = dto;
 		// find user
@@ -68,6 +71,13 @@ export class AuthService {
 		// Invalid password
 		if (!pwMatches) {
 			throw new ForbiddenException('Invalid Credentials');
+		}
+		if (user.twoFA) {
+			//throw new ForbiddenException('TwoFA is enabled');
+			response
+				.status(200)
+				.redirect('http://localhost:3000/2FA/authenticate');
+			return response;
 		}
 		// generate token
 		const tokens = await this.signin_jwt(user.id, user.email, user.twoFA);
@@ -96,19 +106,17 @@ export class AuthService {
 	}
 
 	/* SIGNIN USING 42 API */
-	async signin_42(dto: Auth42Dto) {
+	async signin_42(dto: Auth42Dto, response: Response) {
 		// LOG
 		console.log('signin_42');
-
 		// DTO
-		const { email, username /*, avatar */ } = dto;
+		const { email, username, avatar } = dto;
 		// check if user exists
 		const user = await this.prisma.user.findUnique({
 			where: {
 				email: email,
 			},
 		});
-
 		// if user does not exist, create it
 		if (!user) {
 			// generate random password
@@ -123,16 +131,41 @@ export class AuthService {
 				username,
 				hash,
 			);
+			if (new_user) {
+				await this.userService.updateAvatar(new_user.id, avatar);
+			}
 			// LOG
 			console.log('create user :', username, email, rdm_string);
 			// return token
-			return this.signin_jwt(new_user.id, email);
+			return await this.signin_jwt(new_user.id, email);
 		} else {
 			// LOG
 			console.log('user exists');
+			// check if 2FA is enabled
+			if (user.twoFA) {
+				return await this.signin_2FA(response, user);
+				//throw new ForbiddenException('TwoFA is enabled');
+			}
 			// return token
-			return this.signin_jwt(user.id, user.email);
+			const tokens = await this.signin_jwt(user.id, email);
+			return {
+				twoFA: false,
+				tokens: tokens,
+			};
 		}
+	}
+
+	/* 2FA Enabled signin */
+	async signin_2FA(response: Response, user: Auth42Dto) {
+		const url = new URL('http://localhost');
+		url.port = process.env.FRONT_PORT;
+		url.pathname = '2FA';
+		url.searchParams.append('email', user.email);
+		response.status(302).redirect(url.href);
+		return {
+			twoFA: true,
+			response,
+		};
 	}
 
 	/* JWT */
@@ -151,14 +184,18 @@ export class AuthService {
 		};
 		// generate jwt secret
 		const secret = process.env.JWT_SECRET;
+		// Set expiration times
+		const access_token_expiration = process.env.ACCESS_TOKEN_EXPIRATION;
+		const refresh_token_expiration = process.env.REFRESH_TOKEN_EXPIRATION;
+
 		// set Auth Token params
 		const Atoken = await this.jwtService.signAsync(login_data, {
-			expiresIn: '10m',
+			expiresIn: access_token_expiration,
 			secret: secret,
 		});
 		// set Refresh Token params
 		const Rtoken = await this.jwtService.signAsync(login_data, {
-			expiresIn: '60m',
+			expiresIn: refresh_token_expiration,
 			secret: secret,
 		});
 		// return tokens

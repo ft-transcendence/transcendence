@@ -11,7 +11,6 @@ import {
 	Post,
 	Req,
 	Res,
-	UnauthorizedException,
 	UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -24,16 +23,12 @@ import { AuthService } from './auth.service';
 import { FortyTwoAuthGuard } from './guard';
 import { RtGuard } from './guard';
 /* AUTH DTOs */
-import { SignUpDto, SignInDto, TwoFactorDto, TwoFactorUserDto } from './dto';
-import { TwoFactorService } from './2FA/2fa.service';
+import { SignUpDto, SignInDto } from './dto';
 
 // AUTH CONTROLLER - /auth
 @Controller('auth')
 export class AuthController {
-	constructor(
-		private authService: AuthService,
-		private twoFAservice: TwoFactorService,
-	) {}
+	constructor(private authService: AuthService) {}
 
 	/**
 	 *	/signup - create account
@@ -52,9 +47,9 @@ export class AuthController {
 	 */
 	@Public()
 	@Post('/signin')
-	signin(@Body() dto: SignInDto) {
+	signin(@Body() dto: SignInDto, @Res() response: Response) {
 		console.log(dto);
-		return this.authService.signin(dto);
+		return this.authService.signin(dto, response);
 	}
 
 	/**
@@ -93,15 +88,17 @@ export class AuthController {
 		// Generate token using API response
 		const tokens = await this.authService.signin_42(
 			request.user as Profile_42,
+			response,
 		);
-
+		tokens['response'];
+		/*
 		// SEND TOKEN TO FRONT in URL
 		const url = new URL(`${request.protocol}` + '://localhost');
 		url.port = process.env.FRONT_PORT;
 		url.pathname = '/auth';
 		url.searchParams.append('access_token', tokens['access_token']);
 		response.status(302).redirect(url.href);
-
+		*/
 		// SEND TOKEN TO FRONT
 		//console.log('callback_42', tokens);
 		//return response.status(201).send(tokens['access_token']);
@@ -124,55 +121,6 @@ export class AuthController {
 	) {
 		console.log('refresh route id:', userId, 'token:', refreshToken);
 		return this.authService.refresh_token(userId, refreshToken);
-	}
-
-	/* TWO FACTOR AUTHENTIFICATION */
-
-	/**
-	 * /2FA/turn-on - turn on 2FA
-	 */
-	@Post('/2fa/turn-on')
-	@HttpCode(200)
-	async turn_on_2fa(
-		@Body() { twoFAcode }: any,
-		@GetCurrentUser() user: TwoFactorUserDto,
-	) {
-		await this.twoFAservice.turn_on_2fa(twoFAcode, user);
-	}
-
-	/**
-	 * /2fa/authenticate - authenticate 2FA
-	 */
-
-	@Post('/2fa/authenticate')
-	async authenticate_2fa(
-		@Body() { twoFAcode }: any,
-		@GetCurrentUser() user: TwoFactorUserDto,
-	) {
-		// destructure data
-		const { twoFAsecret } = user;
-		// check if code is valid
-		const isValidCode = this.twoFAservice.verify2FAcode(
-			twoFAcode,
-			twoFAsecret,
-		);
-		// if invalid code, throw error
-		if (!isValidCode) {
-			throw new UnauthorizedException('Invalid 2FA code');
-		}
-		// return
-		return this.twoFAservice.login_with_2fa(user);
-	}
-
-	@Post('/2fa/generate')
-	async generate_2fa(
-		@Res() response: Response,
-		@GetCurrentUser() user: TwoFactorDto,
-	) {
-		const { onetimepathurl } = await this.twoFAservice.generate2FA(user);
-		return response.json(
-			await this.twoFAservice.generate2FAQRCode(onetimepathurl),
-		);
 	}
 
 	/**

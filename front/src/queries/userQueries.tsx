@@ -32,4 +32,5 @@ export const storeUserInfo = (result: any) => {
   localStorage.setItem("userGamesWon", result.gamesWon);
   localStorage.setItem("userGamesLost", result.gamesLost);
   localStorage.setItem("userGamesPlayed", result.gamesPlayed);
+  // localStorage.setItem("userAuth", result.twoFA);SET 2FA STATUS IN BACK
 };

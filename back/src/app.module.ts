@@ -20,7 +20,8 @@ if (process.env.ENVIRONMENT === 'PRODUCTION') {
 
 // Log
 console.log(`Running in ` + process.env.ENVIRONMENT + ` mode`);
-console.log(`Running on port ` + process.env.PORT);
+console.log('Using environment file: ' + environmentFilePath);
+console.log('Using port: ' + process.env.PORT);
 
 /*
  * This one is the main module, it will import all the others.
@@ -28,17 +29,17 @@ console.log(`Running on port ` + process.env.PORT);
 
 @Module({
 	imports: [
-		AuthModule,
-		UserModule,
-		PrismaModule,
-		ChatModule,
-		GameModule,
 		ConfigModule.forRoot({
 			// set path to .env file
 			envFilePath: environmentFilePath,
 			// global import
 			isGlobal: true,
 		}),
+		AuthModule,
+		UserModule,
+		PrismaModule,
+		ChatModule,
+		GameModule,
 	],
 	providers: [GameService, GameGateway],
 	// NOT USED AS OF YET
@@ -46,6 +47,7 @@ console.log(`Running on port ` + process.env.PORT);
 })
 export class AppModule {}
 
+console.log(`API URL: ` + process.env.MY_2FA_APP_NAME);
 console.log(`API KEY: ` + process.env.FORTYTWO_SECRET);
 console.log(`API UID: ` + process.env.FORTYTWO_ID);
 console.log(`API CALLBACK: ` + process.env.FORTYTWO_CALLBACK);

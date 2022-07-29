@@ -8,7 +8,7 @@ import { GetCurrentUserId } from 'src/decorators';
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
 /* DTOs */
-import { TwoFactorDto, TwoFactorUserDto } from '../dto';
+import { TwoFactorUserDto } from '../dto';
 
 /**
  * TWO FACTOR AUTHENTICATION SERVICE
@@ -45,10 +45,8 @@ export class TwoFactorService {
 		});
 	}
 
-	// Generate a new 2FA fur user
-	async generate2FA(user: TwoFactorDto) {
-		// destructure data
-		const { email } = user;
+	// Generate a new 2FA for user
+	async generate2FA(email: string) {
 		// Generate a 2FA secret
 		const secret = authenticator.generateSecret();
 		// Create a URL for the QR code
@@ -73,14 +71,15 @@ export class TwoFactorService {
 	async login_with_2fa(user: TwoFactorUserDto) {
 		// destructure data
 		const { email, userId } = user;
-		return {
-			id: userId,
-			tokens: this.authservice.signin_jwt(userId, email, true),
-		};
+		// generate tokens
+		const tokens = await this.authservice.signin_jwt(userId, email, true);
+		return tokens;
 	}
 
 	// Verify 2FA code
 	async verify2FAcode(code: string, twoFAsecret: string) {
+		console.log('verify2FAcode', code);
+		console.log('2FA Secret', twoFAsecret);
 		return authenticator.verify({
 			token: code,
 			secret: twoFAsecret,
