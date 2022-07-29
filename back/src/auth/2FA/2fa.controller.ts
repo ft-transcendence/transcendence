@@ -10,11 +10,17 @@ import { GetCurrentUser, Public } from 'src/decorators';
 import { TwoFactorUserDto } from '../dto';
 import { TwoFactorService } from './2fa.service';
 import { Response } from 'express';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { UserService } from 'src/user/user.service';
+import { AuthService } from '../auth.service';
 
 @Controller('/auth/2fa')
 export class TwoFAController {
-	constructor(private twoFAservice: TwoFactorService) {}
-
+	constructor(
+		private twoFAservice: TwoFactorService,
+		private prisma: PrismaService,
+		private authService: AuthService,
+	) {}
 	/* TWO FACTOR AUTHENTIFICATION */
 
 	/**
@@ -38,11 +44,16 @@ export class TwoFAController {
 	@Public()
 	@Post('/authenticate')
 	async authenticate_2fa(
-		@Body() { twoFAcode }: any,
-		@GetCurrentUser() user: TwoFactorUserDto,
+		@Body() { twoFAcode, user }: any, //@GetCurrentUser() user: TwoFactorUserDto,
 	) {
+		console.log(twoFAcode, user);
 		// destructure data
-		const { twoFAsecret } = user;
+		const current_user = await this.prisma.user.findUnique({
+			where: {
+				email: user,
+			},
+		});
+		const { email, id, twoFAsecret } = current_user;
 		// check if code is valid
 		const isValidCode = this.twoFAservice.verify2FAcode(
 			twoFAcode,
@@ -53,7 +64,7 @@ export class TwoFAController {
 			throw new UnauthorizedException('Invalid 2FA code');
 		}
 		// return
-		return this.twoFAservice.login_with_2fa(user);
+		return this.authService.signin_jwt(id, email, true);
 	}
 
 	/**

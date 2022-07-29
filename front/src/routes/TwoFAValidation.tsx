@@ -7,13 +7,14 @@ export default function TwoFAValidation() {
 
   let location = useLocation();
   let navigate = useNavigate();
+  let email: string;
   const [FACode, setCode] = useState("");
 
   useEffect(() => {
-    const email = location.search.split("=")[1];
+    email = location.search.split("=")[1];
     if (email) {
       console.log(email);
-      navigate("/2FA");
+      //navigate("/2FA");
     }
   }, [location.search]);
 

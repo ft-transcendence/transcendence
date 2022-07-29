@@ -99,10 +99,6 @@ export class AuthController {
 		url.searchParams.append('access_token', tokens['access_token']);
 		response.status(302).redirect(url.href);
 		*/
-		// SEND TOKEN TO FRONT
-		//console.log('callback_42', tokens);
-		//return response.status(201).send(tokens['access_token']);
-		//return tokens['access_token'];
 	}
 
 	/* REFRESH TOKEN CALLBACK */
