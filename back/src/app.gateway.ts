@@ -1,5 +1,6 @@
-import { SubscribeMessage, WebSocketGateway, MessageBody, ConnectedSocket, WebSocketServer, WsException, OnGatewayConnection, OnGatewayDisconnect, BaseWsExceptionFilter  } from '@nestjs/websockets';
-import { Socket, Server } from 'socket.io';
+/* eslint-disable prettier/prettier */
+import { WebSocketGateway, WsException, OnGatewayConnection, OnGatewayDisconnect, BaseWsExceptionFilter  } from '@nestjs/websockets';
+import { Socket } from 'socket.io';
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from 'src/user/user.service'; 
 import { ChatService } from './chat/chat.service';
@@ -14,31 +15,25 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   
 
 
+  // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
   handleConnection(client: Socket, ...args: any[]) {
   try {  
     const UserId: number = this.jwtService.verify(String(client.handshake.headers.token), {secret: process.env.JWT_SECRET}).sub;
     const user = this.userService.getUser(UserId);
     client.data.id = UserId;
-    this.chatService.chatClients.push(client);
     
     if (!user)
       throw new WsException('Invalid token.');
   }
+  // eslint-disable-next-line unicorn/prefer-optional-catch-binding, unicorn/catch-error-name, unicorn/prevent-abbreviations
   catch(e)
   {
     return false;
   }
   }
 
-  handleDisconnect(client: Socket)
-  {
-    for (let i = 0; i < this.chatService.chatClients.length; i++) {
-      if (this.chatService.chatClients[i] === client) {
-        this.chatService.chatClients.splice(i, 1);
-        break;
-      }
-    }
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  handleDisconnect(){}
 
 }
 

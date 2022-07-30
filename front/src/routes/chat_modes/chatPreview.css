@@ -1,0 +1,176 @@
+.preview-zone {
+    background-color: inherit;
+    width: 250px;
+}
+
+.preview-chat-search {
+    display: flex;
+    height: 60px;
+}
+
+    .input-search {
+        padding: 10px;
+        margin-top: 1px;
+        width: 190px;
+    }
+
+    .input-search .wrapper{
+        border-radius: 10px !important;
+    }
+
+    .input-search .clear-icon{
+        margin-top: -1px;
+    }
+
+
+    .input-search li {
+        width: 170px;
+        height: 70px;
+        padding: 10px !important;
+    }
+
+    .input-search ul {
+        padding-bottom: 10px !important;
+    }
+
+    .search-result {
+        /* margin: auto; */
+        height: 60px;
+        padding: 10px;
+        line-height: 0.8;
+    }
+
+    .search-icon
+    {
+        margin-left: 17px;
+    }
+
+    li .search-icon
+    {
+        margin-left: 10px;
+    }
+
+
+        .result-type {
+            /* font-size: 14px; */
+            color: grey;
+        }
+
+        .result {
+            color: rgb(75, 74, 74);
+        }
+
+    .add-room-button {
+        background-color: grey;
+        margin-top: 10px;
+        margin-left: 5px;
+        margin-right: 15px;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        padding-top: 4px;
+        text-align: center;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+.preview-chat-list
+{
+    overflow: overlay;
+    height: calc(100% - 100px);
+}
+
+.preview-chat
+{
+    height: 80px;
+    display: flex;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+
+}
+
+.preview-chat:hover
+{
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.preview-chat:active
+{
+    background-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+
+.preview-chat > div
+{
+    display: flex;
+    padding: 10px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.preview-chat:hover > div
+{
+   transform: scale(0.97);
+}
+
+.preview-chat:active > div
+{
+   transform: scale(0.95);
+}
+
+.preview-chat-img
+{
+    background-color: white;
+    margin-top: 5px;
+    border-radius: 50%;
+    height: 45px;
+    width: 45px;
+}
+
+.preview-chat-info
+{
+    padding-left: 20px;
+    width: 80%;
+    display: flex;
+
+}
+
+.preview-chat-info-1
+{
+    flex: 4;
+    height: 100%;
+    width: 80%;
+
+}
+
+    .preview-chat-name
+    {
+        color: white;
+        font-size: large;
+        margin-bottom: auto;
+    }
+
+    .preview-chat-msg
+    {
+        color: rgba(167, 167, 167, 0.479);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+.preview-chat-info-2
+{
+    flex: 1;
+    width: 80%;
+
+}
+
+    .preview-chat-time {
+        background: greenyellow;
+    }
+
+    .preview-chat-unread {
+        background: purple;
+    }

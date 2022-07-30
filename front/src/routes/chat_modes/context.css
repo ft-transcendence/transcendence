@@ -1,0 +1,7 @@
+.react-contexify__will-leave--scale {
+    animation-duration: 0s !important;
+}
+
+.react-contexify .react-contexify__submenu {
+    left: -100% !important;
+}

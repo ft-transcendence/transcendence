@@ -1,0 +1,53 @@
+.zone-diff {
+    display: flex;
+    height: 100vh;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    background-color: #252a2a;
+    border-color: grey;
+}
+
+.card-disappear-click-zone {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.add-zone {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    animation-name: mymove;
+    animation-duration: 0.5s;
+    animation-timing-function: ease;
+}
+
+@keyframes mymove {
+    from {transform: translateX(-50%) translateY(-50%) scale(0.95); opacity: 0;}
+    to {transform: translateX(-50%) translateY(-50%) scale(1); opacity: 1;}
+}
+
+/* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: none;
+    scrollbar-color: #C3CEDA #071330;
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #2c3447;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #C3CEDA;
+    border-radius: 10px;
+    border: 3px solid #2c3447;
+  }

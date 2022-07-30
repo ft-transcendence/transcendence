@@ -1,0 +1,161 @@
+.chat-status-zone {
+    background-color: #252a2a;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-bottom: 20px;
+    box-shadow: 0px 0px 96px 0px rgb(0 0 0 / 18%);
+}
+
+.status-top {
+    background-color: #191e1e;
+    height: 60px;
+}
+
+    .add-box
+    {
+        display: flex;
+        padding-left: 5px;
+    }
+
+        .add-box > .react-tags
+        {
+            background-color: inherit;
+            border: none;
+
+        }
+
+        .add-box > .react-tags input 
+        {
+            padding-top: 5px;
+            background-color: inherit;
+            color: white;
+            width: 180px;
+        }
+
+        .add-box > .react-tags__search
+        {
+            margin-top: 10px;
+        }
+
+        .add-box > .react-tags input::placeholder
+        {
+            font-size: 14px;
+            color: rgb(207, 202, 202);
+        }
+
+        .status-top > svg
+        {
+            float: right;
+            padding: 3px;
+            margin: 15px;
+            opacity: 0.9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .status-top > svg:hover
+        {
+            opacity: 1;
+        }
+
+        .add-box .xicon
+        {
+            float: right;
+            padding: 15px;
+            margin: 9px;
+            opacity: 0.85;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-box .xicon:hover
+        {
+            opacity: 1;
+        }
+
+.member-status {
+    margin-top: 20px;
+    margin-left: 20px;
+    color: white;
+    flex: 1;
+    overflow: overlay;
+}
+
+    .status-type {
+        color: grey;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .one-status {
+        margin-top: 5px;
+        display: flex;
+    }
+
+    .one-pic {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: white;
+    }
+
+    .one-name {
+        padding-left: 20px;
+    }
+
+.password-zone {
+    width: 180px;
+    margin: auto;
+    margin-bottom: 30px;
+    text-align: center;
+    color : white;
+    font-weight: 600;
+    font-size: 14px;
+
+}
+
+.protected-tag {
+    margin: auto;
+    margin-bottom: 14px;
+}
+
+.password-tag {
+    margin-left: 8px;
+    margin-bottom: 0px;
+    font-weight: 400;
+    font-size: 12px;
+    text-align: left;
+}
+
+.password-input {
+    width: 100%;
+    line-height: 2;
+    padding-left: 8px;
+    padding-right: 12px;
+    color: white;
+    border-radius: 3px;
+    border: transparent;
+    border-bottom: 1px solid white;
+    background-color: transparent;
+}
+
+#password::placeholder {
+    color: white;
+}
+
+.password-input:focus {
+    outline: none;    
+}
+
+.join-channel-button {
+    cursor: pointer;
+    margin: auto;
+    width: 180px;
+    color: white;
+    line-height: 2.5;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 3px;
+}
