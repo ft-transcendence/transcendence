@@ -9,9 +9,6 @@ export const ModifyEntry = (props: any) => {
   const initialValues = {
     email: "",
     userName: "",
-    phone: "",
-    newPass: "",
-    pass: "",
   };
 
   const [userInput, setUserInput] = useState(initialValues);
@@ -26,7 +23,6 @@ export const ModifyEntry = (props: any) => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("--------------");
     if (userInput.userName) {
       updateUsernameQuery(userInput.userName);
       const button = document.getElementById("handleChange");
@@ -43,7 +39,6 @@ export const ModifyEntry = (props: any) => {
         button.setAttribute("value", userInput.email);
       }
     }
-    // ADD THE REST WHEN BACK HAS DEDICATED FUNCTIONS FOR IT
   };
   return (
     <Col className="col-6">
@@ -56,10 +51,6 @@ export const ModifyEntry = (props: any) => {
                   toEdit={props.toEdit}
                   setUserInput={handleInputChange}
                   userInput={userInput}
-                />
-                <CurrentPasswordValidation
-                  setUserInput={handleInputChange}
-                  userInput={userInput.pass}
                 />
                 <Row>
                   <Col></Col>
@@ -113,20 +104,6 @@ const SpecificEntry = (props: any) => {
         modifyInput={props.userInput.userName}
       />
     );
-  if (props.toEdit === "PHONE")
-    return (
-      <EntryIsPhone
-        setUserInput={props.setUserInput}
-        modifyInput={props.userInput.phone}
-      />
-    );
-  if (props.toEdit === "PASSWORD")
-    return (
-      <EntryIsPassword
-        setUserInput={props.setUserInput}
-        modifyInput={props.userInput.newPass}
-      />
-    );
   return null;
 };
 
@@ -162,63 +139,6 @@ const EntryIsEmail = (props: any) => {
           onChange={props.setUserInput}
           value={props.modifyInput}
           name="email"
-        />
-      </Form.Group>
-    </div>
-  );
-};
-
-const EntryIsPhone = (props: any) => {
-  return (
-    <div>
-      <Form.Group className="mb-3">
-        <Form.Label className="IBM-text" style={{ fontSize: "20px" }}>
-          PHONE NUMBER
-        </Form.Label>
-        <Form.Control
-          type="tel"
-          placeholder="new phone number"
-          onChange={props.setUserInput}
-          value={props.modifyInput}
-          name="phone"
-        />
-      </Form.Group>
-    </div>
-  );
-};
-
-const EntryIsPassword = (props: any) => {
-  return (
-    <div>
-      <Form.Group className="mb-3">
-        <Form.Label className="IBM-text" style={{ fontSize: "20px" }}>
-          NEW PASSWORD
-        </Form.Label>
-        <Form.Control
-          type="password"
-          placeholder="new password"
-          onChange={props.setUserInput}
-          value={props.modifyInput}
-          name="newPass"
-        />
-      </Form.Group>
-    </div>
-  );
-};
-
-const CurrentPasswordValidation = (props: any) => {
-  return (
-    <div>
-      <Form.Group className="mb-3">
-        <Form.Label className="IBM-text" style={{ fontSize: "20px" }}>
-          PASSWORD
-        </Form.Label>
-        <Form.Control
-          type="password"
-          placeholder="current password"
-          onChange={props.setUserInput}
-          value={props.modifyInput}
-          name="pass"
         />
       </Form.Group>
     </div>
