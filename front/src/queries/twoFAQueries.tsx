@@ -2,11 +2,13 @@ export const twoFAGenerate = () => {
   return fetchPost(null, "generate");
 };
 
-export const twoFAAuth = (code: string, email: string) => {
+export const twoFAAuth = (twoFAcode: string, email: string) => {
   let raw = JSON.stringify({
-    twoFAcode: code,
+    username: email,
+    twoFAcode: twoFAcode,
   });
-  return fetchPost(raw, "authenticate");
+  console.log('raw', raw);
+  return fetchValid(raw, "authenticate");
 };
 
 export const twoFAOn = (code: string) => {
@@ -41,14 +43,17 @@ const fetchPost = async (body: any, url: string) => {
   }
 };
 
-export const twoFAValidate = async (code: string) => {
-  let fetchUrl = "http://localhost:4000/auth/2fa/turn-on";
-
+const fetchValid = async (body: any, url: string) => {
+  let fetchUrl = "http://localhost:4000/auth/2fa/" + url;
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
   try {
+    console.log('body is', body);
+    
     const response = await fetch(fetchUrl, {
       method: "POST",
-      headers: authRawHeader(),
-      body: JSON.stringify({ twoFAcode: code, username: "sshakya@student.42.fr" }),
+      headers: myHeaders,
+      body: body,
       redirect: "follow",
     });
     const result_1 = await response.json();
@@ -56,4 +61,4 @@ export const twoFAValidate = async (code: string) => {
   } catch (error) {
     return console.log("error", error);
   }
-}
+};

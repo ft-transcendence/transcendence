@@ -3,17 +3,22 @@ import {
 	Controller,
 	HttpCode,
 	Post,
+	Req,
 	Res,
 	UnauthorizedException,
 } from '@nestjs/common';
 import { GetCurrentUser, Public } from 'src/decorators';
-import { TwoFactorUserDto } from '../dto';
+import { TwoFactorDto, TwoFactorUserDto } from '../dto';
 import { TwoFactorService } from './2fa.service';
 import { Response } from 'express';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Controller('/auth/2fa')
 export class TwoFAController {
-	constructor(private twoFAservice: TwoFactorService) {}
+	constructor(
+		private twoFAservice: TwoFactorService,
+		private prisma: PrismaService,
+	) {}
 
 	/* TWO FACTOR AUTHENTIFICATION */
 
@@ -22,11 +27,11 @@ export class TwoFAController {
 	 */
 	@Post('/turn-on')
 	@HttpCode(200)
-	async turn_on_2fa(
+	async turn_on(
 		@Body() { twoFAcode }: any,
 		@GetCurrentUser() user: TwoFactorUserDto,
 	) {
-		await this.twoFAservice.turn_on_2fa(twoFAcode, user);
+		await this.twoFAservice.turn_on(twoFAcode, user);
 		return {
 			success: ' 2FA turned on',
 		};
@@ -37,23 +42,9 @@ export class TwoFAController {
 	 */
 	@Public()
 	@Post('/authenticate')
-	async authenticate_2fa(
-		@Body() { twoFAcode }: any,
-		@GetCurrentUser() user: TwoFactorUserDto,
-	) {
-		// destructure data
-		const { twoFAsecret } = user;
-		// check if code is valid
-		const isValidCode = this.twoFAservice.verify2FAcode(
-			twoFAcode,
-			twoFAsecret,
-		);
-		// if invalid code, throw error
-		if (!isValidCode) {
-			throw new UnauthorizedException('Invalid 2FA code');
-		}
-		// return
-		return this.twoFAservice.login_with_2fa(user);
+	async authenticate(@Body() dto: any) {
+		console.log('auth 2fa', dto);
+		return this.twoFAservice.authenticate(dto);
 	}
 
 	/**

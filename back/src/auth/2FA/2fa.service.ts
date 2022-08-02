@@ -8,7 +8,7 @@ import { GetCurrentUserId } from 'src/decorators';
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
 /* DTOs */
-import { TwoFactorUserDto } from '../dto';
+import { TwoFactorDto, TwoFactorUserDto } from '../dto';
 
 /**
  * TWO FACTOR AUTHENTICATION SERVICE
@@ -21,7 +21,7 @@ export class TwoFactorService {
 	) {}
 
 	// Turn on 2FA for existing user
-	async turn_on_2fa(twoFAcode: any, user: TwoFactorUserDto) {
+	async turn_on(twoFAcode: any, user: TwoFactorUserDto) {
 		// destructure data
 		const { email, twoFAsecret } = user;
 		// Check is 2FA code is valid
@@ -38,7 +38,7 @@ export class TwoFactorService {
 	}
 
 	// Turn off 2FA for existing user
-	async turn_off_2fa(@GetCurrentUserId() userId: number) {
+	async turn_off(@GetCurrentUserId() userId: number) {
 		await this.prisma.user.update({
 			where: { id: userId },
 			data: { twoFA: false },
@@ -68,11 +68,28 @@ export class TwoFactorService {
 		};
 	}
 
-	async login_with_2fa(user: TwoFactorUserDto) {
+	async authenticate(dto: TwoFactorDto) {
+		// destructure dto
+		const { username, twoFAcode } = dto;
+		// find user by email or username
+		const [user] = await this.prisma.user.findMany({
+			where: { OR: [{ email: username }, { username: username }] },
+		});
+		console.log(user);
+		if (!user) {
+			throw new UnauthorizedException('Invalid User');
+		}
 		// destructure data
-		const { email, userId } = user;
+		const { id, email, twoFAsecret } = user;
+		// check if code is valid
+		const isValidCode = await this.verify2FAcode(twoFAcode, twoFAsecret);
+		console.log('code is valid ?', isValidCode);
+		// if invalid code, throw error
+		if (!isValidCode) {
+			throw new UnauthorizedException('Invalid 2FA code');
+		}
 		// generate tokens
-		const tokens = await this.authservice.signin_jwt(userId, email, true);
+		const tokens = await this.authservice.signin_jwt(id, email, true);
 		return tokens;
 	}
 

@@ -7,16 +7,17 @@ export default function TwoFAValidation() {
 
   let location = useLocation();
   let navigate = useNavigate();
-  let email = useRef('');
-  const [FACode, setCode] = useState("");
+  //let email: string;
+  const [twoFACode, setCode] = useState("");
 
   useEffect(() => {
-    email.current = location.search.split("=")[1];
+    const email = location.search.split("=")[1];
     if (email) {
       console.log(email);
+      localStorage.setItem("tempemail", email);
       navigate("/2FA");
     }
-  }, [location.search]);
+  }, [location.search, navigate]);
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
@@ -25,11 +26,14 @@ export default function TwoFAValidation() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("", FACode);
-    const twoFAValid = async () => {
-      return await twoFAAuth(FACode, email.current);
+    const email = localStorage.getItem("tempemail");
+    console.log('2fa code', twoFACode, email);
+    if (email) {
+    const twoFAValid = async (email: string) => {
+      return await twoFAAuth(twoFACode, email);
     };
-    twoFAValid();
+    twoFAValid(email);
+  }
   };
   return (
     <div>
@@ -41,8 +45,8 @@ export default function TwoFAValidation() {
           type="text"
           placeholder="6-digit-code"
           onChange={handleInputChange}
-          value={FACode}
-          name="code"
+          value={twoFACode}
+          name="twoFAcode"
         />
         <Button
           variant="primary"

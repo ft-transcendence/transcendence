@@ -24,11 +24,15 @@ import { FortyTwoAuthGuard } from './guard';
 import { RtGuard } from './guard';
 /* AUTH DTOs */
 import { SignUpDto, SignInDto } from './dto';
+import { TwoFactorService } from './2FA/2fa.service';
 
 // AUTH CONTROLLER - /auth
 @Controller('auth')
 export class AuthController {
-	constructor(private authService: AuthService) {}
+	constructor(
+		private authService: AuthService,
+		private twoFAService: TwoFactorService,
+	) {}
 
 	/**
 	 *	/signup - create account
@@ -86,23 +90,25 @@ export class AuthController {
 	@Get('42/callback')
 	async callback_42(@Req() request: any, @Res() response: Response) {
 		// Generate token using API response
-		const tokens = await this.authService.signin_42(
+		const user = await this.authService.signin_42(
 			request.user as Profile_42,
-			response,
 		);
-		tokens['response'];
-		/*
-		// SEND TOKEN TO FRONT in URL
-		const url = new URL(`${request.protocol}` + '://localhost');
-		url.port = process.env.FRONT_PORT;
-		url.pathname = '/auth';
-		url.searchParams.append('access_token', tokens['access_token']);
-		response.status(302).redirect(url.href);
-		*/
-		// SEND TOKEN TO FRONT
-		//console.log('callback_42', tokens);
-		//return response.status(201).send(tokens['access_token']);
-		//return tokens['access_token'];
+
+		if (user.twoFA) {
+			return this.authService.signin_2FA(response, user);
+		} else {
+			const tokens = await this.authService.signin_jwt(
+				user.id,
+				user.email,
+			);
+			console.log(tokens);
+			// SEND TOKEN TO FRONT in URL
+			const url = new URL(`${request.protocol}` + '://localhost');
+			url.port = process.env.FRONT_PORT;
+			url.pathname = '/auth';
+			url.searchParams.append('access_token', tokens['access_token']);
+			response.status(302).redirect(url.href);
+		}
 	}
 
 	/* REFRESH TOKEN CALLBACK */

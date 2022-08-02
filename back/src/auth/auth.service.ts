@@ -106,7 +106,7 @@ export class AuthService {
 	}
 
 	/* SIGNIN USING 42 API */
-	async signin_42(dto: Auth42Dto, response: Response) {
+	async signin_42(dto: Auth42Dto) {
 		// LOG
 		console.log('signin_42');
 		// DTO
@@ -137,21 +137,12 @@ export class AuthService {
 			// LOG
 			console.log('create user :', username, email, rdm_string);
 			// return token
-			return await this.signin_jwt(new_user.id, email);
+			return new_user;
 		} else {
 			// LOG
 			console.log('user exists');
 			// check if 2FA is enabled
-			if (user.twoFA) {
-				return await this.signin_2FA(response, user);
-				//throw new ForbiddenException('TwoFA is enabled');
-			}
-			// return token
-			const tokens = await this.signin_jwt(user.id, email);
-			return {
-				twoFA: false,
-				tokens: tokens,
-			};
+			return user;
 		}
 	}
 
@@ -160,12 +151,9 @@ export class AuthService {
 		const url = new URL('http://localhost');
 		url.port = process.env.FRONT_PORT;
 		url.pathname = '2FA';
-		url.searchParams.append('email', user.email);
+		url.searchParams.append('username', user.username);
 		response.status(302).redirect(url.href);
-		return {
-			twoFA: true,
-			response,
-		};
+		return response;
 	}
 
 	/* JWT */
