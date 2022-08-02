@@ -41,6 +41,7 @@
     "@types/passport-local": "^1.0.34",
     "@types/qrcode": "^1.4.2",
     "argon2": "^0.28.5",
+    "async-mutex": "^0.3.2",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",

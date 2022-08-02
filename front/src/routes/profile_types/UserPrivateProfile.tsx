@@ -3,10 +3,11 @@ import { Card, Col, Container, Row } from "react-bootstrap";
 import { ModifyEntry } from "./ModifyUserInfo";
 import IconPen from "../../ressources/icons/IconPen.svg";
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
-import { UsersRelations } from "./FriendsList";
+//import { UsersRelations } from "./FriendsList";
 import { Activate2FA } from "../../modals/MActivateTwoFA";
-import { TwoFA } from "./TwoFA";
 // import { useUsername } from "../../hooks/UserInfoHooks";
+import { UsersRelations } from "./users_relations/UsersRelations";
+import { TwoFA } from "./TwoFA";
 
 export default function UserPrivateProfile() {
   const [showUsername, setShowUsername] = useState(false);
@@ -15,20 +16,12 @@ export default function UserPrivateProfile() {
   const [showEmail, setShowEmail] = useState(false);
   const onClickEditEmail = () => setShowEmail((curent) => !curent);
 
-  const [showPhone, setShowPhone] = useState(false);
-  const onClickEditPhone = () => setShowPhone((curent) => !curent);
-
-  const [showPass, setShowPass] = useState(false);
-  const onClickEditPass = () => setShowPass((curent) => !curent);
-
   const [showFriends, setShowFriends] = useState(true);
   const onClickShowFriends = () => setShowFriends((curent) => !curent);
 
   const userInfoInit = {
     email: localStorage.getItem("userEmail"),
     userName: localStorage.getItem("userName"),
-    phone: "",
-    pass: localStorage.getItem("userPassword"),
     auth: localStorage.getItem("userAuth"),
   };
 
@@ -103,8 +96,6 @@ export default function UserPrivateProfile() {
                           setShowUsername(true);
                           setShowFriends(false);
                           setShowEmail(false);
-                          setShowPhone(false);
-                          setShowPass(false);
                         }}
                       >
                         Edit
@@ -131,44 +122,6 @@ export default function UserPrivateProfile() {
                           setShowEmail(true);
                           setShowFriends(false);
                           setShowUsername(false);
-                          setShowPhone(false);
-                          setShowPass(false);
-                        }}
-                      >
-                        Edit
-                      </button>
-                    </Col>
-                  </Row>
-                </div>
-                <div>
-                  <Row className="wrapper p-3">
-                    <Col className="text-wrapper">
-                      <div className="IBM-text" style={{ fontSize: "20px" }}>
-                        {" "}
-                        PHONE{" "}
-                      </div>
-                      <div className="ROBOTO-text" style={{ fontSize: "15px" }}>
-                        ******7535
-                      </div>
-                    </Col>
-                    <Col>
-                      <button
-                        type="button"
-                        className="btn btn-secondary btn-sm submit-button float-end"
-                      >
-                        Remove
-                      </button>
-                    </Col>
-                    <Col>
-                      <button
-                        type="button"
-                        className="btn btn-secondary btn-sm submit-button float-end"
-                        onClick={() => {
-                          setShowPhone(true);
-                          setShowFriends(false);
-                          setShowUsername(false);
-                          setShowEmail(false);
-                          setShowPass(false);
                         }}
                       >
                         Edit
@@ -182,11 +135,9 @@ export default function UserPrivateProfile() {
                       type="button"
                       className="col-5 btn btn-outline-primary btn-sm"
                       onClick={() => {
-                        setShowPass(true);
+                        setShowEmail(false);
                         setShowFriends(false);
                         setShowUsername(false);
-                        setShowEmail(false);
-                        setShowPhone(false);
                       }}
                     >
                       Change Password
@@ -197,6 +148,7 @@ export default function UserPrivateProfile() {
                   auth={userInfo.auth}
                   onClick={() => setModalShowAuth(true)}
                 />
+                <TwoFA auth={userInfo.auth} />
               </Card.Body>
             </Card>
           </Col>
@@ -216,26 +168,6 @@ export default function UserPrivateProfile() {
               toEdit="EMAIL"
               onClick={() => {
                 onClickEditEmail();
-                onClickShowFriends();
-              }}
-              changeUserInfoHook={changeUserInfoHook}
-            />
-          ) : null}
-          {showPhone ? (
-            <ModifyEntry
-              toEdit="PHONE"
-              onClick={() => {
-                onClickEditPhone();
-                onClickShowFriends();
-              }}
-              changeUserInfoHook={changeUserInfoHook}
-            />
-          ) : null}
-          {showPass ? (
-            <ModifyEntry
-              toEdit="PASSWORD"
-              onClick={() => {
-                onClickEditPass();
                 onClickShowFriends();
               }}
               changeUserInfoHook={changeUserInfoHook}

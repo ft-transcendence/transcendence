@@ -5,7 +5,8 @@ import { ChannelDto, NewMsgDto} from './dto/chat.dto';
 
 @Injectable()
 export class ChatService {
-
+    chatClients = [];
+    
     constructor(private readonly prisma: PrismaService) {}
 
     async readId(email: string): Promise<number>

@@ -16,3 +16,8 @@ export interface IUserInfo {
   password: string | null;
   clear: any;
 }
+
+export interface ItableRow {
+  key: number;
+  userModel: { username: string; avatar: string; id: number };
+}

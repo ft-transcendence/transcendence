@@ -2,7 +2,7 @@ export const twoFAGenerate = () => {
   return fetchPost(null, "generate");
 };
 
-export const twoFAAuth = (code: string) => {
+export const twoFAAuth = (code: string, email: string) => {
   let raw = JSON.stringify({
     twoFAcode: code,
   });

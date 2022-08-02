@@ -6,8 +6,8 @@ COMPOSE		=	docker-compose.yml
 
 # Change this to suit your compose version
 
-COMPOSE_CMD = docker-compose -f ${COMPOSE}
-#COMPOSE_CMD	= 	docker compose -f ${COMPOSE}
+# COMPOSE_CMD = docker-compose -f ${COMPOSE}
+COMPOSE_CMD	= 	docker compose -f ${COMPOSE}
 
 # BASIC COMPOSE COMMANDS
 build:

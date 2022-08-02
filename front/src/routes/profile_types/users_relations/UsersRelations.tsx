@@ -1,5 +1,5 @@
-import { Col, Card, Container, Nav, Navbar } from "react-bootstrap";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Col, Card, Navbar, Container, Nav } from "react-bootstrap";
+import { NavLink, Outlet } from "react-router-dom";
 
 export const UsersRelations = () => {
   return (
@@ -20,6 +20,15 @@ export const UsersRelations = () => {
                 </NavLink>{" "}
                 |{" "}
                 <NavLink
+                  to="/app/private-profile/pending"
+                  className={({ isActive }) =>
+                    isActive ? "active-class" : "not-active-class"
+                  }
+                >
+                  PENDING
+                </NavLink>{" "}
+                |{" "}
+                <NavLink
                   to="/app/private-profile/blocked"
                   className={({ isActive }) =>
                     isActive ? "active-class" : "not-active-class"
@@ -35,12 +44,4 @@ export const UsersRelations = () => {
       </Card>
     </Col>
   );
-};
-
-export const FriendsList = () => {
-  return <div>Here are my friends</div>;
-};
-
-export const BlockedList = () => {
-  return <div>Here are my foes</div>;
 };

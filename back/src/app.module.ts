@@ -8,6 +8,10 @@ import { GameService } from './game/game.service';
 import { GameGateway } from './game/game.gateway';
 import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
+import { JwtModule } from '@nestjs/jwt';
+import { UserService } from './user/user.service';
+import { AppGateway } from './app.gateway';
+import { ChatService } from './chat/chat.service';
 
 // Set the env file path
 let environmentFilePath = '.env';
@@ -40,8 +44,9 @@ console.log('Using port: ' + process.env.PORT);
 		PrismaModule,
 		ChatModule,
 		GameModule,
+		JwtModule.register({secret: process.env.JWT_SECRET}),
 	],
-	providers: [GameService, GameGateway],
+	providers: [GameService, GameGateway, UserService, AppGateway, ChatService],
 	// NOT USED AS OF YET
 	// controllers: [AppController],
 })

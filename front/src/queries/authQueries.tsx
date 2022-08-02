@@ -43,7 +43,7 @@ export const signUp = (userInfo: any, userSignIn: any) => {
 
 const storeToken = (userInfo: any, token: any) => {
   if (!(token.error === "Forbidden")) {
-    console.log("token= ", token);
+    console.log("token= ", token.access_token);
     localStorage.setItem("userToken", token.access_token);
     localStorage.setItem("userRefreshToken", token.refresh_token);
   }

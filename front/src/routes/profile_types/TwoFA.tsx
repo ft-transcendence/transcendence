@@ -19,6 +19,7 @@ export const TwoFA = (props: any) => {
             type="button"
             className="btn btn-secondary btn-sm submit-button float-end"
             onClick={props.onClick}
+            // onClick={}
           >
             {props.auth === "true" ? "Remove 2FA" : "Activate 2FA"}
           </button>
