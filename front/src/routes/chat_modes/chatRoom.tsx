@@ -223,7 +223,7 @@ function InputArea({channelId, email}
     : { channelId: number,
         email: string | null }) {
     const [msg, setMsg] = useState("");
-    const [mypicker, setMyPicker] = useState(true);
+    const [mypicker, setMyPicker] = useState(false);
 
     useEffect(() => {
         setMsg("");
