@@ -184,14 +184,18 @@ function Status({users, current, role}
 
     const [selData, setSelData] = useState<any>(null);
     const { show } = useContextMenu();
-
+    const [hide, setHide] = useState<any>();
+    
     useEffect(() => {
+
         if (selData && selData.event)
         {
+            if (hide)
+                hide();
             show(selData.event, {id: JSON.stringify(selData.data)});
             selData.event = null;
         }
-    }, [selData, show]);
+    }, [selData, show, hide]);
 
     function handleAddFriend(){
         let update: updateUser = {
@@ -276,29 +280,29 @@ function Status({users, current, role}
             {users?.map((value, index) => {
                 return (
                 <div key={index}>
-                    <OneStatus data={value} setSelData={setSelData}/>
+                    <OneStatus data={value} setSelData={setSelData} setHide={setHide}/>
                 </div>
                 )
             })}
             <Menu id={JSON.stringify(global.selectedData)} theme={theme.dark}>
-                    <Item onClick={handleAddFriend} style={{backgroundColor: "grey"}}>
-                        add friend
-                    </Item>
-                    <Item onClick={handleInviteGame} style={{backgroundColor: "grey"}}>
-                        invite to a game!
-                    </Item>
-                    <Item onClick={handleBlockUser} style={{backgroundColor: "grey"}}>
-                        block user
-                    </Item>
-                    <Separator/>
-                    {role === "owner" && 
-                        (global.selectedData?.isInvited === false) ?
+                <Item onClick={handleAddFriend} style={{backgroundColor: "grey"}}>
+                    add friend
+                </Item>
+                <Item onClick={handleInviteGame} style={{backgroundColor: "grey"}}>
+                    invite to a game!
+                </Item>
+                <Item onClick={handleBlockUser} style={{backgroundColor: "grey"}}>
+                    block user
+                </Item>
+                <Separator/>
+                {role === "owner" && 
+                    (global.selectedData?.isInvited === false) ?
                     <>
                         <Item 
-                        style={{display:
-                            (global.selectedData?.isAdmin === false) ? "" : "none"}}
-                        onClick={handleBeAdmin}>
-                        assign as admin
+                            style={{display:
+                                (global.selectedData?.isAdmin === false) ? "" : "none"}}
+                            onClick={handleBeAdmin}>
+                            assign as admin
                         </Item>
                         <Item 
                             style={{display: 
@@ -307,51 +311,64 @@ function Status({users, current, role}
                             unset admin right
                         </Item>
                     </> : <></>}
-                    {(role === "admin" || role === "owner") && 
-                        (global.selectedData?.isInvited === false) ? 
+                {(role === "admin" || role === "owner") && 
+                    (global.selectedData?.isInvited === false) ? 
                     <>
                         <Submenu label="mute">
-                        <Item 
-                            onClick={() => handleMute(5)}>
-                            5 mins
+                            <Item 
+                                onClick={() => handleMute(5)}>
+                                5 mins
+                            </Item>
+                            <Item 
+                                onClick={() => handleMute(10)}>
+                                10 mins
+                            </Item>
+                            <Item
+                                onClick={() => handleMute(15)}>
+                                15 mins
+                            </Item>
+                            <Item
+                                onClick={() => handleMute(20)}>
+                                20 mins
+                            </Item>
+                        </Submenu>
+                        <Item onClick={handleKickOut}>
+                            kick out
                         </Item>
-                        <Item 
-                            onClick={() => handleMute(10)}>
-                            10 mins
-                        </Item>
-                        <Item
-                            onClick={() => handleMute(15)}>
-                            15 mins
-                        </Item>
-                        <Item
-                            onClick={() => handleMute(20)}>
-                            20 mins
-                        </Item>
-                    </Submenu>
-                    <Item onClick={handleKickOut}>
-                        kick out
-                    </Item>
-                        </> : <></>}
+                    </> : <></>}
             </Menu>
         </>
     )
 }
 
-function OneStatus({data, setSelData}
-    : { data: oneUser, setSelData: (d : any) => void }) {
+function OneStatus({data, setSelData, setHide}
+    : { data: oneUser,
+        setSelData: (d : any) => void,
+        setHide: (d: any) => void }) {
 
     const email = localStorage.getItem("userEmail");
 
-
     const goProfile = () => {
         // link to profile 
+    }
+
+    const handleMenu = (event: any) => {
+
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        let { hideAll } = useContextMenu({ 
+            id: JSON.stringify(global.selectedData)
+        });
+        setHide(hideAll);
+        global.selectedData = data;
+        event.preventDefault();
+        setSelData({data: data, event: event});
     }
 
     return (
         <div
             style={{display: data ? "" : "none"}}
             className="one-status"
-            onContextMenu={email !== data?.email ? (e) => {global.selectedData = data; e.preventDefault(); setSelData({data: data, event: e});} : undefined }
+            onContextMenu={email !== data?.email ? (e) => handleMenu(e) : undefined }
             onClick={goProfile}>
                 <p className="one-pic">{data?.picture}</p>
                 <p className="one-name">{data?.username}</p>
