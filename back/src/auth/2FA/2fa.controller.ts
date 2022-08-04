@@ -10,6 +10,8 @@ export class TwoFAController {
 
 	/* TWO FACTOR AUTHENTIFICATION */
 
+
+	
 	/**
 	 * /2FA/turn-on - turn on 2FA
 	 */

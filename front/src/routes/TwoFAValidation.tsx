@@ -34,7 +34,7 @@ export default function TwoFAValidation() {
     };
     twoFAValid(email);
     // remove temp email from local storage
-    localStorage.removeItem("tempemail");
+    //localStorage.removeItem("tempemail");
   }
   };
   return (
