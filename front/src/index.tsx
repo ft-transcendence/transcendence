@@ -43,7 +43,12 @@ root.render(
               <Route path="pending" element={<PendingList />} />
               <Route path="blocked" element={<BlockedList />} />
             </Route>
-            <Route path="chat" element={<Chat />} />
+            <Route path="chat" element={
+              <RequireAuth>
+                <Chat />
+              </RequireAuth>
+              }
+            />
             <Route path="game" element={<Game />} />
             <Route path="watch" element={<Watch />} />
             <Route path="*" element={<Navigate to="/app" />} />

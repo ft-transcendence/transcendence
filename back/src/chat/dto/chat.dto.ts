@@ -1,32 +1,61 @@
-import { ArrayMinSize, IsArray, IsBoolean, IsEmail, IsHash, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, maxLength } from 'class-validator';
+import {
+	IsArray,
+	IsBoolean,
+	IsEmail,
+	IsNotEmpty,
+	IsNumber,
+	IsOptional,
+	IsString,
+} from 'class-validator';
+import { Tag } from '../type/chat.type';
 
 export class ChannelDto {
+	@IsString()
+	@IsNotEmpty()
+	name: string;
 
-    @IsString()
-    @IsNotEmpty()
-    name: string;
+	@IsBoolean()
+	private: boolean;
 
-    @IsBoolean()
-    @IsOptional()
-    private: boolean;
+	@IsBoolean()
+	isPassword: boolean;
 
-    @IsOptional()
-    @IsString()
-    password: string;
+	@IsOptional()
+	@IsString()
+	password: string;
 
+	@IsEmail()
+	email: string;
+
+	@IsArray()
+	@IsOptional()
+	members: Array<Tag>;
 }
 
-export class NewMsgDto {
+export class UseMessageDto {
+	@IsEmail()
+	@IsNotEmpty()
+	email: string;
 
-    @IsNumber()
-    @IsNotEmpty()
-    userId: number;
+	@IsNumber()
+	@IsNotEmpty()
+	channelId: number;
 
-    @IsNumber()
-    @IsNotEmpty()
-    channelId: number;
+	@IsString()
+	@IsNotEmpty()
+	msg: string;
 
-    @IsString()
-    @IsNotEmpty()
-    msg: string;
+	@IsNumber()
+	@IsOptional()
+	msgId: number;
+}
+
+export class DMDto {
+	@IsEmail()
+	@IsNotEmpty()
+	email: string;
+
+	@IsNumber()
+	@IsNotEmpty()
+	added_id: number;
 }

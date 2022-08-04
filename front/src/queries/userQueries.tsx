@@ -40,7 +40,7 @@ const fetchGet = async (url: string, header: any, callback: any) => {
 export const storeUserInfo = (result: any) => {
   localStorage.setItem("userID", result.id);
   localStorage.setItem("userName", result.username);
-  localStorage.setItem("userEmail", "back sends email");
+  localStorage.setItem("userEmail", result.email);
   localStorage.setItem("userPicture", result.picture);
   localStorage.setItem("userGamesWon", result.gamesWon);
   localStorage.setItem("userGamesLost", result.gamesLost);

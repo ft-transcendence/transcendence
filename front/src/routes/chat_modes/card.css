@@ -1,0 +1,122 @@
+::placeholder {
+    background-color: transparent;
+    color: grey;
+}
+
+.card {
+    background-color: whitesmoke;
+    height: 500px;
+    width: 350px;
+    border-radius: 12px;
+    box-shadow: 0px 13px 36px 5px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 20px;
+}
+
+.card-title {
+    margin: auto;
+    margin-top: 10px;
+    width: 260px;
+    text-align: center;
+    color: grey;
+    font-weight: 600;
+    line-height: 4;
+    border-bottom: 1px solid grey;
+}
+
+.input-zone {
+    margin: auto;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    width: 240px;
+}
+
+    .new-room-name-input {
+        margin: auto;
+        height: 50px;
+        width: 240px;
+        padding-left: 18px;
+        background-color: transparent;
+        border-color: transparent;
+        border-bottom: 1px solid #D1D1D1;
+        color: grey;
+
+        /* shared font styles */
+        font-size: 1em;
+        line-height: 1.2;
+    }
+
+        .new-room-name-input:focus {
+            outline: none;
+            border-bottom: 1px solid #B1B1B1;
+        }
+
+    .browse-users {
+        max-height: 140px;
+        overflow: overlay;
+    }
+
+.div-switch {
+    display: flex;
+    margin: 30px 40px 0 40px;
+    color: rgb(97, 95, 95);
+}
+
+    .switch {
+        margin-left: auto;
+    }
+
+        .password {
+            margin: 20px 0 10px 40px;
+            padding-left: 10px;
+            border: none;
+            outline: none;
+            border-bottom: 1px solid #B1B1B1;
+            background-color: transparent;
+            color: rgb(97, 95, 95);
+        }
+
+            .password:focus {
+                border-bottom: 1px solid #A1A1A1;
+            }
+
+.card-confirm-button {
+    padding: 20px 30px;
+    margin-left: 50px;
+    margin-right: 50px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+    color: rgb(97, 95, 95);
+}
+
+.card-confirm-button:active {
+    background-color: rgb(177, 169, 169);
+    color: black;
+}
+
+.flex-block {
+    margin: auto;
+    flex: 1;
+}
+
+.owner-password {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.info-tag {
+    margin-top: 30px;
+    margin-bottom: 0px;
+    margin-left: 40px;
+    color: rgb(0, 136,0);
+}
+
+.foot-info-tag {
+    margin-top: 10px;
+    margin-bottom: -10px;
+    margin-left: 40px;
+    color: red;
+    font-size: 14px;
+}
