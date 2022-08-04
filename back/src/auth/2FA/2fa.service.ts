@@ -1,5 +1,11 @@
 /* GLOBAL MODULES */
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+	forwardRef,
+	Inject,
+	Injectable,
+	UnauthorizedException,
+} from '@nestjs/common';
+import { Response } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from '../auth.service';
 /* Decorators */
@@ -17,10 +23,21 @@ import { TwoFactorDto, TwoFactorUserDto } from '../dto';
 export class TwoFactorService {
 	constructor(
 		private prisma: PrismaService,
+		@Inject(forwardRef(() => AuthService))
 		private authservice: AuthService,
 	) {}
 
-	// Turn on 2FA for existing user
+	/* Redirect 2FA Enabled signin */
+	async signin_2FA(response: Response, username: string) {
+		const url = new URL(process.env.SITE_URL);
+		url.port = process.env.FRONT_PORT;
+		url.pathname = '2FA';
+		url.searchParams.append('username', username);
+		response.status(302).redirect(url.href);
+		return response;
+	}
+
+	/* Turn on 2FA for existing user */
 	async turn_on(twoFAcode: any, user: TwoFactorUserDto) {
 		// destructure data
 		const { email, twoFAsecret } = user;
@@ -34,10 +51,10 @@ export class TwoFactorService {
 			data: { twoFA: true },
 		});
 		// LOG
-		console.log('turn_on_2fa', user, isValid);
+		// console.log('turn_on_2fa', user, isValid);
 	}
 
-	// Turn off 2FA for existing user
+	/* Turn off 2FA for existing user */
 	async turn_off(@GetCurrentUserId() userId: number) {
 		await this.prisma.user.update({
 			where: { id: userId },
@@ -45,7 +62,7 @@ export class TwoFactorService {
 		});
 	}
 
-	// Generate a new 2FA for user
+	/* Generate a new 2FA for user */
 	async generate2FA(email: string) {
 		// Generate a 2FA secret
 		const secret = authenticator.generateSecret();
@@ -68,6 +85,7 @@ export class TwoFactorService {
 		};
 	}
 
+	/* Authenticate signin using 2FA */
 	async authenticate(dto: TwoFactorDto) {
 		// destructure dto
 		const { username, twoFAcode } = dto;
@@ -75,7 +93,8 @@ export class TwoFactorService {
 		const [user] = await this.prisma.user.findMany({
 			where: { OR: [{ email: username }, { username: username }] },
 		});
-		console.log(user);
+		// LOG
+		//console.log(user);
 		if (!user) {
 			throw new UnauthorizedException('Invalid User');
 		}
@@ -83,7 +102,8 @@ export class TwoFactorService {
 		const { id, email, twoFAsecret } = user;
 		// check if code is valid
 		const isValidCode = await this.verify2FAcode(twoFAcode, twoFAsecret);
-		console.log('code is valid ?', isValidCode);
+		// LOG
+		//console.log('code is valid ?', isValidCode);
 		// if invalid code, throw error
 		if (!isValidCode) {
 			throw new UnauthorizedException('Invalid 2FA code');
@@ -93,17 +113,18 @@ export class TwoFactorService {
 		return tokens;
 	}
 
-	// Verify 2FA code
+	/* Verify 2FA code */
 	async verify2FAcode(code: string, twoFAsecret: string) {
-		console.log('verify2FAcode', code);
-		console.log('2FA Secret', twoFAsecret);
+		// LOG
+		//console.log('verify2FAcode', code);
+		//console.log('2FA Secret', twoFAsecret);
 		return authenticator.verify({
 			token: code,
 			secret: twoFAsecret,
 		});
 	}
 
-	// Generate a QR code for the user
+	/* Generate a QR code for the user */
 	async generate2FAQRCode(onetimepathurl: string) {
 		// Generate a QR code from the URL
 		return toDataURL(onetimepathurl);

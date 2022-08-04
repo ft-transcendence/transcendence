@@ -44,7 +44,7 @@ console.log('Using port: ' + process.env.PORT);
 		PrismaModule,
 		ChatModule,
 		GameModule,
-		JwtModule.register({secret: process.env.JWT_SECRET}),
+		JwtModule.register({ secret: process.env.JWT_SECRET }),
 	],
 	providers: [GameService, GameGateway, UserService, AppGateway, ChatService],
 	// NOT USED AS OF YET
@@ -52,7 +52,8 @@ console.log('Using port: ' + process.env.PORT);
 })
 export class AppModule {}
 
-console.log(`API URL: ` + process.env.MY_2FA_APP_NAME);
-console.log(`API KEY: ` + process.env.FORTYTWO_SECRET);
-console.log(`API UID: ` + process.env.FORTYTWO_ID);
-console.log(`API CALLBACK: ` + process.env.FORTYTWO_CALLBACK);
+console.log('API KEY: ' + process.env.FORTYTWO_SECRET);
+console.log('API UID: ' + process.env.FORTYTWO_ID);
+console.log('API CALLBACK: ' + process.env.FORTYTWO_CALLBACK);
+console.log('2FA APP NAME: ' + process.env.MY_2FA_APP_NAME);
+console.log('SITE URL: ' + process.env.SITE_URL);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { twoFAAuth } from "../queries/twoFAQueries";
@@ -7,13 +7,13 @@ export default function TwoFAValidation() {
 
   let location = useLocation();
   let navigate = useNavigate();
-  //let email: string;
   const [twoFACode, setCode] = useState("");
-
+  // get username from redirect URL
   useEffect(() => {
     const email = location.search.split("=")[1];
     if (email) {
       console.log(email);
+      // Store username in local storage temporarily
       localStorage.setItem("tempemail", email);
       navigate("/2FA");
     }
@@ -33,6 +33,8 @@ export default function TwoFAValidation() {
       return await twoFAAuth(twoFACode, email);
     };
     twoFAValid(email);
+    // remove temp email from local storage
+    localStorage.removeItem("tempemail");
   }
   };
   return (

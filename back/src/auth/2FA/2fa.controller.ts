@@ -1,24 +1,12 @@
-import {
-	Body,
-	Controller,
-	HttpCode,
-	Post,
-	Req,
-	Res,
-	UnauthorizedException,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, Res } from '@nestjs/common';
 import { GetCurrentUser, Public } from 'src/decorators';
 import { TwoFactorDto, TwoFactorUserDto } from '../dto';
 import { TwoFactorService } from './2fa.service';
 import { Response } from 'express';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Controller('/auth/2fa')
 export class TwoFAController {
-	constructor(
-		private twoFAservice: TwoFactorService,
-		private prisma: PrismaService,
-	) {}
+	constructor(private twoFAservice: TwoFactorService) {}
 
 	/* TWO FACTOR AUTHENTIFICATION */
 
@@ -42,8 +30,9 @@ export class TwoFAController {
 	 */
 	@Public()
 	@Post('/authenticate')
-	async authenticate(@Body() dto: any) {
-		console.log('auth 2fa', dto);
+	async authenticate(@Body() dto: TwoFactorDto) {
+		// LOG
+		//console.log('auth 2fa', dto);
 		return this.twoFAservice.authenticate(dto);
 	}
 

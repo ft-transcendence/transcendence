@@ -93,22 +93,10 @@ export class AuthController {
 		const user = await this.authService.signin_42(
 			request.user as Profile_42,
 		);
-
-		if (user.twoFA) {
-			return this.authService.signin_2FA(response, user);
-		} else {
-			const tokens = await this.authService.signin_jwt(
-				user.id,
-				user.email,
-			);
-			console.log(tokens);
-			// SEND TOKEN TO FRONT in URL
-			const url = new URL(`${request.protocol}` + '://localhost');
-			url.port = process.env.FRONT_PORT;
-			url.pathname = '/auth';
-			url.searchParams.append('access_token', tokens['access_token']);
-			response.status(302).redirect(url.href);
-		}
+		const { username, twoFA, id, email } = user;
+		return twoFA
+			? this.twoFAService.signin_2FA(response, username)
+			: this.authService.signin_42_token(response, id, email);
 	}
 
 	/* REFRESH TOKEN CALLBACK */

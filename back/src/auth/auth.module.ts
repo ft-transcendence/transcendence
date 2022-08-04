@@ -10,6 +10,7 @@ import { FortyTwoStrategy } from './strategy/42.strategy';
 /* USER Module */
 import { UserModule } from 'src/user/user.module';
 import { UserService } from 'src/user/user.service';
+
 import { TwoFactorService } from './2FA/2fa.service';
 import { TwoFAController } from './2FA/2fa.controller';
 
@@ -24,5 +25,6 @@ import { TwoFAController } from './2FA/2fa.controller';
 		FortyTwoStrategy,
 		UserService,
 	],
+	exports: [AuthService],
 })
 export class AuthModule {}

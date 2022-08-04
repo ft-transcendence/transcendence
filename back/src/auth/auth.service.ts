@@ -1,5 +1,11 @@
 /* GLOBAL MODULES */
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+	ForbiddenException,
+	forwardRef,
+	Inject,
+	Injectable,
+	Res,
+} from '@nestjs/common';
 /* PRISMA */
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
@@ -12,7 +18,8 @@ import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 /* USER Modules */
 import { UserService } from 'src/user/user.service';
-import { Response } from 'express';
+import { response, Response } from 'express';
+import { TwoFactorService } from './2FA/2fa.service';
 
 /**
  * AUTHENTIFICATION SERVICE
@@ -23,6 +30,8 @@ export class AuthService {
 		private prisma: PrismaService,
 		private jwtService: JwtService,
 		private userService: UserService,
+		@Inject(forwardRef(() => TwoFactorService))
+		private twoFAService: TwoFactorService,
 	) {}
 
 	/* SIGNUP */
@@ -33,13 +42,11 @@ export class AuthService {
 		const hash = await argon.hash(password);
 		// try to sign up using email
 		try {
-			const user = await this.prisma.user.create({
-				data: {
-					email: email,
-					username: username,
-					hash,
-				},
-			});
+			const user = await this.userService.createUser(
+				email,
+				username,
+				hash,
+			);
 			// return a hashed user
 			const tokens = await this.signin_jwt(user.id, user.email);
 			await this.updateRefreshToken(user.id, tokens.refresh_token);
@@ -74,10 +81,7 @@ export class AuthService {
 		}
 		if (user.twoFA) {
 			//throw new ForbiddenException('TwoFA is enabled');
-			response
-				.status(200)
-				.redirect('http://localhost:3000/2FA/authenticate');
-			return response;
+			return this.twoFAService.signin_2FA(response, username);
 		}
 		// generate token
 		const tokens = await this.signin_jwt(user.id, user.email, user.twoFA);
@@ -110,7 +114,7 @@ export class AuthService {
 		// LOG
 		console.log('signin_42');
 		// DTO
-		const { email, username, avatar } = dto;
+		const { email } = dto;
 		// check if user exists
 		const user = await this.prisma.user.findUnique({
 			where: {
@@ -119,25 +123,7 @@ export class AuthService {
 		});
 		// if user does not exist, create it
 		if (!user) {
-			// generate random password
-			const rdm_string = this.generate_random_password();
-			// LOG generate random password
-			console.log(rdm_string);
-			// hash password using argon2
-			const hash = await argon.hash(rdm_string);
-			//create new user
-			const new_user = await this.userService.createUser(
-				email,
-				username,
-				hash,
-			);
-			if (new_user) {
-				await this.userService.updateAvatar(new_user.id, avatar);
-			}
-			// LOG
-			console.log('create user :', username, email, rdm_string);
-			// return token
-			return new_user;
+			return this.create_42_user(dto);
 		} else {
 			// LOG
 			console.log('user exists');
@@ -146,14 +132,41 @@ export class AuthService {
 		}
 	}
 
-	/* 2FA Enabled signin */
-	async signin_2FA(response: Response, user: Auth42Dto) {
-		const url = new URL('http://localhost');
+	async signin_42_token(
+		@Res() response: Response,
+		id: number,
+		email: string,
+	) {
+		const tokens = await this.signin_jwt(id, email);
+		// LOG
+		//console.log(tokens);
+		// SEND TOKEN TO FRONT in URL
+		const url = new URL(process.env.SITE_URL);
 		url.port = process.env.FRONT_PORT;
-		url.pathname = '2FA';
-		url.searchParams.append('username', user.username);
+		url.pathname = '/auth';
+		url.searchParams.append('access_token', tokens['access_token']);
 		response.status(302).redirect(url.href);
 		return response;
+	}
+
+	async create_42_user(dto: Auth42Dto) {
+		// DTO
+		const { email, username, avatar } = dto;
+		// generate random password
+		const rdm_string = this.generate_random_password();
+		// LOG generate random password
+		console.log(rdm_string);
+		// hash password using argon2
+		const hash = await argon.hash(rdm_string);
+		//create new user
+		const user = await this.userService.createUser(email, username, hash);
+		if (user) {
+			await this.userService.updateAvatar(user.id, avatar);
+		}
+		// LOG
+		console.log('create user :', username, email, rdm_string);
+		// return token
+		return user;
 	}
 
 	/* JWT */
