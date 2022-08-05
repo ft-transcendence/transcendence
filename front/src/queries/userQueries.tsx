@@ -14,6 +14,10 @@ export const getUserData = () => {
   return fetchGet("me", authFileHeader, storeUserInfo);
 };
 
+export const getLeaderBoard = () => {
+  return fetchGet("get_leaderboard", authFileHeader, storeLeaderBoardInfo);
+}
+
 const authFileHeader = () => {
   let token = "bearer " + localStorage.getItem("userToken");
   let myHeaders = new Headers();
@@ -51,3 +55,8 @@ export const storeFriendsInfo = (result: any) => {
   return result;
   // add blocked users later
 };
+
+export const storeLeaderBoardInfo = (result: any) => {
+  console.log("store lreaderboard:::", result)
+  localStorage.setItem("leaderBoard", JSON.stringify(result));
+}
