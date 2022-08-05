@@ -51,6 +51,14 @@ export class UserService {
 		//returns a record of all the users, ordered by gamesWon in descending order
 		const users = await this.prisma.user.findMany({
 			orderBy: { gamesWon: 'desc' },
+			select: {
+				id: true,
+				username: true,
+				avatar: true,
+				gamesWon: true,
+				gamesLost: true,
+				gamesPlayed: true,
+			},
 		});
 
 		return users;
