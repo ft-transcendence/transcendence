@@ -148,7 +148,6 @@ export default function UserPrivateProfile() {
                   auth={userInfo.auth}
                   onClick={() => setModalShowAuth(true)}
                 />
-                <TwoFA auth={userInfo.auth} />
               </Card.Body>
             </Card>
           </Col>
