@@ -29,7 +29,7 @@ export class TwoFactorService {
 	) {}
 
 	/* Redirect 2FA Enabled signin */
-	async signin_2FA(response: Response, username: string) {
+	signin_2FA(response: Response, username: string) {
 		const url = new URL(process.env.SITE_URL);
 		url.port = process.env.FRONT_PORT;
 		url.pathname = '2FA';

@@ -80,8 +80,6 @@ export class AuthService {
 			throw new ForbiddenException('Invalid Credentials');
 		}
 		if (user.twoFA) {
-			//throw new ForbiddenException('TwoFA is enabled');
-			//this.twoFAService.signin_2FA(response, username);
 			return { username: user.username, twoFA: user.twoFA };
 		}
 		// generate token
