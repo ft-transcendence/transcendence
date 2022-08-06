@@ -26,7 +26,9 @@ const fetchGet = async (url: string, header: any, callback: any) => {
   try {
     const response = await fetch(fetchUrl, {
       method: "GET",
-      headers: header(),
+      //headers: header(),
+      credentials: "include",
+      mode: "cors",
       body: null,
       redirect: "follow",
     });

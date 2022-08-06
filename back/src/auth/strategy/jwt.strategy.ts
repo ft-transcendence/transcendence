@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { PassportStrategy } from '@nestjs/passport';
 /* AUTH JWT */
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Request as RequestType } from 'express';
 
 /**
  * Creating a JWT strategy
@@ -17,9 +18,29 @@ export class jwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 	 */
 	constructor(private prisma: PrismaService) {
 		super({
-			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+			//jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+			jwtFromRequest: ExtractJwt.fromExtractors([
+				jwtStrategy.extractJwtFromCookie,
+				ExtractJwt.fromAuthHeaderAsBearerToken(),
+			]),
 			secretOrKey: process.env.JWT_SECRET,
 		});
+	}
+
+	/**
+	 * Extract JWT from cookie
+	 */
+	private static extractJwtFromCookie(request: RequestType): string | null {
+		const cookies = request.cookies;
+		console.log(cookies.access_token);
+		if (
+			cookies &&
+			cookies.access_token &&
+			cookies.access_token.length > 0
+		) {
+			return cookies.access_token;
+		}
+		return undefined;
 	}
 
 	/**

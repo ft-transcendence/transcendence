@@ -40,9 +40,20 @@ export class AuthController {
 	 */
 	@Public()
 	@Post('/signup')
-	signup(@Body() dto: SignUpDto) {
+	async signup(
+		@Body() dto: SignUpDto,
+		@Res({ passthrough: true }) response: Response,
+	) {
 		console.log(dto);
-		return this.authService.signup(dto);
+		const tokens = await this.authService.signup(dto);
+		response
+			.cookie('access_token', tokens['access_token'], {
+				httpOnly: true,
+				//domain: process.env.SITE_URL + ':' + process.env.FRONT_PORT,
+			})
+			.status(200)
+			.json('user created successfully');
+		//return tokens;
 	}
 
 	/**
@@ -51,9 +62,9 @@ export class AuthController {
 	 */
 	@Public()
 	@Post('/signin')
-	signin(@Body() dto: SignInDto) {
+	async signin(@Body() dto: SignInDto) {
 		console.log(dto);
-		return this.authService.signin(dto);
+		return await this.authService.signin(dto);
 	}
 
 	/**

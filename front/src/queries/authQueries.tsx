@@ -17,6 +17,7 @@ const fetchPost = async (
     body: raw,
     redirect: "follow",
   }).then((response) => response.json());
+  console.log(rest.cookie);
   // check if user is 2FA
   if (rest.twoFA) {
     // redirect to 2FA page

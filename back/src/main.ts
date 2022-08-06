@@ -3,13 +3,16 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { JwtGuard } from './auth/guard';
 import { PrismaService } from './prisma/prisma.service';
+import * as cookieParser from 'cookie-parser';
 
 /* Start the app */
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
+	app.use(cookieParser());
 	// Enable CORS
 	app.enableCors({
 		origin: process.env.SITE_URL + ':' + process.env.FRONT_PORT,
+		credentials: true,
 	});
 
 	app.get(PrismaService);
