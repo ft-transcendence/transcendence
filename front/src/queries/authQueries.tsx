@@ -17,10 +17,12 @@ const fetchPost = async (
     body: raw,
     redirect: "follow",
   }).then((response) => response.json());
+  // check if user is 2FA
   if (rest.twoFA) {
+    // redirect to 2FA page
     const url = '/2FA?user=' + rest.username;
     window.location.href = url;
-    console.log(rest.twoFA);
+    //console.log(rest.twoFA);
   } else {
   storeToken(userInfo, rest);
   if (localStorage.getItem("userToken")) {
