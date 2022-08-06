@@ -9,7 +9,7 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
 	// Enable CORS
 	app.enableCors({
-		origin: '*',
+		origin: process.env.SITE_URL + ':' + process.env.FRONT_PORT,
 	});
 
 	app.get(PrismaService);

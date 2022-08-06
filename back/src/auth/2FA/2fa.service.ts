@@ -1,6 +1,7 @@
 /* GLOBAL MODULES */
 import {
 	forwardRef,
+	HttpStatus,
 	Inject,
 	Injectable,
 	UnauthorizedException,
@@ -34,7 +35,7 @@ export class TwoFactorService {
 		url.pathname = '2FA';
 		url.searchParams.append('username', username);
 		response.status(302).redirect(url.href);
-		return response;
+		//response.end();
 	}
 
 	/* Turn on 2FA for existing user */

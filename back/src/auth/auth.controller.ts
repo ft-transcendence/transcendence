@@ -51,9 +51,9 @@ export class AuthController {
 	 */
 	@Public()
 	@Post('/signin')
-	signin(@Body() dto: SignInDto, @Res() response: Response) {
+	signin(@Body() dto: SignInDto) {
 		console.log(dto);
-		return this.authService.signin(dto, response);
+		return this.authService.signin(dto);
 	}
 
 	/**
@@ -94,6 +94,8 @@ export class AuthController {
 			request.user as Profile_42,
 		);
 		const { username, twoFA, id, email } = user;
+		// LOG
+		console.log('42 API signin', username, twoFA);
 		return twoFA
 			? this.twoFAService.signin_2FA(response, username)
 			: this.authService.signin_42_token(response, id, email);

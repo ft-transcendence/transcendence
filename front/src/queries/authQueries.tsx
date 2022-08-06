@@ -17,11 +17,17 @@ const fetchPost = async (
     body: raw,
     redirect: "follow",
   }).then((response) => response.json());
+  if (rest.twoFA) {
+    const url = '/2FA?user=' + rest.username;
+    window.location.href = url;
+    console.log(rest.twoFA);
+  } else {
   storeToken(userInfo, rest);
   if (localStorage.getItem("userToken")) {
     await getUserData();
     if (localStorage.getItem("userName")) userSignIn();
   }
+}
 };
 
 export const signIn = (userInfo: any, userSignIn: any) => {

@@ -18,7 +18,7 @@ import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 /* USER Modules */
 import { UserService } from 'src/user/user.service';
-import { response, Response } from 'express';
+import { Response } from 'express';
 import { TwoFactorService } from './2FA/2fa.service';
 
 /**
@@ -63,7 +63,7 @@ export class AuthService {
 	}
 
 	/* SIGNIN */
-	async signin(dto: SignInDto, response: Response) {
+	async signin(dto: SignInDto) {
 		// destructure dto (rafa tips :D)
 		const { username, password } = dto;
 		// find user
@@ -81,7 +81,8 @@ export class AuthService {
 		}
 		if (user.twoFA) {
 			//throw new ForbiddenException('TwoFA is enabled');
-			return this.twoFAService.signin_2FA(response, username);
+			//this.twoFAService.signin_2FA(response, username);
+			return { username: user.username, twoFA: user.twoFA };
 		}
 		// generate token
 		const tokens = await this.signin_jwt(user.id, user.email, user.twoFA);
@@ -111,8 +112,6 @@ export class AuthService {
 
 	/* SIGNIN USING 42 API */
 	async signin_42(dto: Auth42Dto) {
-		// LOG
-		console.log('signin_42');
 		// DTO
 		const { email } = dto;
 		// check if user exists
@@ -122,14 +121,7 @@ export class AuthService {
 			},
 		});
 		// if user does not exist, create it
-		if (!user) {
-			return this.create_42_user(dto);
-		} else {
-			// LOG
-			console.log('user exists');
-			// check if 2FA is enabled
-			return user;
-		}
+		return user ?? this.create_42_user(dto);
 	}
 
 	async signin_42_token(
