@@ -39,6 +39,7 @@ export class AuthController {
 	 * Creates a new user email/username/password
 	 */
 	@Public()
+	@HttpCode(200)
 	@Post('/signup')
 	async signup(
 		@Body() dto: SignUpDto,
@@ -46,14 +47,11 @@ export class AuthController {
 	) {
 		console.log(dto);
 		const tokens = await this.authService.signup(dto);
-		response
-			.cookie('access_token', tokens['access_token'], {
-				httpOnly: true,
-				//domain: process.env.SITE_URL + ':' + process.env.FRONT_PORT,
-			})
-			.status(200)
-			.json('user created successfully');
+		response.cookie('access_token', tokens['access_token'], {
+			httpOnly: true,
+		});
 		//return tokens;
+		return 'cookie sent';
 	}
 
 	/**

@@ -27,7 +27,7 @@ const fetchGet = async (url: string, header: any, callback: any) => {
     const response = await fetch(fetchUrl, {
       method: "GET",
       //headers: header(),
-      credentials: "include",
+      credentials: "same-origin",
       mode: "cors",
       body: null,
       redirect: "follow",

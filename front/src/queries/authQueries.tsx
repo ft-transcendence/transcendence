@@ -16,8 +16,11 @@ const fetchPost = async (
     headers: myHeaders,
     body: raw,
     redirect: "follow",
-  }).then((response) => response.json());
-  console.log(rest.cookie);
+    credentials: "same-origin",
+  }).then(/*(response) => response.json()*/);
+  console.log(rest);
+  await getUserData();
+  /*
   // check if user is 2FA
   if (rest.twoFA) {
     // redirect to 2FA page
@@ -30,7 +33,8 @@ const fetchPost = async (
     await getUserData();
     if (localStorage.getItem("userName")) userSignIn();
   }
-}
+  
+}*/
 };
 
 export const signIn = (userInfo: any, userSignIn: any) => {
