@@ -9,8 +9,12 @@ import Home from "./routes/Home";
 import Chat from "./routes/Chat";
 import "./index.css";
 import UserPrivateProfile from "./routes/profile_types/UserPrivateProfile";
-import { BlockedList, FriendsList } from "./routes/profile_types/FriendsList";
 import { AuthProvider, RequireAuth } from "./hooks/AuthHooks";
+import TwoFAValidation from "./routes/TwoFAValidation";
+import Watch from "./routes/Watch";
+import { BlockedList } from "./routes/profile_types/users_relations/BlockedList";
+import { FriendsList } from "./routes/profile_types/users_relations/FriendsList";
+import { PendingList } from "./routes/profile_types/users_relations/PendingList";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
@@ -18,6 +22,7 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}>
+        <Route path="2FA" element={<TwoFAValidation />} />
           <Route path="/auth" element={<Auth />}>
             <Route index element={<Navigate to="/auth/signin" />} />
             <Route path="signin" element={<SignIn />} />
@@ -37,10 +42,12 @@ root.render(
             <Route path="private-profile" element={<UserPrivateProfile />}>
               <Route index element={<FriendsList />} />
               <Route path="friends" element={<FriendsList />} />
+              <Route path="pending" element={<PendingList />} />
               <Route path="blocked" element={<BlockedList />} />
             </Route>
             <Route path="chat" element={<Chat />} />
             <Route path="game" element={<Game />} />
+            <Route path="watch" element={<Watch />} />
             <Route path="*" element={<Navigate to="/app" />} />
           </Route>
           <Route path="*" element={<Navigate to="/auth/signin" />} />

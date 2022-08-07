@@ -12,7 +12,8 @@ export default function Home() {
       >
         <Link to="/app/private-profile">Private profile</Link> |{"  "}
         <Link to="/app/chat">Chat</Link> |{"  "}
-        <Link to="/app/game">Game</Link>
+        <Link to="/app/game">Game</Link> |{"  "}
+        <Link to="/app/watch">Watch</Link>
       </nav>
       <Outlet></Outlet>
     </main>

@@ -16,12 +16,20 @@ const fetchPost = async (
     headers: myHeaders,
     body: raw,
     redirect: "follow",
-  }).then((response) => response.text());
+  }).then((response) => response.json());
+  // check if user is 2FA
+  if (rest.twoFA) {
+    // redirect to 2FA page
+    const url = '/2FA?user=' + rest.username;
+    window.location.href = url;
+    //console.log(rest.twoFA);
+  } else {
   storeToken(userInfo, rest);
   if (localStorage.getItem("userToken")) {
     await getUserData();
     if (localStorage.getItem("userName")) userSignIn();
   }
+}
 };
 
 export const signIn = (userInfo: any, userSignIn: any) => {
@@ -41,12 +49,11 @@ export const signUp = (userInfo: any, userSignIn: any) => {
   fetchPost(raw, userInfo, userSignIn, "signup");
 };
 
-const storeToken = (userInfo: any, token: string) => {
-  if (!token.includes("403")) {
-    const subOne = token.replace('{"access_token":"', "");
-    const subTwo = subOne.replace('"}', "");
-    localStorage.setItem("userToken", subTwo);
-    console.log("token: ", subTwo);
+const storeToken = (userInfo: any, token: any) => {
+  if (!(token.error === "Forbidden")) {
+    console.log("token= ", token.access_token);
+    localStorage.setItem("userToken", token.access_token);
+    localStorage.setItem("userRefreshToken", token.refresh_token);
   }
   userInfo.clear();
 };

@@ -51,6 +51,7 @@
   background: #2e3238;
   box-shadow: inset 5px 4px 30px #23262b, inset -4px -5px 30px #434851;
   border-radius: 10px;
+  max-height: 80%;
 }
 
 .IBM-text {
@@ -115,6 +116,8 @@
   background: #31353c;
   box-shadow: -10px -5px 30px 5px #34373c, 10px 5px 30px 5px #24282d;
   border-radius: 10px;
+  /* max-height: 85%; */
+  /* height: 85%; */
 }
 
 .profile-pic-round {
@@ -131,6 +134,21 @@
 .profile-pic-inside {
   height: 98%;
   width: 98%;
+  border-radius: 50%;
+}
+
+.profile-pic-wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
+
+.profile-pic-inside-sm {
+  height: 100%;
+  width: 100%;
   border-radius: 50%;
 }
 
@@ -212,17 +230,17 @@
 
 /* visited link */
 /* a:visited { */
-  /* color: var(--buttons-color-blue); */
+/* color: var(--buttons-color-blue); */
 /* } */
 
 /* mouse over link */
 /* a:hover { */
-  /* color: var(--buttons-color-blue-disabled); */
+/* color: var(--buttons-color-blue-disabled); */
 /* } */
 
 /* selected link */
 /* a:active { */
-  /* color: var(--basic-color-green); */
+/* color: var(--basic-color-green); */
 /* } */
 
 .active-class {

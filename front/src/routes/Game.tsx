@@ -1,13 +1,10 @@
 import React from 'react';
 import { io } from "socket.io-client";
 import "./Game.css";
-import {Particles} from "react-tsparticles";
-import { loadFull } from "tsparticles";
-import type { Container } from "tsparticles-engine";
 import { Link } from "react-router-dom";
 import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle } from './game.interfaces';
 
-const socket = io("ws://localhost:4000");
+
 
 const MOVE_UP   = "ArrowUp";  
 const MOVE_DOWN = "ArrowDown";  
@@ -76,10 +73,10 @@ class Message extends React.Component< Msg, MsgState > {
                     message = "Please wait for another player";
                     break;
                 case 2:
-                    message = "You win :)";
+                    message = "You win";
                     break;
                 case 3:
-                    message = "You loose :(";
+                    message = "You lose";
                     break;
                 default:
                     message = "error";
@@ -106,7 +103,7 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
     render() {
         const show = this.props.show ? 'unset': 'none';
         var side: string;
-        if (this.props.side == 'left')
+        if (this.props.side === 'left')
             side = "Pad-left";
         else
             side = "Pad-right";
@@ -126,7 +123,20 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
 
 export default class Game extends React.Component < {}, StatePong > {
 
-    constructor({}) 
+    socketOptions = {
+        transportOptions: {
+          polling: {
+            extraHeaders: {
+                Token: localStorage.getItem("userToken"),
+            }
+          }
+        }
+     };
+     
+    
+    socket = io("ws://localhost:4000", this.socketOptions);
+
+    constructor(none = {}) 
     {
         super({});
         this.state = {  paddleLeftY: 50,
@@ -140,69 +150,59 @@ export default class Game extends React.Component < {}, StatePong > {
                         player1Score: 0,
                         player2Score: 0,
                         msgType: 0,
+                        player1Name: "player1",
+                        player2Name: "player2",
+                        game_list: [],
                     };
     }
 
     componentDidMount() {
         document.onkeydown = this.keyDownInput;
         document.onkeyup = this.keyUpInput;
-        socket.on("game_started", () =>
+        this.socket.on("game_started", () =>
             this.setState({gameStarted: true}));
-        socket.on("update", (info: Game_data) =>
-            this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score}));
-        socket.on("end_game", (winner: number) => 
-            winner == this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false}) : this.setState({msgType: 3, gameStarted: false}));
+        this.socket.on("update", (info: Game_data) =>
+            this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name}));
+        this.socket.on("end_game", (winner: number) => 
+            winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false}) : this.setState({msgType: 3, gameStarted: false}));
     }
 
-    particlesInit = async (main: any) => {
-        console.log(main);
-        await loadFull(main);
-    };
-
-    particlesLoaded = async (container?: Container | undefined) => {
-        console.log(container);
-    };
-
     startButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-        socket.emit("start", {}, (player: Player) => 
-          this.setState({roomId: player.roomId, playerNumber: player.playerNb, showStartButton: false, msgType: 1}));  
+        if (!this.state.showStartButton)
+            return;
+        this.setState({showStartButton: false});
+        this.socket.emit("start", {}, (player: Player) => 
+          this.setState({roomId: player.roomId, playerNumber: player.playerNb, msgType: 1}));  
         }
      
    
     keyDownInput = (e: KeyboardEvent) => {
-    if (e.key == MOVE_UP && this.state.gameStarted)
-        socket.emit("move", {dir: 1, room: this.state.roomId, player: this.state.playerNumber});
-    if (e.key == MOVE_DOWN)
-        socket.emit("move", {dir: 2, room: this.state.roomId, player: this.state.playerNumber});
+    if (e.key === MOVE_UP && this.state.gameStarted)
+        this.socket.emit("move", {dir: 1, room: this.state.roomId, player: this.state.playerNumber});
+    if (e.key === MOVE_DOWN)
+        this.socket.emit("move", {dir: 2, room: this.state.roomId, player: this.state.playerNumber});
     }
     
     keyUpInput = (e: KeyboardEvent) => {
-        if ((e.key == MOVE_UP || e.key == MOVE_DOWN) && this.state.gameStarted)
-            socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
+        if ((e.key === MOVE_UP || e.key === MOVE_DOWN) && this.state.gameStarted)
+            this.socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
     }
 
     render() {
     const shoWField = this.state.gameStarted ? 'unset': 'none';
-    const showBorder = this.state.gameStarted ? '2px solid rgb(0, 255, 255)' : '0px solid rgb(0, 255, 255)';
-    const showShadow = this.state.gameStarted ? '0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 5px rgb(0, 190, 255)' : '0';
-    var leftName;
-    var rightName;
-    if (this.state.playerNumber == 1)
-    {    
-        leftName = "you";
-        rightName = "opponent";
-    }
-    else
-    {    
-        rightName = "you";
-        leftName = "opponent";
-    }
+    const shoWInfo = this.state.gameStarted ? 'flex': 'none';
+    /*const showBorder = this.state.gameStarted ? '2px solid rgb(0, 255, 255)' : '0px solid rgb(0, 255, 255)';*/
+    const showBorder = this.state.gameStarted ? '2px solid rgb(255, 255, 255)' : '0px solid rgb(255, 255, 255)';
+    /*const showShadow = this.state.gameStarted ? '0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 5px rgb(0, 190, 255)' : '0';*/
+    const showShadow = '0';
+
+    var leftName = String(this.state.player1Name);
+    var rightName = String(this.state.player2Name);
+
     return (
         <div className='Radial-background'>
-            <Particles id="tsparticles" url="particlesjs-config.json" init={this.particlesInit} loaded={this.particlesLoaded} />
-
             <div className='Page-top'>
-            <div style={{display: `${shoWField}`,}} className='Info-card'>
+            <div style={{display: `${shoWInfo}`,}} className='Info-card'>
                     <div className='Player-left'>
                         <div className='Info'>
                             <div className='Photo'>
@@ -233,6 +233,7 @@ export default class Game extends React.Component < {}, StatePong > {
                 </div>
             </div>
             <div className='Page-mid'>
+                               
                 <div style={{   border: `${showBorder}`, 
                                 boxShadow: `${showShadow}`,}} className='Field'>
                
