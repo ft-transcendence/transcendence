@@ -1,10 +1,11 @@
-@im
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css");
 
 :root {
   --radius-size: 50px;
 }
 
 .toolbar {
+  z-index: 10000;
   height: 500px;
   position: absolute;
   left: -0.8px;
@@ -26,21 +27,32 @@
   border-radius: 0% var(--radius-size) var(--radius-size) 0%;
   background-color: #31353c;
   padding-top: 80px;
-  padding-right: 5px;
-  padding-left: 5px;
+  padding-right: 15px;
+  padding-left: 15px;
   padding-bottom: 80px;
   display: flex;
   flex-direction: column;
 }
+
 .toolbar-top.space-around {
   justify-content: space-between;
 }
 
 .icons {
-  height: 40px;
-  /* background: #31353C;
-  box-shadow: 2px 2.5px 3.5px #1F2126, -2px -2px 3.5px #2F3655;
-  stroke-width: 0.5px;
-  stroke: blue; */
+  font-size: 1.7rem;
+  filter: drop-shadow(-2px -2px 3.5px #2f3655);
+  /* box-shadow: 2px 2.5px 3.5px 2px #1F2126; */
 }
 
+.icons.clicked {
+  color: #0867f5;
+  transition: color 700ms ease-in-out;
+}
+.icon.none {
+  color: white;
+  transition: color 400ms ease-in-out;
+}
+
+#clickableIcon {
+  cursor: pointer;
+}

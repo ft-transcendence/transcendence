@@ -58,6 +58,11 @@ export default function UserPrivateProfile() {
                 backgroundPosition: "center",
               }}
             >
+              {/* <i
+                id="clickableIcon"
+                className="bi bi-pencil-fill edit-round-icon float-end"
+                onClick={() => setModalShow(true)}
+              ></i> */}
               <input
                 type="image"
                 alt="avatar of user"
