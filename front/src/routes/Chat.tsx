@@ -1,7 +1,12 @@
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { useEffect, useRef, useState } from "react";
 import "./Chat.css";
-import { useAuth } from "../globals/contexts";
+import Preview from "./chat_modes/chatPreview";
+import ChatRoom from "./chat_modes/chatRoom";
+import RoomStatus from "./chat_modes/roomStatus";
+import { chatPreview } from "./chat_modes/type/chat.type";
+import { NewRoomCard } from "./chat_modes/newRoomCard";
+import { SettingCard } from "./chat_modes/settingCard";
 
 const socketOptions = {
   transportOptions: {
@@ -13,171 +18,109 @@ const socketOptions = {
   }
 };
 
-const socket = io("ws://localhost:4000", socketOptions);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const socket = io("ws://localhost:4000", socketOptions);
 
 export default function Chat() {
-  const id = useRef(0);
-  const cid = useRef(0);
-  const email = useAuth().user;
-  let cprivate = "false";
-  let cprivateRet = false;
-  const [msg, setNewMsg] = useState("");
-  const [cname, setNewCname] = useState("");
-  const [cpassword, setNewCpassword] = useState("");
+    const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
+    const [newRoomRequest, setNewRoomRequest] = useState(false);
+    const [settingRequest, setSettingRequest] = useState(false);
+    const [outsider, setOutsider] = useState<boolean | undefined>(undefined);
+    const [show, setShow] = useState<boolean | undefined>(undefined);
+    const [role, setRole] = useState("");
 
-  useEffect(() => {
-    console.log(socket.id);
+    useEffect(() => {
 
-    console.log("email:", email);
-    readId();
+        socket.on("connect", () => {
+            console.log("front Connected");
+        });
 
-    socket.on("connect", () => {
-      console.log("front Connected");
-    });
+        socket.on("exception", (data) => {
+            console.log("exception", data);
+        })
 
-    socket.on("msg", function (data) {
-      console.log("msg", data);
-    });
+        socket.on("fetch role", (data) => {
+            setRole(data);
+        })
 
-    socket.on("broadcast", function (data) {
-      console.log("broadcast", data);
-    });
-    /////
-    socket.on("msg sent:", function (data: string) {
-      console.log("msg sent:", data);
-    });
-    socket.on("id", function (data: number) {
-      id.current = data;
-      console.log("id:", data);
-    });
-    socket.on("cid", function (data: number) {
-      cid.current = data;
-      console.log("cid:", data);
-    });
+        return (() => {
+            socket.off("connect");
+            socket.off("exception");
+            socket.off("fetch role");
+        })
+    }, [])
 
-    /////
-    socket.on("exception", function (data: any) {
-      console.log("exception", data);
-    });
+    useEffect(() => {
+        if (selectedChat)
+            setOutsider((role === "invited" || role === "noRole") ? true : false);
+    }, [selectedChat, role]);
 
-    socket.on("error:", function (data: any) {
-      console.log("error:", data.error);
-    });
+    useEffect(() => {
+        if (selectedChat)
+            setShow((!selectedChat.isPassword) || !outsider)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [outsider])
 
-    socket.on("leave", () => {
-      console.log("Disconnected");
-    });
+    const newRoomCardDisappear = () => {
+        setNewRoomRequest(old => {return !old})
+    }
 
-    return () => {
-      socket.off("connect");
-      socket.off("msg");
-      socket.off("msg sent");
-      socket.off("broadcast");
-      socket.off("id");
-      socket.off("cid");
-      socket.off("exception");
-      socket.off("leave");
-      socket.off("error:");
-    };
-  }, []);
+    const settingCardDisappear = () => {
+        setSettingRequest(old => {return !old})
+    }
 
-  const readId = () => {
-    socket.emit("readId", email);
-  };
-
-  const handleMsg = (event: any) => {
-    setNewMsg(event.target.value);
-  };
-
-  const sendMsg = (msg: string) => {
-    console.log(msg);
-    socket.emit("msg", {
-      msg: msg,
-      userId: id.current,
-      channelId: cid.current,
-    });
-  };
-
-  const handleSendMsg = () => {
-    sendMsg(msg);
-    setNewMsg("");
-  };
-  /////////////////////////
-  const handleCname = (event: any) => {
-    setNewCname(event.target.value);
-  };
-
-  const HandleCprivate = (event: any) => {
-    if (cprivate === "true") cprivateRet = true;
-    else cprivateRet = false;
-  };
-
-  const handleCpassword = (event: any) => {
-    setNewCpassword(event.target.value);
-  };
-  const handleNewChannel = (event: any) => {
-    socket.emit("new channel", {
-      name: cname,
-      private: cprivateRet,
-      password: cpassword,
-    });
-  };
-  const enterChannel = (event: any) => {
-    socket.emit("enter channel", { name: cname });
-  };
-
-  /////////////////////////
-  return (
-    <>
-      <div>
-        <div>
-          channel name
-          <br />
-          <textarea
-            value={cname}
-            onChange={handleCname}
-            placeholder="channel name"
-            className="msg-input-field"
-          />
+    return (
+        <div className="zone-diff">
+                <Preview
+                    current={selectedChat}
+                    onSelect={(chat) => {
+                        setSelectedChat(chat)
+                    }}
+                    onNewRoomRequest={() => {
+                        setNewRoomRequest(old => {return !old})
+                    }}
+                />
+                <ChatRoom
+                    current={selectedChat}
+                    show={show}
+                    role={role}
+                    outsider={outsider}
+                    setSettingRequest={() => {setSettingRequest(old => {return !old})}}/>
+            <div style={{display: selectedChat?.dm ? "none" : "", backgroundColor: "#003e60"}}>
+                <RoomStatus
+                    current={selectedChat}
+                    role={role}
+                    outsider={outsider}/>
+            </div>
+            <div
+                onClick={newRoomCardDisappear}
+                className="card-disappear-click-zone"
+                style={{display: newRoomRequest ? "" : "none"}}>
+                <div 
+                    className="add-zone"
+                    onClick={event => event.stopPropagation()}>
+                        <NewRoomCard
+                            newRoomRequest={newRoomRequest}
+                            onNewRoomRequest={() => {
+                                setNewRoomRequest(old => {return !old})
+                        }}/>
+                </div>
+            </div>
+            <div
+                onClick={settingCardDisappear}
+                className="card-disappear-click-zone"
+                style={{display: settingRequest ? "" : "none"}}>
+                <div 
+                    className="add-zone"
+                    onClick={event => event.stopPropagation()}>
+                        <SettingCard
+                        channelId={selectedChat?.id}
+                            settingRequest={settingRequest}
+                            onSettingRequest={() => {
+                                setSettingRequest(old => {return !old})
+                        }}/>
+                </div>
+            </div>
         </div>
-        <div>
-          private channel
-          <br />
-          <div onChange={HandleCprivate}>
-            <input type="radio" value="true" name="cprivate" /> yes
-            <input type="radio" value="false" name="cprivate" /> no
-          </div>
-        </div>
-        <div>
-          channel password
-          <br />
-          <textarea
-            value={cpassword}
-            onChange={handleCpassword}
-            placeholder="if needed..."
-            className="msg-input-field"
-          />
-        </div>
-        <button onClick={handleNewChannel} className="send-msg-button">
-          create channel
-        </button>
-        <button onClick={enterChannel} className="send-msg-button">
-          enter channel
-        </button>
-      </div>
-      <div>
-        Chat
-        <br />
-        <textarea
-          value={msg}
-          onChange={handleMsg}
-          placeholder="Write msg...."
-          className="msg-input-field"
-        />
-        <button onClick={handleSendMsg} className="send-msg-button">
-          send
-        </button>
-      </div>
-    </>
-  );
+    )
 }

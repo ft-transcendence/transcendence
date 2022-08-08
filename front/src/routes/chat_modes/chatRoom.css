@@ -1,0 +1,151 @@
+.chat-room-zone {
+    background-color: inherit;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 0px 96px 0px rgb(0 0 0 / 18%);
+}
+
+.lock-icon {
+    margin: auto;
+}
+
+.brief-info {
+    background-color: #191e1e;
+    height: 60px;
+    display: flex;
+}
+
+    .chat-name {
+        padding-left: 20px;
+        padding-top: 15px;
+        color: white;
+    }
+
+    .flex-empty-block {
+        flex: 1;
+    }
+
+
+    .brief-info .setting-icon {
+        margin-top: 2px;
+        padding: 15px;
+        opacity: 0.85;
+        cursor: pointer;
+    }
+
+    .brief-info .setting-icon:hover {
+        opacity: 1;
+    }
+
+.msg-stream {
+    background-color: #273438;
+    padding: 10px;
+    flex: 1;
+    overflow: overlay;
+}
+
+    .self {
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: 18px;
+        padding-top: 10px;
+        padding-bottom: .5px;
+        padding-left: 15px;
+        padding-right: 15px;
+        width: fit-content;
+        background-color: white;
+        text-align: right;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        border-radius: 10px;
+        max-width: 70%;
+        word-break: break-word;
+    }
+
+    .other {
+        margin-top: 10px;
+        margin-left: 8px;
+        margin-right: auto;
+        padding-top: 10px;
+        padding-bottom: 0.5px;
+        padding-left: 15px;
+        padding-right: 20px;
+        width: fit-content;
+        background-color: whitesmoke;
+        text-align: left;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        border-radius: 10px;
+        max-width: 70%;
+        word-break: break-word;
+    }
+
+    .msg-string {
+        color: black;
+    }
+
+    .msg-sender {
+        margin-bottom: auto;
+        font-size: 12px;
+    }
+
+
+    .msg-sent-time {
+        background-color: mediumaquamarine;
+        color: black;
+    }
+
+.msg-input-zone {
+    background-color: #334a50;
+    padding: 10px;
+    display: flex;
+    box-shadow: 0px 0px 35px 0px rgb(0 0 0 / 5%);
+    position: relative;
+}
+
+.msg-input-area {
+    background-color: transparent;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    height: 35px;
+    outline: none;
+    border: none;
+    color: white;
+    flex: 1;
+}
+
+#msg::placeholder {
+    color: white;
+}
+
+.pickerBox
+{
+    position: absolute;
+    right: 0;
+    bottom: 60px;
+}
+
+.emoji-button
+{
+    padding: 3px;
+    cursor: pointer;
+}
+
+.emoji-picker-react input.emoji-search
+{
+    height: 37px;
+}
+
+.emoji-picker-react section::-webkit-scrollbar
+{
+   display: none;
+}
+
+.emoji-disappear-click-zone {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    top: 0px;
+    left: 0px;
+  }
