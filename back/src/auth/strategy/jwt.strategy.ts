@@ -25,11 +25,11 @@ export class jwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 	/**
 	 * Validate function used by Passport Module
 	 */
-	async validate(data: { sub: number; email: string; istwoFA: boolean }) {
+	async validate(data: { sub: number; email: string; is2FA: boolean }) {
 		// log in console
-		console.log({
-			data,
-		});
+		// console.log({
+		// 	data,
+		// });
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id: data.sub,
@@ -42,7 +42,7 @@ export class jwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 		if (!user.twoFA) {
 			return user;
 		}
-		if (data.istwoFA) {
+		if (data.is2FA) {
 			return user;
 		}
 	}
