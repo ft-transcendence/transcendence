@@ -31,9 +31,14 @@ model User {
 
 	gamesWon		Int     @default(0)
 	gamesLost		Int     @default(0)
-	gamesPlayed	Int     @default(0)
+	gamesPlayed		Int     @default(0)
+	gameHistory		Int[]
+	
 
-//game history ? Une partie = 2 id, un score
+	winRate			Float?
+	playTime		Int		@default(0)
+	score			Int		@default(1200)
+	rank			Int?
 
 	friends		Int[]
 	adding		Int[]	
@@ -103,6 +108,7 @@ model Msg {
 model Mute {
   id          Int       @id   @default(autoincrement())
 
+
   finishAt    DateTime
   checkAt     DateTime  @default(now())
   finished    Boolean   @default(false)
@@ -111,4 +117,19 @@ model Mute {
   userId      Int
   channel     Channel   @relation(fields: [cid], references: [id])
   cid         Int
+}
+
+model Game {
+	id	Int			@id @unique
+
+	player1	Int
+	player2 Int
+	score1	Int
+	score2	Int
+
+	startTime	DateTime
+	endTime		DateTime
+	duration	Int? //in milliseconds
+
+
 }

@@ -40,10 +40,16 @@ export class UserController {
 		return userListDtos;
 	}
 
-	@Get()
+	@Get('get_leaderboard')
 	getLeaderboard() {
 		console.log('Going through getLeaderboard in user.controller');
 		return this.userService.getLeaderboard();
+	}
+
+	@Get('get_game_history')
+	getGameHistory(@Body('otherId') otherId: number) {
+		console.log('Going through getGameHistory in user.controller');
+		return this.userService.getGameHistory(otherId);
 	}
 
 	@Get('get_friends')
@@ -225,18 +231,13 @@ export class UserController {
 	//GAME RELATED FUNCTIONS
 
 	//this is not a request - it comes from the back, called by the game, no need to protect
-	hasWon(id: number) {
-		console.log('Going through hasWon in user.controller for');
-		return this.userService.hasWon(id);
-	}
+	// hasWon(id: number) {
+	// 	console.log('Going through hasWon in user.controller for');
+	// 	return this.userService.hasWon(id);
+	// }
 
-	hasLost(id: number) {
-		console.log('Going through hasLost in user.controller for');
-		return this.userService.hasLost(id);
-	}
-
-	hadADraw(id: number) {
-		console.log('Going through hasWon in user.controller for');
-		return this.userService.hadADraw(id);
-	}
+	// hasLost(id: number) {
+	// 	console.log('Going through hasLost in user.controller for');
+	// 	return this.userService.hasLost(id);
+	// }
 }
