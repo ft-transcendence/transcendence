@@ -1,0 +1,341 @@
+
+@font-face { font-family: Clip; src: url('../../public/font/clip.regular.ttf'); } 
+
+.back-ground {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    margin: auto auto;
+    height: 100vh;
+    /* background-color: rgb(211, 203, 203); */
+    background-color: rgb(32, 29, 29);
+    color: rgba(0, 0, 0, 0.575);
+    display: flex;
+}
+/* 
+.logo {
+    text-align: center;
+    height: 180px;
+    margin: auto;
+    margin-top: 40px;
+    user-select: none;
+  }
+  
+  .logo b{
+    font: 500 100px "Clip";
+    color: #fee;
+    text-shadow: 0 -40px 100px, 0 0 2px, 0 0 1em rgb(0, 160, 255), 0 0 0.5em rgb(9, 255, 0), 0 0 0.1em rgb(0, 160, 255), 0 10px 3px #000;
+  }
+  .logo b span{
+    animation: blink linear infinite 2s;
+  }
+  .logo b span:nth-of-type(2){
+    animation: blink linear infinite 3s;
+  }
+  @keyframes blink {
+    78% {
+      color: inherit;
+      text-shadow: inherit;
+    }
+    79%{
+       color: #333;
+    }
+    80% {
+      
+      text-shadow: none;
+    }
+    81% {
+      color: inherit;
+      text-shadow: inherit;
+    }
+    82% {
+      color: #333;
+      text-shadow: none;
+    }
+    83% {
+      color: inherit;
+      text-shadow: inherit;
+    }
+    92% {
+      color: #333;
+      text-shadow: none;
+    }
+    92.5% {
+      color: inherit;
+      text-shadow: inherit;
+    }
+  } */
+
+  @font-face {
+    font-family: "Public Sans Roman";
+    src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/85648/PublicSans-Roman-VF.ttf");
+  }
+  
+  :root {
+    --dark-purple: hsl(285, 86%, 4%);
+    --neon-blue: hsl(190, 100%, 75%);
+    --neon-pink: hsl(303, 100%, 73%);
+    --size: 10;
+    --unit: calc((var(--size) / 200) * 1vmin);
+  }
+  
+  .logo-box * {
+    box-sizing: border-box;
+    font-family: "Public Sans Roman";
+    font-variation-settings: "wght" 1000;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    background: var(--dark-purple);
+    overflow: hidden;
+  }
+  
+  .logo-box {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+  }
+
+  @media only screen and (max-width: 1400px) {
+    .logo-box {
+        display: none;
+      }
+  }
+  
+
+
+        .text {
+            position: absolute;
+            left: calc(100vw / 8);
+            right: calc(100vw / 4);
+            margin-top: 30vh;
+            transform: rotate(-45deg) skew(0deg, 15deg);
+            width: calc(600 * var(--unit));
+            height: calc(600 * var(--unit));
+            font-size: calc(150 * var(--unit));
+            -webkit-text-fill-color: #ffffff00;
+            -webkit-text-stroke-width: 4px;
+            -webkit-text-stroke-color: var(--neon-pink);
+            line-height: calc(220 * var(--unit));
+            padding: calc(80 * var(--unit));
+        }
+        
+        .left-side,
+        .bottom-side {
+            position: absolute;
+            width: 0px;
+            height: 0px;
+            background: hsl(190, 100%, 75%);
+        }
+        
+        .left-side {
+            left: 0;
+            top: 0;
+            height: calc(200 * var(--unit));
+            width: calc(5 * var(--unit));
+        }
+        
+        .bottom-side {
+            bottom: 0;
+            left: 0;
+            width: calc(200 * var(--unit));
+            height: calc(5 * var(--unit));
+        }
+        
+        .text1 {
+            top: 0px;
+            -webkit-text-fill-color: transparent;
+            filter: blur(0.5px);
+            background-blend-mode: screen;
+        }
+        
+        .text2 {
+            top: calc(1 * var(--unit));
+            background-blend-mode: screen;
+            filter: blur(0.5px);
+        }
+        
+        .text3 {
+            top: calc(10 * var(--unit));
+            opacity: 1;
+            filter: blur(1px);
+        }
+        
+        .text4 {
+            top: calc(20 * var(--unit));
+            opacity: 0.8;
+            filter: blur(1.5px);
+        }
+        
+        .text5 {
+            top: calc(30 * var(--unit));
+            opacity: 0.6;
+            filter: blur(2px);
+        }
+        
+        .text6 {
+            top: calc(40 * var(--unit));
+            opacity: 0.4;
+            filter: blur(2.5px);
+        }
+        
+        .text7 {
+            top: calc(50 * var(--unit));
+            opacity: 0.2;
+            filter: blur(3px);
+        }
+        
+        .word.leader,
+        .word.board {
+            opacity: 0;
+        }
+
+.leader-board {
+    margin: auto;
+    margin-right: 100px;
+    /* margin-top: 0px; */
+    /* height: 80%; */
+    border-radius: 10px;
+    box-shadow: 12px 0px 0px 0px #dcd0c0, 0px 12px 0px 0px #b1938b, -12px 0px 0px 0px #4e4e56, 0px 0px 0px 12px #da635d, 0px 0px 50px 12px rgb(0 0 0 / 0.2);
+    /* box-shadow: 5px 5px 27px 5px rgba(0,0,0,0.49); */
+    background: #ffffff;
+    font-family: 'Overpass';
+    animation: blink linear infinite 2s;
+}
+
+.header {
+    /* background-color: rgb(156, 97, 97); */
+    padding: 10px;
+
+}
+
+.list {
+    /* background-color: rgb(106, 97, 156); */
+    padding: 10px;
+    padding-top: 510px;
+    position: relative;
+    width: 800px;
+
+    
+}
+
+.rank {
+    /* margin: auto; */
+    width: 200px;
+    height: 270px;
+    /* background-color: #b1938b; */
+    border-radius: 4px;
+}
+
+.rank-1 {
+    background-color: #F1CA89;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    margin: auto;
+
+}
+.rank-2 {
+    background-color: #E8E4E1;
+    position: absolute;
+    top: 150px;
+    left: 50px;
+}
+.rank-3 {
+    background-color: #AA530E;
+    position: absolute;
+    top: 210px;
+    right: 50px;
+}
+
+    .top-rank {
+        text-align: center;
+        line-height: 3;
+        position: absolute;
+        top: -20px;
+        left: -20px;
+        background-color: rgb(167, 104, 104);
+        border-radius: 50%;
+        height: 50px;
+        width: 50px;
+    }
+
+    .top-avatar {
+        background-color: white;
+        margin: auto;
+        margin-top: 25px;
+        border-radius: 50%;
+        height: 80px;
+        width: 80px;
+    }
+    
+    .top-info {
+        margin-top: 10px;
+        padding: 10px;;
+        text-align: center;
+        line-height: 2.5;
+    }
+        /* .top-username {
+            
+        }
+
+        .top-record {
+            
+        }
+
+        .top-rate {
+            
+        } */
+
+.element {
+    display: flex;
+    margin: 15px;
+    padding: 12px;
+    line-height: 2.5;
+    background-color: rgb(123, 138, 113);
+    border-radius: 8px;
+    border-bottom-left-radius: 17px;
+    border-top-right-radius: 17px;
+    height: 60px;
+}
+
+.rank {
+    flex: 1;
+    padding-left: 5px;
+}
+
+.id {
+    display: none;
+}
+
+.user {
+    display: flex;
+    flex: 5;
+    cursor: pointer;
+}
+
+.avatar {
+    background-color: white;
+    margin-top: 4px;
+    margin-right: 15px;
+    margin-left: 10px;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+}
+/* 
+.username {
+    
+} */
+
+
+.record {
+    flex: 3;
+}
+
+.rate {
+    flex: 2;
+}
