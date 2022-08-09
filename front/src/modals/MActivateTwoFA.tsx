@@ -4,7 +4,7 @@ import { twoFAGenerate, twoFAOn } from "../queries/twoFAQueries";
 
 // Enable 2FA modal
 
-export function Activate2FA(props: { show: boolean; onHide: () => void }) {
+export function Activate2FA(props: any) {
   const [image, setImage] = useState<string>("");
   const [FACodeModal, setCodeModal] = useState("");
 
@@ -29,8 +29,7 @@ export function Activate2FA(props: { show: boolean; onHide: () => void }) {
     e.preventDefault();
     const twoFAActivate = async () => {
       const result = await twoFAOn(FACodeModal);
-      if (result.success === "2FA turned on")
-        props.onHide();
+      if (result.success === "2FA turned on") props.onHide();
     };
     twoFAActivate();
   };
@@ -76,9 +75,7 @@ export function Activate2FA(props: { show: boolean; onHide: () => void }) {
           type="submit"
           className="submit-button"
           size="sm"
-          onClick={(e: any) => {
-            handleSubmit(e);
-          }}
+          onClick={props.setAuthStatus}
         >
           Submit
         </Button>

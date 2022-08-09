@@ -35,12 +35,14 @@ export default function UserPrivateProfile() {
 
   const [modalShow, setModalShow] = useState(false);
   const [modalShowAuth, setModalShowAuth] = useState(false);
+  const [authStatus, setAuthStatus] = useState(false);
 
   return (
     <main>
       <MUploadAvatar show={modalShow} onHide={() => setModalShow(false)} />
       <Activate2FA
         show={modalShowAuth}
+        setAuthStatus={() => setAuthStatus(true)}
         onHide={() => setModalShowAuth(false)}
       />
 

@@ -8,7 +8,13 @@ export default function TwoFAValidation() {
   let location = useLocation();
   let navigate = useNavigate();
   let auth = useAuth();
+
   const [twoFACode, setCode] = useState("");
+
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setCode(value);
+  };
 
   const userSignIn = useCallback(() => {
     let tmpUsername = localStorage.getItem("tmpUsername");
@@ -33,10 +39,7 @@ export default function TwoFAValidation() {
     }
   }, [location.search, navigate]);
 
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    setCode(value);
-  };
+
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -52,6 +55,7 @@ export default function TwoFAValidation() {
     else
       console.log("username is undefined");
   };
+
   return (
     <div>
       <Form.Group className="mb-3">
