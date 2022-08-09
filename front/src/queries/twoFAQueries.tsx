@@ -6,12 +6,11 @@ export const twoFAGenerate = () => {
 };
 
 /* Validate 2FA code when signin in  */
-export const twoFAAuth = (twoFAcode: string, email: string) => {
+export const twoFAAuth = (twoFAcode: string, email: string, userSignIn:any) => {
   let raw = JSON.stringify({
     username: email,
     twoFAcode: twoFAcode,
   });
-  console.log('raw', raw);
   return fetchValid(raw, "authenticate", userSignIn);
 };
 
@@ -53,12 +52,11 @@ const fetchPost = async (body: any, url: string) => {
 const fetchValid = async (body: any, url: string, userSignIn: any) => {
   let fetchUrl = "http://localhost:4000/auth/2fa/" + url;
   let myHeaders = new Headers();
+  console.log("fetchValid body: ", body);
   // need to send JSON header
   myHeaders.append("Content-Type", "application/json");
   try {
-    console.log('body is', body);
-    
-    const response = await fetch(fetchUrl, {
+     const response = await fetch(fetchUrl, {
       method: "POST",
       headers: myHeaders,
       body: body,
@@ -84,8 +82,3 @@ const storeToken = (token: any) => {
     localStorage.setItem("userRefreshToken", token.refresh_token);
   }
 };
-
-/* NOT IMPLEMENTED */
-function userSignIn() {
-  throw new Error("Function not implemented.");
-}

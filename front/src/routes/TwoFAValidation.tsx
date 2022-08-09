@@ -1,20 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../globals/contexts";
 import { twoFAAuth } from "../queries/twoFAQueries";
 
 export default function TwoFAValidation() {
-
   let location = useLocation();
   let navigate = useNavigate();
+  let auth = useAuth();
   const [twoFACode, setCode] = useState("");
+
+  const userSignIn = useCallback(() => {
+    let tmpUsername = localStorage.getItem("tmpUsername");
+    console.log("userSignIn tmpUsername: ", tmpUsername);
+    if (tmpUsername !== "undefined")
+      auth.signin(tmpUsername, () => {
+        navigate("/app/private-profile", { replace: true });
+        console.log("user is signed in");
+      });
+    else {
+      console.log("user is not authorized");
+    }
+  }, [navigate, auth]);
+
   // get username from redirect URL
   useEffect(() => {
-    const email = location.search.split("=")[1];
-    if (email) {
-      console.log(email);
-      // Store username in local storage temporarily
-      localStorage.setItem("tempemail", email);
+    const username = location.search.split("=")[1];
+    if (username) {
+      console.log("URL username: ", username);
+      localStorage.setItem("tmpUsername", username);
       navigate("/2FA");
     }
   }, [location.search, navigate]);
@@ -26,16 +40,17 @@ export default function TwoFAValidation() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const email = localStorage.getItem("tempemail");
-    console.log('2fa code', twoFACode, email);
-    if (email) {
-    const twoFAValid = async (email: string) => {
-      return await twoFAAuth(twoFACode, email);
-    };
-    twoFAValid(email);
-    // remove temp email from local storage
-    //localStorage.removeItem("tempemail");
-  }
+    const tmpUsername = localStorage.getItem("tmpUsername");
+    if (tmpUsername !== "undefined" && tmpUsername) {
+      const twoFAValid = async (username: string) => {
+        return await twoFAAuth(twoFACode, username, userSignIn);
+      };
+      twoFAValid(tmpUsername);
+      // remove temp email from local storage
+      //localStorage.removeItem("tmpUsername");
+    }
+    else
+      console.log("username is undefined");
   };
   return (
     <div>

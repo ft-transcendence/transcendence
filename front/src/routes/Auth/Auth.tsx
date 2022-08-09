@@ -30,10 +30,7 @@ export default function Auth() {
     // get access token from URL Query
     const access_token = location.search.split("=")[1];
     if (access_token) {
-      // LOG
       console.log(access_token);
-      //storeToken(access_token); --> Add function <--
-      // set the token into localstorage
       localStorage.setItem("userToken", access_token);
       // getUserData is a fetch that might take time. In order for sign in
       // to operate after the function, it needs to use await, asyn and .then

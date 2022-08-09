@@ -1,7 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { getUserData } from "./userQueries";
 
 let myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
+
+// const NavigateTwoFA = (username: string) => {
+//   console.log("username navigate: ", username);
+//   let navigate = useNavigate();
+//   navigate("/2FA?user=" + username);
+// };
 
 const fetchPost = async (
   raw: string,
@@ -22,14 +29,14 @@ const fetchPost = async (
     // redirect to 2FA page
     const url = '/2FA?user=' + rest.username;
     window.location.href = url;
-    //console.log(rest.twoFA);
+    // NavigateTwoFA(rest.username);
   } else {
-  storeToken(userInfo, rest);
-  if (localStorage.getItem("userToken")) {
-    await getUserData();
-    if (localStorage.getItem("userName")) userSignIn();
+    storeToken(userInfo, rest);
+    if (localStorage.getItem("userToken")) {
+      await getUserData();
+      if (localStorage.getItem("userName")) userSignIn();
+    }
   }
-}
 };
 
 export const signIn = (userInfo: any, userSignIn: any) => {
