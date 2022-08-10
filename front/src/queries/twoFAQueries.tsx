@@ -50,6 +50,7 @@ const fetchPost = async (body: any, url: string) => {
       redirect: "follow",
     });
     const result_1 = await response.json();
+    console.log("query result: ", result_1);
     return result_1;
   } catch (error) {
     return console.log("error", error);

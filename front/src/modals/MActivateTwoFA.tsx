@@ -28,8 +28,9 @@ export function Activate2FA(props: any) {
     e.preventDefault();
     const twoFAActivate = async () => {
       const result = await twoFAOn(FACodeModal);
-      if (result.statusCode !== 200)
-        console.log("error: cannot deactivate 2FA");
+      console.log("result.statusCode: ", result.statusCode);
+      if (result.statusCode !== undefined)
+        console.log("error: cannot activate 2FA");
       else props.onHide();
     };
     twoFAActivate();
