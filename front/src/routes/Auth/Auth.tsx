@@ -37,6 +37,7 @@ export default function Auth() {
       // keywords. Otherwise, things might happen in the wrong order.
       const fetchData = async () => {
         const data = await getUserData();
+        console.log("data: ", data);
       };
       // sign in the user
       fetchData().then(() => userSignIn());

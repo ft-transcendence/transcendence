@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { TAlert } from "../toasts/TAlert";
 import { getUserData } from "./userQueries";
 
 let myHeaders = new Headers();
@@ -26,7 +27,10 @@ const fetchPost = async (
       redirect: "follow",
     });
     const result_1 = await response.json();
-    if (!response.ok) return console.log("POST error on ", url);
+    if (!response.ok) {
+      console.log("POST error on ", url);
+      return "error";
+    }
     // check if user is 2FA
     if (result_1.twoFA) {
       // redirect to 2FA page
@@ -51,7 +55,7 @@ export const signIn = (userInfo: any, userSignIn: any) => {
     username: userInfo.email,
     password: userInfo.password,
   });
-  fetchPost(raw, userInfo, userSignIn, "signin");
+  return fetchPost(raw, userInfo, userSignIn, "signin");
 };
 
 export const signUp = (userInfo: any, userSignIn: any) => {
@@ -60,7 +64,7 @@ export const signUp = (userInfo: any, userSignIn: any) => {
     password: userInfo.password,
     username: userInfo.username,
   });
-  fetchPost(raw, userInfo, userSignIn, "signup");
+  return fetchPost(raw, userInfo, userSignIn, "signup");
 };
 
 export const storeToken = (token: any) => {
