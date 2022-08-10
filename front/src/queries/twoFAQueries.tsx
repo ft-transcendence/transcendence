@@ -6,7 +6,11 @@ export const twoFAGenerate = () => {
 };
 
 /* Validate 2FA code when signin in  */
-export const twoFAAuth = (twoFAcode: string, email: string, userSignIn:any) => {
+export const twoFAAuth = (
+  twoFAcode: string,
+  email: string,
+  userSignIn: any
+) => {
   let raw = JSON.stringify({
     username: email,
     twoFAcode: twoFAcode,
@@ -20,6 +24,10 @@ export const twoFAOn = (code: string) => {
     twoFAcode: code,
   });
   return fetchPost(raw, "turn-on");
+};
+
+export const twoFAOff = () => {
+  return fetchPost(null, "turn-off");
 };
 
 const authRawHeader = () => {
@@ -56,14 +64,13 @@ const fetchValid = async (body: any, url: string, userSignIn: any) => {
   // need to send JSON header
   myHeaders.append("Content-Type", "application/json");
   try {
-     const response = await fetch(fetchUrl, {
+    const response = await fetch(fetchUrl, {
       method: "POST",
       headers: myHeaders,
       body: body,
       redirect: "follow",
     }).then((response) => response.json());
     storeToken(response);
-    // Similar to authqueries logic
     if (localStorage.getItem("userToken")) {
       await getUserData();
       if (localStorage.getItem("userName")) userSignIn();

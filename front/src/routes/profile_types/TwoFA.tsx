@@ -1,7 +1,17 @@
 import { Row, Col } from "react-bootstrap";
+import { twoFAOff } from "../../queries/twoFAQueries";
 
 export const TwoFA = (props: any) => {
   console.log("2FA ? ", props.auth);
+
+  const handleTurnOff = (e: any) => {
+    e.preventDefault();
+    const twoFADeactivate = async () => {
+      const result = await twoFAOff();
+    };
+    twoFADeactivate();
+  };
+
   return (
     <div>
       <Row className="wrapper p-3">
@@ -18,7 +28,9 @@ export const TwoFA = (props: any) => {
           <button
             type="button"
             className="btn btn-secondary btn-sm submit-button float-end"
-            onClick={props.onClick}
+            onClick={
+              props.auth === "true" ? (e) => handleTurnOff(e) : props.onClick
+            }
           >
             {props.auth === "true" ? "Remove 2FA" : "Activate 2FA"}
           </button>
