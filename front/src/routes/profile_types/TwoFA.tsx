@@ -8,8 +8,7 @@ export const TwoFA = (props: any) => {
     e.preventDefault();
     const twoFADeactivate = async () => {
       const result = await twoFAOff();
-      if (result.statusCode !== 200)
-        console.log("error: cannot deactivate 2FA");
+      if (!result) console.log("error: cannot deactivate 2FA");
       else
         props.onDeactivate();
     };

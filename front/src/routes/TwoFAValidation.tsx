@@ -8,52 +8,43 @@ export default function TwoFAValidation() {
   let location = useLocation();
   let navigate = useNavigate();
   let auth = useAuth();
+  let username = localStorage.getItem("userName");
 
   const [twoFACode, setCode] = useState("");
 
   const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     setCode(value);
   };
 
-  const userSignIn = useCallback(() => {
-    let tmpUsername = localStorage.getItem("tmpUsername");
-    console.log("userSignIn tmpUsername: ", tmpUsername);
-    if (tmpUsername !== "undefined")
-      auth.signin(tmpUsername, () => {
-        navigate("/app/private-profile", { replace: true });
-        console.log("user is signed in");
-      });
-    else {
-      console.log("user is not authorized");
-    }
-  }, [navigate, auth]);
-
   // get username from redirect URL
   useEffect(() => {
-    const username = location.search.split("=")[1];
-    if (username) {
-      console.log("URL username: ", username);
-      localStorage.setItem("tmpUsername", username);
+    const urlUsername = location.search.split("=")[1];
+    if (urlUsername) {
+      localStorage.setItem("userName", urlUsername);
       navigate("/2FA");
     }
   }, [location.search, navigate]);
 
-
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const tmpUsername = localStorage.getItem("tmpUsername");
-    if (tmpUsername !== "undefined" && tmpUsername) {
+
+    const userSignIn = () => {
+      let username = localStorage.getItem("userName");
+      console.log("username: ", username);
+      if (username)
+        auth.signin(username, () => {
+          navigate("/app/private-profile", { replace: true });
+        });
+      console.log("user is signed in");
+    };
+
+    if (username !== "undefined" && username) {
       const twoFAValid = async (username: string) => {
         return await twoFAAuth(twoFACode, username, userSignIn);
       };
-      twoFAValid(tmpUsername);
-      // remove temp email from local storage
-      //localStorage.removeItem("tmpUsername");
-    }
-    else
-      console.log("username is undefined");
+      twoFAValid(username);
+    } else console.log("username is undefined");
   };
 
   return (

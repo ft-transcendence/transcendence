@@ -51,8 +51,10 @@ const fetchPost = async (body: any, url: string, userSignIn: any) => {
       redirect: "follow",
     });
     const result_1 = await response.json();
-    if (!response.ok)
-      return console.log("POST error on ", url);
+    if (!response.ok) {
+      console.log("POST error on ", url);
+      return null;
+    }
     if (url !== "generate") {
       storeToken(result_1);
       if (url === "authenticate") {

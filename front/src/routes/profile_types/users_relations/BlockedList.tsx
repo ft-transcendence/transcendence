@@ -28,7 +28,7 @@ export const BlockedList = () => {
         blocked.push(newRow);
       }
       setBlockedList(blocked);
-      console.log("blockedList: ", blockedList);
+      if (fetchedBlocked.length !== 0) console.log("blockedList", blockedList);
       setFetched(true);
       setUpdate(false);
     };

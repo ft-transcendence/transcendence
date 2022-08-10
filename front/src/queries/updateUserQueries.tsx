@@ -1,5 +1,3 @@
-import { storeUserInfo } from "./userQueries";
-
 export const updateAvatarQuery = (file: any) => {
   var formdata = new FormData();
   formdata.append("avatar", file.files[0], "avatar.jpeg");

@@ -13,7 +13,7 @@ export default function Auth() {
   let navigate = useNavigate();
   let auth = useAuth();
   let location = useLocation();
-  
+
   // Use a callback to avoid re-rendering
   const userSignIn = useCallback(() => {
     let username = localStorage.getItem("userName");
@@ -22,11 +22,11 @@ export default function Auth() {
       auth.signin(username, () => {
         navigate("/app/private-profile", { replace: true });
       });
-      console.log("user is signed in");
+    console.log("user is signed in");
   }, [navigate, auth]);
 
   // useEffect to get access token from URL
-    useEffect(() => {
+  useEffect(() => {
     // get access token from URL Query
     const access_token = location.search.split("=")[1];
     if (access_token) {
@@ -36,14 +36,12 @@ export default function Auth() {
       // to operate after the function, it needs to use await, asyn and .then
       // keywords. Otherwise, things might happen in the wrong order.
       const fetchData = async () => {
-       const data = await getUserData(); 
-      }
+        const data = await getUserData();
+      };
       // sign in the user
-      fetchData()
-      .then (() => userSignIn())
-      }
-    } , [location.search, userSignIn]);
-
+      fetchData().then(() => userSignIn());
+    }
+  }, [location.search, userSignIn]);
 
   const handleSubmit = (event: any) => {
     let userInfo: IUserInfo = {
@@ -56,7 +54,7 @@ export default function Auth() {
         this.password = null;
       },
     };
- 
+
     event.preventDefault();
     if (GUserInputsRefs.username.current?.value)
       userInfo.username = GUserInputsRefs.username.current.value;
@@ -98,7 +96,12 @@ export default function Auth() {
             </Form.Text>
           </Form.Group>
           {/* USE LINK TO GET USER FROM 42 API */}
-          <Button variant="secondary" className="submit-button" size="sm" href="http://localhost:4000/auth/42">
+          <Button
+            variant="secondary"
+            className="submit-button"
+            size="sm"
+            href="http://localhost:4000/auth/42"
+          >
             Sign in with 42
           </Button>
           <Button
