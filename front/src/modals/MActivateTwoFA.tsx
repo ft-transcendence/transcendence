@@ -3,6 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { twoFAGenerate, twoFAOn } from "../queries/twoFAQueries";
 
 export function Activate2FA(props: any) {
+  
   const [image, setImage] = useState<string>("");
   const [FACodeModal, setCodeModal] = useState("");
 
@@ -27,7 +28,9 @@ export function Activate2FA(props: any) {
     e.preventDefault();
     const twoFAActivate = async () => {
       const result = await twoFAOn(FACodeModal);
-      if (result.success === "2FA turned on") props.onHide();
+      if (result.statusCode !== 200)
+        console.log("error: cannot deactivate 2FA");
+      else props.onHide();
     };
     twoFAActivate();
   };
@@ -73,7 +76,7 @@ export function Activate2FA(props: any) {
           type="submit"
           className="submit-button"
           size="sm"
-          onClick={(e:any) => {
+          onClick={(e: any) => {
             handleSubmit(e);
             props.onSubmit();
           }}
