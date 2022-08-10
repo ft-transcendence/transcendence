@@ -74,44 +74,13 @@ export default function LeaderBoard() {
 
 
     return (
-        <div className="back-ground">
-            {/* <div className="logo">
+        <div className="background">
+            <div className="leardboard-logo">
                 <b>L<span>ea</span>d<span>e</span><span>r</span>  </b>
                 <b>B<span>oa</span>r<span>d</span></b>
-            </div> */}
-
-            <div className="logo-box">
-                <div className="text text1">
-                    <p className="word leader">Leader</p>
-                    <p className="word board">Board</p><span className="left-side"></span><span className="bottom-side"></span>
-                </div>
-                <div className="text text2">
-                    <p className="word leader">Leader</p>
-                    <p className="word board">Board</p><span className="left-side"></span><span className="bottom-side"></span>
-                </div>
-                <div className="text text3">
-                    <p className="word leader">Leader</p>
-                    <p className="word board">Board</p><span className="left-side"></span><span className="bottom-side"></span>
-                </div>
-                <div className="text text4">
-                    <p className="word leader">Leader</p>
-                    <p className="word board">Board</p><span className="left-side"></span><span className="bottom-side"></span>
-                </div>
-                <div className="text text5">
-                    <p className="word leader">Leader</p>
-                    <p className="word board">Board</p><span className="left-side"></span><span className="bottom-side"></span>
-                </div>
-                <div className="text text6">
-                    <p className="word leader">Leader</p>
-                    <p className="word board">Board</p><span className="left-side"></span><span className="bottom-side"></span>
-                </div>
-                <div className="text text7">
-                    <p className="word leader">Leader</p>
-                    <p className="word board">Board</p><span className="left-side"></span><span className="bottom-side"></span>
-                </div>
             </div>
             <div className="block"/>
-            <div className="leader-board">
+            <div className="leaderboard">
                 {/* <div className="header">
                     <OneRow
                         id={"id"}
@@ -161,7 +130,6 @@ function OneRow({index, id, username, avatar, gamesWon, gamesLost, gamesPlayed, 
             case 1:
                 return(
                 <div className="rank rank-1">
-                        <div className="top-rank">#{index}</div>
                         <div className="top-avatar"></div>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
@@ -173,7 +141,6 @@ function OneRow({index, id, username, avatar, gamesWon, gamesLost, gamesPlayed, 
             case 2:
                 return(
                 <div className="rank rank-2">
-                        <div className="top-rank">#{index}</div>
                         <div className="top-avatar"></div>
                    <div className="top-info">
                         <div className="top-username">{username}</div>
@@ -185,7 +152,6 @@ function OneRow({index, id, username, avatar, gamesWon, gamesLost, gamesPlayed, 
             case 3:
                 return(
                 <div className="rank rank-3">
-                        <div className="top-rank">#{index}</div>
                         <div className="top-avatar"></div>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
