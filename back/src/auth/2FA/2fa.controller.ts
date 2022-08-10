@@ -31,7 +31,8 @@ export class TwoFAController {
 	@Post('/turn-off')
 	@HttpCode(200)
 	async turn_off(@GetCurrentUserId() userId: number) {
-		return this.twoFAservice.turn_off(userId);
+		await this.twoFAservice.turn_off(userId);
+		return 'turned off 2FA';
 	}
 
 	/**
