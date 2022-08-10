@@ -18,24 +18,31 @@ const fetchPost = async (
 ) => {
   let fetchUrl = "http://localhost:4000/auth/" + url;
 
-  const rest = await fetch(fetchUrl, {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  }).then((response) => response.json());
-  // check if user is 2FA
-  if (rest.twoFA) {
-    // redirect to 2FA page
-    const url = '/2FA?user=' + rest.username;
-    window.location.href = url;
-    // NavigateTwoFA(rest.username);
-  } else {
-    storeToken(userInfo, rest);
-    if (localStorage.getItem("userToken")) {
-      await getUserData();
-      if (localStorage.getItem("userName")) userSignIn();
+  try {
+    const response = await fetch(fetchUrl, {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    });
+    const result_1 = await response.json();
+    if (!response.ok) return console.log("POST error on ", url);
+    // check if user is 2FA
+    if (result_1.twoFA) {
+      // redirect to 2FA page
+      const url = "/2FA?user=" + result_1.username;
+      window.location.href = url;
+      // NavigateTwoFA(rest.username);
+    } else {
+      userInfo.clear();
+      storeToken(result_1);
+      if (localStorage.getItem("userToken")) {
+        await getUserData();
+        if (localStorage.getItem("userName")) userSignIn();
+      }
     }
+  } catch (error) {
+    return console.log("error", error);
   }
 };
 
@@ -56,11 +63,9 @@ export const signUp = (userInfo: any, userSignIn: any) => {
   fetchPost(raw, userInfo, userSignIn, "signup");
 };
 
-const storeToken = (userInfo: any, token: any) => {
-  if (!(token.error === "Forbidden")) {
-    console.log("token= ", token.access_token);
-    localStorage.setItem("userToken", token.access_token);
-    localStorage.setItem("userRefreshToken", token.refresh_token);
-  }
-  userInfo.clear();
+export const storeToken = (token: any) => {
+  console.log("token= ", token.access_token);
+  console.log("refresh token = ", token.access_token);
+  localStorage.setItem("userToken", token.access_token);
+  localStorage.setItem("userRefreshToken", token.refresh_token);
 };

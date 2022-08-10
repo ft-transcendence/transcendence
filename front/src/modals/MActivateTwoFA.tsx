@@ -29,7 +29,7 @@ export function Activate2FA(props: any) {
     const twoFAActivate = async () => {
       const result = await twoFAOn(FACodeModal);
       console.log("result.statusCode: ", result.statusCode);
-      if (result.statusCode !== undefined)
+      if (result.statusCode !== undefined || result.statusCode === 401)
         console.log("error: cannot activate 2FA");
       else props.onHide();
     };

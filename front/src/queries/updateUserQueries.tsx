@@ -36,24 +36,31 @@ const authFileHeader = () => {
   return myHeaders;
 };
 
-const fetchPost = (
+const fetchPost = async (
   bodyContent: any,
   url: string,
   header: any,
   data: string
 ) => {
   let fetchUrl = "http://localhost:4000/users/" + url;
-  fetch(fetchUrl, {
-    method: "POST",
-    headers: header(),
-    body: bodyContent,
-    redirect: "follow",
-  })
-    .then((response) => response.text())
-    // .then((result) => console.log(result))
-    .then(() => storeUserModif(url, data))
-    .then(() => console.log("user update"))
-    .catch((error) => console.log("error", error));
+
+  try {
+    const response = await fetch(fetchUrl, {
+      method: "POST",
+      headers: header(),
+      body: bodyContent,
+      redirect: "follow",
+    });
+    await response.json();
+    if (!response.ok) {
+      console.log("POST error on ", url);
+      return "error";
+    }
+    storeUserModif(url, data);
+    return "success";
+  } catch (error) {
+    return console.log("error", error);
+  }
 };
 
 const storeUserModif = (url: string, data: string) => {

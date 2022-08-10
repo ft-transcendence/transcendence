@@ -31,6 +31,7 @@ const fetchGet = async (url: string, header: any, callback: any) => {
       redirect: "follow",
     });
     const result_1 = await response.json();
+    if (!response.ok) return console.log("POST error on ", url);
     return callback(result_1);
   } catch (error) {
     return console.log("error", error);
@@ -50,5 +51,4 @@ export const storeUserInfo = (result: any) => {
 
 export const storeFriendsInfo = (result: any) => {
   return result;
-  // add blocked users later
 };
