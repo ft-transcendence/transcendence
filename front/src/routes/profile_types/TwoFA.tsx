@@ -1,6 +1,7 @@
 import { Row, Col } from "react-bootstrap";
 
 export const TwoFA = (props: any) => {
+  console.log("2FA ? ", props.auth);
   return (
     <div>
       <Row className="wrapper p-3">

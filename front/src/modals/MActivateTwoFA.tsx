@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { twoFAGenerate, twoFAOn } from "../queries/twoFAQueries";
 
-// Enable 2FA modal
-
 export function Activate2FA(props: any) {
   const [image, setImage] = useState<string>("");
   const [FACodeModal, setCodeModal] = useState("");
@@ -20,7 +18,7 @@ export function Activate2FA(props: any) {
       };
       QRCode()
         .then((data) => setImage(data))
-        .then(() => console.log("hellow"));
+        .then(() => console.log("QR code generated"));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.show]);
@@ -75,7 +73,10 @@ export function Activate2FA(props: any) {
           type="submit"
           className="submit-button"
           size="sm"
-          onClick={props.setAuthStatus}
+          onClick={(e:any) => {
+            handleSubmit(e);
+            props.onSubmit();
+          }}
         >
           Submit
         </Button>
