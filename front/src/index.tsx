@@ -14,6 +14,7 @@ import Watch from "./routes/Watch";
 import { BlockedList } from "./routes/profile_types/users_relations/BlockedList";
 import { FriendsList } from "./routes/profile_types/users_relations/FriendsList";
 import { PendingList } from "./routes/profile_types/users_relations/PendingList";
+import LeaderBoard from "./routes/LeaderBoard";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
@@ -49,6 +50,7 @@ root.render(
               </RequireAuth>
               }
             />
+            <Route path="leader-board" element={<LeaderBoard />} />
             <Route path="game" element={<Game />} />
             <Route path="watch" element={<Watch />} />
             <Route path="*" element={<Navigate to="/app" />} />

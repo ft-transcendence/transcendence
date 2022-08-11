@@ -67,12 +67,13 @@ export class UserService {
 
 		const usersDTO: UserDto[] = [];
 		for (const user of users) {
-			if (user.score !== 1200) {
-				const userDtO = plainToClass(UserDto, user);
+			// console.log('user:::', user);
+			// if (user.score !== 1200) {
+			const userDtO = plainToClass(UserDto, user);
 				usersDTO.push(userDtO);
-			}
+			// }
 		}
-
+		// console.log('userssss:::', usersDTO);
 		return usersDTO;
 	}
 
@@ -656,6 +657,7 @@ export class UserService {
 
 	async calculateScores([...ratings]) {
 		const [a, b] = ratings;
+		// eslint-disable-next-line unicorn/consistent-function-scoping
 		const expectedScore = (self, opponent) =>
 			1 / (1 + 10 ** ((opponent - self) / 400));
 		const newRating = (rating, index) =>
