@@ -25,8 +25,10 @@ import { RtGuard } from './guard';
 /* AUTH DTOs */
 import { SignUpDto, SignInDto } from './dto';
 import { TwoFactorService } from './2FA/2fa.service';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 
 // AUTH CONTROLLER - /auth
+
 @Controller('auth')
 export class AuthController {
 	constructor(
@@ -68,6 +70,23 @@ export class AuthController {
 		return this.authService.signout(userId);
 	}
 
+	/* REFRESH TOKEN CALLBACK */
+
+	/**
+	 *	Updates Tokens for signed in user
+	 *	Work in progress
+	 */
+	@Public()
+	@UseGuards(RtGuard)
+	@HttpCode(200)
+	@Post('/refresh')
+	refresh(
+		@GetCurrentUserId() userId: number,
+		@GetCurrentUser('refreshToken') refreshToken: string,
+	) {
+		console.log('refresh route id:', userId, 'token:', refreshToken);
+		return this.authService.refresh_token(userId, refreshToken);
+	}
 	/* 42 API  */
 
 	/**
@@ -99,24 +118,6 @@ export class AuthController {
 		return twoFA
 			? this.twoFAService.signin_2FA(response, username)
 			: this.authService.signin_42_token(response, id, email);
-	}
-
-	/* REFRESH TOKEN CALLBACK */
-
-	/**
-	 *	Updates Tokens for signed in user
-	 *	Work in progress
-	 */
-	@Public()
-	@UseGuards(RtGuard)
-	@HttpCode(200)
-	@Post('/refresh')
-	refresh(
-		@GetCurrentUserId() userId: number,
-		@GetCurrentUser('refreshToken') refreshToken: string,
-	) {
-		console.log('refresh route id:', userId, 'token:', refreshToken);
-		return this.authService.refresh_token(userId, refreshToken);
 	}
 
 	/**

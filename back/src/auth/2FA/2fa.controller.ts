@@ -1,5 +1,5 @@
 import { Body, Controller, HttpCode, Post, Res } from '@nestjs/common';
-import { GetCurrentUser, GetCurrentUserId, Public } from 'src/decorators';
+import { GetCurrentUser, Public } from 'src/decorators';
 import { TwoFactorDto, TwoFactorUserDto } from '../dto';
 import { TwoFactorService } from './2fa.service';
 import { Response } from 'express';
