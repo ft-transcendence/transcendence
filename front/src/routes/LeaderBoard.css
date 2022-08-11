@@ -1,0 +1,227 @@
+
+@font-face { font-family: Clip; src: url('../../public/font/clip.regular.ttf'); } 
+
+:root {
+  --dark-red: hsl(0, 90%, 4%);
+  --neon-pink: hsl(303, 100%, 73%);
+}
+
+.background {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  overflow: overlay;
+  margin: auto auto;
+  background: black;
+  background-image: radial-gradient(circle at 50% 0%, rgba(192,69,69,1) 0%, rgba(57,80,127,0.85) 40%, rgba(25,48,49,1) 100%);
+  color: white;
+}
+
+.leardboard-logo {
+    text-align: center;
+    height: 100px;
+    width: 1000px;
+    margin: auto;
+    margin-top: 60px;
+    user-select: none;
+  }
+  
+  .leardboard-logo b{
+    font: 500 100px "Clip";
+    color: #fee;
+    text-shadow: 0 -40px 100px, 0 0 2px, 0 0 1em var(--neon-pink), 0 0 0.5em var(--neon-pink), 0 0 0.1em var(--neon-pink), 8px 10px 5px rgb(182, 52, 52);
+  }
+  .leardboard-logo b span{
+    animation: blink linear infinite 2s;
+  }
+  .leardboard-logo b span:nth-of-type(2){
+    animation: blink linear infinite 3s;
+  }
+
+  @keyframes blink {
+    78% {
+      color: inherit;
+      text-shadow: inherit;
+    }
+    79%{
+       color: #333;
+    }
+    80% {
+      
+      text-shadow: none;
+    }
+    81% {
+      color: inherit;
+      text-shadow: inherit;
+    }
+    82% {
+      color: #333;
+      text-shadow: none;
+    }
+    83% {
+      color: inherit;
+      text-shadow: inherit;
+    }
+    92% {
+      color: #333;
+      text-shadow: none;
+    }
+    92.5% {
+      color: inherit;
+      text-shadow: inherit;
+    }
+  }
+
+.leaderboard {
+  margin: auto auto;
+  height: fit-content;
+  width: 1000px;
+  /* min-width: 1000px;
+  max-width: 1000px; */
+  padding: 50px;
+  background-color: transparent;
+  font-family: 'Overpass';
+}
+
+.top {
+  width: 200px;
+  height: 270px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.first {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  border: 2px solid rgb(255, 255, 255);
+  box-shadow: 0px 0px 3px 3px hsl(49, 92%, 64%), inset 0px 0px 3px 3px hsl(49, 92%, 64%);
+}
+
+.first:hover {
+  border: 1px solid hsl(49, 100%, 75%);
+  box-shadow: 0 0 10px hsl(54, 100%, 68%), inset 0px 0px 3px 3px hsl(49, 100%, 75%);
+  transition: all 0.1s ease;
+}
+
+.second {
+  position: absolute;
+  top: 160px;
+  left: 100px;
+  border: 2px solid rgb(255, 255, 255);
+  box-shadow: 0px 0px 3px 3px hsl(0, 1%, 77%), inset 0px 0px 5px 4px hsl(0, 1%, 77%);
+}
+
+.second:hover {
+  border: 1px solid hsl(0, 100%, 100%);
+  box-shadow: 0 0 10px hsl(0, 1%, 63%), inset 0px 0px 5px 4px hsl(0, 1%, 77%);
+  transition: all 0.1s ease;
+}
+
+.third {
+  position: absolute;
+  top: 160px;
+  right: 100px;
+  border: 2px solid rgb(255, 255, 255);
+  box-shadow: 0px 0px 3px 3px hsl(27, 98%, 67%), inset 0px 0px 5px 4px hsl(27, 98%, 67%);
+}
+
+.third:hover {
+  border: 1px solid hsl(27, 92%, 75%);
+  box-shadow: 0 0 10px hsl(27, 76%, 59%), inset 0px 0px 5px 4px hsl(27, 88%, 74%);
+  transition: all 0.1s ease;
+}
+
+    .badge {
+      text-align: center;
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      /* padding: 10px; */
+    }
+
+    .top-index {
+      /* background-color: red; */
+      text-align: center;
+      position: absolute;
+      bottom: 23px;
+      right: 25px;
+      /* padding: 10px; */
+    }
+
+    .top-avatar {
+      margin: auto;
+      margin-top: 25px;
+      border-radius: 50%;
+      border: 1px solid white;
+      height: 110px;
+      width: 110px;
+    }
+    
+    .top-info {
+      margin-top: 3px;
+      padding: 10px;;
+      text-align: center;
+      line-height: 2;
+    }
+
+
+.list {
+  padding: 10px;
+  padding-top: 500px;
+  position: relative;
+}
+
+.element {
+  display: flex;
+  margin: 15px;
+  padding: 12px;
+  line-height: 2.5;
+  border-bottom: 1px solid hsl(0, 0%, 56%);
+  height: 60px;
+  cursor: pointer;
+}
+.element:hover {
+  border-bottom: 1px solid hsl(270, 2%, 78%);
+  transition: all 0.1s ease;
+}
+
+.index {
+  flex: 1;
+  padding-left: 5px;
+}
+
+.id {
+  display: none;
+}
+
+.rank {
+  flex: 1;
+  /* padding-left: 5px; */
+}
+
+.user {
+  display: flex;
+  flex: 6;
+}
+
+.avatar {
+  background-color: white;
+  margin-top: 4px;
+  margin-right: 15px;
+  margin-left: 10px;
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+}
+
+.record {
+  flex: 3;
+}
+
+.rate {
+  flex: 2;
+}

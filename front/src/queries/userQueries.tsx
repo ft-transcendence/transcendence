@@ -14,6 +14,10 @@ export const getUserData = () => {
   return fetchGet("me", authFileHeader, storeUserInfo);
 };
 
+export const getLeaderBoard = () => {
+  return fetchGet("get_leaderboard", authFileHeader, storeLeaderBoardInfo);
+}
+
 const authFileHeader = () => {
   let token = "bearer " + localStorage.getItem("userToken");
   let myHeaders = new Headers();
@@ -55,3 +59,8 @@ export const storeUserInfo = (result: any) => {
 export const storeFriendsInfo = (result: any) => {
   return result;
 };
+
+export const storeLeaderBoardInfo = (result: any) => {
+  // console.log("store leaderboard:::", result)
+  localStorage.setItem("leaderBoard", JSON.stringify(result));
+}
