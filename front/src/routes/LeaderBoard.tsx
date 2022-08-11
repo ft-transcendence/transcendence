@@ -55,45 +55,46 @@ function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPl
         switch(index) {
             case 1:
                 return(
-                <div className="top rank-1">
+                <div className="top first">
                         <div className="top-avatar"></div>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
-                        <BadgeReward rank={index}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed}</div>
-                        <div className="top-rate">{(gamesWon / gamesPlayed).toFixed(2)}</div>
+                        <BadgeReward index={index}/>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
+                        <div className="top-rank">LV. 2{rank}</div>
                     </div>
                 </div>
                 );
             case 2:
                 return(
-                <div className="top rank-2">
+                <div className="top second">
                         <div className="top-avatar"></div>
                    <div className="top-info">
                         <div className="top-username">{username}</div>
-                        <BadgeReward rank={index}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed}</div>
-                        <div className="top-rate">{(gamesWon / gamesPlayed).toFixed(2)}</div>
+                        <BadgeReward index={index}/>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
+                        <div className="top-rank">LV. 2{rank}</div>
                     </div>
                 </div>
                 );
             case 3:
                 return(
-                <div className="top rank-3">
+                <div className="top third">
                         <div className="top-avatar"></div>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
-                        <BadgeReward rank={index}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed}</div>
-                        <div className="top-rate">{(gamesWon / gamesPlayed).toFixed(2)}</div>
+                        <BadgeReward index={index}/>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
+                        <div className="top-rank">LV. 1{rank}</div>
                     </div>
                 </div>
                 );
             default:
                 return (
                     <div className="element">
-                        <div className="rank">#{index}</div>
+                        <div className="index">#{index}</div>
                         <div className="id">{id}</div>
+                        <div className="rank">LV. 0{rank}</div>
                         <div className="user">
                             {!head ? <div className="avatar">{avatar}</div> : <></>}
                             
@@ -110,12 +111,12 @@ function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPl
         }
     }
 
-    function BadgeReward({rank}:
-        {rank: number}) {
+    function BadgeReward({index}:
+        {index: number}) {
         return(
             <div className="badge">
-                <div className="top-rank">
-                    {rank}
+                <div className="top-index">
+                    {index}
                 </div>
                 <svg width="40" height="40" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M472.038 443.917L412.343 279.908C429.649 251.901 439.653 218.926 439.653 183.654C439.653 
