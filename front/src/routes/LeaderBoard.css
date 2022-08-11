@@ -3,18 +3,17 @@
 
 :root {
   --dark-red: hsl(0, 90%, 4%);
-  --neon-blue: hsl(190, 100%, 75%);
   --neon-pink: hsl(303, 100%, 73%);
-  --size: 10;
-  --unit: calc((var(--size) / 200) * 1vmin);
 }
 
 .background {
   position: absolute;
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
   top: 0;
+  overflow: overlay;
   margin: auto auto;
-  background: var(--dark-red);
+  background: black;
   background-image: radial-gradient(circle at 50% 0%, rgba(192,69,69,1) 0%, rgba(57,80,127,0.85) 40%, rgba(25,48,49,1) 100%);
   color: white;
 }
@@ -22,7 +21,7 @@
 .leardboard-logo {
     text-align: center;
     height: 100px;
-    width: 100%;
+    width: 1000px;
     margin: auto;
     margin-top: 60px;
     user-select: none;
@@ -39,6 +38,7 @@
   .leardboard-logo b span:nth-of-type(2){
     animation: blink linear infinite 3s;
   }
+
   @keyframes blink {
     78% {
       color: inherit;
@@ -74,10 +74,11 @@
   }
 
 .leaderboard {
-  margin: auto;
+  margin: auto auto;
   height: fit-content;
   width: 1000px;
-  border-radius: 30px;
+  /* min-width: 1000px;
+  max-width: 1000px; */
   padding: 50px;
   background-color: transparent;
   font-family: 'Overpass';
@@ -98,7 +99,6 @@
   margin: auto;
   border: 2px solid rgb(255, 255, 255);
   box-shadow: 0px 0px 3px 3px hsl(49, 92%, 64%), inset 0px 0px 3px 3px hsl(49, 92%, 64%);
-
 }
 
 .rank-1:hover {
@@ -106,7 +106,6 @@
   box-shadow: 0 0 10px hsl(54, 100%, 68%), inset 0px 0px 3px 3px hsl(49, 100%, 75%);
   transition: all 0.1s ease;
 }
-
 
 .rank-2 {
   position: absolute;
@@ -189,33 +188,33 @@
   transition: all 0.1s ease;
 }
 .rank {
-    flex: 1;
-    padding-left: 5px;
+  flex: 1;
+  padding-left: 5px;
 }
 
 .id {
-    display: none;
+  display: none;
 }
 
 .user {
-    display: flex;
-    flex: 5;
+  display: flex;
+  flex: 5;
 }
 
 .avatar {
-    background-color: white;
-    margin-top: 4px;
-    margin-right: 15px;
-    margin-left: 10px;
-    border-radius: 50%;
-    height: 30px;
-    width: 30px;
+  background-color: white;
+  margin-top: 4px;
+  margin-right: 15px;
+  margin-left: 10px;
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
 }
 
 .record {
-    flex: 3;
+  flex: 3;
 }
 
 .rate {
-    flex: 2;
+  flex: 2;
 }
