@@ -10,4 +10,5 @@ export interface GameData {
 	player1Score: number;
 	player2Score: number;
 	gameID?: number;
+	startTime?: Date;
 }

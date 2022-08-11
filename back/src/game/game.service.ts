@@ -11,6 +11,7 @@ import { GameData } from './interfaces/gameData.interface';
 import { UserService } from 'src/user/user.service';
 import { Mutex } from 'async-mutex';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { now } from 'moment';
 
 const refreshRate = 10;
 const paddleSpeed = 1;
@@ -232,6 +233,7 @@ export class GameService {
 				.player1Avatar,
 			player2Avater: GameService.rooms.find((room) => room.id === rid)
 				.player2Avatar,
+			startTime: new Date(),
 		};
 		const mutex = new Mutex();
 		this.initBall(rid);
@@ -296,25 +298,18 @@ export class GameService {
 			server
 				.to(GameService.rooms.find((room) => room.id === id).name)
 				.emit('end_game', winner);
-			if (winner == 1) {
-				this.userService.hasWon(
-					GameService.rooms.find((room) => room.id === id).player1
-						.data.id,
-				);
-				this.userService.hasLost(
-					GameService.rooms.find((room) => room.id === id).player2
-						.data.id,
-				);
-			} else {
-				this.userService.hasWon(
-					GameService.rooms.find((room) => room.id === id).player2
-						.data.id,
-				);
-				this.userService.hasLost(
-					GameService.rooms.find((room) => room.id === id).player1
-						.data.id,
-				);
-			}
+			const endTime = new Date();
+			this.saveGame(
+				game_data.gameID,
+				GameService.rooms.find((room) => room.id === id).player1.data
+					.id,
+				GameService.rooms.find((room) => room.id === id).player2.data
+					.id,
+				game_data.player1Score,
+				game_data.player2Score,
+				game_data.startTime,
+				endTime,
+			);
 			// delete the room
 			//server.sockets.in(GameService.rooms.find(room => room.id === id).name).socketsLeave(GameService.rooms.find(room => room.id === id).name);
 			GameService.rooms.splice(
