@@ -11,7 +11,6 @@ import { GameData } from './interfaces/gameData.interface';
 import { UserService } from 'src/user/user.service';
 import { Mutex } from 'async-mutex';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { now } from 'moment';
 
 const refreshRate = 10;
 const paddleSpeed = 1;
@@ -258,49 +257,59 @@ export class GameService {
 			release();
 			return;
 		}
-		this.updateBall(id);
-		this.updatePaddles(id);
+		if (
+			GameService.rooms.find((room) => room.id === id)
+				.player1Disconnected == true
+		) {
+			server
+				.to(GameService.rooms.find((room) => room.id === id).name)
+				.emit('disconnected', 1);
+			game_data.player2Score = 11;
+		} else if (
+			GameService.rooms.find((room) => room.id === id)
+				.player2Disconnected == true
+		) {
+			server
+				.to(GameService.rooms.find((room) => room.id === id).name)
+				.emit('disconnected', 2);
+			game_data.player1Score = 11;
+		} else {
+			this.updateBall(id);
+			this.updatePaddles(id);
 
-		game_data.yBall = GameService.rooms.find(
-			(room) => room.id === id,
-		).yball;
-		game_data.xBall = GameService.rooms.find(
-			(room) => room.id === id,
-		).xball;
-		game_data.paddleLeft = GameService.rooms.find(
-			(room) => room.id === id,
-		).paddleLeft;
-		game_data.paddleRight = GameService.rooms.find(
-			(room) => room.id === id,
-		).paddleRight;
-		game_data.player1Score = GameService.rooms.find(
-			(room) => room.id === id,
-		).player1Score;
-		game_data.player2Score = GameService.rooms.find(
-			(room) => room.id === id,
-		).player2Score;
-
+			game_data.yBall = GameService.rooms.find(
+				(room) => room.id === id,
+			).yball;
+			game_data.xBall = GameService.rooms.find(
+				(room) => room.id === id,
+			).xball;
+			game_data.paddleLeft = GameService.rooms.find(
+				(room) => room.id === id,
+			).paddleLeft;
+			game_data.paddleRight = GameService.rooms.find(
+				(room) => room.id === id,
+			).paddleRight;
+			game_data.player1Score = GameService.rooms.find(
+				(room) => room.id === id,
+			).player1Score;
+			game_data.player2Score = GameService.rooms.find(
+				(room) => room.id === id,
+			).player2Score;
+		}
 		server
 			.to(GameService.rooms.find((room) => room.id === id).name)
 			.emit('update', game_data);
 
-		if (
-			GameService.rooms.find((room) => room.id === id).player1Score ==
-				11 ||
-			GameService.rooms.find((room) => room.id === id).player2Score == 11
-		) {
+		if (game_data.player1Score == 11 || game_data.player2Score == 11) {
 			this.schedulerRegistry.deleteInterval(String(id));
 			const winner =
-				GameService.rooms.find((room) => room.id === id).player1Score >
-				GameService.rooms.find((room) => room.id === id).player2Score
-					? 1
-					: 2;
+				game_data.player1Score > game_data.player2Score ? 1 : 2;
 			server
 				.to(GameService.rooms.find((room) => room.id === id).name)
 				.emit('end_game', winner);
 			const endTime = new Date();
 			this.saveGame(
-				game_data.gameID,
+				id,
 				GameService.rooms.find((room) => room.id === id).player1.data
 					.id,
 				GameService.rooms.find((room) => room.id === id).player2.data
