@@ -4,7 +4,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 /* JASON WEB TOKEN AUTH MODULE */
 import { JwtModule } from '@nestjs/jwt';
-import { jwtStrategy } from './strategy';
+import { jwtStrategy, oAuth42Strategy } from './strategy';
 import { RtStrategy } from './strategy/rt.strategy';
 import { FortyTwoStrategy } from './strategy/42.strategy';
 /* USER Module */
@@ -23,6 +23,7 @@ import { TwoFAController } from './2FA/2fa.controller';
 		jwtStrategy,
 		RtStrategy,
 		FortyTwoStrategy,
+		oAuth42Strategy,
 		UserService,
 	],
 	exports: [AuthService],

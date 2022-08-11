@@ -14,6 +14,7 @@ import {
 	UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { Request } from 'express';
 /* CUSTOM DECORATORS */
 import { GetCurrentUser, GetCurrentUserId, Public } from 'src/decorators';
 /* INTERFACE FOR 42 API */
@@ -22,6 +23,7 @@ import { Profile_42 } from './interfaces/42.interface';
 import { AuthService } from './auth.service';
 import { FortyTwoAuthGuard } from './guard';
 import { RtGuard } from './guard';
+import { OAuth } from './guard';
 /* AUTH DTOs */
 import { SignUpDto, SignInDto } from './dto';
 import { TwoFactorService } from './2FA/2fa.service';
@@ -123,8 +125,19 @@ export class AuthController {
 	 * Testing basic /auth route
 	 */
 	@Public()
-	@Get('/')
+	@UseGuards(OAuth)
+	@Get('/oauth')
 	test_auth() {
 		return this.authService.test_route();
+	}
+
+	@Public()
+	@UseGuards(OAuth)
+	@Get('/oauth/callback')
+	test_callback(@Req() request: any) {
+		//console.log('test_callback', request.user);
+		const user = request.user as Profile_42;
+		console.log('user', request.user as Profile_42);
+		return user;
 	}
 }
