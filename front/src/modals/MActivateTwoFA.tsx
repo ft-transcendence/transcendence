@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { twoFAGenerate, twoFAOn } from "../queries/twoFAQueries";
 
-// Enable 2FA modal
-
-export function Activate2FA(props: { show: boolean, onHide: () => void }) {
+export function Activate2FA(props: any) {
   const [image, setImage] = useState<string>("");
   const [FACodeModal, setCodeModal] = useState("");
 
@@ -20,16 +18,21 @@ export function Activate2FA(props: { show: boolean, onHide: () => void }) {
       };
       QRCode()
         .then((data) => setImage(data))
-        .then(() => console.log("hellow"));
+        .then(() => console.log("QR code generated"));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.show]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("", FACodeModal);
     const twoFAActivate = async () => {
-      return await twoFAOn(FACodeModal);
+      const result = await twoFAOn(FACodeModal);
+      if (!result) console.log("error: cannot activate 2FA");
+      else {
+        props.onHide();
+        props.onSubmit();
+        localStorage.setItem("userAuth", "true");
+      }
     };
     twoFAActivate();
   };

@@ -35,12 +35,14 @@ export default function UserPrivateProfile() {
 
   const [modalShow, setModalShow] = useState(false);
   const [modalShowAuth, setModalShowAuth] = useState(false);
+  const [authStatus, setAuthStatus] = useState(userInfo.auth);
 
   return (
     <main>
       <MUploadAvatar show={modalShow} onHide={() => setModalShow(false)} />
       <Activate2FA
         show={modalShowAuth}
+        onSubmit={() => setAuthStatus("true")}
         onHide={() => setModalShowAuth(false)}
       />
 
@@ -145,8 +147,9 @@ export default function UserPrivateProfile() {
                   </Row>
                 </div>
                 <TwoFA
-                  auth={userInfo.auth}
+                  auth={authStatus}
                   onClick={() => setModalShowAuth(true)}
+                  onDeactivate={() => setAuthStatus("false")}
                 />
               </Card.Body>
             </Card>

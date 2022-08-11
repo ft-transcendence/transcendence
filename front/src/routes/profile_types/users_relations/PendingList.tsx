@@ -28,7 +28,7 @@ export const PendingList = () => {
         pending.push(newRow);
       }
       setPendingList(pending);
-      console.log("pendingList: ", pendingList);
+       if (fetchedPending.length !== 0) console.log("pendingList", pendingList);
       setFetched(true);
       setUpdate(false);
     };
