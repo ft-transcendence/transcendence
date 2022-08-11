@@ -1,4 +1,4 @@
-import { getUserData } from "./userQueries";
+import { getLeaderBoard, getUserData } from "./userQueries";
 
 let myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
@@ -20,6 +20,7 @@ const fetchPost = async (
   storeToken(userInfo, rest);
   if (localStorage.getItem("userToken")) {
     await getUserData();
+    await getLeaderBoard();
     if (localStorage.getItem("userName")) userSignIn();
   }
 };
