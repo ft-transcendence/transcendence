@@ -31,6 +31,7 @@ export function Activate2FA(props: any) {
       else {
         props.onHide();
         props.onSubmit();
+        localStorage.setItem("userAuth", "true");
       }
     };
     twoFAActivate();

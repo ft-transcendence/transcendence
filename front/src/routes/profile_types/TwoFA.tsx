@@ -10,7 +10,10 @@ export const TwoFA = (props: any) => {
       const result = await twoFAOff();
       if (!result) console.log("error: cannot deactivate 2FA");
       else
+      {
         props.onDeactivate();
+        localStorage.setItem("userAuth", "false");
+      }
     };
     twoFADeactivate();
   };
