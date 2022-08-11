@@ -29,7 +29,7 @@ const fetchPost = async (
     const result_1 = await response.json();
     if (!response.ok) {
       console.log("POST error on ", url);
-      return "error";
+      return "error: signIn";
     }
     // check if user is 2FA
     if (result_1.twoFA) {
@@ -43,6 +43,7 @@ const fetchPost = async (
       if (localStorage.getItem("userToken")) {
         await getUserData();
         if (localStorage.getItem("userName")) userSignIn();
+        else return "error: getUserData";
       }
     }
   } catch (error) {

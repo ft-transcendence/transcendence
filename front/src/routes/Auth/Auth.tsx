@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -8,11 +8,14 @@ import { signUp, signIn } from "../../queries/authQueries";
 import { GUserInputsRefs } from "../../globals/variables";
 import { useAuth } from "../../globals/contexts";
 import { getUserData } from "../../queries/userQueries";
+import { TAlert } from "../../toasts/TAlert";
 
 export default function Auth() {
   let navigate = useNavigate();
   let auth = useAuth();
   let location = useLocation();
+  const [showNotif, setShowNotif] = useState(false);
+  const [notifText, setNotifText] = useState("Error");
 
   // Use a callback to avoid re-rendering
   const userSignIn = useCallback(() => {
@@ -63,11 +66,23 @@ export default function Auth() {
     userInfo.password = GUserInputsRefs!.password!.current!.value;
     if (userInfo.username && userInfo.email && userInfo.password)
       signUp(userInfo, userSignIn);
-    else signIn(userInfo, userSignIn);
+    else {
+      const signInUser = async () => {
+        const result = await signIn(userInfo, userSignIn);
+        if (result && result.includes("error")) {
+          result.includes("signIn")
+            ? setNotifText("User does not exists. Please enter a valid email and/or username.")
+            : setNotifText("Could not retreive user. Please try again.");
+          setShowNotif(true);
+        }
+      };
+      signInUser();
+    }
   };
 
   return (
     <div className="Auth-form-container">
+      <TAlert show={showNotif} setShow={setShowNotif} text={notifText} />
       <form className="Auth-form" onSubmit={handleSubmit}>
         <div className="Auth-form-content">
           <Outlet />
