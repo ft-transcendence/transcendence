@@ -3,11 +3,34 @@ import { io } from "socket.io-client";
 import "./Game.css";
 import { Link } from "react-router-dom";
 import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle } from './game.interfaces';
+import { Form } from 'react-bootstrap';
+ 
 
+class Settings extends React.Component <props: any, states: any> {
+    
+    render() {
+      return (
+        <FocusTrap>
+      <aside
+        tag="aside"
+        role="dialog"
+        tabIndex={-1}
+        aria-modal="true"
+        className="modal-settings"
+        onClick={this.props.onClickOutside}
+        onKeyDown={this.props.onKeyDown}
+      >
+        <div className="modal-area">
+          <div className="modal-body">
+            <Form onSubmit={onSubmit} />
+          </div>
+        </div>
+      </aside>
+    </FocusTrap>
+      );
 
-
-const MOVE_UP   = "ArrowUp";  
-const MOVE_DOWN = "ArrowDown";  
+    }
+  }
 
 
 class StartButton extends React.Component< Button, ButtonState > {
@@ -136,6 +159,9 @@ export default class Game extends React.Component < {}, StatePong > {
     
     socket = io("ws://localhost:4000", this.socketOptions);
 
+    MOVE_UP   = "ArrowUp";  
+    MOVE_DOWN = "ArrowDown"; 
+
     constructor(none = {}) 
     {
         super({});
@@ -153,6 +179,8 @@ export default class Game extends React.Component < {}, StatePong > {
                         player1Name: "player1",
                         player2Name: "player2",
                         game_list: [],
+                        isSettingsShown: false,
+                        settingsState: "up",
                     };
     }
 
@@ -177,15 +205,25 @@ export default class Game extends React.Component < {}, StatePong > {
      
    
     keyDownInput = (e: KeyboardEvent) => {
-    if (e.key === MOVE_UP && this.state.gameStarted)
+    if (e.key === this.MOVE_UP && this.state.gameStarted)
         this.socket.emit("move", {dir: 1, room: this.state.roomId, player: this.state.playerNumber});
-    if (e.key === MOVE_DOWN)
+    if (e.key === this.MOVE_DOWN)
         this.socket.emit("move", {dir: 2, room: this.state.roomId, player: this.state.playerNumber});
     }
     
     keyUpInput = (e: KeyboardEvent) => {
-        if ((e.key === MOVE_UP || e.key === MOVE_DOWN) && this.state.gameStarted)
+        if ((e.key === this.MOVE_UP || e.key === this.MOVE_DOWN) && this.state.gameStarted)
             this.socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
+    }
+
+    onSettingsKeyDown() {};
+
+    onSettingsClickOutside() {
+      this.setState({isSettingsShown: false, settingsState: "up"});
+    };
+
+    showSettings() {
+      this.setState({isSettingsShown: true});
     }
 
     render() {
@@ -233,7 +271,14 @@ export default class Game extends React.Component < {}, StatePong > {
                 </div>
             </div>
             <div className='Page-mid'>
-                               
+
+            {this.state.isSettingsShown ? (
+            <Settings
+              state={this.state.settingsState}
+              onKeyDown={this.onSettingsKeyDown}
+              onClickOutside={this.onSettingsClickOutside}
+            />
+          ) : null}             
                 <div style={{   border: `${showBorder}`, 
                                 boxShadow: `${showShadow}`,}} className='Field'>
                
@@ -271,17 +316,8 @@ export default class Game extends React.Component < {}, StatePong > {
                 <div className='bar'>
                 </div>
                 <div className='innerFoot'>
-                    <Link to="/" className='Button'>
-                        home
-                    </Link>
-                    <Link to="/leaderboard" className='Button'>
-                        leaderboard
-                    </Link>
-                    <div className='Button'>
-                        chat
-                    </div>
-                    <div className='Button'>
-                        setting
+                    <div className='Button' onClick={() => this.showSettings()}>
+                        Settings
                     </div>
                 </div>
             </div>

@@ -38,6 +38,8 @@ export interface StatePong {
   player1Name: string;
   player2Name: string;
   game_list: Game_data[];
+  isSettingsShown: boolean;
+  settingsState: "up" | "down";
 }
 
 export interface Button {
