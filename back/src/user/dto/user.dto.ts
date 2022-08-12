@@ -41,6 +41,10 @@ export class UserDto {
 	@IsNotEmpty()
 	rank: number;
 
+	@IsNumber()
+	@IsNotEmpty()
+	score: number;
+
 	added: number[];
 	adding: number[];
 	friends: number[];
