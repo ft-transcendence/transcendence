@@ -39,17 +39,18 @@
 }
 
 .icons {
-  font-size: 1.7rem;
+  font-size: 1.2rem;
   filter: drop-shadow(-2px -2px 3.5px #2f3655);
   /* box-shadow: 2px 2.5px 3.5px 2px #1F2126; */
 }
 
 .icons.clicked {
-  color: #0867f5;
+  /* color: #0867f5; */
   transition: color 700ms ease-in-out;
 }
 .icon.none {
-  color: white;
+  color: #0867f5;
+  /* border-color: green; */
   transition: color 400ms ease-in-out;
 }
 

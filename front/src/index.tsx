@@ -54,10 +54,9 @@ root.render(
               </RequireAuth>
               }
             />
-            <Route path="leader-board" element={<LeaderBoard />} />
+            <Route path="leaderboard" element={<LeaderBoard />} />
             <Route path="game" element={<Game />} />
             <Route path="watch" element={<Watch />} />
-            {/* <Route path="leaderboard" element={<Leaderboard />} /> */}
             <Route path="*" element={<Navigate to="/app/home" />} />
           </Route>
           <Route path="*" element={<Navigate to="/auth/signin" />} />
