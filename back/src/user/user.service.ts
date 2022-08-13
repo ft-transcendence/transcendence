@@ -27,7 +27,11 @@ export class UserService {
 
 	/*	CREATE	*/
 
-	async createUser(email: string, username: string, hash: string) {
+	async createUser(
+		email: string,
+		username: string,
+		hash: string,
+	): Promise<User> {
 		const user = await this.prisma.user.create({
 			data: {
 				email,
@@ -70,7 +74,7 @@ export class UserService {
 			// console.log('user:::', user);
 			// if (user.score !== 1200) {
 			const userDtO = plainToClass(UserDto, user);
-				usersDTO.push(userDtO);
+			usersDTO.push(userDtO);
 			// }
 		}
 		// console.log('userssss:::', usersDTO);
