@@ -2,7 +2,6 @@ import {
 	BadRequestException,
 	Body,
 	Controller,
-	ForbiddenException,
 	Get,
 	HttpCode,
 	HttpStatus,
@@ -15,7 +14,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { saveImageToStorage } from './utils/upload.utils';
 import { UserService } from 'src/user/user.service';
-import { GetCurrentUser, GetCurrentUserId } from 'src/decorators';
+import { GetCurrentUserId } from 'src/decorators';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Response } from 'express';
 import { uploadDto } from './dto';
