@@ -5,13 +5,14 @@ import { JwtService } from "@nestjs/jwt";
 import { UserService } from 'src/user/user.service'; 
 import { ChatService } from './chat/chat.service';
 import { ArgumentsHost, Catch } from '@nestjs/common';
+import { GameService } from './game/game.service';
 
 
 @WebSocketGateway({cors: {
   origin: "http://localhost:3000"}})
 
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
-  constructor(private readonly jwtService: JwtService, private userService: UserService, private chatService: ChatService) {}
+  constructor(private readonly jwtService: JwtService, private userService: UserService, private chatService: ChatService, private gameService: GameService) {}
   
 
 
@@ -33,7 +34,12 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  handleDisconnect(){}
+  handleDisconnect(client: Socket){
+    if (GameService.rooms.some((room) => room.player1 === client))
+      GameService.rooms.find((room) => room.player1 === client).player1Disconnected = true;
+    if (GameService.rooms.some((room) => room.player2 === client))
+      GameService.rooms.find((room) => room.player2 === client).player2Disconnected = true;
+  }
 
 }
 
