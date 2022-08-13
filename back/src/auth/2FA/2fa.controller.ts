@@ -3,7 +3,13 @@ import { GetCurrentUser, Public } from 'src/decorators';
 import { TwoFactorDto, TwoFactorUserDto } from '../dto';
 import { TwoFactorService } from './2fa.service';
 import { Response } from 'express';
+import { ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Two Factor Authentication')
+@ApiHeader({
+	name: 'Two Factor Authentication',
+	description: 'Two Factor Authentication',
+})
 @Controller('/auth/2fa')
 export class TwoFAController {
 	constructor(private twoFAservice: TwoFactorService) {}
@@ -14,6 +20,7 @@ export class TwoFAController {
 	 * /2FA/turn-on - turn on 2FA
 	 */
 	@Post('/turn-on')
+	@ApiResponse({ status: 401, description: 'Invalid 2FA code' })
 	@HttpCode(200)
 	async turn_on(
 		@Body() { twoFAcode }: any,
@@ -37,6 +44,7 @@ export class TwoFAController {
 	 * /2fa/authenticate - authenticate 2FA
 	 */
 	@Public()
+	@ApiResponse({ status: 401, description: 'Invalid 2FA code' })
 	@Post('/authenticate')
 	async authenticate(@Body() dto: TwoFactorDto) {
 		// LOG

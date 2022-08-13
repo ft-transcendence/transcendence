@@ -25,10 +25,15 @@ import { RtGuard } from './guard';
 /* AUTH DTOs */
 import { SignUpDto, SignInDto } from './dto';
 import { TwoFactorService } from './2FA/2fa.service';
-import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // AUTH CONTROLLER - /auth
 
+@ApiTags('Authentication')
+@ApiHeader({
+	name: 'Authorization',
+	description: 'Jason Web Token as Bearer Token',
+})
 @Controller('auth')
 export class AuthController {
 	constructor(
@@ -42,6 +47,7 @@ export class AuthController {
 	 */
 	@Public()
 	@Post('/signup')
+	@ApiResponse({ status: 403, description: 'Credentials already exist' })
 	signup(@Body() dto: SignUpDto) {
 		console.log(dto);
 		return this.authService.signup(dto);
@@ -53,6 +59,7 @@ export class AuthController {
 	 */
 	@Public()
 	@Post('/signin')
+	@ApiResponse({ status: 403, description: 'Invalid Credentials' })
 	signin(@Body() dto: SignInDto) {
 		console.log(dto);
 		return this.authService.signin(dto);
@@ -64,6 +71,7 @@ export class AuthController {
 	 */
 	@Post('logout')
 	@HttpCode(200)
+	@ApiResponse({ status: 401, description: 'Unauthorized' })
 	logout(@GetCurrentUserId() userId: number) {
 		// LOG
 		console.log('logout', userId);

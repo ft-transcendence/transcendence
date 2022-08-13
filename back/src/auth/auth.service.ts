@@ -8,9 +8,10 @@ import {
 } from '@nestjs/common';
 /* PRISMA */
 import { PrismaService } from 'src/prisma/prisma.service';
+import { User } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 /* AUTH Modules */
-import { Auth42Dto, SignUpDto } from './dto';
+import { Auth42Dto, AuthTokenDto, SignUpDto } from './dto';
 import { SignInDto } from './dto';
 /* Password Hash module */
 import * as argon from 'argon2';
@@ -35,7 +36,7 @@ export class AuthService {
 	) {}
 
 	/* SIGNUP */
-	async signup(dto: SignUpDto) {
+	async signup(dto: SignUpDto): Promise<AuthTokenDto> {
 		// destructure dto
 		const { email, username, password } = dto;
 		// hash password using argon2
@@ -63,7 +64,7 @@ export class AuthService {
 	}
 
 	/* SIGNIN */
-	async signin(dto: SignInDto) {
+	async signin(dto: SignInDto): Promise<any> {
 		// destructure dto (rafa tips :D)
 		const { username, password } = dto;
 		// find user
@@ -91,7 +92,7 @@ export class AuthService {
 	}
 
 	/* SIGNOUT */
-	async signout(userId: number) {
+	async signout(userId: number): Promise<void> {
 		// delete refresh token (log out)
 		await this.prisma.user.updateMany({
 			where: {
@@ -109,7 +110,7 @@ export class AuthService {
 	}
 
 	/* SIGNIN USING 42 API */
-	async signin_42(dto: Auth42Dto) {
+	async signin_42(dto: Auth42Dto): Promise<User> {
 		// DTO
 		const { email } = dto;
 		// check if user exists
@@ -126,7 +127,7 @@ export class AuthService {
 		@Res() response: Response,
 		id: number,
 		email: string,
-	) {
+	): Promise<Response> {
 		const tokens = await this.signin_jwt(id, email);
 		// LOG
 		//console.log(tokens);
@@ -139,7 +140,7 @@ export class AuthService {
 		return response;
 	}
 
-	async create_42_user(dto: Auth42Dto) {
+	async create_42_user(dto: Auth42Dto): Promise<User> {
 		// DTO
 		const { email, username, avatar } = dto;
 		// generate random password
@@ -166,7 +167,7 @@ export class AuthService {
 		userId: number,
 		email: string,
 		is2FA = false,
-	): Promise<{ access_token: string; refresh_token: string }> {
+	): Promise<AuthTokenDto> {
 		// get login data
 		const login_data = {
 			sub: userId,
@@ -197,7 +198,10 @@ export class AuthService {
 	}
 
 	/* REFRESH TOKEN */
-	async refresh_token(userId: number, refreshToken: string) {
+	async refresh_token(
+		userId: number,
+		refreshToken: string,
+	): Promise<AuthTokenDto> {
 		// Find user by id
 		const user = await this.prisma.user.findUnique({
 			where: {
@@ -223,7 +227,10 @@ export class AuthService {
 	}
 
 	/* UPDATE REFRESH TOKEN */
-	async updateRefreshToken(userId: number, refreshToken: string) {
+	async updateRefreshToken(
+		userId: number,
+		refreshToken: string,
+	): Promise<void> {
 		// hash refresh token
 		const hash = await argon.hash(refreshToken);
 		// update user refresh token (log in)
@@ -240,7 +247,7 @@ export class AuthService {
 	/* AUTH SERVICE UTILS */
 
 	/* GENERATE A RANDOM PASSWORD */
-	generate_random_password() {
+	generate_random_password(): string {
 		// generate random password for 42 User
 		const password =
 			Math.random().toString(36).slice(2, 15) +

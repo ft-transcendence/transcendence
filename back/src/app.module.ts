@@ -12,6 +12,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { UserService } from './user/user.service';
 import { AppGateway } from './app.gateway';
 import { ChatService } from './chat/chat.service';
+import { UploadModule } from './upload/upload.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 // Set the env file path
 let environmentFilePath = '.env';
@@ -26,6 +28,7 @@ if (process.env.ENVIRONMENT === 'PRODUCTION') {
 console.log(`Running in ` + process.env.ENVIRONMENT + ` mode`);
 console.log('Using environment file: ' + environmentFilePath);
 console.log('Using port: ' + process.env.PORT);
+console.log('Using upload dir: ' + process.env.UPLOAD_DIR);
 
 /*
  * This one is the main module, it will import all the others.
@@ -39,12 +42,14 @@ console.log('Using port: ' + process.env.PORT);
 			// global import
 			isGlobal: true,
 		}),
+		MulterModule,
 		AuthModule,
 		UserModule,
 		PrismaModule,
 		ChatModule,
 		GameModule,
 		JwtModule.register({ secret: process.env.JWT_SECRET }),
+		UploadModule,
 	],
 	providers: [GameService, GameGateway, UserService, AppGateway, ChatService],
 	// NOT USED AS OF YET

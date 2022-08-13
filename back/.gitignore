@@ -6,6 +6,9 @@
 /dist
 /node_modules
 
+# uploaded files
+/image_dir
+
 # prisma migrations
 /prisma/migrations/*
 

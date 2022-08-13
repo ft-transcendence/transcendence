@@ -1,7 +1,4 @@
-export interface Player 
-{
-    roomId: number;
-    playerNb: number;
+export interface Player {
+	roomId: number;
+	playerNb: number;
 }
-
-
