@@ -13,9 +13,11 @@ import { UserService } from 'src/user/user.service';
 
 import { TwoFactorService } from './2FA/2fa.service';
 import { TwoFAController } from './2FA/2fa.controller';
+import { GameService } from 'src/game/game.service';
+import { GameModule } from 'src/game/game.module';
 
 @Module({
-	imports: [JwtModule.register({}), UserModule],
+	imports: [JwtModule.register({}), UserModule, GameModule],
 	controllers: [AuthController, TwoFAController],
 	providers: [
 		AuthService,
@@ -24,6 +26,7 @@ import { TwoFAController } from './2FA/2fa.controller';
 		RtStrategy,
 		FortyTwoStrategy,
 		UserService,
+		GameService,
 	],
 	exports: [AuthService],
 })

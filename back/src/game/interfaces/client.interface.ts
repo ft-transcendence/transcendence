@@ -1,8 +1,5 @@
-import { Socket, Server } from 'socket.io';
+import { Socket } from 'socket.io';
 
-export interface Client extends Socket
-{
-    data: {id: number;}
+export interface Client extends Socket {
+	data: { id: number };
 }
-
-

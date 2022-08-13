@@ -1,42 +1,52 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../globals/contexts";
 import { twoFAAuth } from "../queries/twoFAQueries";
 
 export default function TwoFAValidation() {
-
   let location = useLocation();
   let navigate = useNavigate();
+  let auth = useAuth();
+  let username = localStorage.getItem("userName");
+
   const [twoFACode, setCode] = useState("");
+
+  const handleInputChange = (e: any) => {
+    const { value } = e.target;
+    setCode(value);
+  };
+
   // get username from redirect URL
   useEffect(() => {
-    const email = location.search.split("=")[1];
-    if (email) {
-      console.log(email);
-      // Store username in local storage temporarily
-      localStorage.setItem("tempemail", email);
+    const urlUsername = location.search.split("=")[1];
+    if (urlUsername) {
+      localStorage.setItem("userName", urlUsername);
       navigate("/2FA");
     }
   }, [location.search, navigate]);
 
-  const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
-    setCode(value);
-  };
-
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const email = localStorage.getItem("tempemail");
-    console.log('2fa code', twoFACode, email);
-    if (email) {
-    const twoFAValid = async (email: string) => {
-      return await twoFAAuth(twoFACode, email);
+
+    const userSignIn = () => {
+      let username = localStorage.getItem("userName");
+      console.log("username: ", username);
+      if (username)
+        auth.signin(username, () => {
+          navigate("/app/private-profile", { replace: true });
+        });
+      console.log("user is signed in");
     };
-    twoFAValid(email);
-    // remove temp email from local storage
-    //localStorage.removeItem("tempemail");
-  }
+
+    if (username !== "undefined" && username) {
+      const twoFAValid = async (username: string) => {
+        return await twoFAAuth(twoFACode, username, userSignIn);
+      };
+      twoFAValid(username);
+    } else console.log("username is undefined");
   };
+
   return (
     <div>
       <Form.Group className="mb-3">

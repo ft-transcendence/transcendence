@@ -41,7 +41,7 @@ export class TwoFactorService {
 	/* Turn on 2FA for existing user */
 	async turn_on(twoFAcode: any, user: TwoFactorUserDto) {
 		// destructure data
-		const { email, twoFAsecret } = user;
+		const { email, twoFAsecret, id } = user;
 		// Check is 2FA code is valid
 		const isValid = await this.verify2FAcode(twoFAcode, twoFAsecret);
 		// If invalid, throw error 401
@@ -53,14 +53,19 @@ export class TwoFactorService {
 		});
 		// LOG
 		// console.log('turn_on_2fa', user, isValid);
+		const tokens = await this.authservice.signin_jwt(id, email, true);
+		return tokens;
 	}
 
 	/* Turn off 2FA for existing user */
-	async turn_off(@GetCurrentUserId() userId: number) {
+	async turn_off(user: TwoFactorUserDto) {
+		const { email, id } = user;
 		await this.prisma.user.update({
-			where: { id: userId },
+			where: { id: id },
 			data: { twoFA: false },
 		});
+		const tokens = await this.authservice.signin_jwt(id, email, false);
+		return tokens;
 	}
 
 	/* Generate a new 2FA for user */

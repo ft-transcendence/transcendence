@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 /**
  * DTO - Data Transfer Object
@@ -24,4 +24,8 @@ export class TwoFactorUserDto {
 	@IsNotEmpty()
 	@IsString()
 	twoFAsecret: string;
+
+	@IsNotEmpty()
+	@IsNumber()
+	id: number;
 }

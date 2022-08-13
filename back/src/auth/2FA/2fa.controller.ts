@@ -19,10 +19,8 @@ export class TwoFAController {
 		@Body() { twoFAcode }: any,
 		@GetCurrentUser() user: TwoFactorUserDto,
 	) {
-		await this.twoFAservice.turn_on(twoFAcode, user);
-		return {
-			success: ' 2FA turned on',
-		};
+		const tokens = await this.twoFAservice.turn_on(twoFAcode, user);
+		return tokens;
 	}
 
 	/**
@@ -30,8 +28,9 @@ export class TwoFAController {
 	 */
 	@Post('/turn-off')
 	@HttpCode(200)
-	async turn_off(@GetCurrentUserId() userId: number) {
-		return this.twoFAservice.turn_off(userId);
+	async turn_off(@GetCurrentUser() user: TwoFactorUserDto) {
+		const tokens = await this.twoFAservice.turn_off(user);
+		return tokens;
 	}
 
 	/**

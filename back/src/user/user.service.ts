@@ -1,21 +1,37 @@
 /* GLOBAL MODULES */
-import { Injectable, ForbiddenException } from '@nestjs/common';
-import { User } from '@prisma/client';
+import {
+	Injectable,
+	ForbiddenException,
+	Inject,
+	forwardRef,
+} from '@nestjs/common';
+import { Game, User } from '@prisma/client';
 import * as argon from 'argon2';
 import { plainToClass } from 'class-transformer';
+import { userInfo } from 'node:os';
+import { GameService } from 'src/game/game.service';
 
 /* PRISMA */
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from './dto';
+import { SubjectiveGameDto } from 'src/game/dto';
+import { use } from 'passport';
 /* USER Modules */
 
 @Injectable()
 export class UserService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		@Inject(forwardRef(() => GameService)) private gameService: GameService,
+	) {}
 
 	/*	CREATE	*/
 
-	async createUser(email: string, username: string, hash: string) {
+	async createUser(
+		email: string,
+		username: string,
+		hash: string,
+	): Promise<User> {
 		const user = await this.prisma.user.create({
 			data: {
 				email,
@@ -48,12 +64,75 @@ export class UserService {
 	}
 
 	async getLeaderboard() {
-		//returns a record of all the users, ordered by gamesWon in descending order
+		//returns a record of all the users, ordered by rank in ascending order
 		const users = await this.prisma.user.findMany({
-			orderBy: { gamesWon: 'desc' },
+			orderBy: { rank: 'asc' },
 		});
 
-		return users;
+		const usersDTO: UserDto[] = [];
+		for (const user of users) {
+			// console.log('user:::', user);
+			// if (user.score !== 1200) {
+			const userDtO = plainToClass(UserDto, user);
+			usersDTO.push(userDtO);
+			// }
+		}
+		// console.log('userssss:::', usersDTO);
+		return usersDTO;
+	}
+
+	async getGameHistory(id: number) {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+		});
+
+		const gameHistoryInt: number[] = user.gameHistory;
+		if (gameHistoryInt.length === 0) return [];
+
+		const gameHistory: Game[] = [];
+		for (const gameId of gameHistoryInt) {
+			gameHistory.push(await this.gameService.getGame(gameId));
+		}
+
+		// gameHistory stores PrismaGames[], need to transform them into a SubjectiveGameDtos[]
+		const gameDTOs: SubjectiveGameDto[] = [];
+
+		for (const game of gameHistory) {
+			// identify the opponent
+			let opponentId: number;
+			let userScore: number;
+			let opponentScore: number;
+
+			game.player1 === id
+				? (opponentId = game.player2)
+				: (opponentId = game.player1);
+			game.player1 === id
+				? (userScore = game.score1)
+				: (userScore = game.score2);
+			game.player1 === id
+				? (opponentScore = game.score2)
+				: (opponentScore = game.score1);
+			const opponent: UserDto = await this.getUser(opponentId);
+
+			// fill the SubjectiveGameDto
+			const gameDTO: SubjectiveGameDto = {
+				userId: id,
+				opponentId: opponent.id,
+				opponentAvatar: opponent.avatar,
+				opponentUsername: opponent.username,
+				opponentUser: opponent,
+				opponentRank: opponent.rank,
+				duration: game.duration,
+				userScore: userScore,
+				opponentScore: opponentScore,
+				victory: userScore > opponentScore ? true : false,
+			};
+			gameDTOs.push(gameDTO);
+		}
+
+		return gameDTOs;
 	}
 
 	async getUser(id: number) {
@@ -550,6 +629,83 @@ export class UserService {
 
 	//GAME RELATED FUNCTIONS
 
+	async updateRanks() {
+		const users = await this.prisma.user.findMany({
+			orderBy: {
+				score: 'desc',
+			},
+			select: {
+				id: true,
+				score: true,
+			},
+		});
+		const usersId: number[] = [];
+		for (const user of users) {
+			if (user.score !== 1200) usersId.push(user.id);
+		}
+
+		let index = 1;
+		for (const id of usersId) {
+			const usersUpdate = await this.prisma.user.update({
+				where: {
+					id: id,
+				},
+				data: {
+					rank: index,
+				},
+			});
+			index++;
+		}
+		return;
+	}
+
+	async calculateScores([...ratings]) {
+		const [a, b] = ratings;
+		// eslint-disable-next-line unicorn/consistent-function-scoping
+		const expectedScore = (self, opponent) =>
+			1 / (1 + 10 ** ((opponent - self) / 400));
+		const newRating = (rating, index) =>
+			rating + 32 * (index - expectedScore(index ? a : b, index ? b : a));
+		return [newRating(a, 1), newRating(b, 0)];
+	}
+
+	async updatePlayTime(id: number, duration: number) {
+		console.log('id = ' + id);
+		console.log('duration = ' + duration);
+		const updateUser = await this.prisma.user.update({
+			where: {
+				id: id,
+			},
+			data: {
+				playTime: {
+					increment: duration,
+				},
+			},
+		});
+		console.log('id done = ' + id);
+
+		return updateUser;
+	}
+
+	async updateWinRate(id: number) {
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+		});
+		const winRate = user.gamesWon / user.gamesPlayed;
+
+		const updateUser = await this.prisma.user.update({
+			where: {
+				id: id,
+			},
+			data: {
+				winRate: winRate,
+			},
+		});
+		return updateUser;
+	}
+
 	async hasWon(id: number) {
 		//increments the number of won and played games by one
 		const updateUser = await this.prisma.user.updateMany({
@@ -565,6 +721,7 @@ export class UserService {
 				},
 			},
 		});
+		this.updateWinRate(id);
 		return updateUser;
 	}
 
@@ -583,21 +740,7 @@ export class UserService {
 				},
 			},
 		});
-		return updateUser;
-	}
-
-	async hadADraw(id: number) {
-		//increments the number played games by one
-		const updateUser = await this.prisma.user.update({
-			where: {
-				id: id,
-			},
-			data: {
-				gamesPlayed: {
-					increment: 1,
-				},
-			},
-		});
+		this.updateWinRate(id);
 		return updateUser;
 	}
 }

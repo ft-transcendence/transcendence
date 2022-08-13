@@ -44,3 +44,14 @@ export class Auth42Dto {
 	@IsNotEmpty()
 	avatar: string;
 }
+
+// Auth Tokens DTO
+export class AuthTokenDto {
+	@IsString()
+	@IsNotEmpty()
+	access_token: string;
+
+	@IsString()
+	@IsNotEmpty()
+	refresh_token: string;
+}

@@ -33,9 +33,14 @@ model User {
 
 	gamesWon		Int     @default(0)
 	gamesLost		Int     @default(0)
-	gamesPlayed	Int     @default(0)
+	gamesPlayed		Int     @default(0)
+	gameHistory		Int[]
+	
 
-//game history ? Une partie = 2 id, un score
+	winRate			Float?
+	playTime		Int		@default(0)
+	score			Int		@default(1200)
+	rank			Int?
 
 	friends		Int[]
 	adding		Int[]	
@@ -45,50 +50,88 @@ model User {
 	blocking	Int[]
 	blocked		Int[]
 
-	admin       Channel[] @relation("admin") 
-	member      Channel[] @relation("member")
-	chanBlocked Channel[] @relation("blocked")
+  owner       Channel[] @relation("owner")
+  admin       Channel[] @relation("admin")
+  member      Channel[] @relation("member")
+  invited     Channel[] @relation("invite")
+  chanBlocked Channel[] @relation("blocked")
 
-	messages    Msg[]
+  Muted       Mute[]
+
+  messages    Msg[]
 
 	@@unique([id, email])
 	@@map("users")    //mapped to another name
 }
 
 model Channel {
-	id    Int           @id  @default(autoincrement())
+  id          Int       @id  @default(autoincrement())
 
-	name  String        @unique
-	picture String?
-	createdAt DateTime  @default(now())
-	updatedAt DateTime  @updatedAt
+  name        String    @unique @default(uuid())
+  picture     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-	private   Boolean   @default(false)
-	password  String?
+  dm          Boolean   @default(false)
+  private     Boolean   @default(false)
+  isPassword  Boolean   @default(false)
+  password    String?
 
-	admins    User[]    @relation("admin")
-	members   User[]    @relation("member")
-	blocked   User[]    @relation("blocked")
-	messages  Msg[]
+  owners      User[]      @relation("owner")
+  admins      User[]      @relation("admin")
+  members     User[]      @relation("member")
+  inviteds    User[]      @relation("invite")
+  blocked     User[]      @relation("blocked")
+
+  muted       Mute[]
+
+  messages    Msg[]
 
 	@@unique([id, name])
 }
 
 model Msg {
-	id    Int     @id  @default(autoincrement())
+  id          Int     @id  @default(autoincrement())
 
-	msg  String
-	history String[]
+  msg         String
+  history     String[]
 
-	createdAt DateTime  @default(now())
-	updatedAt DateTime  @updatedAt
+  unsent      Boolean   @default(false)
 
-	owner     User      @relation(fields: [userId], references: [id])
-	userId    Int
-	channel   Channel   @relation(fields: [cid], references: [id])
-	cid       Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-	@@unique([id])
+  owner       User      @relation(fields: [userId], references: [id])
+  userId      Int
+  channel     Channel   @relation(fields: [cid], references: [id])
+  cid         Int
 }
 
+model Mute {
+  id          Int       @id   @default(autoincrement())
 
+
+  finishAt    DateTime
+  checkAt     DateTime  @default(now())
+  finished    Boolean   @default(false)
+
+  muted       User      @relation(fields: [userId], references: [id])
+  userId      Int
+  channel     Channel   @relation(fields: [cid], references: [id])
+  cid         Int
+}
+
+model Game {
+	id	Int			@id @unique
+
+	player1	Int
+	player2 Int
+	score1	Int
+	score2	Int
+
+	startTime	DateTime
+	endTime		DateTime
+	duration	Int? //in milliseconds
+
+
+}
