@@ -1,7 +1,10 @@
 import {
+	BadRequestException,
 	Body,
 	Controller,
+	ForbiddenException,
 	Get,
+	HttpCode,
 	HttpStatus,
 	ParseFilePipeBuilder,
 	Post,
@@ -12,9 +15,11 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { saveImageToStorage } from './utils/upload.utils';
 import { UserService } from 'src/user/user.service';
-import { GetCurrentUserId } from 'src/decorators';
+import { GetCurrentUser, GetCurrentUserId } from 'src/decorators';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Response } from 'express';
+import { uploadDto } from './dto';
+import { ReadableStreamWithFileType } from 'file-type';
 
 @Controller('upload')
 export class UploadController {
@@ -23,11 +28,20 @@ export class UploadController {
 		private prisma: PrismaService,
 	) {}
 
+	/**
+	 * Upload image to storage
+	 * 
+	 * @param userId : number - id of user
+	 * @param body : any - body of request
+	 * @param file : Express.Multer.File - file of request
+	 * @returns object containing filename, originalname, path of file
+	 */
 	@Post('/avatar')
+	@HttpCode(201)
 	@UseInterceptors(FileInterceptor('avatar', saveImageToStorage))
 	async uploadAvatar(
 		@GetCurrentUserId() userId: number,
-		@Body() body: any,
+		@Body() body: ReadableStreamWithFileType,
 		@UploadedFile(
 			new ParseFilePipeBuilder()
 				.addFileTypeValidator({
@@ -55,7 +69,16 @@ export class UploadController {
 		return response;
 	}
 
+	/**
+	 * Return the avatar of current user
+	 * 
+	 * @param userId : number - id of user
+	 * @param response : Response - Express response object
+	 * @returns Current User avatar
+	 */
+
 	@Get('/avatar')
+	@HttpCode(200)
 	async getAvatar(
 		@GetCurrentUserId() userId: number,
 		@Res() response: Response,
@@ -65,6 +88,35 @@ export class UploadController {
 				id: userId,
 			},
 		});
+		return response.sendFile(user.avatar, { root: process.env.UPLOAD_DIR });
+	}
+
+	/**
+	 * Return the avatar of any given user
+	 * 
+	 * @param body : any - body of request
+	 * @param response : Response - Express response object
+	 * @returns Avatar of user with given id
+	 */
+
+	@Post('/getavatar')
+	@HttpCode(200)
+	async getAvatarByUserId(
+		@Body() body: uploadDto,
+		@Res() response: Response,
+	) {
+		const id = Number(body.userId);
+		if (id === NaN) {
+			throw new BadRequestException('Invalid user id');
+		}
+		const user = await this.prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+		});
+		if (!user) {
+			throw new BadRequestException('User not found');
+		}
 		return response.sendFile(user.avatar, { root: process.env.UPLOAD_DIR });
 	}
 }
