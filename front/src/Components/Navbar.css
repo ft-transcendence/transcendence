@@ -44,15 +44,39 @@
   /* box-shadow: 2px 2.5px 3.5px 2px #1F2126; */
 }
 
-.icons.clicked {
-  /* color: #0867f5; */
-  transition: color 700ms ease-in-out;
+.icons.thin.hide {
+  color: white;
+  display: none;
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
 }
-.icon.none {
-  color: #0867f5;
-  /* border-color: green; */
-  transition: color 400ms ease-in-out;
+
+.icons.thin.current {
+  color: white;
+  opacity: 100;
+  transition: opacity 500ms ease-in-out;
 }
+.icons.thick.hide {
+  color: orange;
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+}
+
+.icons.thick.current {
+  color: orange;
+  opacity: 100;
+  transition: opacity 500ms ease-in-out;
+}
+
+/* .icons.none {
+  color: orange;
+  transition: display 700ms ease-in-out;
+}
+
+.icons.none.hide {
+  color: red;
+  transition: display 700ms ease-in-out;
+} */
 
 #clickableIcon {
   cursor: pointer;

@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../globals/contexts";
 import "./Navbar.css";
+import * as Icon from "react-bootstrap-icons";
 
 export const CNavBar = () => {
   let auth = useAuth();
@@ -10,18 +11,24 @@ export const CNavBar = () => {
   return (
     <div className="toolbar col-">
       <div className="toolbar-top space-around">
-        <span id="clickableIcon">
-          <i
-            className={`bi icons ${
-              location.pathname === "/app/private-profile"
-                ? "bi-person-fill cliked"
-                : "bi-person none"
-            }`}
-            onClick={() => {
-              navigate("/app/private-profile");
-            }}
-          ></i>
-        </span>
+        <Icon.PersonFill
+          id="clickableIcon"
+          className={`icons thick ${
+            location.pathname === "/app/private-profile" ? "hide" : "current"
+          }`}
+          onClick={() => {
+            navigate("/app/private-profile");
+          }}
+        />
+        <Icon.Person
+          id="clickableIcon"
+          className={`icons thin ${
+            location.pathname === "/app/private-profile" ? "current" : "hide"
+          }`}
+          onClick={() => {
+            navigate("/app/private-profile");
+          }}
+        />
         <span id="clickableIcon">
           <i
             className={`bi bi-trophy icons ${
