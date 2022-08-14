@@ -53,14 +53,16 @@ const GetIcons = (props: any) => {
 
 export const CNavBar = () => {
   return (
-    <div className="toolbar col-">
-      <div className="toolbar-top space-around">
-        <GetIcons url="private-profile" />
-        <GetIcons url="leaderboard" />
-        <GetIcons url="chat" />
-        <GetIcons url="game" />
-        <GetIcons url="watch" />
-        <GetIcons url="logout" />
+    <div className="toolbar-bigger border">
+      <div className="toolbar col-">
+        <div className="toolbar-top space-around">
+          <GetIcons url="private-profile" />
+          <GetIcons url="leaderboard" />
+          <GetIcons url="chat" />
+          <GetIcons url="game" />
+          <GetIcons url="watch" />
+          <GetIcons url="logout" />
+        </div>
       </div>
     </div>
   );
