@@ -2,6 +2,9 @@
 
 :root {
   --radius-size: 50px;
+  --icons-size: 1.2rem;
+  --border-size: 10px;
+  --padding-size: 80px;
 }
 
 .toolbar {
@@ -26,10 +29,10 @@
   height: 100%;
   border-radius: 0% var(--radius-size) var(--radius-size) 0%;
   background-color: #31353c;
-  padding-top: 80px;
-  padding-right: 15px;
-  padding-left: 15px;
-  padding-bottom: 80px;
+  padding-top: var(--padding-size);
+  padding-right: calc(var(--icons-size) + var(--border-size));
+  padding-left: var(--border-size);
+  padding-bottom: var(--padding-size);
   display: flex;
   flex-direction: column;
 }
@@ -39,44 +42,32 @@
 }
 
 .icons {
-  font-size: 1.2rem;
-  filter: drop-shadow(-2px -2px 3.5px #2f3655);
-  /* box-shadow: 2px 2.5px 3.5px 2px #1F2126; */
+  font-size: var(--icons-size);
+  position: absolute;
 }
 
 .icons.thin.hide {
-  color: white;
-  display: none;
   opacity: 0;
-  transition: opacity 500ms ease-in-out;
+  color: #4361ee;
+  transition: opacity 500ms ease-in-out, color 500ms ease-in-out;
 }
 
 .icons.thin.current {
-  color: white;
+  color: #d9d9d9;
   opacity: 100;
-  transition: opacity 500ms ease-in-out;
+  transition: opacity 500ms ease-in-out, color 500ms ease-in-out;
 }
 .icons.thick.hide {
-  color: orange;
   opacity: 0;
-  transition: opacity 500ms ease-in-out;
+  color: #4361ee;
+  transition: opacity 500ms ease-in-out, color 500ms ease-in-out;
 }
 
 .icons.thick.current {
-  color: orange;
+  color: #4361ee;
   opacity: 100;
-  transition: opacity 500ms ease-in-out;
+  transition: opacity 500ms ease-in-out, color 500ms ease-in-out;
 }
-
-/* .icons.none {
-  color: orange;
-  transition: display 700ms ease-in-out;
-}
-
-.icons.none.hide {
-  color: red;
-  transition: display 700ms ease-in-out;
-} */
 
 #clickableIcon {
   cursor: pointer;
