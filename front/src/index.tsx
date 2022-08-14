@@ -24,7 +24,8 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}>
-        <Route path="2FA" element={<TwoFAValidation />} />
+          <Route index element={<Navigate to="/auth/signin" />} />
+          <Route path="2FA" element={<TwoFAValidation />} />
           <Route path="/auth" element={<Auth />}>
             <Route index element={<Navigate to="/auth/signin" />} />
             <Route path="signin" element={<SignIn />} />
@@ -48,10 +49,12 @@ root.render(
               <Route path="pending" element={<PendingList />} />
               <Route path="blocked" element={<BlockedList />} />
             </Route>
-            <Route path="chat" element={
-              <RequireAuth>
-                <Chat />
-              </RequireAuth>
+            <Route
+              path="chat"
+              element={
+                <RequireAuth>
+                  <Chat />
+                </RequireAuth>
               }
             />
             <Route path="leaderboard" element={<LeaderBoard />} />

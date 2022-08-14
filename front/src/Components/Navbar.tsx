@@ -31,7 +31,7 @@ const GetIcons = (props: any) => {
         onClick={
           url === "logout"
             ? () => {
-                auth.signout(() => navigate("/"));
+                auth.signout(() => navigate("/auth/signin"));
               }
             : () => {
                 navigate("/app/" + url);
