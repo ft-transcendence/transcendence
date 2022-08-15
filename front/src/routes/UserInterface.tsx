@@ -6,14 +6,8 @@ import { Col, Row } from "react-bootstrap";
 export default function UserInterface() {
   return (
     <main className="Home">
-      <Row className="border">
-        <Col className="border col-1">
-          <CNavBar />
-        </Col>
-        <Col className="border p-4">
-          <Outlet />
-        </Col>
-      </Row>
+        <CNavBar />
+        <Outlet />
     </main>
   );
 }

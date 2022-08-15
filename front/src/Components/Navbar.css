@@ -3,7 +3,7 @@
 :root {
   --radius-size: 50px;
   --icons-size: 1.2rem;
-  --border-size: 10px;
+  --border-size: 15px;
   --padding-size: 80px;
 }
 
@@ -12,21 +12,20 @@
   height: 500px;
   width: 80px;
   position: absolute;
-  left: -0.8px;
+  left: -1.5px;
   top: 50%;
 
-    transform: translateY(-50%);
-  transform: translateX(-60%);
+  /* transform: translate(0, -80%); */
+  transform: translate(-45%, -80%);
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .toolbar-bigger:hover {
-  transform: translateY(100%), translateX(0);
+  transform: translate(0, -80%);
 }
 
 .toolbar {
-  z-index: 10000;
+  position: absolute;
   height: 90%;
-  width: calc(var(--icons-size) + calc(var(--border-size) * 2));
   box-shadow: 2.5px 2.5px 5px rgba(31, 33, 38, 0.25), -5px -5px 15px #363c45;
   border-radius: 0% var(--radius-size) var(--radius-size) 0%;
   background-image: linear-gradient(
@@ -34,7 +33,7 @@
     rgba(67, 97, 238, 50),
     rgba(0, 0, 0, 0)
   );
-  padding: 0.8px;
+  padding: 1.5px;
 }
 
 .toolbar-top {
