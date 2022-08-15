@@ -73,4 +73,22 @@ export const storeToken = (token: any) => {
   console.log("refresh token = ", token.access_token);
   localStorage.setItem("userToken", token.access_token);
   localStorage.setItem("userRefreshToken", token.refresh_token);
+export const logOut = () => {
+  fetchPostLogout("logout");
+};
+
+const fetchPostLogout = async (url: string) => {
+  let fetchUrl = "http://localhost:4000/auth/" + url;
+
+  try {
+    const response = await fetch(fetchUrl, {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    });
+    const result_1 = await response.json();
+    return result_1;
+  } catch (error) {
+    return console.log("error", error);
+  }
 };

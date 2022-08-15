@@ -1,6 +1,7 @@
 import { ReactNode, useState } from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import { AuthContext, useAuth } from "../globals/contexts";
+import { logOut } from "../queries/authQueries";
 
 export const RequireAuth = ({ children }: { children: JSX.Element }) => {
   let auth = useAuth(); // subscribe to Auth context
@@ -30,6 +31,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(null);
       localStorage.clear();
       localStorage.setItem("userLogged", "false");
+      const postLogout = async () => {
+        const result = await logOut();
+        console.log("result: ", result);
+      };
+      postLogout();
       callback();
     });
   };
