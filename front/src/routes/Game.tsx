@@ -4,7 +4,8 @@ import "./Game.css";
 import { Link } from "react-router-dom";
 import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle, SettingsProps, SettingsState } from './game.interfaces';
 import { Form } from 'react-bootstrap';
-import { FocusTrap } from 'focus-trap-react';
+import FocusTrap from 'focus-trap-react';
+
  
 
 class Settings extends React.Component <SettingsProps, SettingsState> {
@@ -32,6 +33,7 @@ class Settings extends React.Component <SettingsProps, SettingsState> {
         <div className="modal-text">
           {this.state.message}
         </div>
+        <button className="Start_button">test</button>
       </aside>
     </FocusTrap>
       );
@@ -244,7 +246,6 @@ export default class Game extends React.Component < {}, StatePong > {
     }
 
     render() {
-    const shoWField = this.state.gameStarted ? 'unset': 'none';
     const shoWInfo = this.state.gameStarted ? 'flex': 'none';
     /*const showBorder = this.state.gameStarted ? '2px solid rgb(0, 255, 255)' : '0px solid rgb(0, 255, 255)';*/
     const showBorder = this.state.gameStarted ? '2px solid rgb(255, 255, 255)' : '0px solid rgb(255, 255, 255)';
@@ -288,14 +289,7 @@ export default class Game extends React.Component < {}, StatePong > {
                 </div>
             </div>
             <div className='Page-mid'>
-
-            {this.state.isSettingsShown ? (
-            <Settings
-              message={this.state.settingsState!}
-              onKeyDown={this.onSettingsKeyDown}
-              onClickOutside={this.onSettingsClickOutside}
-            />
-          ) : null}             
+             
                 <div style={{   border: `${showBorder}`, 
                                 boxShadow: `${showShadow}`,}} className='Field'>
                
@@ -303,31 +297,34 @@ export default class Game extends React.Component < {}, StatePong > {
                     <Paddle show={this.state.gameStarted} side={"left"} y={this.state.paddleLeftY} ystart={this.state.paddleLeftY} />
                     <Paddle show={this.state.gameStarted} side={"right"} y={this.state.paddleRightY} ystart={this.state.paddleRightY} />
 
-                    <div className='Center-zone'>
-                    <StartButton showButton={this.state.showStartButton} clickHandler={this.startButtonHandler} />
-                    <Message showMsg={!this.state.showStartButton && !this.state.gameStarted} type={this.state.msgType} />
-
-                
-                        
-                        <div style={{display: `${shoWField}`,}} className='Middle-line-top'>
-
-                        </div>
-                        <div style={{display: `${shoWField}`,}} className='Center-circle'>
-
-                        </div>
-                        <div style={{display: `${shoWField}`,}} className='Middle-line-bottom'>
-
-                        </div>
-                    </div>
                   
+                    <div className='Center-zone' style={{display: `${shoWInfo}`,}}>    
+                        <div className='Middle-line-top'></div>
+                        <div className='Center-circle'></div>
+                        <div className='Middle-line-bottom'></div>
+                    </div>
+                    
                     <div className='Pad-right'></div>
                  
-                   
-                
+                                  
                     <Ball showBall={this.state.gameStarted} x={this.state.ballX} y={this.state.ballY} />
                     
                 </div>
          
+            </div>
+
+            <div className='Button-msg-zone'>
+                    <Message showMsg={this.state.buttonState !== "Start" && !this.state.gameStarted} type={this.state.msgType} />
+                    <StartButton showButton={this.state.showStartButton} clickHandler={this.startButtonHandler} buttonText={this.state.buttonState} />
+            </div>
+            <div>
+                {this.state.isSettingsShown ? (
+            <Settings
+              message={this.state.settingsState!}
+              onKeyDown={this.onSettingsKeyDown}
+              onClickOutside={this.onSettingsClickOutside}
+            />
+          ) : null}
             </div>
             <div className='Page-foot'>
                 <div className='bar'>
