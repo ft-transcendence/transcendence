@@ -16,7 +16,7 @@ export const getUserData = () => {
 
 export const getLeaderBoard = () => {
   return fetchGet("get_leaderboard", storeLeaderBoardInfo);
-}
+};
 
 export const authFileHeader = () => {
   let token = "Bearer " + localStorage.getItem("userToken");
@@ -63,4 +63,4 @@ export const storeFriendsInfo = (result: any) => {
 export const storeLeaderBoardInfo = (result: any) => {
   // console.log("store leaderboard:::", result)
   localStorage.setItem("leaderBoard", JSON.stringify(result));
-}
+};

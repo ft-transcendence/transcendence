@@ -86,7 +86,7 @@ const fetchPostLogout = async () => {
       headers: authFileHeader(),
       redirect: "follow",
     });
-    const result_1 = await response.json();
+    const result_1 = await response.text();
     if (!response.ok) {
       console.log("POST error on logout");
       return "error";

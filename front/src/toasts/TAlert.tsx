@@ -14,6 +14,7 @@ const getTime = () => {
 };
 
 export const TAlert = (props: any) => {
+  console.log("show: ", props.show);
   return (
     <ToastContainer position="bottom-end" className="p-3">
       <Toast

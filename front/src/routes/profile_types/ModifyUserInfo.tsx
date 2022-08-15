@@ -4,6 +4,7 @@ import {
   updateUsernameQuery,
   updateEmailQuery,
 } from "../../queries/updateUserQueries";
+import { TAlert } from "../../toasts/TAlert";
 
 export const ModifyEntry = (props: any) => {
   const initialValues = {
@@ -20,16 +21,28 @@ export const ModifyEntry = (props: any) => {
       [name]: value,
     });
   };
+  const [showNotif, setShowNotif] = useState(false);
+  const [notifText, setNotifText] = useState("Error");
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (userInput.userName) {
-      updateUsernameQuery(userInput.userName);
-      const button = document.getElementById("handleChange");
-      if (button) {
-        button.setAttribute("name", "userName");
-        button.setAttribute("value", userInput.userName);
-      }
+      const updateUsername = async () => {
+        const response = await updateUsernameQuery(userInput.userName);
+        if (response !== "error") {
+          const button = document.getElementById("handleChange");
+          if (button) {
+            button.setAttribute("name", "userName");
+            button.setAttribute("value", userInput.userName);
+          }
+        } else {
+          setNotifText(
+            "Username already taken. Please enter a valid another username."
+          );
+          setShowNotif(true);
+        }
+      };
+      updateUsername();
     }
     if (userInput.email) {
       updateEmailQuery(userInput.email);
@@ -42,6 +55,7 @@ export const ModifyEntry = (props: any) => {
   };
   return (
     <Col className="col-6">
+      <TAlert show={showNotif} setShow={setShowNotif} text={notifText} />
       <Card className="p-5 modify-card">
         <Card.Body>
           <div>
