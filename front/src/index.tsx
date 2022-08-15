@@ -10,6 +10,7 @@ import Chat from "./routes/Chat";
 import "./index.css";
 import UserPrivateProfile from "./routes/profile_types/UserPrivateProfile";
 import { AuthProvider, RequireAuth } from "./hooks/AuthHooks";
+import TwoFAValidation from "./routes/TwoFAValidation";
 import Watch from "./routes/Watch";
 import { BlockedList } from "./routes/profile_types/users_relations/BlockedList";
 import { FriendsList } from "./routes/profile_types/users_relations/FriendsList";
@@ -22,6 +23,7 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />}>
+        <Route path="2FA" element={<TwoFAValidation />} />
           <Route path="/auth" element={<Auth />}>
             <Route index element={<Navigate to="/auth/signin" />} />
             <Route path="signin" element={<SignIn />} />

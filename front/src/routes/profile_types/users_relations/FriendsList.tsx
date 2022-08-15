@@ -16,42 +16,47 @@ export const FriendsList = () => {
   useEffect(() => {
     const fetchData = async () => {
       let fetchedFriends = await getUserFriends();
-
-      for (let i = 0; i < fetchedFriends.length; i++) {
-        let newRow: ItableRow = {
-          key: i,
-          userModel: { username: "", avatar: "", id: 0 },
-        };
-        newRow.userModel.id = fetchedFriends[i].id;
-        newRow.userModel.username = fetchedFriends[i].username;
-        newRow.userModel.avatar = fetchedFriends[i].avatar;
-        friends.push(newRow);
+      if (fetchedFriends.length !== 0) {
+        for (let i = 0; i < fetchedFriends.length; i++) {
+          let newRow: ItableRow = {
+            key: i,
+            userModel: { username: "", avatar: "", id: 0 },
+          };
+          newRow.userModel.id = fetchedFriends[i].id;
+          newRow.userModel.username = fetchedFriends[i].username;
+          newRow.userModel.avatar = fetchedFriends[i].avatar;
+          friends.push(newRow);
+        }
       }
       setFriendsList(friends);
-      console.log("friendsList", friendsList);
+      if (fetchedFriends.length !== 0) console.log("friendsList", friendsList);
       setFetched(true);
       setUpdate(false);
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetched, isUpdated]);
 
   return (
     <div style={{ overflowY: "auto", overflowX: "hidden" }}>
       {isFetched ? (
-        friendsList?.length !== 0 ? 
-        friendsList!.map((h, index) => {
-          return (
-            <DisplayRow
-              listType={"friends"}
-              hook={setUpdate}
-              key={index}
-              userModel={h.userModel}
-            />
-          );
-        }) : <span>No friends.</span>
+        friendsList?.length !== 0 ? (
+          friendsList!.map((h, index) => {
+            return (
+              <DisplayRow
+                listType={"friends"}
+                hook={setUpdate}
+                key={index}
+                userModel={h.userModel}
+              />
+            );
+          })
+        ) : (
+          <span>No friends.</span>
+        )
       ) : (
-        <div>No Data available, please reload.</div>
+        <div>No friends.</div>
       )}
     </div>
   );

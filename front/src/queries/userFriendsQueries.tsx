@@ -57,8 +57,9 @@ const fetchGet = async (url: string, header: any, body: any) => {
       body: body,
       redirect: "follow",
     });
-    const result_1 = await response.json();
-    console.log("result: ", result_1);
+    await response.json();
+    if (!response.ok) return console.log("POST error on ", url);
+    return console.log("POST sucess on ", url);
   } catch (error) {
     return console.log("error", error);
   }

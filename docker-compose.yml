@@ -28,10 +28,10 @@ services:
     image: node:lts-alpine
     container_name: backend
     working_dir: /app
-    command: sh -c "yarn install \
-                    && yarn global add @nestjs/cli \
-                    && npx prisma migrate dev \
-                    && yarn prisma:studio \
+    command: sh -c "yarn install
+                    && yarn global add @nestjs/cli
+                    && npx prisma migrate dev
+                    && yarn prisma:studio
                     && yarn run start:dev" 
 #    build: ./back
     volumes:

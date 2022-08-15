@@ -27,7 +27,11 @@ export class UserService {
 
 	/*	CREATE	*/
 
-	async createUser(email: string, username: string, hash: string) {
+	async createUser(
+		email: string,
+		username: string,
+		hash: string,
+	): Promise<User> {
 		const user = await this.prisma.user.create({
 			data: {
 				email,
@@ -70,7 +74,7 @@ export class UserService {
 			// console.log('user:::', user);
 			// if (user.score !== 1200) {
 			const userDtO = plainToClass(UserDto, user);
-				usersDTO.push(userDtO);
+			usersDTO.push(userDtO);
 			// }
 		}
 		// console.log('userssss:::', usersDTO);
@@ -272,7 +276,7 @@ export class UserService {
 
 	//USER PROFILE RELATED FUNCTIONS
 
-	async updateUsername(id: number, newUsername: string, password: string) {
+	async updateUsername(id: number, newUsername: string) {
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,
@@ -284,7 +288,7 @@ export class UserService {
 		return updateUser;
 	}
 
-	async updateAvatar(id: number, newAvatar: string, password: string) {
+	async updateAvatar(id: number, newAvatar: string) {
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,
@@ -296,7 +300,7 @@ export class UserService {
 		return updateUser;
 	}
 
-	async updateEmail(id: number, newEmail: string, password: string) {
+	async updateEmail(id: number, newEmail: string) {
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,

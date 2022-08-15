@@ -3,6 +3,9 @@ import { Card, Col, Container, Row } from "react-bootstrap";
 import { ModifyEntry } from "./ModifyUserInfo";
 import IconPen from "../../ressources/icons/IconPen.svg";
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
+//import { UsersRelations } from "./FriendsList";
+import { Activate2FA } from "../../modals/MActivateTwoFA";
+// import { useUsername } from "../../hooks/UserInfoHooks";
 import { UsersRelations } from "./users_relations/UsersRelations";
 import { TwoFA } from "./TwoFA";
 
@@ -31,10 +34,17 @@ export default function UserPrivateProfile() {
   };
 
   const [modalShow, setModalShow] = useState(false);
+  const [modalShowAuth, setModalShowAuth] = useState(false);
+  const [authStatus, setAuthStatus] = useState(userInfo.auth);
 
   return (
     <main>
       <MUploadAvatar show={modalShow} onHide={() => setModalShow(false)} />
+      <Activate2FA
+        show={modalShowAuth}
+        onSubmit={() => setAuthStatus("true")}
+        onHide={() => setModalShowAuth(false)}
+      />
 
       <h1 className="app-title">My account</h1>
       <Container className="p-5 h-100">
@@ -121,7 +131,26 @@ export default function UserPrivateProfile() {
                     </Col>
                   </Row>
                 </div>
-                <TwoFA auth={userInfo.auth} />
+                <div>
+                  <Row className="wrapper p-3">
+                    <button
+                      type="button"
+                      className="col-5 btn btn-outline-primary btn-sm"
+                      onClick={() => {
+                        setShowEmail(false);
+                        setShowFriends(false);
+                        setShowUsername(false);
+                      }}
+                    >
+                      Change Password
+                    </button>
+                  </Row>
+                </div>
+                <TwoFA
+                  auth={authStatus}
+                  onClick={() => setModalShowAuth(true)}
+                  onDeactivate={() => setAuthStatus("false")}
+                />
               </Card.Body>
             </Card>
           </Col>
