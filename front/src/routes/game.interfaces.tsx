@@ -38,17 +38,20 @@ export interface StatePong {
   player1Name: string;
   player2Name: string;
   game_list: Game_data[];
-  isSettingsShown: boolean;
-  settingsState: "up" | "down";
+  isSettingsShown?: boolean;
+  settingsState?: "up" | "down";
+  buttonState?: "Start" | "New Game" | "Cancel";
 }
 
 export interface Button {
   clickHandler: any;
   showButton: boolean;
+  buttonText?: "Start" | "New Game" | "Cancel";
 }
 
 export interface ButtonState {
   showButton: boolean;
+  buttonText?: "Start" | "New Game" | "Cancel";
 }
 
 export interface Msg {
@@ -72,4 +75,14 @@ export interface StatePaddle {
   y?: number;
   side: string;
   show: boolean;
+}
+
+export interface SettingsProps {
+  onClickOutside: Function;
+  onKeyDown: Function;
+  message: string;
+}
+
+export interface SettingsState {
+  message: string;
 }

@@ -330,9 +330,11 @@ export class GameService {
 		return;
 	}
 
-	generate_new_id(): number {
+	async generate_new_id(): Promise<number> {
 		const id = Math.floor(Math.random() * 1_000_000 + 1);
-		if (!GameService.rooms.some((room) => room.id === id)) return id;
+		const usedId = await this.testID(id);
+		if (!GameService.rooms.some((room) => room.id === id) && !usedId)
+			return id;
 		return this.generate_new_id();
 	}
 
@@ -467,6 +469,15 @@ export class GameService {
 		} catch (error) {
 			throw new ForbiddenException('getGame error : ' + error);
 		}
+	}
+
+	async testID(id: number) {
+		const game = await this.prisma.game.findUnique({
+			where: {
+				id: id,
+			},
+		});
+		return game;
 	}
 
 	async getLastGames() {

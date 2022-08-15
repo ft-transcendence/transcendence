@@ -2,28 +2,35 @@ import React from 'react';
 import { io } from "socket.io-client";
 import "./Game.css";
 import { Link } from "react-router-dom";
-import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle } from './game.interfaces';
+import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle, SettingsProps, SettingsState } from './game.interfaces';
 import { Form } from 'react-bootstrap';
+import { FocusTrap } from 'focus-trap-react';
  
 
-class Settings extends React.Component <props: any, states: any> {
-    
+class Settings extends React.Component <SettingsProps, SettingsState> {
+  
+  constructor(props: SettingsProps){
+    super(props);
+    this.state = {message: this.props.message};
+  }
+
+  static getDerivedStateFromProps(props: SettingsProps, state: SettingsState){
+    return {message: props.message};
+  }
+
     render() {
       return (
         <FocusTrap>
       <aside
-        tag="aside"
         role="dialog"
         tabIndex={-1}
         aria-modal="true"
         className="modal-settings"
-        onClick={this.props.onClickOutside}
-        onKeyDown={this.props.onKeyDown}
+        onClick={() => this.props.onClickOutside}
+        onKeyDown={() => this.props.onKeyDown}
       >
-        <div className="modal-area">
-          <div className="modal-body">
-            <Form onSubmit={onSubmit} />
-          </div>
+        <div className="modal-text">
+          {this.state.message}
         </div>
       </aside>
     </FocusTrap>
@@ -37,19 +44,22 @@ class StartButton extends React.Component< Button, ButtonState > {
 
     constructor(props: Button){
       super(props);
-      this.state = {showButton: true};
+      this.state = {showButton: true,
+                    buttonText: "Start",
+      };
     }
   
     static getDerivedStateFromProps(props: Button, state: ButtonState){
       return {
-        showButton: props.showButton
+        showButton: props.showButton,
+        buttonText: props.buttonText
       };
     }
   
     render() {
          const btt = this.state.showButton ? 'unset': 'none';
       return (
-            <button onClick={this.props.clickHandler} style={{display: `${btt}`,}} className="Start_button">Start</button>
+            <button onClick={this.props.clickHandler} style={{display: `${btt}`,}} className="Start_button">{this.state.buttonText}</button>
         )
     }
     } 
@@ -181,6 +191,7 @@ export default class Game extends React.Component < {}, StatePong > {
                         game_list: [],
                         isSettingsShown: false,
                         settingsState: "up",
+                        buttonState: "Start",
                     };
     }
 
@@ -188,17 +199,23 @@ export default class Game extends React.Component < {}, StatePong > {
         document.onkeydown = this.keyDownInput;
         document.onkeyup = this.keyUpInput;
         this.socket.on("game_started", () =>
-            this.setState({gameStarted: true}));
+            this.setState({gameStarted: true, showStartButton: false}));
         this.socket.on("update", (info: Game_data) =>
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name}));
         this.socket.on("end_game", (winner: number) => 
-            winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false}) : this.setState({msgType: 3, gameStarted: false}));
+            winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false, showStartButton: true, buttonState: "New Game"}) : this.setState({msgType: 3, gameStarted: false, showStartButton: true, buttonState: "New Game"}));
     }
 
     startButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (!this.state.showStartButton)
             return;
-        this.setState({showStartButton: false});
+        if (this.state.buttonState === "Cancel") {
+          this.socket.disconnect();
+          this.socket.connect();
+          this.setState({gameStarted: false, showStartButton: true, buttonState: "Start"});
+          return;
+        }
+        this.setState({buttonState: "Cancel"});
         this.socket.emit("start", {}, (player: Player) => 
           this.setState({roomId: player.roomId, playerNumber: player.playerNb, msgType: 1}));  
         }
@@ -274,7 +291,7 @@ export default class Game extends React.Component < {}, StatePong > {
 
             {this.state.isSettingsShown ? (
             <Settings
-              state={this.state.settingsState}
+              message={this.state.settingsState!}
               onKeyDown={this.onSettingsKeyDown}
               onClickOutside={this.onSettingsClickOutside}
             />
