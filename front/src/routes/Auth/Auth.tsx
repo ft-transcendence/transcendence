@@ -129,6 +129,7 @@ export default function Auth() {
             Submit
           </Button>
           <p className="text-secondary mt-2">
+             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             Forgot your &nbsp; <a href="#">password?</a>
           </p>
         </div>

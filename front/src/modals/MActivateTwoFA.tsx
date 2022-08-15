@@ -7,7 +7,7 @@ export function Activate2FA(props: any) {
   const [FACodeModal, setCodeModal] = useState("");
 
   const handleInputChange = (e: any) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     setCodeModal(value);
   };
 

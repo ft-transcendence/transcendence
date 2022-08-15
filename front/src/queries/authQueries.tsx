@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-import { TAlert } from "../toasts/TAlert";
 import { getUserData } from "./userQueries";
 
 let myHeaders = new Headers();
@@ -73,6 +71,8 @@ export const storeToken = (token: any) => {
   console.log("refresh token = ", token.access_token);
   localStorage.setItem("userToken", token.access_token);
   localStorage.setItem("userRefreshToken", token.refresh_token);
+};
+
 export const logOut = () => {
   fetchPostLogout("logout");
 };
