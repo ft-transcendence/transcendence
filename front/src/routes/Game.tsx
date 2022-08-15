@@ -27,13 +27,12 @@ class Settings extends React.Component <SettingsProps, SettingsState> {
         tabIndex={-1}
         aria-modal="true"
         className="modal-settings"
-        onClick={() => this.props.onClickOutside}
-        onKeyDown={() => this.props.onKeyDown}
+        onKeyDown={(event) => {this.props.onKeyDown(event)}}
       >
         <div className="modal-text">
-          {this.state.message}
+          Press key for moving {this.state.message}
         </div>
-        <button className="Start_button">test</button>
+        <button onClick={() => {this.props.onClickClose()}} className="closeButton">X</button>
       </aside>
     </FocusTrap>
       );
@@ -195,6 +194,8 @@ export default class Game extends React.Component < {}, StatePong > {
                         settingsState: "up",
                         buttonState: "Start",
                     };
+        this.onSettingsKeyDown = this.onSettingsKeyDown.bind(this);
+        this.onSettingsClickClose = this.onSettingsClickClose.bind(this);
     }
 
     componentDidMount() {
@@ -235,9 +236,18 @@ export default class Game extends React.Component < {}, StatePong > {
             this.socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
     }
 
-    onSettingsKeyDown() {};
+    onSettingsKeyDown = (e: KeyboardEvent) => {
+      if (this.state.settingsState === "up") {
+        this.setState({settingsState: "down"});
+        this.MOVE_UP = e.key;
+      }
+      else if (this.state.settingsState! === "down") {
+        this.setState({isSettingsShown: false, settingsState: "up"});
+        this.MOVE_DOWN = e.key
+      }
+    };
 
-    onSettingsClickOutside() {
+    onSettingsClickClose() {
       this.setState({isSettingsShown: false, settingsState: "up"});
     };
 
@@ -322,7 +332,7 @@ export default class Game extends React.Component < {}, StatePong > {
             <Settings
               message={this.state.settingsState!}
               onKeyDown={this.onSettingsKeyDown}
-              onClickOutside={this.onSettingsClickOutside}
+              onClickClose={this.onSettingsClickClose}
             />
           ) : null}
             </div>

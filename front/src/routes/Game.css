@@ -301,6 +301,22 @@
     z-index: 1;
 }
 
+.closeButton{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.modal-text{
+    position:absolute;
+    margin: auto;
+    top: 40%;
+    left: 10%;
+    font-size: 2.5vh;
+    font-weight: 300;
+    background-color: Transparent;
+    color: black;
+}
 /* rgb(143,72,89) 
 text-decoration: rgb(106, 204, 199) underline;
 

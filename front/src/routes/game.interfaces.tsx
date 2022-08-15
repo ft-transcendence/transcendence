@@ -39,7 +39,7 @@ export interface StatePong {
   player2Name: string;
   game_list: Game_data[];
   isSettingsShown?: boolean;
-  settingsState?: "up" | "down";
+  settingsState: "up" | "down" | "none";
   buttonState?: "Start" | "New Game" | "Cancel";
 }
 
@@ -78,8 +78,8 @@ export interface StatePaddle {
 }
 
 export interface SettingsProps {
-  onClickOutside: Function;
-  onKeyDown: Function;
+  onClickClose: any;
+  onKeyDown: any;
   message: string;
 }
 
