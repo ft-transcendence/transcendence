@@ -1,4 +1,4 @@
-import { getUserData } from "./userQueries";
+import { authFileHeader, getUserData } from "./userQueries";
 
 let myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
@@ -74,19 +74,23 @@ export const storeToken = (token: any) => {
 };
 
 export const logOut = () => {
-  fetchPostLogout("logout");
+  return fetchPostLogout();
 };
 
-const fetchPostLogout = async (url: string) => {
-  let fetchUrl = "http://localhost:4000/auth/" + url;
+const fetchPostLogout = async () => {
+  let fetchUrl = "http://localhost:4000/auth/logout";
 
   try {
     const response = await fetch(fetchUrl, {
       method: "POST",
-      headers: myHeaders,
+      headers: authFileHeader(),
       redirect: "follow",
     });
     const result_1 = await response.json();
+    if (!response.ok) {
+      console.log("POST error on logout");
+      return "error";
+    }
     return result_1;
   } catch (error) {
     return console.log("error", error);

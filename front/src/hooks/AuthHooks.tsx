@@ -28,15 +28,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   let signout = (callback: VoidFunction) => {
     return fakeAuthProvider.signout(() => {
-      setUser(null);
-      localStorage.clear();
-      localStorage.setItem("userLogged", "false");
       const postLogout = async () => {
         const result = await logOut();
-        console.log("result: ", result);
+        if (result !== "error") {
+          setUser(null);
+          localStorage.clear();
+          localStorage.setItem("userLogged", "false");
+          callback();
+        }
       };
       postLogout();
-      callback();
     });
   };
   let value = { user, signin, signout };

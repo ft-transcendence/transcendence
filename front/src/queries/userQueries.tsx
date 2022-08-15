@@ -1,36 +1,36 @@
 export const getUserFriends = () => {
-  return fetchGet("get_friends", authFileHeader, storeFriendsInfo);
+  return fetchGet("get_friends", storeFriendsInfo);
 };
 
 export const getUserBlocked = () => {
-  return fetchGet("get_blocked", authFileHeader, storeFriendsInfo);
+  return fetchGet("get_blocked", storeFriendsInfo);
 };
 
 export const getUserPending = () => {
-  return fetchGet("get_pending", authFileHeader, storeFriendsInfo);
+  return fetchGet("get_pending", storeFriendsInfo);
 };
 
 export const getUserData = () => {
-  return fetchGet("me", authFileHeader, storeUserInfo);
+  return fetchGet("me", storeUserInfo);
 };
 
 export const getLeaderBoard = () => {
-  return fetchGet("get_leaderboard", authFileHeader, storeLeaderBoardInfo);
+  return fetchGet("get_leaderboard", storeLeaderBoardInfo);
 }
 
-const authFileHeader = () => {
-  let token = "bearer " + localStorage.getItem("userToken");
+export const authFileHeader = () => {
+  let token = "Bearer " + localStorage.getItem("userToken");
   let myHeaders = new Headers();
   myHeaders.append("Authorization", token);
   return myHeaders;
 };
 
-const fetchGet = async (url: string, header: any, callback: any) => {
+const fetchGet = async (url: string, callback: any) => {
   let fetchUrl = "http://localhost:4000/users/" + url;
   try {
     const response = await fetch(fetchUrl, {
       method: "GET",
-      headers: header(),
+      headers: authFileHeader(),
       body: null,
       redirect: "follow",
     });
