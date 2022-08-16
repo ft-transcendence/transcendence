@@ -28,8 +28,8 @@ export const ModifyEntry = (props: any) => {
     e.preventDefault();
     if (userInput.userName) {
       const updateUsername = async () => {
-        const response = await updateUsernameQuery(userInput.userName);
-        if (response !== "error") {
+        const result = await updateUsernameQuery(userInput.userName);
+        if (result !== "error") {
           const button = document.getElementById("handleChange");
           if (button) {
             button.setAttribute("name", "userName");
@@ -48,8 +48,8 @@ export const ModifyEntry = (props: any) => {
     }
     if (userInput.email) {
       const updateEmail = async () => {
-        const response = await updateEmailQuery(userInput.email);
-        if (response !== "error") {
+        const result = await updateEmailQuery(userInput.email);
+        if (result !== "error") {
           const button = document.getElementById("handleChange");
           if (button) {
             button.setAttribute("name", "email");

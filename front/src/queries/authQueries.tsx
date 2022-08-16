@@ -27,7 +27,7 @@ const fetchPost = async (
     const result_1 = await response.json();
     if (!response.ok) {
       console.log("POST error on ", url);
-      return "error: signIn";
+      return "error: " + url;
     }
     // check if user is 2FA
     if (result_1.twoFA) {
