@@ -6,6 +6,7 @@ import { MUploadAvatar } from "../../modals/MUploadAvatar";
 import { Activate2FA } from "../../modals/MActivateTwoFA";
 import { UsersRelations } from "./users_relations/UsersRelations";
 import { TwoFA } from "./TwoFA";
+import { getAvatarQuery } from "../../queries/avatarQueries";
 
 export default function UserPrivateProfile() {
   const [showUsername, setShowUsername] = useState(false);
@@ -34,6 +35,15 @@ export default function UserPrivateProfile() {
   const [modalShow, setModalShow] = useState(false);
   const [modalShowAuth, setModalShowAuth] = useState(false);
   const [authStatus, setAuthStatus] = useState(userInfo.auth);
+  const [avatarURL, setAvatarURL] = useState("");
+
+  useEffect(() => {
+    const getAvatar = async () => {
+      const result_1: Blob | MediaSource = await getAvatarQuery();
+      setAvatarURL(URL.createObjectURL(result_1));
+    };
+    getAvatar();
+  }, []);
 
   return (
     <main>
@@ -51,11 +61,12 @@ export default function UserPrivateProfile() {
             <div
               className="profile-pic-inside"
               style={{
-                backgroundImage: `url("https://cdn.intra.42.fr/users/mvaldes.JPG")`,
+                backgroundImage: `url("${avatarURL}")`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
             >
+              {/* <img src={avatarURL} alt="avatar"></img> */}
               <input
                 type="image"
                 alt="avatar of user"

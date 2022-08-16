@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { uploadAvatarQuery } from "../queries/avatarQueries";
+import { getAvatarQuery, uploadAvatarQuery } from "../queries/avatarQueries";
 
 export function MUploadAvatar(props: any) {
   const [avatar, setAvatar] = useState<any>();
+  const [img, setImg] = useState("");
 
   const onChange = (e: any) => {
     setAvatar(e.target.files[0]);
@@ -11,8 +12,11 @@ export function MUploadAvatar(props: any) {
 
   const handleSubmit = (event: any) => {
     if (avatar) {
-      console.log("avatar: ", avatar);
-      uploadAvatarQuery(avatar);
+      const uploadAvatar = async () => {
+        const result_1 = await uploadAvatarQuery(avatar);
+        console.log("result upload : ", result_1);
+      };
+      uploadAvatar();
     }
   };
 
