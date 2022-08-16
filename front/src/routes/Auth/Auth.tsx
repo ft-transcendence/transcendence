@@ -65,7 +65,18 @@ export default function Auth() {
     userInfo.email = GUserInputsRefs!.email!.current!.value;
     userInfo.password = GUserInputsRefs!.password!.current!.value;
     if (userInfo.username && userInfo.email && userInfo.password)
-      signUp(userInfo, userSignIn);
+    {
+      const signUpUser = async () => {
+        const result = await signUp(userInfo, userSignIn);
+        if (result && result.includes("error")) {
+          result.includes("signUp")
+            ? setNotifText("User already exists. Please enter another username and/or email.")
+            : setNotifText("Unable to sign up. Please try again.");
+          setShowNotif(true);
+        }
+      };
+      signUpUser();
+    }
     else {
       const signInUser = async () => {
         const result = await signIn(userInfo, userSignIn);
@@ -129,6 +140,7 @@ export default function Auth() {
             Submit
           </Button>
           <p className="text-secondary mt-2">
+             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             Forgot your &nbsp; <a href="#">password?</a>
           </p>
         </div>

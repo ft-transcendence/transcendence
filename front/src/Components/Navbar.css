@@ -1,0 +1,85 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css");
+
+:root {
+  --radius-size: 50px;
+  --icons-size: 1.2rem;
+  --border-size: 15px;
+  --padding-size: 80px;
+}
+
+.toolbar-bigger {
+  z-index: 10000;
+  height: 500px;
+  width: 80px;
+  position: absolute;
+  left: -1.5px;
+  top: 50%;
+
+  transform: translate(-45%, -50%);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.toolbar-bigger:hover {
+  transform: translate(0, -50%);
+}
+
+.toolbar {
+  position: absolute;
+  height: 90%;
+  box-shadow: 2.5px 2.5px 5px rgba(31, 33, 38, 0.25), -5px -5px 15px #363c45;
+  border-radius: 0% var(--radius-size) var(--radius-size) 0%;
+  background-image: linear-gradient(
+    175deg,
+    rgba(67, 97, 238, 50),
+    rgba(0, 0, 0, 0)
+  );
+  padding: 1.5px;
+}
+
+.toolbar-top {
+  width: 100%;
+  height: 100%;
+  border-radius: 0% var(--radius-size) var(--radius-size) 0%;
+  background-color: #31353c;
+  padding-top: var(--padding-size);
+  padding-right: calc(var(--icons-size) + var(--border-size));
+  padding-left: var(--border-size);
+  padding-bottom: var(--padding-size);
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar-top.space-around {
+  justify-content: space-between;
+}
+
+.icons {
+  font-size: var(--icons-size);
+  position: absolute;
+}
+
+.icons.thin.hide {
+  opacity: 0;
+  color: #4361ee;
+  transition: opacity 500ms ease-in-out, color 500ms ease-in-out;
+}
+
+.icons.thin.current {
+  color: #d9d9d9;
+  opacity: 100;
+  transition: opacity 500ms ease-in-out, color 500ms ease-in-out;
+}
+.icons.thick.hide {
+  opacity: 0;
+  color: #4361ee;
+  transition: opacity 500ms ease-in-out, color 500ms ease-in-out;
+}
+
+.icons.thick.current {
+  color: #4361ee;
+  opacity: 100;
+  transition: opacity 500ms ease-in-out, color 500ms ease-in-out;
+}
+
+#clickableIcon {
+  cursor: pointer;
+}

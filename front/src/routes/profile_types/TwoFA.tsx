@@ -2,15 +2,12 @@ import { Row, Col } from "react-bootstrap";
 import { twoFAOff } from "../../queries/twoFAQueries";
 
 export const TwoFA = (props: any) => {
-  console.log("2FA ? ", props.auth);
-
   const handleTurnOff = (e: any) => {
     e.preventDefault();
     const twoFADeactivate = async () => {
       const result = await twoFAOff();
       if (!result) console.log("error: cannot deactivate 2FA");
-      else
-      {
+      else {
         props.onDeactivate();
         localStorage.setItem("userAuth", "false");
       }

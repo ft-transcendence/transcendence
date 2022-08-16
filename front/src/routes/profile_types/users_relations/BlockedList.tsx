@@ -34,6 +34,7 @@ export const BlockedList = () => {
     };
 
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetched, isUpdated]);
 
   return (

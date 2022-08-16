@@ -2,21 +2,21 @@ export const updateAvatarQuery = (file: any) => {
   var formdata = new FormData();
   formdata.append("avatar", file.files[0], "avatar.jpeg");
 
-  fetchPost(formdata, "update_avatar", authFileHeader, file);
+  return fetchPost(formdata, "update_avatar", authFileHeader, file);
 };
 
 export const updateUsernameQuery = (username: string) => {
   var raw = JSON.stringify({
     username: username,
   });
-  fetchPost(raw, "update_username", authRawHeader, username);
+  return fetchPost(raw, "update_username", authRawHeader, username);
 };
 
 export const updateEmailQuery = (email: string) => {
   var raw = JSON.stringify({
     email: email,
   });
-  fetchPost(raw, "update_email", authRawHeader, email);
+  return fetchPost(raw, "update_email", authRawHeader, email);
 };
 
 const authRawHeader = () => {

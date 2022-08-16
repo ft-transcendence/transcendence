@@ -34,6 +34,7 @@ export const PendingList = () => {
     };
 
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetched, isUpdated]);
 
   return (

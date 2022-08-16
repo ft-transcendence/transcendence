@@ -1,6 +1,4 @@
-import { useNavigate } from "react-router-dom";
-import { TAlert } from "../toasts/TAlert";
-import { getUserData } from "./userQueries";
+import { authFileHeader, getUserData } from "./userQueries";
 
 let myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
@@ -29,7 +27,7 @@ const fetchPost = async (
     const result_1 = await response.json();
     if (!response.ok) {
       console.log("POST error on ", url);
-      return "error: signIn";
+      return "error: " + url;
     }
     // check if user is 2FA
     if (result_1.twoFA) {
@@ -73,4 +71,28 @@ export const storeToken = (token: any) => {
   console.log("refresh token = ", token.access_token);
   localStorage.setItem("userToken", token.access_token);
   localStorage.setItem("userRefreshToken", token.refresh_token);
+};
+
+export const logOut = () => {
+  return fetchPostLogout();
+};
+
+const fetchPostLogout = async () => {
+  let fetchUrl = "http://localhost:4000/auth/logout";
+
+  try {
+    const response = await fetch(fetchUrl, {
+      method: "POST",
+      headers: authFileHeader(),
+      redirect: "follow",
+    });
+    const result_1 = await response.text();
+    if (!response.ok) {
+      console.log("POST error on logout");
+      return "error";
+    }
+    return result_1;
+  } catch (error) {
+    return console.log("error", error);
+  }
 };

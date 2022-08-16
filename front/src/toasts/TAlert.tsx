@@ -1,11 +1,11 @@
 import { ToastContainer } from "react-bootstrap";
 import Toast from "react-bootstrap/Toast";
 
-const getDate = () => {
-  let newDate = new Date();
-  let formattedDate = newDate.getMonth() + 1 + "/" + newDate.getDate();
-  return formattedDate;
-};
+// const getDate = () => {
+//   let newDate = new Date();
+//   let formattedDate = newDate.getMonth() + 1 + "/" + newDate.getDate();
+//   return formattedDate;
+// };
 
 const getTime = () => {
   let newDate = new Date();
