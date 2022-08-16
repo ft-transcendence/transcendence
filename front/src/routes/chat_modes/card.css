@@ -3,7 +3,7 @@
     color: grey;
 }
 
-.card {
+.card-chat {
     background-color: whitesmoke;
     height: 500px;
     width: 350px;
@@ -14,7 +14,7 @@
     padding-bottom: 20px;
 }
 
-.card-title {
+.card-chat-title {
     margin: auto;
     margin-top: 10px;
     width: 260px;

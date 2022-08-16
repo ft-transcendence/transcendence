@@ -95,71 +95,71 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
     }
 
     return (
-        <div className="card">
-            <div className="card-title">
-                CREATE ROOM
-            </div>
-            <div className="input-zone">
-                <input
-                    id="create-room-name"
-                    value={roomName}
-                    onChange={(e) => handleString(e.target.value, setRoomName)}
-                    className="new-room-name-input"
-                    placeholder="NAME"
-                />
-                <div 
-                    className="browse-users"
-                    ref={scroll}>
-                    <ReactTags
-                        tags={addedMember}
-                        suggestions={userTag.filter(v => {return addedMember.filter(v1 => {return v1.id === v.id}).length === 0})}
-                        placeholderText="MEMBERS"
-                        onAddition={onAddMember}
-                        onDelete={onDeleteMember}
-                        onInput={autoScroll}
-                        suggestionsTransform={suggestionsFilter}
-                        noSuggestionsText="user not found"
-                    />
-                </div>
-            </div>
-            <div className="div-switch">
-                <label style={{color: isPrivate? "rgb(0,136,0)" : "grey"}}>
-                    private
-                </label>
-                <Switch
-                        className="switch"
-                        onChange={handlePrivate}
-                        checked={isPrivate}
-                        checkedIcon={false}
-                        uncheckedIcon={false}/>
-            </div>
-            <div className="div-switch">
-                <label style={{color: isPassword? "rgb(0,136,0)" : "grey"}}>
-                    password
-                </label>
-                <Switch
-                        className="switch"
-                        onChange={handleIsPassword}
-                        checked={isPassword}
-                        checkedIcon={false}
-                        uncheckedIcon={false}/>
-            </div>
-            <div style={{display: isPassword? "" : "none"}}>
-                <input
-                    id="password"
-                    value={roomPass}
-                    onChange={(e) => handleString(e.target.value, setRoomPass)}
-                    className="password"
-                />
-            </div>
-            <div className="flex-block">
-
-            </div>
-            <div
-                onMouseUp={onCreate}
-                className="card-confirm-button">
-                    CONFIRM
-            </div>
+      <div className="card-chat">
+        <div className="card-chat-title">CREATE ROOM</div>
+        <div className="input-zone">
+          <input
+            id="create-room-name"
+            value={roomName}
+            onChange={(e) => handleString(e.target.value, setRoomName)}
+            className="new-room-name-input"
+            placeholder="NAME"
+          />
+          <div className="browse-users" ref={scroll}>
+            <ReactTags
+              tags={addedMember}
+              suggestions={userTag.filter((v) => {
+                return (
+                  addedMember.filter((v1) => {
+                    return v1.id === v.id;
+                  }).length === 0
+                );
+              })}
+              placeholderText="MEMBERS"
+              onAddition={onAddMember}
+              onDelete={onDeleteMember}
+              onInput={autoScroll}
+              suggestionsTransform={suggestionsFilter}
+              noSuggestionsText="user not found"
+            />
+          </div>
         </div>
-    )
+        <div className="div-switch">
+          <label style={{ color: isPrivate ? "rgb(0,136,0)" : "grey" }}>
+            private
+          </label>
+          <Switch
+            className="switch"
+            onChange={handlePrivate}
+            checked={isPrivate}
+            checkedIcon={false}
+            uncheckedIcon={false}
+          />
+        </div>
+        <div className="div-switch">
+          <label style={{ color: isPassword ? "rgb(0,136,0)" : "grey" }}>
+            password
+          </label>
+          <Switch
+            className="switch"
+            onChange={handleIsPassword}
+            checked={isPassword}
+            checkedIcon={false}
+            uncheckedIcon={false}
+          />
+        </div>
+        <div style={{ display: isPassword ? "" : "none" }}>
+          <input
+            id="password"
+            value={roomPass}
+            onChange={(e) => handleString(e.target.value, setRoomPass)}
+            className="password"
+          />
+        </div>
+        <div className="flex-block"></div>
+        <div onMouseUp={onCreate} className="card-confirm-button">
+          CONFIRM
+        </div>
+      </div>
+    );
 }
