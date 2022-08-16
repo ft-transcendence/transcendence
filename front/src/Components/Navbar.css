@@ -15,12 +15,11 @@
   left: -1.5px;
   top: 50%;
 
-  /* transform: translate(0, -80%); */
-  transform: translate(-45%, -80%);
+  transform: translate(-45%, -50%);
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .toolbar-bigger:hover {
-  transform: translate(0, -80%);
+  transform: translate(0, -50%);
 }
 
 .toolbar {
