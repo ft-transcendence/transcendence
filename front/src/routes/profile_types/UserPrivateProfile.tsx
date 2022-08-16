@@ -1,11 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { ModifyEntry } from "./ModifyUserInfo";
 import IconPen from "../../ressources/icons/Icon_Pen.svg";
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
-//import { UsersRelations } from "./FriendsList";
 import { Activate2FA } from "../../modals/MActivateTwoFA";
-// import { useUsername } from "../../hooks/UserInfoHooks";
 import { UsersRelations } from "./users_relations/UsersRelations";
 import { TwoFA } from "./TwoFA";
 
@@ -58,11 +56,6 @@ export default function UserPrivateProfile() {
                 backgroundPosition: "center",
               }}
             >
-              {/* <i
-                id="clickableIcon"
-                className="bi bi-pencil-fill edit-round-icon float-end"
-                onClick={() => setModalShow(true)}
-              ></i> */}
               <input
                 type="image"
                 alt="avatar of user"
