@@ -142,7 +142,7 @@ export class UserService {
 				where: {
 					id: id,
 				},
-				// rejectOnNotFound: true,
+				rejectOnNotFound: true,
 			});
 			const dtoUser = plainToClass(UserDto, user);
 			return dtoUser;

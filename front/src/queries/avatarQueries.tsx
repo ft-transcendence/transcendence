@@ -9,22 +9,29 @@ export const uploadAvatarQuery = (fileInput: any) => {
   var formdata = new FormData();
 
   formdata.append("avatar", fileInput, "name.png");
-  return fetchPost("POST", formdata, "avatar");
+  return fetchAvatar("POST", formdata, "avatar");
 };
 
 export const getAvatarQuery = () => {
-  return fetchPost("GET", null, "avatar");
+  return fetchAvatar("GET", null, "avatar");
 };
 
-const fetchPost = async (method: string, formdata: any, url: string) => {
+export const getUserAvatarQuery = (otherId: number) => {
+  let body = JSON.stringify({
+    otherId: otherId,
+  });
+  return fetchAvatar("POST", body, "avatar");
+};
+
+const fetchAvatar = async (method: string, body: any, url: string) => {
   let fetchUrl = "http://localhost:4000/upload/" + url;
 
   let requestOptions: RequestInit | undefined;
-  if (url === "avatar" && method === "POST")
+  if (method === "POST")
     requestOptions = {
       method: method,
       headers: authFileHeader(),
-      body: formdata,
+      body: body,
       redirect: "follow",
     };
   else
@@ -34,14 +41,15 @@ const fetchPost = async (method: string, formdata: any, url: string) => {
       redirect: "follow",
     };
 
-  // try {
+  try {
     const response = await fetch(fetchUrl, requestOptions);
     const result_1 = await response.blob();
-    // if (!response.ok) {
-      // console.log("POST error on ", url);
-      // return "error: " + url;
+    if (!response.ok) {
+      console.log("POST error on ", url);
+      return "error: " + url;
+    }
     return result_1;
-  // } catch (error) {
-    // console.log("error", error);
-  // }
+  } catch (error) {
+    console.log("error", error);
+  }
 };

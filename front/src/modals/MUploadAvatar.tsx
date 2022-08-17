@@ -1,20 +1,22 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { getAvatarQuery, uploadAvatarQuery } from "../queries/avatarQueries";
+import { uploadAvatarQuery } from "../queries/avatarQueries";
 
 export function MUploadAvatar(props: any) {
-  const [avatar, setAvatar] = useState<any>();
-  const [img, setImg] = useState("");
+  const [newAvatar, setNewAvatar] = useState<any>();
 
   const onChange = (e: any) => {
-    setAvatar(e.target.files[0]);
+    setNewAvatar(e.target.files[0]);
   };
 
   const handleSubmit = (event: any) => {
-    if (avatar) {
+    if (newAvatar) {
       const uploadAvatar = async () => {
-        const result_1 = await uploadAvatarQuery(avatar);
-        console.log("result upload : ", result_1);
+        const result_1 = await uploadAvatarQuery(newAvatar);
+        if (result_1 !== "error: avatar") {
+          props.isAvatarUpdated();
+          props.onHide();
+        } else console.log("Could not post avatar.");
       };
       uploadAvatar();
     }

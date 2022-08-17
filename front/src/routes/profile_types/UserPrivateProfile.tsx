@@ -36,18 +36,28 @@ export default function UserPrivateProfile() {
   const [modalShowAuth, setModalShowAuth] = useState(false);
   const [authStatus, setAuthStatus] = useState(userInfo.auth);
   const [avatarURL, setAvatarURL] = useState("");
+  const [avatarFetched, setAvatarFetched] = useState(false);
 
   useEffect(() => {
+    console.log("Use effect for avatar");
     const getAvatar = async () => {
-      const result_1: Blob | MediaSource = await getAvatarQuery();
-      setAvatarURL(URL.createObjectURL(result_1));
+      const result_1: undefined | string | Blob | MediaSource =
+        await getAvatarQuery();
+      if (result_1 !== undefined && result_1 instanceof Blob) {
+        setAvatarURL(URL.createObjectURL(result_1));
+      } else if (result_1 === "error: avatar")
+        console.log("Could not get avatar of self.");
     };
     getAvatar();
-  }, []);
+  }, [avatarFetched]);
 
   return (
     <main>
-      <MUploadAvatar show={modalShow} onHide={() => setModalShow(false)} />
+      <MUploadAvatar
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        isAvatarUpdated={() => setAvatarFetched(!avatarFetched)}
+      />
       <Activate2FA
         show={modalShowAuth}
         onSubmit={() => setAuthStatus("true")}
