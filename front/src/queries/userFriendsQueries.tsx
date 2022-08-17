@@ -23,7 +23,7 @@ export const unblockUserQuery = (otherId: number) => {
   let body = JSON.stringify({
     otherId: otherId,
   });
-  return fetchGet("/unblock_user", authFileHeader, body);
+  return fetchGet("unblock_user", authFileHeader, body);
 };
 
 export const cancelInviteQuery = (otherId: number) => {

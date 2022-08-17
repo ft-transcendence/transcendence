@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { getUserPending } from "../../../queries/userQueries";
 import { ItableRow } from "../../../globals/Interfaces";
 import { DisplayRow } from "./DisplayRowUsers";
+import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 
 export const PendingList = () => {
-  const [pendingList, setPendingList] = useState<ItableRow[] | undefined>(
+  const [PendingList, setPendingList] = useState<ItableRow[] | undefined>(
     undefined
   );
 
@@ -14,34 +15,50 @@ export const PendingList = () => {
   let pending: ItableRow[] = [];
 
   useEffect(() => {
-    const fetchData = async () => {
-      let fetchedPending = await getUserPending();
+    const fetchDataPending = async () => {
+      return await getUserPending();
+    };
 
-      for (let i = 0; i < fetchedPending.length; i++) {
-        let newRow: ItableRow = {
-          key: i,
-          userModel: { username: "", avatar: "", id: 0 },
-        };
-        newRow.userModel.id = fetchedPending[i].id;
-        newRow.userModel.username = fetchedPending[i].username;
-        newRow.userModel.avatar = fetchedPending[i].avatar;
-        pending.push(newRow);
+    const fetchDataPendingAvatar = async (otherId: number) => {
+      console.log("id? ", otherId);
+      return await getUserAvatarQuery(otherId);
+    };
+
+    const fetchData = async () => {
+      let fetchedPending = await fetchDataPending();
+
+      if (fetchedPending.length !== 0) {
+        for (let i = 0; i < fetchedPending.length; i++) {
+          let newRow: ItableRow = {
+            key: i,
+            userModel: { username: "", avatar: "", id: 0 },
+          };
+
+          let avatar = await fetchDataPendingAvatar(fetchedPending[i].id);
+
+          newRow.userModel.id = fetchedPending[i].id;
+          newRow.userModel.username = fetchedPending[i].username;
+          if (avatar !== undefined && avatar instanceof Blob) {
+            newRow.userModel.avatar = URL.createObjectURL(avatar);
+          }
+          pending.push(newRow);
+        }
       }
       setPendingList(pending);
-       if (fetchedPending.length !== 0) console.log("pendingList", pendingList);
+      if (fetchedPending.length !== 0) console.log("pendingList", PendingList);
       setFetched(true);
       setUpdate(false);
     };
 
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetched, isUpdated]);
 
   return (
     <div style={{ overflowY: "auto", overflowX: "hidden" }}>
       {isFetched ? (
-        pendingList?.length !== 0 ? (
-          pendingList!.map((h, index) => {
+        PendingList?.length !== 0 ? (
+          PendingList!.map((h, index) => {
             return (
               <DisplayRow
                 listType={"pending"}
@@ -52,10 +69,10 @@ export const PendingList = () => {
             );
           })
         ) : (
-          <span>No pending invitation.</span>
+          <span>No pending invites.</span>
         )
       ) : (
-        <div>No Data available, please reload.</div>
+        <div>No pending invites.</div>
       )}
     </div>
   );

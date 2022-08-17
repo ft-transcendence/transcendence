@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getUserBlocked } from "../../../queries/userQueries";
 import { ItableRow } from "../../../globals/Interfaces";
 import { DisplayRow } from "./DisplayRowUsers";
+import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 
 export const BlockedList = () => {
   const [blockedList, setBlockedList] = useState<ItableRow[] | undefined>(
@@ -14,18 +15,34 @@ export const BlockedList = () => {
   let blocked: ItableRow[] = [];
 
   useEffect(() => {
-    const fetchData = async () => {
-      let fetchedBlocked = await getUserBlocked();
+    const fetchDataBlocked = async () => {
+      return await getUserBlocked();
+    };
 
-      for (let i = 0; i < fetchedBlocked.length; i++) {
-        let newRow: ItableRow = {
-          key: i,
-          userModel: { username: "", avatar: "", id: 0 },
-        };
-        newRow.userModel.id = fetchedBlocked[i].id;
-        newRow.userModel.username = fetchedBlocked[i].username;
-        newRow.userModel.avatar = fetchedBlocked[i].avatar;
-        blocked.push(newRow);
+    const fetchDataBlockedAvatar = async (otherId: number) => {
+      console.log("id? ", otherId);
+      return await getUserAvatarQuery(otherId);
+    };
+
+    const fetchData = async () => {
+      let fetchedBlocked = await fetchDataBlocked();
+
+      if (fetchedBlocked.length !== 0) {
+        for (let i = 0; i < fetchedBlocked.length; i++) {
+          let newRow: ItableRow = {
+            key: i,
+            userModel: { username: "", avatar: "", id: 0 },
+          };
+
+          let avatar = await fetchDataBlockedAvatar(fetchedBlocked[i].id);
+
+          newRow.userModel.id = fetchedBlocked[i].id;
+          newRow.userModel.username = fetchedBlocked[i].username;
+          if (avatar !== undefined && avatar instanceof Blob) {
+            newRow.userModel.avatar = URL.createObjectURL(avatar);
+          }
+          blocked.push(newRow);
+        }
       }
       setBlockedList(blocked);
       if (fetchedBlocked.length !== 0) console.log("blockedList", blockedList);
@@ -34,7 +51,7 @@ export const BlockedList = () => {
     };
 
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetched, isUpdated]);
 
   return (
@@ -55,7 +72,7 @@ export const BlockedList = () => {
           <span>No blocked users.</span>
         )
       ) : (
-        <div>No Data available, please reload.</div>
+        <div>No blocked users.</div>
       )}
     </div>
   );

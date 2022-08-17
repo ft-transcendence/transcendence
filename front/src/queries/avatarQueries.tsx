@@ -9,35 +9,42 @@ export const uploadAvatarQuery = (fileInput: any) => {
   var formdata = new FormData();
 
   formdata.append("avatar", fileInput, "name.png");
-  return fetchAvatar("POST", formdata, "avatar");
+  return fetchAvatar("POST", formdata, authFileHeader(), "avatar");
 };
 
 export const getAvatarQuery = () => {
-  return fetchAvatar("GET", null, "avatar");
+  return fetchAvatar("GET", null, authFileHeader(), "avatar");
 };
 
 export const getUserAvatarQuery = (otherId: number) => {
   let body = JSON.stringify({
-    otherId: otherId,
+    userId: otherId,
   });
-  return fetchAvatar("POST", body, "avatar");
+  let header = authFileHeader();
+  header.append("Content-Type", "application/json");
+  return fetchAvatar("POST", body, header, "getavatar");
 };
 
-const fetchAvatar = async (method: string, body: any, url: string) => {
+const fetchAvatar = async (
+  method: string,
+  body: any,
+  header: any,
+  url: string
+) => {
   let fetchUrl = "http://localhost:4000/upload/" + url;
 
   let requestOptions: RequestInit | undefined;
   if (method === "POST")
     requestOptions = {
       method: method,
-      headers: authFileHeader(),
+      headers: header,
       body: body,
       redirect: "follow",
     };
   else
     requestOptions = {
       method: method,
-      headers: authFileHeader(),
+      headers: header,
       redirect: "follow",
     };
 
