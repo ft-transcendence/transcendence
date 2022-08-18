@@ -55,8 +55,8 @@ export default function UserProfile() {
     <main>
       <h1 className="app-title border">My account</h1>
       <Container className="p-5 h-100 border">
-        <Row className="wrapper public-profile-header border">
-          <div className="p-2 profile-pic-round">
+        <Row className="wrapper public-profile-header">
+          <div className="p-2 public-profile-round">
             <div
               className="profile-pic-inside"
               style={{

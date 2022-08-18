@@ -1,14 +1,29 @@
+:root {
+
+    --padding-sides: 30px;
+    --padding-tops: 20px;
+}
+
 .public-profile-header {
-  position: absolute;
   width: 585px;
-  height: 100px;
-  left: 101px;
-  top: 68px;
+  border-radius: calc((100px + (2 * var(--padding-tops)) / 2));
+  padding: var(--padding-tops);
+  padding-left: var(--padding-sides);
+  padding-right: var(--padding-sides);
 
   /* cards/blue */
-
   background: #4361ee;
   box-shadow: inset 5px 10px 10px rgba(15, 21, 49, 0.25),
     inset -5px -10px 10px #667ce7;
-  border-radius: 50px;
+}
+
+.public-profile-round {
+  height: 100px;
+  width: 100px;
+  left: 133px;
+  top: 82px;
+  border-radius: 50%;
+
+  background: #5d76ec;
+  box-shadow: 4px 8px 15px rgba(18, 20, 26, 0.3), -4px -8px 15px #78a5e9;
 }
