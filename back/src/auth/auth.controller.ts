@@ -27,7 +27,7 @@ import { RtGuard } from './guard';
 import { SignUpDto, SignInDto } from './dto';
 import { TwoFactorService } from './2FA/2fa.service';
 import { ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ViewAuthFilter } from './filter/redirect.login';
+import { ViewAuthFilter } from './filter';
 
 // AUTH CONTROLLER - /auth
 @ApiTags('authentification')
