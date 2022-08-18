@@ -15,9 +15,18 @@ import { TwoFactorService } from './2FA/2fa.service';
 import { TwoFAController } from './2FA/2fa.controller';
 import { GameService } from 'src/game/game.service';
 import { GameModule } from 'src/game/game.module';
+import { UploadService } from 'src/upload/upload.service';
+import { UploadModule } from 'src/upload/upload.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-	imports: [JwtModule.register({}), UserModule, GameModule],
+	imports: [
+		JwtModule.register({}),
+		UserModule,
+		GameModule,
+		UploadModule,
+		HttpModule,
+	],
 	controllers: [AuthController, TwoFAController],
 	providers: [
 		AuthService,
@@ -27,6 +36,7 @@ import { GameModule } from 'src/game/game.module';
 		FortyTwoStrategy,
 		UserService,
 		GameService,
+		UploadService,
 	],
 	exports: [AuthService],
 })

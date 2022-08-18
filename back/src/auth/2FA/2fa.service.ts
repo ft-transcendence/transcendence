@@ -1,7 +1,6 @@
 /* GLOBAL MODULES */
 import {
 	forwardRef,
-	HttpStatus,
 	Inject,
 	Injectable,
 	UnauthorizedException,
@@ -10,7 +9,6 @@ import { Response } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from '../auth.service';
 /* Decorators */
-import { GetCurrentUserId } from 'src/decorators';
 /* 2FA Modules */
 import { authenticator } from 'otplib';
 import { toDataURL } from 'qrcode';
@@ -116,6 +114,7 @@ export class TwoFactorService {
 		}
 		// generate tokens
 		const tokens = await this.authservice.signin_jwt(id, email, true);
+		await this.authservice.updateRefreshToken(id, tokens.refresh_token);
 		return tokens;
 	}
 

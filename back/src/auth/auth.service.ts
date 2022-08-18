@@ -1,11 +1,5 @@
 /* GLOBAL MODULES */
-import {
-	ForbiddenException,
-	forwardRef,
-	Inject,
-	Injectable,
-	Res,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable, Res } from '@nestjs/common';
 /* PRISMA */
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
@@ -20,7 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 /* USER Modules */
 import { UserService } from 'src/user/user.service';
 import { Response } from 'express';
-import { TwoFactorService } from './2FA/2fa.service';
+import { UploadService } from 'src/upload/upload.service';
 
 /**
  * AUTHENTIFICATION SERVICE
@@ -31,8 +25,7 @@ export class AuthService {
 		private prisma: PrismaService,
 		private jwtService: JwtService,
 		private userService: UserService,
-		@Inject(forwardRef(() => TwoFactorService))
-		private twoFAService: TwoFactorService,
+		private uploadService: UploadService,
 	) {}
 
 	/* SIGNUP */
@@ -129,6 +122,7 @@ export class AuthService {
 		email: string,
 	): Promise<Response> {
 		const tokens = await this.signin_jwt(id, email);
+		await this.updateRefreshToken(id, tokens.refresh_token);
 		// LOG
 		//console.log(tokens);
 		// SEND TOKEN TO FRONT in URL
@@ -151,8 +145,9 @@ export class AuthService {
 		const hash = await argon.hash(rdm_string);
 		//create new user
 		const user = await this.userService.createUser(email, username, hash);
+
 		if (user) {
-			await this.userService.updateAvatar(user.id, avatar);
+			await this.uploadService.download_avatar(user.id, avatar);
 		}
 		// LOG
 		console.log('create user :', username, email, rdm_string);

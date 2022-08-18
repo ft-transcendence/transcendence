@@ -26,15 +26,13 @@ export class jwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 	 * Validate function used by Passport Module
 	 */
 	async validate(data: { sub: number; email: string; is2FA: boolean }) {
-		// log in console
-		// console.log({
-		// 	data,
-		// });
 		const user = await this.prisma.user.findUnique({
 			where: {
 				id: data.sub,
 			},
 		});
+		// if user is logged out return 401
+		if (!user.hashedRtoken) return;
 		// remove sensitive data
 		if (user) delete user.hash;
 		// if the user is not found user == NULL

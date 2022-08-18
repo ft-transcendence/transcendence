@@ -25,8 +25,14 @@ import { RtGuard } from './guard';
 /* AUTH DTOs */
 import { SignUpDto, SignInDto } from './dto';
 import { TwoFactorService } from './2FA/2fa.service';
+import { ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // AUTH CONTROLLER - /auth
+@ApiTags('authentification')
+@ApiHeader({
+	name: 'Authorization',
+	description: 'Jason Web Token as Bearer Token',
+})
 @Controller('auth')
 export class AuthController {
 	constructor(
@@ -39,6 +45,7 @@ export class AuthController {
 	 * Creates a new user email/username/password
 	 */
 	@Public()
+	@ApiResponse({ status: 403, description: 'Credentials already exist' })
 	@Post('/signup')
 	signup(@Body() dto: SignUpDto) {
 		console.log(dto);
@@ -50,6 +57,7 @@ export class AuthController {
 	 * Signs an existing user email/username and password
 	 */
 	@Public()
+	@ApiResponse({ status: 403, description: 'Invalid Credentials' })
 	@Post('/signin')
 	signin(@Body() dto: SignInDto) {
 		console.log(dto);
@@ -62,12 +70,30 @@ export class AuthController {
 	 */
 	@Post('logout')
 	@HttpCode(200)
+	@ApiResponse({ status: 401, description: 'Unauthorized' })
 	logout(@GetCurrentUserId() userId: number) {
 		// LOG
 		console.log('logout', userId);
 		return this.authService.signout(userId);
 	}
 
+	/* REFRESH TOKEN CALLBACK */
+
+	/**
+	 *	Updates Tokens for signed in user
+	 *	Work in progress
+	 */
+	@Public()
+	@UseGuards(RtGuard)
+	@HttpCode(200)
+	@Post('/refresh')
+	refresh(
+		@GetCurrentUserId() userId: number,
+		@GetCurrentUser('refreshToken') refreshToken: string,
+	) {
+		console.log('refresh route id:', userId, 'token:', refreshToken);
+		return this.authService.refresh_token(userId, refreshToken);
+	}
 	/* 42 API  */
 
 	/**
@@ -99,24 +125,6 @@ export class AuthController {
 		return twoFA
 			? this.twoFAService.signin_2FA(response, username)
 			: this.authService.signin_42_token(response, id, email);
-	}
-
-	/* REFRESH TOKEN CALLBACK */
-
-	/**
-	 *	Updates Tokens for signed in user
-	 *	Work in progress
-	 */
-	@Public()
-	@UseGuards(RtGuard)
-	@HttpCode(200)
-	@Post('/refresh')
-	refresh(
-		@GetCurrentUserId() userId: number,
-		@GetCurrentUser('refreshToken') refreshToken: string,
-	) {
-		console.log('refresh route id:', userId, 'token:', refreshToken);
-		return this.authService.refresh_token(userId, refreshToken);
 	}
 
 	/**
