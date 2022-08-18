@@ -11,7 +11,7 @@ export class UploadService {
 		private userService: UserService,
 	) {}
 
-	async download_avatar(avatarURL: string, id: number): Promise<any> {
+	async download_avatar(id: number, avatarURL: string): Promise<any> {
 		console.log(avatarURL);
 		const fileExtension = '.' + avatarURL.split('.').pop();
 		const filename = uuidv4() + fileExtension;
@@ -32,6 +32,7 @@ export class UploadService {
 		});
 
 		response.data.pipe(writer);
+
 		return new Promise((resolve, reject) => {
 			writer.on('finish', resolve);
 			writer.on('error', reject);
