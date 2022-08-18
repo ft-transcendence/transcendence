@@ -27,7 +27,7 @@ export class UserController {
 		return userDto;
 	}
 
-	@Get('get_user')
+	@Post('get_user')
 	getUser(@Body('otherId') otherId: number) {
 		const userDto = this.userService.getUser(otherId);
 		return userDto;

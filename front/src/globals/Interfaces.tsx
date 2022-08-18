@@ -21,3 +21,17 @@ export interface ItableRow {
   key: number;
   userModel: { username: string; avatar: string; id: number };
 }
+
+export interface userModel {
+  id: number;
+  username: string;
+  avatar: string;
+  friends: Array<userModel>;
+  gamesLost: number;
+  gamesPlayed: number;
+  gamesWon: number;
+  playTime: number;
+  rank: number;
+  score: number;
+  winRate: number;
+}

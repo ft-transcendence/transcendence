@@ -1,0 +1,14 @@
+.public-profile-header {
+  position: absolute;
+  width: 585px;
+  height: 100px;
+  left: 101px;
+  top: 68px;
+
+  /* cards/blue */
+
+  background: #4361ee;
+  box-shadow: inset 5px 10px 10px rgba(15, 21, 49, 0.25),
+    inset -5px -10px 10px #667ce7;
+  border-radius: 50px;
+}

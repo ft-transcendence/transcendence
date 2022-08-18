@@ -1,19 +1,19 @@
-import { authHeader } from "./headers";
+import { authContentHeader } from "./headers";
 
-export const getUser = (otherUsername: string) => {
+export const getOtherUser = (otherUsername: number) => {
   let body = JSON.stringify({
-    otherUsername: otherUsername,
+    otherId: otherUsername,
   });
-  return fetchGetOtherUser("add_friend", authHeader, body);
+  return fetchGetOtherUser("get_user", body);
 };
 
-const fetchGetOtherUser = async (url: string, callback: any) => {
+const fetchGetOtherUser = async (url: string, body: any) => {
   let fetchUrl = "http://localhost:4000/users/" + url;
   try {
     const response = await fetch(fetchUrl, {
-      method: "GET",
-      headers: authHeader(),
-      body: null,
+      method: "POST",
+      headers: authContentHeader(),
+      body: body,
       redirect: "follow",
     });
     const result_1 = await response.json();
@@ -21,7 +21,7 @@ const fetchGetOtherUser = async (url: string, callback: any) => {
       console.log("POST error on ", url);
       return "error";
     }
-    return callback(result_1);
+    return result_1;
   } catch (error) {
     return console.log("error", error);
   }
