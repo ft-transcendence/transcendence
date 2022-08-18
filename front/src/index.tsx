@@ -5,7 +5,6 @@ import Game from "./routes/Game";
 import Auth from "./routes/Auth/Auth";
 import SignIn from "./routes/Auth/SignIn";
 import SignUp from "./routes/Auth/SignUp";
-import Home from "./routes/Home";
 import Chat from "./routes/Chat";
 import UserInterface from "./routes/UserInterface";
 import UserPrivateProfile from "./routes/profile_types/UserPrivateProfile";
@@ -17,6 +16,7 @@ import { FriendsList } from "./routes/profile_types/users_relations/FriendsList"
 import { PendingList } from "./routes/profile_types/users_relations/PendingList";
 import LeaderBoard from "./routes/LeaderBoard";
 import "./index.css";
+import UserPublicProfile from "./routes/profile_types/UserPublicProfile";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
@@ -41,14 +41,17 @@ root.render(
               </RequireAuth>
             }
           >
-            <Route index element={<Home />} />
-            <Route path="home" element={<Home />} />
+            <Route index element={<UserPrivateProfile />} />
             <Route path="private-profile" element={<UserPrivateProfile />}>
               <Route index element={<FriendsList />} />
               <Route path="friends" element={<FriendsList />} />
               <Route path="pending" element={<PendingList />} />
               <Route path="blocked" element={<BlockedList />} />
             </Route>
+            <Route
+              path="public/:userName"
+              element={<UserPublicProfile />}
+            />
             <Route
               path="chat"
               element={
@@ -60,7 +63,7 @@ root.render(
             <Route path="leaderboard" element={<LeaderBoard />} />
             <Route path="game" element={<Game />} />
             <Route path="watch" element={<Watch />} />
-            <Route path="*" element={<Navigate to="/app/home" />} />
+            <Route path="*" element={<Navigate to="/app/private-profile" />} />
           </Route>
           <Route path="*" element={<Navigate to="/auth/signin" />} />
         </Route>
