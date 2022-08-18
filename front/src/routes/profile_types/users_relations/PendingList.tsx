@@ -9,7 +9,7 @@ export const PendingList = () => {
     undefined
   );
 
-  const [isFetched, setFetched] = useState(false);
+  const [isFetched, setFetched] = useState("false");
   const [isUpdated, setUpdate] = useState(false);
 
   let pending: ItableRow[] = [];
@@ -20,14 +20,13 @@ export const PendingList = () => {
     };
 
     const fetchDataPendingAvatar = async (otherId: number) => {
-      console.log("id? ", otherId);
       return await getUserAvatarQuery(otherId);
     };
 
     const fetchData = async () => {
       let fetchedPending = await fetchDataPending();
 
-      if (fetchedPending.length !== 0) {
+      if (fetchedPending !== undefined && fetchedPending.length !== 0) {
         for (let i = 0; i < fetchedPending.length; i++) {
           let newRow: ItableRow = {
             key: i,
@@ -45,18 +44,16 @@ export const PendingList = () => {
         }
       }
       setPendingList(pending);
-      if (fetchedPending.length !== 0) console.log("pendingList", PendingList);
-      setFetched(true);
-      setUpdate(false);
+      setFetched("true");
     };
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetched, isUpdated]);
+  }, [isUpdated]);
 
   return (
     <div style={{ overflowY: "auto", overflowX: "hidden" }}>
-      {isFetched ? (
+      {isFetched === "true" ? (
         PendingList?.length !== 0 ? (
           PendingList!.map((h, index) => {
             return (
@@ -72,7 +69,7 @@ export const PendingList = () => {
           <span>No pending invites.</span>
         )
       ) : (
-        <div>No pending invites.</div>
+        <div>Loading...</div>
       )}
     </div>
   );

@@ -9,7 +9,7 @@ export const FriendsList = () => {
     undefined
   );
 
-  const [isFetched, setFetched] = useState(false);
+  const [isFetched, setFetched] = useState("false");
   const [isUpdated, setUpdate] = useState(false);
 
   let friends: ItableRow[] = [];
@@ -20,14 +20,13 @@ export const FriendsList = () => {
     };
 
     const fetchDataFriendsAvatar = async (otherId: number) => {
-      console.log("id? ", otherId);
       return await getUserAvatarQuery(otherId);
     };
 
     const fetchData = async () => {
       let fetchedFriends = await fetchDataFriends();
 
-      if (fetchedFriends.length !== 0) {
+      if (fetchedFriends !== undefined && fetchedFriends.length !== 0) {
         for (let i = 0; i < fetchedFriends.length; i++) {
           let newRow: ItableRow = {
             key: i,
@@ -45,18 +44,16 @@ export const FriendsList = () => {
         }
       }
       setFriendsList(friends);
-      if (fetchedFriends.length !== 0) console.log("friendsList", friendsList);
-      setFetched(true);
-      setUpdate(false);
+      setFetched("true");
     };
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetched, isUpdated]);
+  }, [isUpdated]);
 
   return (
     <div style={{ overflowY: "auto", overflowX: "hidden" }}>
-      {isFetched ? (
+      {isFetched === "true" ? (
         friendsList?.length !== 0 ? (
           friendsList!.map((h, index) => {
             return (
@@ -72,8 +69,10 @@ export const FriendsList = () => {
           <span>No friends.</span>
         )
       ) : (
-        <div>No friends.</div>
+        <div>Loading...</div>
       )}
     </div>
   );
 };
+
+//isFetched === "error" to add

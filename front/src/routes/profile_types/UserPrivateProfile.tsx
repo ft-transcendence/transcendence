@@ -39,7 +39,6 @@ export default function UserPrivateProfile() {
   const [avatarFetched, setAvatarFetched] = useState(false);
 
   useEffect(() => {
-    console.log("Use effect for avatar");
     const getAvatar = async () => {
       const result_1: undefined | string | Blob | MediaSource =
         await getAvatarQuery();

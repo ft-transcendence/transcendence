@@ -9,7 +9,7 @@ export const BlockedList = () => {
     undefined
   );
 
-  const [isFetched, setFetched] = useState(false);
+  const [isFetched, setFetched] = useState("false");
   const [isUpdated, setUpdate] = useState(false);
 
   let blocked: ItableRow[] = [];
@@ -20,14 +20,13 @@ export const BlockedList = () => {
     };
 
     const fetchDataBlockedAvatar = async (otherId: number) => {
-      console.log("id? ", otherId);
       return await getUserAvatarQuery(otherId);
     };
 
     const fetchData = async () => {
       let fetchedBlocked = await fetchDataBlocked();
 
-      if (fetchedBlocked.length !== 0) {
+      if (fetchedBlocked !== undefined && fetchedBlocked.length !== 0) {
         for (let i = 0; i < fetchedBlocked.length; i++) {
           let newRow: ItableRow = {
             key: i,
@@ -45,18 +44,16 @@ export const BlockedList = () => {
         }
       }
       setBlockedList(blocked);
-      if (fetchedBlocked.length !== 0) console.log("blockedList", blockedList);
-      setFetched(true);
-      setUpdate(false);
+      setFetched("true");
     };
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetched, isUpdated]);
+  }, [isUpdated]);
 
   return (
     <div style={{ overflowY: "auto", overflowX: "hidden" }}>
-      {isFetched ? (
+      {isFetched === "true" ? (
         blockedList?.length !== 0 ? (
           blockedList!.map((h, index) => {
             return (
@@ -72,7 +69,7 @@ export const BlockedList = () => {
           <span>No blocked users.</span>
         )
       ) : (
-        <div>No blocked users.</div>
+        <div>Loading...</div>
       )}
     </div>
   );
