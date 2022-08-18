@@ -23,7 +23,8 @@ export const unblockUserQuery = (otherId: number) => {
   let body = JSON.stringify({
     otherId: otherId,
   });
-  return fetchGet("/unblock_user", authFileHeader, body);
+  console.log("otherId: ", otherId);
+  return fetchGet("unblock_user", authFileHeader, body);
 };
 
 export const cancelInviteQuery = (otherId: number) => {
@@ -57,9 +58,12 @@ const fetchGet = async (url: string, header: any, body: any) => {
       body: body,
       redirect: "follow",
     });
-    await response.json();
-    if (!response.ok) return console.log("POST error on ", url);
-    return console.log("POST sucess on ", url);
+    await response;
+    if (!response.ok) {
+      console.log("POST error on ", url);
+      return "error";
+    }
+    return "success";
   } catch (error) {
     return console.log("error", error);
   }

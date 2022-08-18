@@ -17,7 +17,7 @@ export const DisplayRow = (props: any) => {
               <div
                 className="profile-pic-inside-sm"
                 style={{
-                  backgroundImage: `url("https://cdn.intra.42.fr/users/mvaldes.JPG")`,
+                  backgroundImage: `url("${props.userModel.avatar}")`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
