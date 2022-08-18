@@ -11,6 +11,7 @@ import {
 	Post,
 	Req,
 	Res,
+	UseFilters,
 	UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
@@ -26,6 +27,7 @@ import { RtGuard } from './guard';
 import { SignUpDto, SignInDto } from './dto';
 import { TwoFactorService } from './2FA/2fa.service';
 import { ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ViewAuthFilter } from './filter/redirect.login';
 
 // AUTH CONTROLLER - /auth
 @ApiTags('authentification')
@@ -113,8 +115,10 @@ export class AuthController {
 	 */
 	@Public()
 	@UseGuards(FortyTwoAuthGuard)
+	@UseFilters(ViewAuthFilter)
 	@Get('42/callback')
 	async callback_42(@Req() request: any, @Res() response: Response) {
+		console.log('test');
 		// Generate token using API response
 		const user = await this.authService.signin_42(
 			request.user as Profile_42,

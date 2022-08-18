@@ -29,7 +29,6 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42auth') {
 	}
 
 	validate(accessToken: string, refreshToken: string, profile: Profile_42) {
-		//console.log('profile :', profile);
 		return profile;
 	}
 }
