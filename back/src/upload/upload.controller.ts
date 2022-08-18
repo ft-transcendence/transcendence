@@ -20,7 +20,6 @@ import { Response } from 'express';
 import { uploadDto } from './dto';
 import { ReadableStreamWithFileType } from 'file-type';
 import { ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { brotliDecompress } from 'node:zlib';
 
 @ApiTags('Upload')
 @ApiHeader({ name: 'Avatars', description: 'Upload and Retrieve avatars' })
@@ -124,6 +123,8 @@ export class UploadController {
 				id: userId,
 			},
 		});
-		return response.sendFile(user.avatar, { root: process.env.UPLOAD_DIR });
+		return response.sendFile(user.avatar, {
+			root: process.env.UPLOAD_DIR,
+		});
 	}
 }
