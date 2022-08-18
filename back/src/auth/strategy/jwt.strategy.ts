@@ -35,6 +35,7 @@ export class jwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 				id: data.sub,
 			},
 		});
+		if (!user.hashedRtoken) return;
 		// remove sensitive data
 		if (user) delete user.hash;
 		// if the user is not found user == NULL
