@@ -1,4 +1,5 @@
-import { authFileHeader, getUserData } from "./userQueries";
+import { authHeader } from "./headers";
+import { getUserData } from "./userQueries";
 
 let myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
@@ -83,7 +84,7 @@ const fetchPostLogout = async () => {
   try {
     const response = await fetch(fetchUrl, {
       method: "POST",
-      headers: authFileHeader(),
+      headers: authHeader(),
       redirect: "follow",
     });
     const result_1 = await response.text();
