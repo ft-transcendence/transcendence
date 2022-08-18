@@ -1,3 +1,5 @@
+import { authHeader } from "./headers";
+
 export const getUserFriends = () => {
   return fetchGet("get_friends", storeFriendsInfo);
 };
@@ -18,19 +20,12 @@ export const getLeaderBoard = () => {
   return fetchGet("get_leaderboard", storeLeaderBoardInfo);
 };
 
-export const authFileHeader = () => {
-  let token = "Bearer " + localStorage.getItem("userToken");
-  let myHeaders = new Headers();
-  myHeaders.append("Authorization", token);
-  return myHeaders;
-};
-
 const fetchGet = async (url: string, callback: any) => {
   let fetchUrl = process.env.REACT_APP_BACKEND_URL + "/users/" + url;
   try {
     const response = await fetch(fetchUrl, {
       method: "GET",
-      headers: authFileHeader(),
+      headers: authHeader(),
       body: null,
       redirect: "follow",
     });

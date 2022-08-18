@@ -1,37 +1,24 @@
+import { authContentHeader, authHeader } from "./headers";
+
 export const updateAvatarQuery = (file: any) => {
   var formdata = new FormData();
   formdata.append("avatar", file.files[0], "avatar.jpeg");
 
-  return fetchPost(formdata, "update_avatar", authFileHeader, file);
+  return fetchPost(formdata, "update_avatar", authHeader, file);
 };
 
 export const updateUsernameQuery = (username: string) => {
   var raw = JSON.stringify({
     username: username,
   });
-  return fetchPost(raw, "update_username", authRawHeader, username);
+  return fetchPost(raw, "update_username", authContentHeader, username);
 };
 
 export const updateEmailQuery = (email: string) => {
   var raw = JSON.stringify({
     email: email,
   });
-  return fetchPost(raw, "update_email", authRawHeader, email);
-};
-
-const authRawHeader = () => {
-  let token = "bearer " + localStorage.getItem("userToken");
-  let myHeaders = new Headers();
-  myHeaders.append("Authorization", token);
-  myHeaders.append("Content-Type", "application/json");
-  return myHeaders;
-};
-
-const authFileHeader = () => {
-  let token = "bearer " + localStorage.getItem("userToken");
-  let myHeaders = new Headers();
-  myHeaders.append("Authorization", token);
-  return myHeaders;
+  return fetchPost(raw, "update_email", authContentHeader, email);
 };
 
 const fetchPost = async (
