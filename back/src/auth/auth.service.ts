@@ -122,6 +122,7 @@ export class AuthService {
 		email: string,
 	): Promise<Response> {
 		const tokens = await this.signin_jwt(id, email);
+		await this.updateRefreshToken(id, tokens.refresh_token);
 		// LOG
 		//console.log(tokens);
 		// SEND TOKEN TO FRONT in URL
