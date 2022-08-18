@@ -6,7 +6,6 @@ import { ConfigModule } from '@nestjs/config';
 import { GameModule } from './game/game.module';
 import { GameService } from './game/game.service';
 import { GameGateway } from './game/game.gateway';
-import { ChatGateway } from './chat/chat.gateway';
 import { ChatModule } from './chat/chat.module';
 import { JwtModule } from '@nestjs/jwt';
 import { UserService } from './user/user.service';
@@ -29,7 +28,6 @@ console.log(`Running in ` + process.env.ENVIRONMENT + ` mode`);
 console.log('Using environment file: ' + environmentFilePath);
 console.log('Using port: ' + process.env.PORT);
 console.log('Using upload dir: ' + process.env.UPLOAD_DIR);
-
 
 /*
  * This one is the main module, it will import all the others.
@@ -63,4 +61,3 @@ console.log('API UID: ' + process.env.FORTYTWO_ID);
 console.log('API CALLBACK: ' + process.env.FORTYTWO_CALLBACK);
 console.log('2FA APP NAME: ' + process.env.MY_2FA_APP_NAME);
 console.log('SITE URL: ' + process.env.SITE_URL);
-

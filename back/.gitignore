@@ -1,5 +1,4 @@
 # environment variables
-.env.prod
 .env.dev
 
 # compiled output
