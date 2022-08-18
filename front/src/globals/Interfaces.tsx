@@ -26,3 +26,17 @@ export interface IUserStatus {
   key: number;
   userModel: { id: number; status: number };
 }
+
+export interface userModel {
+  id: number;
+  username: string;
+  avatar: string;
+  friends: Array<userModel>;
+  gamesLost: number;
+  gamesPlayed: number;
+  gamesWon: number;
+  playTime: number;
+  rank: number;
+  score: number;
+  winRate: number;
+}
