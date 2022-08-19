@@ -27,7 +27,7 @@ import { RtGuard } from './guard';
 import { SignUpDto, SignInDto } from './dto';
 import { TwoFactorService } from './2FA/2fa.service';
 import { ApiHeader, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ViewAuthFilter } from './filter';
+import { RedirectOnLogin } from './filter';
 
 // AUTH CONTROLLER - /auth
 @ApiTags('authentification')
@@ -115,7 +115,7 @@ export class AuthController {
 	 */
 	@Public()
 	@UseGuards(FortyTwoAuthGuard)
-	@UseFilters(ViewAuthFilter)
+	@UseFilters(RedirectOnLogin)
 	@Get('42/callback')
 	async callback_42(@Req() request: any, @Res() response: Response) {
 		console.log('test');
