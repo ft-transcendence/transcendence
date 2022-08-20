@@ -113,6 +113,8 @@ export default class Watch extends React.Component < {}, StatePong > {
                         player2Name: "player2",
                         game_list: [],
                         settingsState: "none",
+                        avatarP1URL: "",
+                        avatarP2URL: ""
                     };
     }
 

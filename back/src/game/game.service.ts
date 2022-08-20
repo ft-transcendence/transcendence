@@ -228,10 +228,8 @@ export class GameService {
 				.player1Name,
 			player2Name: GameService.rooms.find((room) => room.id === rid)
 				.player2Name,
-			player1Avatar: GameService.rooms.find((room) => room.id === rid)
-				.player1Avatar,
-			player2Avater: GameService.rooms.find((room) => room.id === rid)
-				.player2Avatar,
+			player1Avatar: GameService.rooms.find((room) => room.id === rid).player1.data.id,
+			player2Avater: GameService.rooms.find((room) => room.id === rid).player2.data.id,
 			startTime: new Date(),
 		};
 		const mutex = new Mutex();
@@ -345,8 +343,8 @@ export class GameService {
 				const data: GameData = {
 					player1Name: room.player1Name,
 					player2Name: room.player2Name,
-					player1Avatar: room.player1Avatar,
-					player2Avater: room.player2Avatar,
+					player1Avatar: room.player1.data.id,
+					player2Avater: room.player2.data.id,
 					player1Score: room.player1Score,
 					player2Score: room.player2Score,
 					gameID: room.id,

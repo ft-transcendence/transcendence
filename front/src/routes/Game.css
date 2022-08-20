@@ -1,6 +1,8 @@
 .Radial-background {
     margin: auto auto;
     height: 82vh;
+    display: flex;
+    flex-direction: column;
     /*background-image: radial-gradient(circle at 50% 0%, rgba(192,69,69,1) 0%, rgba(57,80,127,0.85) 40%, rgba(25,48,49,1) 100%);*/
 }
     .Page-top {
@@ -39,9 +41,8 @@
 }
 
 .Info-card {
-    position: absolute;
-    top: 0;
-    bottom: 50%;
+    position: relative;
+    top: 50%;
     left: 0;
     right: 0;
     margin: auto;
@@ -100,8 +101,8 @@
             .Photo {
                 /* background-color: black; */
                 margin: auto;
-                width: 3vh;
-                height: 3vh;
+                width: 7vh;
+                height: 7vh;
                 border: 2px solid #F9F9F9;
                 border-radius: 50%;
                 /* background: #D8D8D8; */
@@ -111,7 +112,7 @@
                 /* background-color: navy; */
                 margin: auto;
                 width: 40%;
-                font-size: 1.5vh;
+                font-size: 2vh;
                 color: white;
             }
 

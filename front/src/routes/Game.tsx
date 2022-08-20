@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle, SettingsProps, SettingsState } from './game.interfaces';
 import { Form } from 'react-bootstrap';
 import FocusTrap from 'focus-trap-react';
+import { getUserAvatarQuery } from '../queries/avatarQueries';
 
  
 
@@ -171,7 +172,7 @@ export default class Game extends React.Component < {}, StatePong > {
     socket = io("ws://localhost:4000", this.socketOptions);
 
     MOVE_UP   = "ArrowUp";  
-    MOVE_DOWN = "ArrowDown"; 
+    MOVE_DOWN = "ArrowDown";
 
     constructor(none = {}) 
     {
@@ -193,6 +194,8 @@ export default class Game extends React.Component < {}, StatePong > {
                         isSettingsShown: false,
                         settingsState: "up",
                         buttonState: "Start",
+                        avatarP1URL: "",
+                        avatarP2URL: "",
                     };
         this.onSettingsKeyDown = this.onSettingsKeyDown.bind(this);
         this.onSettingsClickClose = this.onSettingsClickClose.bind(this);
@@ -203,10 +206,13 @@ export default class Game extends React.Component < {}, StatePong > {
         document.onkeyup = this.keyUpInput;
         this.socket.on("game_started", () =>
             this.setState({gameStarted: true, showStartButton: false}));
-        this.socket.on("update", (info: Game_data) =>
-            this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name}));
+        this.socket.on("update", (info: Game_data) => {
+            this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name});
+            if (this.state.avatarP1URL == "" && this.state.avatarP2URL == "")
+            this.getAvatars(info.player1Avatar, info.player2Avater);
+        });
         this.socket.on("end_game", (winner: number) => 
-            winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false, showStartButton: true, buttonState: "New Game"}) : this.setState({msgType: 3, gameStarted: false, showStartButton: true, buttonState: "New Game"}));
+            winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}) : this.setState({msgType: 3, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}));
     }
 
     startButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -255,6 +261,19 @@ export default class Game extends React.Component < {}, StatePong > {
       this.setState({isSettingsShown: true});
     }
 
+    getAvatars = async (id1: number, id2: number) => {
+      const result_1: undefined | string | Blob | MediaSource =
+        await getUserAvatarQuery(id1);
+      const result_2: undefined | string | Blob | MediaSource =
+        await getUserAvatarQuery(id2);
+      if (result_1 !== undefined && result_1 instanceof Blob) {
+        this.setState({ avatarP1URL: URL.createObjectURL(result_1) });
+      if (result_2 !== undefined && result_2 instanceof Blob) {
+        this.setState({ avatarP2URL: URL.createObjectURL(result_2) });
+      }
+    }; }
+    
+
     render() {
     const shoWInfo = this.state.gameStarted ? 'flex': 'none';
     /*const showBorder = this.state.gameStarted ? '2px solid rgb(0, 255, 255)' : '0px solid rgb(0, 255, 255)';*/
@@ -271,9 +290,13 @@ export default class Game extends React.Component < {}, StatePong > {
             <div style={{display: `${shoWInfo}`,}} className='Info-card'>
                     <div className='Player-left'>
                         <div className='Info'>
-                            <div className='Photo'>
-                            
-                            </div>
+                        {this.state.avatarP1URL ? (
+                            <div className='Photo' style={{
+                                backgroundImage: `url("${this.state.avatarP1URL}")`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }}></div> ) : (
+                              <div className='Photo'></div>)}
                             <div className='Login' style={{textAlign: 'left'}}>
                             {leftName}
                             </div>
@@ -287,13 +310,17 @@ export default class Game extends React.Component < {}, StatePong > {
                         {this.state.player2Score}
                         </div>
                         <div className='Info'>
-                            
+                        
                             <div className='Login' style={{textAlign: 'right'}}>
                             {rightName}
                             </div>
-                            <div className='Photo'>
-                            
-                            </div>
+                            {this.state.avatarP2URL ? (
+                            <div className='Photo' style={{
+                                backgroundImage: `url("${this.state.avatarP2URL}")`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }}></div> ) : (
+                              <div className='Photo'></div>)}    
                         </div>
                     </div>
                 </div>

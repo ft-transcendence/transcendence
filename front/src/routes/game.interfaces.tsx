@@ -5,8 +5,8 @@ export interface Game_data {
   yBall?: number;
   player1Name: string;
   player2Name: string;
-  player1Avatar: string;
-  player2Avater: string;
+  player1Avatar: number;
+  player2Avater: number;
   player1Score: number;
   player2Score: number;
   gameID?: number;
@@ -41,6 +41,8 @@ export interface StatePong {
   isSettingsShown?: boolean;
   settingsState: "up" | "down" | "none";
   buttonState?: "Start" | "New Game" | "Cancel";
+  avatarP1URL: string,
+  avatarP2URL: string,
 }
 
 export interface Button {
