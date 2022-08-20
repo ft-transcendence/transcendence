@@ -2,6 +2,7 @@ version: '3.8'
 
 volumes:
   data:
+  uploads:
 
 networks:
   backend:
@@ -28,14 +29,15 @@ services:
     image: node:lts-alpine
     container_name: backend
     working_dir: /app
-    command: sh -c "yarn install \
-                    && yarn global add @nestjs/cli \
-                    && npx prisma migrate dev \
-                    && yarn prisma:studio \
+    command: sh -c "yarn install
+                    && yarn global add @nestjs/cli
+                    && npx prisma migrate dev
+                    && yarn prisma:studio
                     && yarn run start:dev" 
 #    build: ./back
     volumes:
       - ./back:/app
+      - uploads:/app/image_dir
     ports:
       - "4000:4000"
       - "5555:5555"
@@ -45,7 +47,7 @@ services:
     depends_on:
       - postgres
 # POSTGRES
-  postgres: #==dev-db
+  postgres:
     image: postgres:14-alpine
     container_name: postgres
     ports:

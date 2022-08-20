@@ -1,7 +1,13 @@
-import { getLeaderBoard, getUserData } from "./userQueries";
+import { authFileHeader, getUserData } from "./userQueries";
 
 let myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
+
+// const NavigateTwoFA = (username: string) => {
+//   console.log("username navigate: ", username);
+//   let navigate = useNavigate();
+//   navigate("/2FA?user=" + username);
+// };
 
 const fetchPost = async (
   raw: string,
@@ -11,17 +17,35 @@ const fetchPost = async (
 ) => {
   let fetchUrl = "http://localhost:4000/auth/" + url;
 
-  const rest = await fetch(fetchUrl, {
-    method: "POST",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  }).then((response) => response.json());
-  storeToken(userInfo, rest);
-  if (localStorage.getItem("userToken")) {
-    await getUserData();
-    await getLeaderBoard();
-    if (localStorage.getItem("userName")) userSignIn();
+  try {
+    const response = await fetch(fetchUrl, {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    });
+    const result_1 = await response.json();
+    if (!response.ok) {
+      console.log("POST error on ", url);
+      return "error: " + url;
+    }
+    // check if user is 2FA
+    if (result_1.twoFA) {
+      // redirect to 2FA page
+      const url = "/2FA?user=" + result_1.username;
+      window.location.href = url;
+      // NavigateTwoFA(rest.username);
+    } else {
+      userInfo.clear();
+      storeToken(result_1);
+      if (localStorage.getItem("userToken")) {
+        await getUserData();
+        if (localStorage.getItem("userName")) userSignIn();
+        else return "error: getUserData";
+      }
+    }
+  } catch (error) {
+    return console.log("error", error);
   }
 };
 
@@ -30,7 +54,7 @@ export const signIn = (userInfo: any, userSignIn: any) => {
     username: userInfo.email,
     password: userInfo.password,
   });
-  fetchPost(raw, userInfo, userSignIn, "signin");
+  return fetchPost(raw, userInfo, userSignIn, "signin");
 };
 
 export const signUp = (userInfo: any, userSignIn: any) => {
@@ -39,14 +63,36 @@ export const signUp = (userInfo: any, userSignIn: any) => {
     password: userInfo.password,
     username: userInfo.username,
   });
-  fetchPost(raw, userInfo, userSignIn, "signup");
+  return fetchPost(raw, userInfo, userSignIn, "signup");
 };
 
-const storeToken = (userInfo: any, token: any) => {
-  if (!(token.error === "Forbidden")) {
-    console.log("token= ", token.access_token);
-    localStorage.setItem("userToken", token.access_token);
-    localStorage.setItem("userRefreshToken", token.refresh_token);
+export const storeToken = (token: any) => {
+  console.log("token= ", token.access_token);
+  console.log("refresh token = ", token.access_token);
+  localStorage.setItem("userToken", token.access_token);
+  localStorage.setItem("userRefreshToken", token.refresh_token);
+};
+
+export const logOut = () => {
+  return fetchPostLogout();
+};
+
+const fetchPostLogout = async () => {
+  let fetchUrl = "http://localhost:4000/auth/logout";
+
+  try {
+    const response = await fetch(fetchUrl, {
+      method: "POST",
+      headers: authFileHeader(),
+      redirect: "follow",
+    });
+    const result_1 = await response.text();
+    if (!response.ok) {
+      console.log("POST error on logout");
+      return "error";
+    }
+    return result_1;
+  } catch (error) {
+    return console.log("error", error);
   }
-  userInfo.clear();
 };

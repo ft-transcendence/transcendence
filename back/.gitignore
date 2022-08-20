@@ -1,10 +1,12 @@
 # environment variables
 .env.prod
-.env.dev
 
 # compiled output
 /dist
 /node_modules
+
+# uploaded files
+/image_dir
 
 # prisma migrations
 /prisma/migrations/*

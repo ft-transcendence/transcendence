@@ -28,6 +28,8 @@ model User {
 	avatar		String?
 
 	hashedRtoken	String?
+	twoFAsecret		String?
+	twoFA			Boolean?	@default(false)
 
 	gamesWon		Int     @default(0)
 	gamesLost		Int     @default(0)

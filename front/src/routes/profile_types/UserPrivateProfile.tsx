@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { ModifyEntry } from "./ModifyUserInfo";
-import IconPen from "../../ressources/icons/IconPen.svg";
+import IconPen from "../../ressources/icons/Icon_Pen.svg";
 import { MUploadAvatar } from "../../modals/MUploadAvatar";
+import { Activate2FA } from "../../modals/MActivateTwoFA";
 import { UsersRelations } from "./users_relations/UsersRelations";
 import { TwoFA } from "./TwoFA";
+import { getAvatarQuery } from "../../queries/avatarQueries";
 
 export default function UserPrivateProfile() {
   const [showUsername, setShowUsername] = useState(false);
@@ -31,10 +33,35 @@ export default function UserPrivateProfile() {
   };
 
   const [modalShow, setModalShow] = useState(false);
+  const [modalShowAuth, setModalShowAuth] = useState(false);
+  const [authStatus, setAuthStatus] = useState(userInfo.auth);
+  const [avatarURL, setAvatarURL] = useState("");
+  const [avatarFetched, setAvatarFetched] = useState(false);
+
+  useEffect(() => {
+    const getAvatar = async () => {
+      const result_1: undefined | string | Blob | MediaSource =
+        await getAvatarQuery();
+      if (result_1 !== undefined && result_1 instanceof Blob) {
+        setAvatarURL(URL.createObjectURL(result_1));
+      } else if (result_1 === "error: avatar")
+        console.log("Could not get avatar of self.");
+    };
+    getAvatar();
+  }, [avatarFetched]);
 
   return (
     <main>
-      <MUploadAvatar show={modalShow} onHide={() => setModalShow(false)} />
+      <MUploadAvatar
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        isAvatarUpdated={() => setAvatarFetched(!avatarFetched)}
+      />
+      <Activate2FA
+        show={modalShowAuth}
+        onSubmit={() => setAuthStatus("true")}
+        onHide={() => setModalShowAuth(false)}
+      />
 
       <h1 className="app-title">My account</h1>
       <Container className="p-5 h-100">
@@ -43,11 +70,12 @@ export default function UserPrivateProfile() {
             <div
               className="profile-pic-inside"
               style={{
-                backgroundImage: `url("https://cdn.intra.42.fr/users/mvaldes.JPG")`,
+                backgroundImage: `url("${avatarURL}")`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
             >
+              {/* <img src={avatarURL} alt="avatar"></img> */}
               <input
                 type="image"
                 alt="avatar of user"
@@ -121,7 +149,26 @@ export default function UserPrivateProfile() {
                     </Col>
                   </Row>
                 </div>
-                <TwoFA auth={userInfo.auth} />
+                <div>
+                  <Row className="wrapper p-3">
+                    <button
+                      type="button"
+                      className="col-5 btn btn-outline-primary btn-sm"
+                      onClick={() => {
+                        setShowEmail(false);
+                        setShowFriends(false);
+                        setShowUsername(false);
+                      }}
+                    >
+                      Change Password
+                    </button>
+                  </Row>
+                </div>
+                <TwoFA
+                  auth={authStatus}
+                  onClick={() => setModalShowAuth(true)}
+                  onDeactivate={() => setAuthStatus("false")}
+                />
               </Card.Body>
             </Card>
           </Col>

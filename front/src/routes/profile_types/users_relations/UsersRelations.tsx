@@ -1,4 +1,4 @@
-import { Col, Card, Navbar, Container, Nav } from "react-bootstrap";
+import { Col, Card, Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink, Outlet } from "react-router-dom";
 
 export const UsersRelations = () => {

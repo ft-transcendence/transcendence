@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -8,12 +8,15 @@ import { signUp, signIn } from "../../queries/authQueries";
 import { GUserInputsRefs } from "../../globals/variables";
 import { useAuth } from "../../globals/contexts";
 import { getUserData } from "../../queries/userQueries";
+import { TAlert } from "../../toasts/TAlert";
 
 export default function Auth() {
   let navigate = useNavigate();
   let auth = useAuth();
   let location = useLocation();
-  
+  const [showNotif, setShowNotif] = useState(false);
+  const [notifText, setNotifText] = useState("Error");
+
   // Use a callback to avoid re-rendering
   const userSignIn = useCallback(() => {
     let username = localStorage.getItem("userName");
@@ -22,31 +25,27 @@ export default function Auth() {
       auth.signin(username, () => {
         navigate("/app/private-profile", { replace: true });
       });
-      console.log("user is signed in");
+    console.log("user is signed in");
   }, [navigate, auth]);
 
   // useEffect to get access token from URL
-    useEffect(() => {
+  useEffect(() => {
     // get access token from URL Query
     const access_token = location.search.split("=")[1];
     if (access_token) {
-      // LOG
       console.log(access_token);
-      //storeToken(access_token); --> Add function <--
-      // set the token into localstorage
       localStorage.setItem("userToken", access_token);
       // getUserData is a fetch that might take time. In order for sign in
       // to operate after the function, it needs to use await, asyn and .then
       // keywords. Otherwise, things might happen in the wrong order.
       const fetchData = async () => {
-       const data = await getUserData(); 
-      }
+        const data = await getUserData();
+        console.log("data: ", data);
+      };
       // sign in the user
-      fetchData()
-      .then (() => userSignIn())
-      }
-    } , [location.search, userSignIn]);
-
+      fetchData().then(() => userSignIn());
+    }
+  }, [location.search, userSignIn]);
 
   const handleSubmit = (event: any) => {
     let userInfo: IUserInfo = {
@@ -59,19 +58,42 @@ export default function Auth() {
         this.password = null;
       },
     };
- 
+
     event.preventDefault();
     if (GUserInputsRefs.username.current?.value)
       userInfo.username = GUserInputsRefs.username.current.value;
     userInfo.email = GUserInputsRefs!.email!.current!.value;
     userInfo.password = GUserInputsRefs!.password!.current!.value;
     if (userInfo.username && userInfo.email && userInfo.password)
-      signUp(userInfo, userSignIn);
-    else signIn(userInfo, userSignIn);
+    {
+      const signUpUser = async () => {
+        const result = await signUp(userInfo, userSignIn);
+        if (result && result.includes("error")) {
+          result.includes("signUp")
+            ? setNotifText("User already exists. Please enter another username and/or email.")
+            : setNotifText("Unable to sign up. Please try again.");
+          setShowNotif(true);
+        }
+      };
+      signUpUser();
+    }
+    else {
+      const signInUser = async () => {
+        const result = await signIn(userInfo, userSignIn);
+        if (result && result.includes("error")) {
+          result.includes("signIn")
+            ? setNotifText("User does not exists. Please enter a valid email and/or username.")
+            : setNotifText("Could not retreive user. Please try again.");
+          setShowNotif(true);
+        }
+      };
+      signInUser();
+    }
   };
 
   return (
     <div className="Auth-form-container">
+      <TAlert show={showNotif} setShow={setShowNotif} text={notifText} />
       <form className="Auth-form" onSubmit={handleSubmit}>
         <div className="Auth-form-content">
           <Outlet />
@@ -101,7 +123,12 @@ export default function Auth() {
             </Form.Text>
           </Form.Group>
           {/* USE LINK TO GET USER FROM 42 API */}
-          <Button variant="secondary" className="submit-button" size="sm" href="http://localhost:4000/auth/42">
+          <Button
+            variant="secondary"
+            className="submit-button"
+            size="sm"
+            href="http://localhost:4000/auth/42"
+          >
             Sign in with 42
           </Button>
           <Button
@@ -113,6 +140,7 @@ export default function Auth() {
             Submit
           </Button>
           <p className="text-secondary mt-2">
+             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             Forgot your &nbsp; <a href="#">password?</a>
           </p>
         </div>

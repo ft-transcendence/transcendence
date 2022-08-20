@@ -110,44 +110,32 @@ export class UserController {
 	@Post('/update_username')
 	async updateUsername(
 		@Body('username') newUsername: string,
-		@Body('password') password: string,
 		@Req() request,
 	) {
 		console.log('Going through updateUsername in user.controller');
 		const result = await this.userService.updateUsername(
 			request.user.id,
 			newUsername,
-			password,
 		);
 		return result;
 	}
 
 	@Post('/update_avatar')
-	async updateAvatar(
-		@Body('avatar') newAvatar: string,
-		@Body('password') password: string,
-		@Req() request,
-	) {
+	async updateAvatar(@Body('avatar') newAvatar: string, @Req() request) {
 		console.log('Going through updateAvatar in user.controller');
 		const result = await this.userService.updateAvatar(
 			request.user.id,
 			newAvatar,
-			password,
 		);
 		return result;
 	}
 
 	@Post('/update_email')
-	async updateEmail(
-		@Body('email') newEmail: string,
-		@Body('password') password: string,
-		@Req() request,
-	) {
+	async updateEmail(@Body('email') newEmail: string, @Req() request) {
 		console.log('Going through updateEmail in user.controller');
 		const result = await this.userService.updateEmail(
 			request.user.id,
 			newEmail,
-			password,
 		);
 		return result;
 	}

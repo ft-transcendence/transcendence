@@ -46,6 +46,19 @@
     #4361ee 100%
   );
 }
+.App {
+  background-color: var(--basic-color-background);
+  font-family: "Roboto" sans-serif;
+  color: var(--text-color-white);
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.Home {
+  height: 100%;
+  width: 100%;
+}
 
 .modify-card {
   background: #2e3238;
@@ -65,7 +78,7 @@
   font-family: "Roboto" sans-serif;
   font-style: normal;
   letter-spacing: -0.4px;
- color: var(--text-color-white);
+  color: var(--text-color-white);
 }
 
 .wrapper {
@@ -92,14 +105,6 @@
   font-style: normal;
   padding-top: 5px;
   font-size: 12px;
-}
-
-.App {
-  background-color: var(--basic-color-background);
-  font-family: "Roboto" sans-serif;
-  color: var(--text-color-white);
-  width: 100vw;
-  height: 100vh;
 }
 
 .app-title {

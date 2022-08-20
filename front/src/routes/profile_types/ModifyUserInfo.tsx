@@ -4,6 +4,7 @@ import {
   updateUsernameQuery,
   updateEmailQuery,
 } from "../../queries/updateUserQueries";
+import { TAlert } from "../../toasts/TAlert";
 
 export const ModifyEntry = (props: any) => {
   const initialValues = {
@@ -12,6 +13,8 @@ export const ModifyEntry = (props: any) => {
   };
 
   const [userInput, setUserInput] = useState(initialValues);
+  const [showNotif, setShowNotif] = useState(false);
+  const [notifText, setNotifText] = useState("Error");
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
@@ -24,24 +27,47 @@ export const ModifyEntry = (props: any) => {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (userInput.userName) {
-      updateUsernameQuery(userInput.userName);
-      const button = document.getElementById("handleChange");
-      if (button) {
-        button.setAttribute("name", "userName");
-        button.setAttribute("value", userInput.userName);
-      }
+      const updateUsername = async () => {
+        const result = await updateUsernameQuery(userInput.userName);
+        if (result !== "error") {
+          const button = document.getElementById("handleChange");
+          if (button) {
+            button.setAttribute("name", "userName");
+            button.setAttribute("value", userInput.userName);
+            props.changeUserInfoHook(e);
+            props.onClick();
+          }
+        } else {
+          setNotifText(
+            "Username already taken. Please enter another username."
+          );
+          setShowNotif(true);
+        }
+      };
+      updateUsername();
     }
     if (userInput.email) {
-      updateEmailQuery(userInput.email);
-      const button = document.getElementById("handleChange");
-      if (button) {
-        button.setAttribute("name", "email");
-        button.setAttribute("value", userInput.email);
-      }
+      const updateEmail = async () => {
+        const result = await updateEmailQuery(userInput.email);
+        if (result !== "error") {
+          const button = document.getElementById("handleChange");
+          if (button) {
+            button.setAttribute("name", "email");
+            button.setAttribute("value", userInput.email);
+            props.changeUserInfoHook(e);
+            props.onClick();
+          }
+        } else {
+          setNotifText("Email already taken. Please enter another email.");
+          setShowNotif(true);
+        }
+      };
+      updateEmail();
     }
   };
   return (
     <Col className="col-6">
+      <TAlert show={showNotif} setShow={setShowNotif} text={notifText} />
       <Card className="p-5 modify-card">
         <Card.Body>
           <div>
@@ -72,8 +98,6 @@ export const ModifyEntry = (props: any) => {
                       size="sm"
                       onClick={(e: any) => {
                         handleSubmit(e);
-                        props.changeUserInfoHook(e);
-                        props.onClick();
                       }}
                     >
                       Done
