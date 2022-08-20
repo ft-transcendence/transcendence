@@ -8,11 +8,13 @@
     .Page-top {
         margin: auto;
         height: 20%;
+        overflow: auto;
     }
 
     .Page-mid {
         margin: auto;
         height: 60%;
+        overflow: hidden;
     }
 
     .Page-foot {
@@ -21,6 +23,7 @@
         width: 40%;
         height: 8%;
         position: relative;
+        overflow: hidden;
     }
 
 .innerFoot

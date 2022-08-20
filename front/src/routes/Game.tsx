@@ -1,11 +1,10 @@
 import React from 'react';
 import { io } from "socket.io-client";
 import "./Game.css";
-import { Link } from "react-router-dom";
 import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle, SettingsProps, SettingsState } from './game.interfaces';
-import { Form } from 'react-bootstrap';
 import FocusTrap from 'focus-trap-react';
 import { getUserAvatarQuery } from '../queries/avatarQueries';
+import SoloGame from './SoloGame';
 
  
 
@@ -90,7 +89,7 @@ class Message extends React.Component< Msg, MsgState > {
     constructor(props: Msg){
         super(props);
         this.state = {showMsg: false,
-                      type: 0};
+                      type: 0,};
         }
       
         static getDerivedStateFromProps(props: Msg, state: MsgState){
@@ -196,9 +195,11 @@ export default class Game extends React.Component < {}, StatePong > {
                         buttonState: "Start",
                         avatarP1URL: "",
                         avatarP2URL: "",
+                        soloGame: false,
                     };
         this.onSettingsKeyDown = this.onSettingsKeyDown.bind(this);
         this.onSettingsClickClose = this.onSettingsClickClose.bind(this);
+        this.quitSoloMode = this.quitSoloMode.bind(this);
     }
 
     componentDidMount() {
@@ -228,7 +229,9 @@ export default class Game extends React.Component < {}, StatePong > {
         this.socket.emit("start", {}, (player: Player) => 
           this.setState({roomId: player.roomId, playerNumber: player.playerNb, msgType: 1}));  
         }
-     
+    
+    soloButtonHandler = () =>
+        this.setState({soloGame: true});
    
     keyDownInput = (e: KeyboardEvent) => {
     if (e.key === this.MOVE_UP && this.state.gameStarted)
@@ -273,6 +276,9 @@ export default class Game extends React.Component < {}, StatePong > {
       }
     }; }
     
+    quitSoloMode() {
+      this.setState({soloGame: false});
+    }
 
     render() {
     const shoWInfo = this.state.gameStarted ? 'flex': 'none';
@@ -285,6 +291,9 @@ export default class Game extends React.Component < {}, StatePong > {
     var rightName = String(this.state.player2Name);
 
     return (
+      <div>
+      {this.state.soloGame ? (
+        <SoloGame clickHandler={this.quitSoloMode}></SoloGame>) : (
         <div className='Radial-background'>
             <div className='Page-top'>
             <div style={{display: `${shoWInfo}`,}} className='Info-card'>
@@ -353,6 +362,7 @@ export default class Game extends React.Component < {}, StatePong > {
             <div className='Button-msg-zone'>
                     <Message showMsg={this.state.buttonState !== "Start" && !this.state.gameStarted} type={this.state.msgType} />
                     <StartButton showButton={this.state.showStartButton} clickHandler={this.startButtonHandler} buttonText={this.state.buttonState} />
+                    <StartButton showButton={this.state.showStartButton} clickHandler={this.soloButtonHandler} buttonText="Solo Game" />
             </div>
             <div>
                 {this.state.isSettingsShown ? (
@@ -374,4 +384,5 @@ export default class Game extends React.Component < {}, StatePong > {
             </div>
         </div>
     )}
+    </div>)}
 }
