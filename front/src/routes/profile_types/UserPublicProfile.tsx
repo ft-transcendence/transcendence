@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import { useParams, useRoutes } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { userModel } from "../../globals/Interfaces";
-import {
-  getAvatarQuery,
-  getUserAvatarQuery,
-} from "../../queries/avatarQueries";
+import { getUserAvatarQuery } from "../../queries/avatarQueries";
 import { getOtherUser } from "../../queries/otherUserQueries";
 import "./UserPublicProfile.css";
 
@@ -35,7 +32,6 @@ const initializeUser = (result: any, setUserInfo: any) => {
   userInfoInit.rank = result.rank;
   userInfoInit.score = result.score;
   userInfoInit.winRate = result.winRate;
-  console.log("result.winRate", result.winRate);
   setUserInfo(userInfoInit);
 };
 
@@ -45,7 +41,6 @@ export default function UserProfile() {
   const [isFetched, setIsFetched] = useState(false);
   const [avatarURL, setAvatarURL] = useState("");
   const [isUser, setIsUser] = useState(true);
-  // const [avatarFetched, setAvatarFetched] = useState(false);
 
   useEffect(() => {
     const getAvatar = async () => {
