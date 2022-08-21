@@ -57,11 +57,8 @@
   color: #dadada;
 }
 
-.buttons-wrapper {
-  
-}
 .buttons-round-big {
-  margin-left:  20px;
+  margin-left: 20px;
   display: inline-block;
   width: 40px;
   height: 40px;
@@ -69,11 +66,28 @@
   box-sizing: border-box;
   background: #5d76ec;
   box-shadow: 5px 10px 20px 2px rgba(18, 20, 26, 0.3), -5px -10px 20px #78a5e9;
-    display: flex;
+  display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .big-icons {
   font-size: 0.9rem;
+}
+
+.text-huge {
+  font-size: 80px;
+  font-weight: 700;
+  letter-spacing: -5px;
+  background: linear-gradient(180deg, #50caff -11.53%, #4361ee 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.public-card {
+  background: #31353c;
+  box-shadow: inset 10px 10px 10px rgba(0, 0, 0, 0.25),
+    inset -10px -10px 10px #30343a;
+  border-radius: 10px;
 }
