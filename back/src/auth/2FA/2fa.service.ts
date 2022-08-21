@@ -33,7 +33,6 @@ export class TwoFactorService {
 		url.pathname = '2FA';
 		url.searchParams.append('username', username);
 		response.status(302).redirect(url.href);
-		//response.end();
 	}
 
 	/* Turn on 2FA for existing user */
@@ -49,8 +48,6 @@ export class TwoFactorService {
 			where: { email: email },
 			data: { twoFA: true },
 		});
-		// LOG
-		// console.log('turn_on_2fa', user, isValid);
 		const tokens = await this.authservice.signin_jwt(id, email, true);
 		return tokens;
 	}
@@ -81,8 +78,6 @@ export class TwoFactorService {
 			where: { email: email },
 			data: { twoFAsecret: secret },
 		});
-		// LOG
-		//console.log('gen2FA', secret, onetimepathurl);
 		return {
 			secret,
 			onetimepathurl,
@@ -97,8 +92,6 @@ export class TwoFactorService {
 		const [user] = await this.prisma.user.findMany({
 			where: { OR: [{ email: username }, { username: username }] },
 		});
-		// LOG
-		//console.log(user);
 		if (!user) {
 			throw new UnauthorizedException('Invalid User');
 		}
@@ -106,8 +99,6 @@ export class TwoFactorService {
 		const { id, email, twoFAsecret } = user;
 		// check if code is valid
 		const isValidCode = await this.verify2FAcode(twoFAcode, twoFAsecret);
-		// LOG
-		//console.log('code is valid ?', isValidCode);
 		// if invalid code, throw error
 		if (!isValidCode) {
 			throw new UnauthorizedException('Invalid 2FA code');
@@ -120,9 +111,6 @@ export class TwoFactorService {
 
 	/* Verify 2FA code */
 	async verify2FAcode(code: string, twoFAsecret: string) {
-		// LOG
-		//console.log('verify2FAcode', code);
-		//console.log('2FA Secret', twoFAsecret);
 		return authenticator.verify({
 			token: code,
 			secret: twoFAsecret,
