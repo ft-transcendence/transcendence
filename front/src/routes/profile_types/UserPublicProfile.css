@@ -1,7 +1,10 @@
 :root {
-
-    --padding-sides: 30px;
-    --padding-tops: 20px;
+  --padding-sides: 30px;
+  --padding-tops: 20px;
+  /* Text */
+  --text-color-white: #dadada;
+  --text-color-blue: #b9c5ff;
+  --text-color-gray: #31353c;
 }
 
 .public-profile-header {
@@ -26,4 +29,51 @@
 
   background: #5d76ec;
   box-shadow: 4px 8px 15px rgba(18, 20, 26, 0.3), -4px -8px 15px #78a5e9;
+}
+
+.public-username-text {
+  font-family: "Roboto";
+  font-style: medium;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 20px;
+
+  letter-spacing: -0.4px;
+  color: var(--text-color-white);
+}
+
+.public-rank-text {
+  font-family: "Roboto";
+  font-style: light;
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 20px;
+  letter-spacing: -0.4px;
+  padding-top: 5px;
+  padding-left: 30px;
+
+  /* text/light/white */
+
+  color: #dadada;
+}
+
+.buttons-wrapper {
+  
+}
+.buttons-round-big {
+  margin-left:  20px;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  background: #5d76ec;
+  box-shadow: 5px 10px 20px 2px rgba(18, 20, 26, 0.3), -5px -10px 20px #78a5e9;
+    display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.big-icons {
+  font-size: 0.9rem;
 }
