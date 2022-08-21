@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { userModel } from "../../globals/Interfaces";
+import {
+  getAvatarQuery,
+  getUserAvatarQuery,
+} from "../../queries/avatarQueries";
 import { getOtherUser } from "../../queries/otherUserQueries";
 import "./UserPublicProfile.css";
 
@@ -37,19 +41,36 @@ const initializeUser = (result: any, setUserInfo: any) => {
 export default function UserProfile() {
   let params = useParams();
   const [userInfo, setUserInfo] = useState<userModel>(userInfoInit);
+  const [isFetched, setIsFetched] = useState(false);
+  const [avatarURL, setAvatarURL] = useState("");
+  // const [avatarFetched, setAvatarFetched] = useState(false);
+
+  useEffect(() => {
+    const getAvatar = async () => {
+      console.log("fetch avatar of :", userInfoInit.id);
+      const result_1: undefined | string | Blob | MediaSource =
+        await getUserAvatarQuery(userInfoInit.id);
+      if (result_1 !== undefined && result_1 instanceof Blob) {
+        setAvatarURL(URL.createObjectURL(result_1));
+      } else if (result_1 === "error: avatar")
+        console.log("Could not get avatar of ", userInfoInit.id);
+    };
+    if (isFetched && userInfoInit.id) getAvatar();
+  }, [isFetched]);
 
   useEffect(() => {
     const fetchIsUser = async () => {
       let result;
-      if (params.userName !== undefined) {
+      if (!isFetched && params.userName !== undefined) {
         result = await getOtherUser(+params.userName);
-        console.log("result.length: ", result);
+        console.log("result: ", result);
         initializeUser(result, setUserInfo);
+        setIsFetched(true);
       }
     };
     fetchIsUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isFetched]);
 
   return (
     <main>
@@ -60,15 +81,26 @@ export default function UserProfile() {
             <div
               className="profile-pic-inside"
               style={{
-                backgroundImage: `url("https://cdn.intra.42.fr/users/mvaldes.JPG")`,
+                backgroundImage: `url("${avatarURL}")`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
             ></div>
           </div>
-          <Col className=" content">
-            <div className="profile-username-text">@{userInfo.username}</div>
-            <div className="caption"> See Public Profile</div>
+          <Col className="content">
+            <div className="public-username-text">@{userInfo.username}</div>
+            <div className="public-rank-text"> Rank #</div>
+          </Col>
+          <Col className="buttons-wrapper">
+            <div id="clickableIcon" className="buttons-round-big float-end">
+              <i className="bi bi-dpad-fill big-icons" />
+            </div>
+            <div id="clickableIcon" className="buttons-round-big float-end">
+              <i className="bi bi-caret-right-square-fill big-icons" />
+            </div>
+            <div id="clickableIcon" className="buttons-round-big float-end">
+              <i className="bi bi-chat-left-dots-fill big-icons" />
+            </div>
           </Col>
         </Row>
       </Container>
@@ -82,8 +114,7 @@ export default function UserProfile() {
                   <Row className="wrapper p-3">
                     <Col className="text-wrapper">
                       <div className="IBM-text" style={{ fontSize: "20px" }}>
-                        {" "}
-                        USERNAME{" "}
+                        USERNAME
                       </div>
                       <div className="ROBOTO-text" style={{ fontSize: "15px" }}>
                         {userInfo.username}
@@ -91,9 +122,6 @@ export default function UserProfile() {
                     </Col>
                     <Col className=" text-right"></Col>
                   </Row>
-                </div>
-                <div>
-                  <Row className="wrapper p-3"></Row>
                 </div>
               </Card.Body>
             </Card>
