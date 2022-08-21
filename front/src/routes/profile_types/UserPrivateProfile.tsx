@@ -75,7 +75,6 @@ export default function UserPrivateProfile() {
                 backgroundPosition: "center",
               }}
             >
-              {/* <img src={avatarURL} alt="avatar"></img> */}
               <input
                 type="image"
                 alt="avatar of user"
@@ -101,8 +100,7 @@ export default function UserPrivateProfile() {
                   <Row className="wrapper p-3">
                     <Col className="text-wrapper">
                       <div className="IBM-text" style={{ fontSize: "20px" }}>
-                        {" "}
-                        USERNAME{" "}
+                        USERNAME
                       </div>
                       <div className="ROBOTO-text" style={{ fontSize: "15px" }}>
                         {userInfo.userName}
@@ -127,8 +125,7 @@ export default function UserPrivateProfile() {
                   <Row className="wrapper p-3">
                     <Col className="text-wrapper">
                       <div className="IBM-text" style={{ fontSize: "20px" }}>
-                        {" "}
-                        EMAIL{" "}
+                        EMAIL
                       </div>
                       <div className="ROBOTO-text" style={{ fontSize: "15px" }}>
                         {userInfo.email}
