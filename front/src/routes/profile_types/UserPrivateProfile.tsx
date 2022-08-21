@@ -7,9 +7,14 @@ import { Activate2FA } from "../../modals/MActivateTwoFA";
 import { UsersRelations } from "./users_relations/UsersRelations";
 import { TwoFA } from "./TwoFA";
 import { getAvatarQuery } from "../../queries/avatarQueries";
+import { useNavigate } from "react-router-dom";
 import "./Profiles.css"
 
+
 export default function UserPrivateProfile() {
+
+    const navigate = useNavigate();
+
   const [showUsername, setShowUsername] = useState(false);
   const onClickEditUsername = () => setShowUsername((curent) => !curent);
 
@@ -87,7 +92,15 @@ export default function UserPrivateProfile() {
           </div>
           <Col className=" content">
             <div className="profile-username-text">@{userInfo.userName}</div>
-            <div className="caption"> See Public Profile</div>
+            <span
+            id="clickableIcon"
+              className="caption"
+              onClick={() =>
+                navigate("/app/public/" + localStorage.getItem("userID"))
+              }
+            >
+              See Public Profile
+            </span>
           </Col>
         </Row>
       </Container>
