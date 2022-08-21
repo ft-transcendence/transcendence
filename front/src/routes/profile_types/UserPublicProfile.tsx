@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useParams, useRoutes } from "react-router-dom";
 import { userModel } from "../../globals/Interfaces";
 import {
   getAvatarQuery,
@@ -75,7 +75,7 @@ export default function UserProfile() {
   return (
     <main>
       <h1 className="app-title border">My account</h1>
-      <Container className="p-5 h-100 border">
+      <Container className="p-5 border">
         <Row className="wrapper public-profile-header">
           <div className="p-2 public-profile-round">
             <div
@@ -91,7 +91,7 @@ export default function UserProfile() {
             <div className="public-username-text">@{userInfo.username}</div>
             <div className="public-rank-text"> Rank #</div>
           </Col>
-          <Col className="buttons-wrapper">
+          <Col>
             <div id="clickableIcon" className="buttons-round-big float-end">
               <i className="bi bi-dpad-fill big-icons" />
             </div>
@@ -105,26 +105,48 @@ export default function UserProfile() {
         </Row>
       </Container>
 
+      <Container className="p-5 text-center">
+        <Row
+          className="ROBOTO-text"
+          style={{ fontSize: "20px", fontWeight: "400" }}
+        >
+          <Col>Win Rate</Col>
+          <Col>Total Win</Col>
+          <Col>Play Time</Col>
+        </Row>
+        <Row className="IBM-text text-huge">
+          <Col>{userInfo.winRate}</Col>
+          <Col>{userInfo.gamesWon}</Col>
+          <Col>{Math.floor(userInfo.playTime / 1000)}s</Col>
+        </Row>
+      </Container>
       <Container className="p-5">
         <Row className="flex">
           <Col className="col-6">
-            <Card className="p-5 profile-card">
+
+            <Card className="p-3 public-card">
               <Card.Body>
-                <div>
-                  <Row className="wrapper p-3">
-                    <Col className="text-wrapper">
-                      <div className="IBM-text" style={{ fontSize: "20px" }}>
-                        USERNAME
-                      </div>
-                      <div className="ROBOTO-text" style={{ fontSize: "15px" }}>
-                        {userInfo.username}
-                      </div>
-                    </Col>
-                    <Col className=" text-right"></Col>
-                  </Row>
-                </div>
+                <Row className="wrapper p-1">
+                  <Col className="text-wrapper">
+                    <div
+                      className="IBM-text"
+                      style={{ fontSize: "20px", fontWeight: "500" }}
+                    >
+                      Latest Games
+                    </div>
+                  </Col>
+                  <Col className="">
+                    <div
+                      className="IBM-text float-end"
+                      style={{ fontSize: "20px", fontWeight: "500" }}
+                    >
+                      {userInfo.gamesLost + userInfo.gamesWon}
+                    </div>
+                  </Col>
+                </Row>
               </Card.Body>
             </Card>
+            
           </Col>
         </Row>
       </Container>
