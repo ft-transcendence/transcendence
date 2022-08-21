@@ -49,7 +49,7 @@ export interface StatePong {
 export interface Button {
   clickHandler: any;
   showButton: boolean;
-  buttonText?: "Start" | "New Game" | "Cancel" | "Solo Game";
+  buttonText?: "Start" | "New Game" | "Cancel" | "Solo mode";
 }
 
 export interface ButtonState {

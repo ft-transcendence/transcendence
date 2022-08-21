@@ -147,7 +147,7 @@ export default class SoloGame extends React.Component < PropsSoloPong, StateSolo
 
     interval: NodeJS.Timer;  
     refreshRate = 10;
-    ballSpeed = 0.5;
+    ballSpeed = 0.25;
     paddleSpeed = 1;
     lock = 0;
     speedX = this.ballSpeed;
@@ -240,7 +240,7 @@ export default class SoloGame extends React.Component < PropsSoloPong, StateSolo
     initBall() {
       this.setState({ballX: 50});
       this.setState({ballY: 50});
-      this.ballSpeed = 0.5;
+      this.ballSpeed = 0.25;
       this.xBall = 50;
       this.yBall = 50;
       this.speedX = this.ballSpeed * -1;

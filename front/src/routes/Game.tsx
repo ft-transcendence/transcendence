@@ -362,7 +362,7 @@ export default class Game extends React.Component < {}, StatePong > {
             <div className='Button-msg-zone'>
                     <Message showMsg={this.state.buttonState !== "Start" && !this.state.gameStarted} type={this.state.msgType} />
                     <StartButton showButton={this.state.showStartButton} clickHandler={this.startButtonHandler} buttonText={this.state.buttonState} />
-                    <StartButton showButton={this.state.showStartButton} clickHandler={this.soloButtonHandler} buttonText="Solo Game" />
+                    <StartButton showButton={this.state.showStartButton} clickHandler={this.soloButtonHandler} buttonText="Solo mode" />
             </div>
             <div>
                 {this.state.isSettingsShown ? (

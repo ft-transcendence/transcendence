@@ -14,10 +14,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 const refreshRate = 10;
 const paddleSpeed = 1;
-const ballSpeed = 0.5;
 
 @Injectable()
 export class GameService {
+	ballSpeed = 0.25;
+
 	constructor(
 		private schedulerRegistry: SchedulerRegistry,
 		@Inject(forwardRef(() => UserService)) private userService: UserService,
@@ -33,9 +34,10 @@ export class GameService {
 	initBall(roomId: number) {
 		GameService.rooms.find((room) => room.id === roomId).xball = 50;
 		GameService.rooms.find((room) => room.id === roomId).yball = 50;
-		GameService.rooms.find((room) => room.id === roomId).xSpeed = ballSpeed;
+		GameService.rooms.find((room) => room.id === roomId).xSpeed =
+			this.ballSpeed;
 		GameService.rooms.find((room) => room.id === roomId).ySpeed =
-			0.15 + Math.random() * ballSpeed;
+			0.15 + Math.random() * this.ballSpeed;
 		let direction = Math.round(Math.random());
 		if (direction)
 			GameService.rooms.find((room) => room.id === roomId).xSpeed *= -1;
@@ -79,14 +81,15 @@ export class GameService {
 			// ball radius is 1vh
 			GameService.rooms.find((room) => room.id === roomId).xball =
 				97 - 2 / 1.77;
-			GameService.rooms.find((room) => room.id === roomId).xSpeed *= -1;
+			this.ballSpeed *= 1.05;
+			GameService.rooms.find((room) => room.id === roomId).xSpeed *= -1.05;
 			GameService.rooms.find((room) => room.id === roomId).ySpeed =
 				((GameService.rooms.find((room) => room.id === roomId).yball -
 					GameService.rooms.find((room) => room.id === roomId)
 						.paddleRight -
 					5) /
 					6) *
-				ballSpeed; // make ball go up, straight or down based on  the part of the paddle touched
+				this.ballSpeed; // make ball go up, straight or down based on  the part of the paddle touched
 		}
 		// ball collision with left paddle
 		if (
@@ -103,14 +106,16 @@ export class GameService {
 		) {
 			GameService.rooms.find((room) => room.id === roomId).xball =
 				3 + 2 / 1.77;
-			GameService.rooms.find((room) => room.id === roomId).xSpeed *= -1;
+			this.ballSpeed *= 1.05;
+			GameService.rooms.find((room) => room.id === roomId).xSpeed *=
+				-1.05;
 			GameService.rooms.find((room) => room.id === roomId).ySpeed =
 				((GameService.rooms.find((room) => room.id === roomId).yball -
 					GameService.rooms.find((room) => room.id === roomId)
 						.paddleLeft -
 					5) /
 					6) *
-				ballSpeed;
+				this.ballSpeed;
 		}
 		// end of point management
 		if (
