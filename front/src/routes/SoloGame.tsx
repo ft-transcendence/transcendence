@@ -403,6 +403,9 @@ export default class SoloGame extends React.Component < PropsSoloPong, StateSolo
                     <div className='Button' onClick={() => this.showSettings()}>
                         Settings
                     </div>
+                    <div className='Button' onClick={() => this.props.clickHandler()}>
+                        Quit
+                    </div>
                 </div>
             </div>
         </div>

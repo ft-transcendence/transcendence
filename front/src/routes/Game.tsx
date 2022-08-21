@@ -216,6 +216,12 @@ export default class Game extends React.Component < {}, StatePong > {
             winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}) : this.setState({msgType: 3, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}));
     }
 
+    componentWillUnmount() {
+      this.socket.off("game_started");
+      this.socket.off("update");
+      this.socket.off("end_game");
+    }
+
     startButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (!this.state.showStartButton)
             return;

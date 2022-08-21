@@ -82,7 +82,8 @@ export class GameService {
 			GameService.rooms.find((room) => room.id === roomId).xball =
 				97 - 2 / 1.77;
 			this.ballSpeed *= 1.05;
-			GameService.rooms.find((room) => room.id === roomId).xSpeed *= -1.05;
+			GameService.rooms.find((room) => room.id === roomId).xSpeed *=
+				-1.05;
 			GameService.rooms.find((room) => room.id === roomId).ySpeed =
 				((GameService.rooms.find((room) => room.id === roomId).yball -
 					GameService.rooms.find((room) => room.id === roomId)

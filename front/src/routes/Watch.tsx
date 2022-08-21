@@ -1,11 +1,9 @@
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 import { io } from "socket.io-client";
 import "./Game.css";
 import "./Watch.css";
-import { Link } from "react-router-dom";
-import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle, Game_data_extended } from './game.interfaces';
+import { Game_data, Coordinates, StatePong, Button, ButtonState, PaddleProps, StatePaddle, Game_data_extended } from './game.interfaces';
 import { getUserAvatarQuery } from '../queries/avatarQueries';
-import { createModuleResolutionCache } from 'typescript';
 
 
 class RefreshButton extends React.Component< Button, ButtonState > {
@@ -138,7 +136,7 @@ export default class Watch extends React.Component < {}, StatePong > {
         this.socket.on("update", (info: Game_data) => {
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name});
             if (this.state.avatarP1URL == "" && this.state.avatarP2URL == "")
-            this.getAvatars(info.player1Avatar, info.player2Avater);
+                this.getAvatars(info.player1Avatar, info.player2Avater);
         });
             this.socket.on("end_game", (winner: number) => 
             this.setState({gameStarted: false, avatarP1URL: "", avatarP2URL: ""}));
@@ -148,6 +146,11 @@ export default class Watch extends React.Component < {}, StatePong > {
         this.refreshGameList();
     }
     
+    componentWillUnmount() {
+        this.socket.off("update");
+        this.socket.off("end_game");
+    }
+
     refreshGameList() {
         this.state.game_list.length = 0;
         fetch("http://localhost:4000/watch", {
@@ -160,7 +163,9 @@ export default class Watch extends React.Component < {}, StatePong > {
             if (response.ok) {
                 response.json()
                 .then((data: Game_data_extended[]) => {
-                    this.setState({game_list: data}, () => this.getAllAvatars());
+                    this.setState({game_list: data}, () => {
+                        this.getAllAvatars();
+                    });
                 }); 
             };
         })
@@ -225,7 +230,7 @@ export default class Watch extends React.Component < {}, StatePong > {
 
     return (
         <div className='Radial-background'>
-            <div className='Page-top'>
+            <div className='Page-top-watch'>
             { this.state.game_list.length > 0 ? (
             <table>
                     <tbody>
@@ -254,7 +259,7 @@ export default class Watch extends React.Component < {}, StatePong > {
                 <RefreshButton showButton={this.state.showStartButton} clickHandler={this.refreshButtonHandler} />
             </div>
             
-            <div style={{display: `${shoWInfo}`,}} className='Info-card'>
+            <div style={{display: `${shoWInfo}`,}} className='Info-watch'>
                     <div className='Player-left'>
                         <div className='Info'>
                         {this.state.avatarP1URL ? (
