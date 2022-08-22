@@ -172,6 +172,7 @@ export default class Game extends React.Component < {}, StatePong > {
 
     MOVE_UP   = "ArrowUp";  
     MOVE_DOWN = "ArrowDown";
+    avatarsFetched = false;
 
     constructor(none = {}) 
     {
@@ -205,12 +206,14 @@ export default class Game extends React.Component < {}, StatePong > {
     componentDidMount() {
         document.onkeydown = this.keyDownInput;
         document.onkeyup = this.keyUpInput;
-        this.socket.on("game_started", () =>
-            this.setState({gameStarted: true, showStartButton: false}));
+        this.socket.on("game_started", () => {
+            this.setState({gameStarted: true, showStartButton: false});
+            this.avatarsFetched = false;
+        });
         this.socket.on("update", (info: Game_data) => {
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name});
-            if (this.state.avatarP1URL == "" && this.state.avatarP2URL == "")
-            this.getAvatars(info.player1Avatar, info.player2Avater);
+            if (this.avatarsFetched === false)
+              this.getAvatars(info.player1Avatar, info.player2Avater);
         });
         this.socket.on("end_game", (winner: number) => 
             winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}) : this.setState({msgType: 3, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}));
@@ -287,6 +290,7 @@ export default class Game extends React.Component < {}, StatePong > {
       if (result_2 !== undefined && result_2 instanceof Blob) {
         this.setState({ avatarP2URL: URL.createObjectURL(result_2) });
       }
+      this.avatarsFetched = true;
     }; }
     
     quitSoloMode() {

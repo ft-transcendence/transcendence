@@ -34,6 +34,8 @@ export class GameService {
 	initBall(roomId: number) {
 		GameService.rooms.find((room) => room.id === roomId).xball = 50;
 		GameService.rooms.find((room) => room.id === roomId).yball = 50;
+		GameService.rooms.find((room) => room.id === roomId).ballSpeed =
+			this.ballSpeed;
 		GameService.rooms.find((room) => room.id === roomId).xSpeed =
 			this.ballSpeed;
 		GameService.rooms.find((room) => room.id === roomId).ySpeed =
@@ -81,7 +83,9 @@ export class GameService {
 			// ball radius is 1vh
 			GameService.rooms.find((room) => room.id === roomId).xball =
 				97 - 2 / 1.77;
-			this.ballSpeed *= 1.05;
+			GameService.rooms.find(
+				(room) => room.id === roomId,
+			).ballSpeed *= 1.05;
 			GameService.rooms.find((room) => room.id === roomId).xSpeed *=
 				-1.05;
 			GameService.rooms.find((room) => room.id === roomId).ySpeed =
@@ -90,7 +94,7 @@ export class GameService {
 						.paddleRight -
 					5) /
 					6) *
-				this.ballSpeed; // make ball go up, straight or down based on  the part of the paddle touched
+				GameService.rooms.find((room) => room.id === roomId).ballSpeed; // make ball go up, straight or down based on  the part of the paddle touched
 		}
 		// ball collision with left paddle
 		if (
@@ -107,7 +111,9 @@ export class GameService {
 		) {
 			GameService.rooms.find((room) => room.id === roomId).xball =
 				3 + 2 / 1.77;
-			this.ballSpeed *= 1.05;
+			GameService.rooms.find(
+				(room) => room.id === roomId,
+			).ballSpeed *= 1.05;
 			GameService.rooms.find((room) => room.id === roomId).xSpeed *=
 				-1.05;
 			GameService.rooms.find((room) => room.id === roomId).ySpeed =
@@ -116,7 +122,7 @@ export class GameService {
 						.paddleLeft -
 					5) /
 					6) *
-				this.ballSpeed;
+				GameService.rooms.find((room) => room.id === roomId).ballSpeed;
 		}
 		// end of point management
 		if (

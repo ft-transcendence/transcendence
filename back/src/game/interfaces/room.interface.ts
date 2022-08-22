@@ -22,4 +22,5 @@ export interface Room {
 	xSpeed?: number;
 	ySpeed?: number;
 	private: boolean;
+	ballSpeed?: number;
 }
