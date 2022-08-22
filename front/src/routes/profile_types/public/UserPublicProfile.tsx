@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import "./UserPublicProfile.css";
 import DisplayGamesStats from "./DisplayGamesStats";
 import { userModel } from "../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getOtherUser } from "../../../queries/otherUserQueries";
+import "./UserPublicProfile.css";
 
 const userInfoInit: userModel = {
   id: 0,
@@ -37,7 +37,6 @@ const initializeUser = (result: any, setUserInfo: any) => {
 };
 
 export default function UserProfile() {
-  
   let params = useParams();
   const [userInfo, setUserInfo] = useState<userModel>(userInfoInit);
   const [isFetched, setIsFetched] = useState(false);
@@ -121,7 +120,9 @@ export default function UserProfile() {
               <Col>{Math.floor(userInfo.playTime / 1000)}s</Col>
             </Row>
           </Container>
-          <DisplayGamesStats userInfo={userInfo} />
+          <Container className="p-5">
+            <DisplayGamesStats userInfo={userInfo} />
+          </Container>
         </main>
       ) : isUser && !isFetched ? null : (
         <main>User does not exist.</main>
