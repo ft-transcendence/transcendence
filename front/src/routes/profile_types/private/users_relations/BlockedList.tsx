@@ -1,9 +1,10 @@
-import { useState, useEffect, useContext } from "react";
-import { getUserBlocked, getUserFriends } from "../../../queries/userQueries";
-import { ItableRow, IUserStatus } from "../../../globals/Interfaces";
+import { useContext, useState, useEffect } from "react";
+import { UsersStatusCxt } from "../../../../App";
+import { ItableRow, IUserStatus } from "../../../../globals/Interfaces";
+import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
+import { getUserBlocked } from "../../../../queries/userQueries";
 import { DisplayRow } from "./DisplayRowUsers";
-import { getUserAvatarQuery } from "../../../queries/avatarQueries";
-import { UsersStatusCxt } from "../../../App";
+
 
 export const BlockedList = () => {
   const usersStatus = useContext(UsersStatusCxt);

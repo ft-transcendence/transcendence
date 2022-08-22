@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
-import { Card, Col, Container, Row } from "react-bootstrap";
-import { ModifyEntry } from "./ModifyUserInfo";
-import IconPen from "../../ressources/icons/Icon_Pen.svg";
-import { MUploadAvatar } from "../../modals/MUploadAvatar";
-import { Activate2FA } from "../../modals/MActivateTwoFA";
-import { UsersRelations } from "./users_relations/UsersRelations";
-import { TwoFA } from "./TwoFA";
-import { getAvatarQuery } from "../../queries/avatarQueries";
+import { useState, useEffect } from "react";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { Activate2FA } from "../../../modals/MActivateTwoFA";
+import { MUploadAvatar } from "../../../modals/MUploadAvatar";
+import { getAvatarQuery } from "../../../queries/avatarQueries";
+import { ModifyEntry } from "./ModifyUserInfo";
+import { TwoFA } from "./TwoFA";
+import { UsersRelations } from "./users_relations/UsersRelations";
 import "./Profiles.css"
-
 
 export default function UserPrivateProfile() {
 

@@ -1,4 +1,3 @@
-import { Users } from "../globals/Interfaces";
 import { authContentHeader } from "./headers";
 
 export const getGameStats = (otherUsername: number) => {

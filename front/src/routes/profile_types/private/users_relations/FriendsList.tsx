@@ -1,59 +1,60 @@
-import { useState, useEffect, useContext } from "react";
-import { getUserPending } from "../../../queries/userQueries";
-import { ItableRow, IUserStatus } from "../../../globals/Interfaces";
+import { useContext, useState, useEffect } from "react";
+import { UsersStatusCxt } from "../../../../App";
+import { ItableRow, IUserStatus } from "../../../../globals/Interfaces";
+import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
+import { getUserFriends } from "../../../../queries/userQueries";
 import { DisplayRow } from "./DisplayRowUsers";
-import { getUserAvatarQuery } from "../../../queries/avatarQueries";
-import { UsersStatusCxt } from "../../../App";
 
-export const PendingList = () => {
+
+export const FriendsList = () => {
   const usersStatus = useContext(UsersStatusCxt);
 
-  const [pendingList, setPendingList] = useState<ItableRow[] | undefined>(
+  const [friendsList, setFriendsList] = useState<ItableRow[] | undefined>(
     undefined
   );
 
   const [isFetched, setFetched] = useState("false");
   const [isUpdated, setUpdate] = useState(false);
 
-  let pending: ItableRow[] = [];
+  let friends: ItableRow[] = [];
 
   useEffect(() => {
-    const fetchDataPending = async () => {
-      return await getUserPending();
+    const fetchDataFriends = async () => {
+      return await getUserFriends();
     };
 
-    const fetchDataPendingAvatar = async (otherId: number) => {
+    const fetchDataFriendsAvatar = async (otherId: number) => {
       return await getUserAvatarQuery(otherId);
     };
 
     const fetchData = async () => {
-      let fetchedPending = await fetchDataPending();
+      let fetchedFriends = await fetchDataFriends();
 
-      if (fetchedPending !== undefined && fetchedPending.length !== 0) {
-        for (let i = 0; i < fetchedPending.length; i++) {
+      if (fetchedFriends !== undefined && fetchedFriends.length !== 0) {
+        for (let i = 0; i < fetchedFriends.length; i++) {
           let newRow: ItableRow = {
             key: i,
             userModel: { username: "", avatar: "", id: 0, status: 0 },
           };
-          newRow.userModel.id = fetchedPending[i].id;
-          newRow.userModel.username = fetchedPending[i].username;
+          newRow.userModel.id = fetchedFriends[i].id;
+          newRow.userModel.username = fetchedFriends[i].username;
           let found = undefined;
           if (usersStatus) {
             found = usersStatus.find(
-              (x: IUserStatus) => x.key === fetchedPending[i].id
+              (x: IUserStatus) => x.key === fetchedFriends[i].id
             );
             if (found) newRow.userModel.status = found.userModel.status;
           }
 
-          let avatar = await fetchDataPendingAvatar(fetchedPending[i].id);
+          let avatar = await fetchDataFriendsAvatar(fetchedFriends[i].id);
 
           if (avatar !== undefined && avatar instanceof Blob) {
             newRow.userModel.avatar = URL.createObjectURL(avatar);
           }
-          pending.push(newRow);
+          friends.push(newRow);
         }
       }
-      setPendingList(pending);
+      setFriendsList(friends);
       setFetched("true");
     };
 
@@ -64,11 +65,11 @@ export const PendingList = () => {
   return (
     <div style={{ overflowY: "auto", overflowX: "hidden" }}>
       {isFetched === "true" ? (
-        pendingList?.length !== 0 ? (
-          pendingList!.map((h, index) => {
+        friendsList?.length !== 0 ? (
+          friendsList!.map((h, index) => {
             return (
               <DisplayRow
-                listType={"pending"}
+                listType={"friends"}
                 hook={setUpdate}
                 state={isUpdated}
                 key={index}
@@ -77,7 +78,7 @@ export const PendingList = () => {
             );
           })
         ) : (
-          <span>No friend requests.</span>
+          <span>No friends.</span>
         )
       ) : (
         <div>Loading...</div>

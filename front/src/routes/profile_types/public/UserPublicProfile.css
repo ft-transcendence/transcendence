@@ -32,8 +32,7 @@
 }
 
 .public-username-text {
-  font-family: "Roboto";
-  font-style: medium;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 30px;
   line-height: 20px;
@@ -43,7 +42,7 @@
 }
 
 .public-rank-text {
-  font-family: "Roboto";
+  font-family: "Roboto", sans-serif;
   font-style: light;
   font-weight: 300;
   font-size: 20px;
@@ -93,10 +92,20 @@
 }
 
 .text-title-games {
+  margin-top: 25px;
   font-family: "Raleway", sans-serif;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 14px;
+  font-size: 14px;
+
+  color: #dadada;
+}
+.text-games {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 35px;
+  letter-spacing: -0.4px;
+  margin-top: 15px;
 
   color: #dadada;
 }
