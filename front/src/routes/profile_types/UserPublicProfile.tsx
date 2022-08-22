@@ -5,6 +5,7 @@ import { userModel } from "../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../queries/avatarQueries";
 import { getOtherUser } from "../../queries/otherUserQueries";
 import "./UserPublicProfile.css";
+import DisplayGamesStats from "./users_relations/DisplayGamesStats";
 
 const userInfoInit: userModel = {
   id: 0,
@@ -29,9 +30,9 @@ const initializeUser = (result: any, setUserInfo: any) => {
   userInfoInit.gamesPlayed = result.gamesPlayed;
   userInfoInit.gamesWon = result.gamesWon;
   userInfoInit.playTime = result.playTime;
-  userInfoInit.rank = result.rank;
+  userInfoInit.rank = result.rank === null ? "∞" : result.rank;
   userInfoInit.score = result.score;
-  userInfoInit.winRate = result.winRate;
+  userInfoInit.winRate = result.winRate === null ? 0 : result.winRate;
   setUserInfo(userInfoInit);
 };
 
@@ -91,7 +92,7 @@ export default function UserProfile() {
               </div>
               <Col className="content">
                 <div className="public-username-text">@{userInfo.username}</div>
-                <div className="public-rank-text"> Rank #</div>
+                <div className="public-rank-text"> Rank #{userInfo.rank}</div>
               </Col>
               <Col>
                 <div id="clickableIcon" className="buttons-round-big float-end">
@@ -116,39 +117,12 @@ export default function UserProfile() {
               <Col>Play Time</Col>
             </Row>
             <Row className="IBM-text text-huge">
-              <Col>{userInfo.winRate}</Col>
+              <Col>{Math.round(userInfo.winRate * 10) / 10}</Col>
               <Col>{userInfo.gamesWon}</Col>
               <Col>{Math.floor(userInfo.playTime / 1000)}s</Col>
             </Row>
           </Container>
-          <Container className="p-5">
-            <Row className="flex">
-              <Col className="col-6">
-                <Card className="p-3 public-card">
-                  <Card.Body>
-                    <Row className="wrapper p-1">
-                      <Col className="text-wrapper">
-                        <div
-                          className="IBM-text"
-                          style={{ fontSize: "20px", fontWeight: "500" }}
-                        >
-                          Latest Games
-                        </div>
-                      </Col>
-                      <Col className="">
-                        <div
-                          className="IBM-text float-end"
-                          style={{ fontSize: "20px", fontWeight: "500" }}
-                        >
-                          {userInfo.gamesLost + userInfo.gamesWon}
-                        </div>
-                      </Col>
-                    </Row>
-                  </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-          </Container>
+          <DisplayGamesStats userInfo={userInfo} />
         </main>
       ) : isUser && !isFetched ? null : (
         <main>User does not exist.</main>
