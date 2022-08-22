@@ -40,3 +40,27 @@ export interface userModel {
   score: number;
   winRate: number;
 }
+
+export interface gameModel {
+  userId: number;
+  opponentId: number;
+  opponentUsername: string;
+  opponentRank: number;
+  duration: number;
+  userScore: number;
+  opponentScore: number;
+  victory: boolean;
+}
+export class Users {
+  key: number = 0;
+  game: gameModel = {
+    userId: 0,
+    opponentId: 0,
+    opponentUsername: "",
+    opponentRank: 0,
+    duration: 0,
+    userScore: 0,
+    opponentScore: 0,
+    victory: false
+  };
+}
