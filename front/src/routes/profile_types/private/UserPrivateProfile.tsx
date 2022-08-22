@@ -8,10 +8,10 @@ import { ModifyEntry } from "./ModifyUserInfo";
 import { TwoFA } from "./TwoFA";
 import { UsersRelations } from "./users_relations/UsersRelations";
 import "./Profiles.css"
+import IconPen from "../../../ressources/icons/Icon_Pen.svg";
 
 export default function UserPrivateProfile() {
-
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [showUsername, setShowUsername] = useState(false);
   const onClickEditUsername = () => setShowUsername((curent) => !curent);
@@ -91,7 +91,7 @@ export default function UserPrivateProfile() {
           <Col className=" content">
             <div className="profile-username-text">@{userInfo.userName}</div>
             <span
-            id="clickableIcon"
+              id="clickableIcon"
               className="caption"
               onClick={() =>
                 navigate("/app/public/" + localStorage.getItem("userID"))

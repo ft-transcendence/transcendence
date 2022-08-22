@@ -84,11 +84,18 @@
   background-clip: text;
 }
 
-.public-card {
+.main-card {
+  max-width: 50%;
+  max-height: 400px;
+  overflow: auto;
   background: #31353c;
   box-shadow: inset 10px 10px 10px rgba(0, 0, 0, 0.25),
     inset -10px -10px 10px #30343a;
   border-radius: 10px;
+}
+
+.public-card {
+  min-width: 350px;
 }
 
 .text-title-games {
@@ -108,4 +115,9 @@
   margin-top: 15px;
 
   color: #dadada;
+}
+
+.public-wrapper {
+  align-items: center;
+  display: flex;
 }

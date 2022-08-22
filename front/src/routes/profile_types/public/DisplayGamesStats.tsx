@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card } from "react-bootstrap";
 import { useContextMenu } from "react-contexify";
 import { COnUser } from "../../../ContextMenus/COnUser";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
@@ -22,48 +22,44 @@ export default function DisplayGamesStats(props: any) {
   return (
     <main>
       <COnUser />
-      <Container className="p-5">
-        <Row className="flex">
-          <Col className="col-6">
-            <Card className="p-3 public-card">
-              <Card.Body>
-                <Row className="wrapper p-1">
-                  <Col className="text-wrapper">
-                    <div
-                      className="IBM-text"
-                      style={{ fontSize: "20px", fontWeight: "500" }}
-                    >
-                      Latest Games
-                    </div>
-                  </Col>
-                  <Col>
-                    <div
-                      className="IBM-text float-end"
-                      style={{ fontSize: "20px", fontWeight: "500" }}
-                    >
-                      {props.userInfo.gamesLost + props.userInfo.gamesWon}
-                    </div>
-                  </Col>
-                </Row>
-                <Row className="text-title-games text-center">
-                  <Col>Result</Col>
-                  <Col xs={4}>Opponent</Col>
-                  <Col>Rank</Col>
-                  <Col>Duration</Col>
-                  <Col xs={1}></Col>
-                </Row>
-                {games !== undefined
-                  ? games!.map((_h, index) => {
-                      return (
-                        <DisplayGamesRow key={index} game={games[index]} />
-                      );
-                    })
-                  : null}
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+      <Row>
+        <Col>
+          <Card className="p-1 main-card">
+            <Card.Body className="public-card">
+              <Row className="public-wrapper">
+                <Col className="text-wrapper">
+                  <div
+                    className="IBM-text"
+                    style={{ fontSize: "20px", fontWeight: "500" }}
+                  >
+                    Latest Games
+                  </div>
+                </Col>
+                <Col>
+                  <div
+                    className="IBM-text float-end"
+                    style={{ fontSize: "20px", fontWeight: "500" }}
+                  >
+                    {props.userInfo.gamesLost + props.userInfo.gamesWon}
+                  </div>
+                </Col>
+              </Row>
+              <Row className="text-title-games text-center">
+                <Col>Result</Col>
+                <Col xs={4}>Opponent</Col>
+                <Col>Rank</Col>
+                <Col>Duration</Col>
+                <Col xs={1}></Col>
+              </Row>
+              {games !== undefined
+                ? games!.map((_h, index) => {
+                    return <DisplayGamesRow key={index} game={games[index]} />;
+                  })
+                : null}
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
     </main>
   );
 }
@@ -82,6 +78,7 @@ const DisplayGamesRow = (props: any) => {
         console.log("Could not get avatar of ", props.game.opponentId);
     };
     getAvatar();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function displayMenu(e: React.MouseEvent<HTMLElement>, targetUser: number) {
