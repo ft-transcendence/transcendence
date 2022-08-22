@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { userModel } from "../../globals/Interfaces";
-import { getUserAvatarQuery } from "../../queries/avatarQueries";
-import { getOtherUser } from "../../queries/otherUserQueries";
 import "./UserPublicProfile.css";
-import DisplayGamesStats from "./users_relations/DisplayGamesStats";
+import DisplayGamesStats from "./DisplayGamesStats";
+import { userModel } from "../../../globals/Interfaces";
+import { getUserAvatarQuery } from "../../../queries/avatarQueries";
+import { getOtherUser } from "../../../queries/otherUserQueries";
 
 const userInfoInit: userModel = {
   id: 0,
@@ -37,6 +37,7 @@ const initializeUser = (result: any, setUserInfo: any) => {
 };
 
 export default function UserProfile() {
+  
   let params = useParams();
   const [userInfo, setUserInfo] = useState<userModel>(userInfoInit);
   const [isFetched, setIsFetched] = useState(false);
@@ -76,8 +77,6 @@ export default function UserProfile() {
     <main>
       {isUser && isFetched ? (
         <main>
-          {" "}
-          <h1 className="app-title border">My account</h1>
           <Container className="p-5 border">
             <Row className="wrapper public-profile-header">
               <div className="p-2 public-profile-round">

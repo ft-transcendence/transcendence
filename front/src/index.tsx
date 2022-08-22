@@ -7,16 +7,16 @@ import SignIn from "./routes/Auth/SignIn";
 import SignUp from "./routes/Auth/SignUp";
 import Chat from "./routes/Chat";
 import UserInterface from "./routes/UserInterface";
-import UserPrivateProfile from "./routes/profile_types/UserPrivateProfile";
 import { AuthProvider, RequireAuth } from "./hooks/AuthHooks";
 import TwoFAValidation from "./routes/TwoFAValidation";
 import Watch from "./routes/Watch";
-import { BlockedList } from "./routes/profile_types/users_relations/BlockedList";
-import { FriendsList } from "./routes/profile_types/users_relations/FriendsList";
-import { PendingList } from "./routes/profile_types/users_relations/PendingList";
 import LeaderBoard from "./routes/LeaderBoard";
+import UserPrivateProfile from "./routes/profile_types/private/UserPrivateProfile";
+import { BlockedList } from "./routes/profile_types/private/users_relations/BlockedList";
+import { FriendsList } from "./routes/profile_types/private/users_relations/FriendsList";
+import { PendingList } from "./routes/profile_types/private/users_relations/PendingList";
+import UserPublicProfile from "./routes/profile_types/public/UserPublicProfile";
 import "./index.css";
-import UserPublicProfile from "./routes/profile_types/UserPublicProfile";
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(
@@ -48,10 +48,7 @@ root.render(
               <Route path="pending" element={<PendingList />} />
               <Route path="blocked" element={<BlockedList />} />
             </Route>
-            <Route
-              path="public/:userName"
-              element={<UserPublicProfile />}
-            />
+            <Route path="public/:userName" element={<UserPublicProfile />} />
             <Route
               path="chat"
               element={

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { getUserFriends } from "../../../queries/userQueries";
-import { ItableRow } from "../../../globals/Interfaces";
+import { ItableRow } from "../../../../globals/Interfaces";
+import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
+import { getUserFriends } from "../../../../queries/userQueries";
 import { DisplayRow } from "./DisplayRowUsers";
-import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 
 export const FriendsList = () => {
   const [friendsList, setFriendsList] = useState<ItableRow[] | undefined>(

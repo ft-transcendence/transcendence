@@ -1,5 +1,5 @@
 import { Row, Col } from "react-bootstrap";
-import { twoFAOff } from "../../queries/twoFAQueries";
+import { twoFAOff } from "../../../queries/twoFAQueries";
 
 export const TwoFA = (props: any) => {
   const handleTurnOff = (e: any) => {

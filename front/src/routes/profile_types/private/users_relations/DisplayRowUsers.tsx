@@ -1,11 +1,5 @@
 import { Container, Row, Col } from "react-bootstrap";
-import {
-  removeFriendQuery,
-  blockUserQuery,
-  unblockUserQuery,
-  denyInviteQuery,
-  addFriendQuery,
-} from "../../../queries/userFriendsQueries";
+import { removeFriendQuery, blockUserQuery, unblockUserQuery, addFriendQuery, denyInviteQuery } from "../../../../queries/userFriendsQueries";
 
 export const DisplayRow = (props: any) => {
   return (
