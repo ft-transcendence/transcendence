@@ -240,15 +240,22 @@ export default class Game extends React.Component < {}, StatePong > {
         this.setState({soloGame: true});
    
     keyDownInput = (e: KeyboardEvent) => {
-    if (e.key === this.MOVE_UP && this.state.gameStarted)
+      if (e.key === this.MOVE_UP && this.state.gameStarted) {
+        e.preventDefault();  
         this.socket.emit("move", {dir: 1, room: this.state.roomId, player: this.state.playerNumber});
-    if (e.key === this.MOVE_DOWN)
+      }
+
+      if (e.key === this.MOVE_DOWN) {
+        e.preventDefault();  
         this.socket.emit("move", {dir: 2, room: this.state.roomId, player: this.state.playerNumber});
+      }
     }
     
     keyUpInput = (e: KeyboardEvent) => {
-        if ((e.key === this.MOVE_UP || e.key === this.MOVE_DOWN) && this.state.gameStarted)
-            this.socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
+        if ((e.key === this.MOVE_UP || e.key === this.MOVE_DOWN) && this.state.gameStarted) {
+          e.preventDefault();
+          this.socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
+        }
     }
 
     onSettingsKeyDown = (e: KeyboardEvent) => {

@@ -190,15 +190,21 @@ export default class SoloGame extends React.Component < PropsSoloPong, StateSolo
     }
 
     keyDownInput = (e: KeyboardEvent) => {
-    if (e.key === this.MOVE_UP && this.state.gameStarted)
+      if (e.key === this.MOVE_UP && this.state.gameStarted) {
+        e.preventDefault();
         this.paddleDir = 1;
-    if (e.key === this.MOVE_DOWN)
+      }
+      if (e.key === this.MOVE_DOWN){
+        e.preventDefault();
         this.paddleDir = 2;
+      }
     }
     
     keyUpInput = (e: KeyboardEvent) => {
-        if ((e.key === this.MOVE_UP || e.key === this.MOVE_DOWN) && this.state.gameStarted)
+      if ((e.key === this.MOVE_UP || e.key === this.MOVE_DOWN) && this.state.gameStarted) {
+        e.preventDefault();  
         this.paddleDir = 0;
+      }
     }
 
     onSettingsKeyDown = (e: KeyboardEvent) => {

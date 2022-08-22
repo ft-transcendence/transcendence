@@ -246,7 +246,7 @@ export default class Watch extends React.Component < {}, StatePong > {
                                     <td> VS </td>
                                     <td>{ item.player2Name }</td>
                                     <td><div className='LittleAvatar' style={{
-                                backgroundImage: `url("${item.avatar1URL}")`,
+                                backgroundImage: `url("${item.avatar2URL}")`,
                                 backgroundSize: "cover",
                                 backgroundPosition: "center",
                               }}></div></td>

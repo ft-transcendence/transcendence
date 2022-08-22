@@ -230,7 +230,7 @@
     .Start_button {
         background-color: Transparent;
         margin: auto;
-        min-height: 50px;
+        min-height: 30px;
         width: 10em;
         cursor: pointer;
         border: 1px solid rgb(255, 255, 255);

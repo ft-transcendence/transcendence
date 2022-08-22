@@ -67,7 +67,7 @@ p {
 .Page-top-watch {
     margin: auto;
     height: 30%;
-    width: 50%;
+    width: 100%;
     overflow: auto;
     display: flex;
     flex-direction: column;
