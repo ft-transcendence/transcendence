@@ -212,9 +212,10 @@ export default class Game extends React.Component < {}, StatePong > {
         });
         this.socket.on("update", (info: Game_data) => {
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name});
-            if (this.avatarsFetched === false)
+            if (this.avatarsFetched === false) {
               this.avatarsFetched = true;
               this.getAvatars(info.player1Avatar, info.player2Avater);
+            }
         });
         this.socket.on("end_game", (winner: number) => 
             winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}) : this.setState({msgType: 3, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}));
