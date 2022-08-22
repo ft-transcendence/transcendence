@@ -213,6 +213,7 @@ export default class Game extends React.Component < {}, StatePong > {
         this.socket.on("update", (info: Game_data) => {
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name});
             if (this.avatarsFetched === false)
+              this.avatarsFetched = true;
               this.getAvatars(info.player1Avatar, info.player2Avater);
         });
         this.socket.on("end_game", (winner: number) => 
@@ -290,7 +291,6 @@ export default class Game extends React.Component < {}, StatePong > {
       if (result_2 !== undefined && result_2 instanceof Blob) {
         this.setState({ avatarP2URL: URL.createObjectURL(result_2) });
       }
-      this.avatarsFetched = true;
     }; }
     
     quitSoloMode() {
