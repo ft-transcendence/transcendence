@@ -15,6 +15,7 @@ export default function SignUp() {
       <h3 className="Auth-form-title">Sign up.</h3>
       <div className="text-secondary">
         Already registered? &nbsp;
+        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         <a href="#" onClick={handleClick}>
           Sign in.
         </a>
