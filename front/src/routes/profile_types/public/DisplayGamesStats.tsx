@@ -23,8 +23,8 @@ export default function DisplayGamesStats(props: any) {
     <main>
       <COnUser />
       <Row>
-        <Col>
-          <Card className="p-1 main-card">
+        <Col className="">
+          <Card className="p-5 main-card">
             <Card.Body className="public-card">
               <Row className="public-wrapper">
                 <Col className="text-wrapper">
@@ -44,18 +44,29 @@ export default function DisplayGamesStats(props: any) {
                   </div>
                 </Col>
               </Row>
-              <Row className="text-title-games text-center">
+              <Row className="text-title-games">
                 <Col>Result</Col>
                 <Col xs={4}>Opponent</Col>
                 <Col>Rank</Col>
                 <Col>Duration</Col>
                 <Col xs={1}></Col>
-              </Row>
-              {games !== undefined
-                ? games!.map((_h, index) => {
-                    return <DisplayGamesRow key={index} game={games[index]} />;
-                  })
-                : null}
+              </Row>{" "}
+              <div
+                className=""
+                style={{
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                }}
+              >
+                {games !== undefined
+                  ? games!.map((_h, index) => {
+                      return (
+                        <DisplayGamesRow key={index} game={games[index]} />
+                      );
+                    })
+                  : null}
+              </div>
             </Card.Body>
           </Card>
         </Col>
