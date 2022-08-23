@@ -158,21 +158,6 @@ export default function UserPrivateProfile() {
                     </Col>
                   </Row>
                 </div>
-                <div>
-                  <Row className="wrapper p-3">
-                    <button
-                      type="button"
-                      className="col-5 btn btn-outline-primary btn-sm"
-                      onClick={() => {
-                        setShowEmail(false);
-                        setShowFriends(false);
-                        setShowUsername(false);
-                      }}
-                    >
-                      Change Password
-                    </button>
-                  </Row>
-                </div>
                 <TwoFA
                   auth={authStatus}
                   onClick={() => setModalShowAuth(true)}
