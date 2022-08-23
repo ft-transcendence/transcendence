@@ -40,7 +40,7 @@ const fetchPost = async (
   header: any,
   data: string
 ) => {
-  let fetchUrl = "http://localhost:4000/users/" + url;
+  let fetchUrl = process.env.REACT_APP_BACKEND_URL + "/users/" + url;
 
   try {
     const response = await fetch(fetchUrl, {

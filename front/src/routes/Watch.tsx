@@ -121,7 +121,7 @@ export default class Watch extends React.Component < {}, StatePong > {
 
     componentDidMount() {
         var t = this;
-        fetch("http://localhost:4000/watch", {
+        fetch(process.env.REACT_APP_BACKEND_URL + "/watch", {
             method: "GET",
             headers: authFileHeader(),
             body: null,
@@ -153,7 +153,7 @@ export default class Watch extends React.Component < {}, StatePong > {
 
     refreshGameList() {
         this.state.game_list.length = 0;
-        fetch("http://localhost:4000/watch", {
+        fetch(process.env.REACT_APP_BACKEND_URL + "/watch", {
             method: "GET",
             headers: authFileHeader(),
             body: null,
