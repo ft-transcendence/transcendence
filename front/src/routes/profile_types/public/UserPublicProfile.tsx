@@ -7,6 +7,7 @@ import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getOtherUser } from "../../../queries/otherUserQueries";
 import "./UserPublicProfile.css";
 import DisplayUserFriends from "./DisplayUserFriends";
+import { COnUser } from "../../../ContextMenus/COnUser";
 
 const userInfoInit: userModel = {
   id: 0,
@@ -76,8 +77,12 @@ export default function UserProfile() {
   return (
     <main>
       {isUser && isFetched ? (
-        <main className="p-5" style={{ display: "flex" }}>
-          <div className="public-left border">
+        <main
+          className="p-5"
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <COnUser />
+          <div className="public-left">
             <Container className="p-5">
               <Row className="wrapper public-profile-header">
                 <div className="p-2 public-profile-round">
@@ -90,19 +95,13 @@ export default function UserProfile() {
                     }}
                   ></div>
                 </div>
-                <Col className="content">
+                <Col md="auto" className="">
                   <div className="public-username-text">
                     @{userInfo.username}
                   </div>
                   <div className="public-rank-text"> Rank #{userInfo.rank}</div>
                 </Col>
-                <Col>
-                  <div
-                    id="clickableIcon"
-                    className="buttons-round-big float-end"
-                  >
-                    <i className="bi bi-dpad-fill big-icons" />
-                  </div>
+                <Col className="">
                   <div
                     id="clickableIcon"
                     className="buttons-round-big float-end"
@@ -113,7 +112,7 @@ export default function UserProfile() {
                     id="clickableIcon"
                     className="buttons-round-big float-end"
                   >
-                    <i className="bi bi-chat-left-dots-fill big-icons" />
+                    <i className="bi bi-dpad-fill big-icons" />
                   </div>
                 </Col>
               </Row>
@@ -121,23 +120,27 @@ export default function UserProfile() {
             <Container className="p-5 text-center">
               <Row
                 className="ROBOTO-text"
-                style={{ fontSize: "20px", fontWeight: "400" }}
+                style={{ fontSize: "1.2em", fontWeight: "400" }}
               >
                 <Col>Win Rate</Col>
                 <Col>Total Win</Col>
                 <Col>Play Time</Col>
               </Row>
               <Row className="IBM-text text-huge">
-                <Col>{Math.round(userInfo.winRate * 10) / 10}</Col>
+                <Col>
+                  {Math.round(userInfo.winRate * 10) / 10}
+                </Col>
                 <Col>{userInfo.gamesWon}</Col>
-                <Col>{Math.floor(userInfo.playTime / 1000)}s</Col>
+                <Col>
+                  {Math.floor(userInfo.playTime / 1000)}s
+                </Col>
               </Row>
             </Container>
             <Container className="p-5">
               <DisplayGamesStats userInfo={userInfo} />
             </Container>
           </div>
-          <div className="public-right border">
+          <div className="public-right">
             <DisplayUserFriends userInfo={userInfo} />
           </div>
         </main>

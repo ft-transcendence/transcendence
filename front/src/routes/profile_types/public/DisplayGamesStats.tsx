@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Card } from "react-bootstrap";
 import { useContextMenu } from "react-contexify";
-import { COnUser } from "../../../ContextMenus/COnUser";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getGameStats } from "../../../queries/gamesQueries";
 
@@ -21,7 +20,6 @@ export default function DisplayGamesStats(props: any) {
 
   return (
     <main>
-      <COnUser />
       <Row>
         <Col className="">
           <Card className="p-5 main-card">
@@ -50,7 +48,7 @@ export default function DisplayGamesStats(props: any) {
                 <Col>Rank</Col>
                 <Col>Duration</Col>
                 <Col xs={1}></Col>
-              </Row>{" "}
+              </Row>
               <div
                 className=""
                 style={{
@@ -108,6 +106,10 @@ const DisplayGamesRow = (props: any) => {
         <Col>{props.game.victory ? "Victory" : "Defeat"}</Col>
         <Col xs={1}>
           <div
+            id="clickableIcon"
+            onClick={(e: React.MouseEvent<HTMLElement>) =>
+              displayMenu(e, props.game.opponentId)
+            }
             className="profile-pic-inside"
             style={{
               width: "25px",
@@ -118,14 +120,15 @@ const DisplayGamesRow = (props: any) => {
             }}
           ></div>
         </Col>
-        <Col xs={3} className="text-right">
-          <div
-            onContextMenu={(e: React.MouseEvent<HTMLElement>) =>
-              displayMenu(e, props.game.opponentId)
-            }
-          >
-            @{props.game.opponentUsername}
-          </div>
+        <Col
+          xs={3}
+          id="clickableIcon"
+          className="text-left public-hover"
+          onClick={(e: React.MouseEvent<HTMLElement>) =>
+            displayMenu(e, props.game.opponentId)
+          }
+        >
+          @{props.game.opponentUsername}
         </Col>
         <Col className="text-center">#{props.game.opponentRank}</Col>
         <Col className="text-center">

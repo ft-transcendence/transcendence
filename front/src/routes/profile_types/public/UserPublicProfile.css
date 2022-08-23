@@ -33,10 +33,9 @@
 .public-username-text {
   font-family: "Roboto", sans-serif;
   font-weight: 500;
-  font-size: 30px;
-  line-height: 20px;
+  font-size: 1.5em;
 
-  letter-spacing: -0.4px;
+  letter-spacing: -0.05em;
   color: var(--text-color-white);
 }
 
@@ -44,24 +43,22 @@
   font-family: "Roboto", sans-serif;
   font-style: light;
   font-weight: 300;
-  font-size: 20px;
-  line-height: 20px;
-  letter-spacing: -0.4px;
-  padding-top: 5px;
-  padding-left: 30px;
+  font-size: 1em;
 
-  /* text/light/white */
+  letter-spacing: -0.05em;
+  /* padding-top: 1em; */
 
   color: #dadada;
 }
 
 .buttons-round-big {
-  margin-left: 20px;
-  display: inline-block;
-  width: 40px;
-  height: 40px;
+  width: 5vh;
+  height: 5vh;
+
   border-radius: 50%;
-  box-sizing: border-box;
+  /* margin-left: 10px; */
+
+  /* box-sizing: border-box; */
   background: #5d76ec;
   box-shadow: 5px 10px 20px 2px rgba(18, 20, 26, 0.3), -5px -10px 20px #78a5e9;
   display: flex;
@@ -69,14 +66,40 @@
   justify-content: center;
 }
 
+.buttons-round-big + .buttons-round-big {
+  margin-right: 5vh;
+}
+
+.buttons-round-sm {
+  width: 1.5rem;
+  height: 1.5rem;
+
+  border-radius: 50%;
+  background: #f72585;
+
+  box-shadow: 5px 10px 20px 2px rgba(18, 20, 26, 0.3), -5px -10px 20px #484d56;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5em;
+}
+
+.buttons-round-sm + .buttons-round-sm {
+  margin-right: 1.5em;
+}
+
+.sm-icons {
+  font-size: 0.7rem;
+}
+
 .big-icons {
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .text-huge {
-  font-size: 80px;
+  font-size: 5em;
   font-weight: 700;
-  letter-spacing: -5px;
+  letter-spacing: -0.06em;
   background: linear-gradient(180deg, #50caff -11.53%, #4361ee 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -84,7 +107,7 @@
 }
 
 .main-card {
-  max-height: 500px;
+  max-height: 45vh;
   overflow: hidden;
 
   background: #31353c;
@@ -94,7 +117,7 @@
 }
 
 .public-card {
-  min-width: 350px;
+  min-width: 500px;
 }
 
 .text-title-games {
@@ -108,10 +131,9 @@
 .text-games {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
-  font-size: 14px;
-  line-height: 35px;
-  letter-spacing: -0.4px;
-  margin-top: 15px;
+  font-size: 1.2rem;
+  letter-spacing: -0.03em;
+  margin-top: 1.5rem;
 
   color: #dadada;
 }
@@ -122,9 +144,19 @@
 }
 
 .public-left {
-  width: 50%;
+  width: 50vw;
+  max-width: 800px;
+  margin-right: 1vw;
 }
 
 .public-right {
-  width: 50%;
+  width: 40vw;
+  max-width: 700px;
+}
+
+.public-hover {
+
+}
+.public-hover:hover {
+    text-decoration: underline;
 }
