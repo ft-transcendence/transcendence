@@ -6,6 +6,7 @@ import { userModel } from "../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getOtherUser } from "../../../queries/otherUserQueries";
 import "./UserPublicProfile.css";
+import DisplayUserFriends from "./DisplayUserFriends";
 
 const userInfoInit: userModel = {
   id: 0,
@@ -75,54 +76,70 @@ export default function UserProfile() {
   return (
     <main>
       {isUser && isFetched ? (
-        <main>
-          <Container className="p-5 border">
-            <Row className="wrapper public-profile-header">
-              <div className="p-2 public-profile-round">
-                <div
-                  className="profile-pic-inside"
-                  style={{
-                    backgroundImage: `url("${avatarURL}")`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                ></div>
-              </div>
-              <Col className="content">
-                <div className="public-username-text">@{userInfo.username}</div>
-                <div className="public-rank-text"> Rank #{userInfo.rank}</div>
-              </Col>
-              <Col>
-                <div id="clickableIcon" className="buttons-round-big float-end">
-                  <i className="bi bi-dpad-fill big-icons" />
+        <main className="p-5" style={{ display: "flex" }}>
+          <div className="public-left border">
+            <Container className="p-5">
+              <Row className="wrapper public-profile-header">
+                <div className="p-2 public-profile-round">
+                  <div
+                    className="profile-pic-inside"
+                    style={{
+                      backgroundImage: `url("${avatarURL}")`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  ></div>
                 </div>
-                <div id="clickableIcon" className="buttons-round-big float-end">
-                  <i className="bi bi-caret-right-square-fill big-icons" />
-                </div>
-                <div id="clickableIcon" className="buttons-round-big float-end">
-                  <i className="bi bi-chat-left-dots-fill big-icons" />
-                </div>
-              </Col>
-            </Row>
-          </Container>
-          <Container className="p-5 text-center">
-            <Row
-              className="ROBOTO-text"
-              style={{ fontSize: "20px", fontWeight: "400" }}
-            >
-              <Col>Win Rate</Col>
-              <Col>Total Win</Col>
-              <Col>Play Time</Col>
-            </Row>
-            <Row className="IBM-text text-huge">
-              <Col>{Math.round(userInfo.winRate * 10) / 10}</Col>
-              <Col>{userInfo.gamesWon}</Col>
-              <Col>{Math.floor(userInfo.playTime / 1000)}s</Col>
-            </Row>
-          </Container>
-          <Container className="p-5">
-            <DisplayGamesStats userInfo={userInfo} />
-          </Container>
+                <Col className="content">
+                  <div className="public-username-text">
+                    @{userInfo.username}
+                  </div>
+                  <div className="public-rank-text"> Rank #{userInfo.rank}</div>
+                </Col>
+                <Col>
+                  <div
+                    id="clickableIcon"
+                    className="buttons-round-big float-end"
+                  >
+                    <i className="bi bi-dpad-fill big-icons" />
+                  </div>
+                  <div
+                    id="clickableIcon"
+                    className="buttons-round-big float-end"
+                  >
+                    <i className="bi bi-caret-right-square-fill big-icons" />
+                  </div>
+                  <div
+                    id="clickableIcon"
+                    className="buttons-round-big float-end"
+                  >
+                    <i className="bi bi-chat-left-dots-fill big-icons" />
+                  </div>
+                </Col>
+              </Row>
+            </Container>
+            <Container className="p-5 text-center">
+              <Row
+                className="ROBOTO-text"
+                style={{ fontSize: "20px", fontWeight: "400" }}
+              >
+                <Col>Win Rate</Col>
+                <Col>Total Win</Col>
+                <Col>Play Time</Col>
+              </Row>
+              <Row className="IBM-text text-huge">
+                <Col>{Math.round(userInfo.winRate * 10) / 10}</Col>
+                <Col>{userInfo.gamesWon}</Col>
+                <Col>{Math.floor(userInfo.playTime / 1000)}s</Col>
+              </Row>
+            </Container>
+            <Container className="p-5">
+              <DisplayGamesStats userInfo={userInfo} />
+            </Container>
+          </div>
+          <div className="public-right border">
+            <DisplayUserFriends userInfo={userInfo} />
+          </div>
         </main>
       ) : isUser && !isFetched ? null : (
         <main>User does not exist.</main>

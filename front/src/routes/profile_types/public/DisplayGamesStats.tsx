@@ -54,7 +54,7 @@ export default function DisplayGamesStats(props: any) {
               <div
                 className=""
                 style={{
-                  maxHeight: "200px",
+                  maxHeight: "350px",
                   overflowY: "auto",
                   overflowX: "hidden",
                 }}
