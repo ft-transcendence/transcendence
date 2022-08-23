@@ -1,5 +1,12 @@
 import { authContentHeader } from "./headers";
 
+export const getUserFriends = (otherId: number) => {
+  let body = JSON.stringify({
+    otherId: otherId,
+  });
+  return fetchGet("get_friends", authContentHeader, body);
+};
+
 export const addFriendQuery = (otherId: number) => {
   let body = JSON.stringify({
     otherId: otherId,
@@ -56,7 +63,7 @@ const fetchGet = async (url: string, header: any, body: any) => {
       console.log("POST error on ", url);
       return "error";
     }
-    return "success";
+    return response.json();
   } catch (error) {
     return console.log("error", error);
   }

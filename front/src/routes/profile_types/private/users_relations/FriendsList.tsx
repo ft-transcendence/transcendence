@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { UsersStatusCxt } from "../../../../App";
 import { ItableRow, IUserStatus } from "../../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
-import { getUserFriends } from "../../../../queries/userQueries";
+import { getUserFriends } from "../../../../queries/userFriendsQueries";
 import { DisplayRow } from "./DisplayRowUsers";
 
 
@@ -20,7 +20,7 @@ export const FriendsList = () => {
 
   useEffect(() => {
     const fetchDataFriends = async () => {
-      return await getUserFriends();
+      return await getUserFriends(+!localStorage!.getItem("userId"));
     };
 
     const fetchDataFriendsAvatar = async (otherId: number) => {
