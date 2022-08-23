@@ -14,10 +14,11 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 const refreshRate = 10;
 const paddleSpeed = 1;
-const ballSpeed = 0.5;
 
 @Injectable()
 export class GameService {
+	ballSpeed = 0.25;
+
 	constructor(
 		private schedulerRegistry: SchedulerRegistry,
 		@Inject(forwardRef(() => UserService)) private userService: UserService,
@@ -33,9 +34,12 @@ export class GameService {
 	initBall(roomId: number) {
 		GameService.rooms.find((room) => room.id === roomId).xball = 50;
 		GameService.rooms.find((room) => room.id === roomId).yball = 50;
-		GameService.rooms.find((room) => room.id === roomId).xSpeed = ballSpeed;
+		GameService.rooms.find((room) => room.id === roomId).ballSpeed =
+			this.ballSpeed;
+		GameService.rooms.find((room) => room.id === roomId).xSpeed =
+			this.ballSpeed;
 		GameService.rooms.find((room) => room.id === roomId).ySpeed =
-			0.15 + Math.random() * ballSpeed;
+			0.15 + Math.random() * this.ballSpeed;
 		let direction = Math.round(Math.random());
 		if (direction)
 			GameService.rooms.find((room) => room.id === roomId).xSpeed *= -1;
@@ -79,14 +83,18 @@ export class GameService {
 			// ball radius is 1vh
 			GameService.rooms.find((room) => room.id === roomId).xball =
 				97 - 2 / 1.77;
-			GameService.rooms.find((room) => room.id === roomId).xSpeed *= -1;
+			GameService.rooms.find(
+				(room) => room.id === roomId,
+			).ballSpeed *= 1.05;
+			GameService.rooms.find((room) => room.id === roomId).xSpeed *=
+				-1.05;
 			GameService.rooms.find((room) => room.id === roomId).ySpeed =
 				((GameService.rooms.find((room) => room.id === roomId).yball -
 					GameService.rooms.find((room) => room.id === roomId)
 						.paddleRight -
 					5) /
 					6) *
-				ballSpeed; // make ball go up, straight or down based on  the part of the paddle touched
+				GameService.rooms.find((room) => room.id === roomId).ballSpeed; // make ball go up, straight or down based on  the part of the paddle touched
 		}
 		// ball collision with left paddle
 		if (
@@ -103,14 +111,18 @@ export class GameService {
 		) {
 			GameService.rooms.find((room) => room.id === roomId).xball =
 				3 + 2 / 1.77;
-			GameService.rooms.find((room) => room.id === roomId).xSpeed *= -1;
+			GameService.rooms.find(
+				(room) => room.id === roomId,
+			).ballSpeed *= 1.05;
+			GameService.rooms.find((room) => room.id === roomId).xSpeed *=
+				-1.05;
 			GameService.rooms.find((room) => room.id === roomId).ySpeed =
 				((GameService.rooms.find((room) => room.id === roomId).yball -
 					GameService.rooms.find((room) => room.id === roomId)
 						.paddleLeft -
 					5) /
 					6) *
-				ballSpeed;
+				GameService.rooms.find((room) => room.id === roomId).ballSpeed;
 		}
 		// end of point management
 		if (
@@ -229,9 +241,9 @@ export class GameService {
 			player2Name: GameService.rooms.find((room) => room.id === rid)
 				.player2Name,
 			player1Avatar: GameService.rooms.find((room) => room.id === rid)
-				.player1Avatar,
+				.player1.data.id,
 			player2Avater: GameService.rooms.find((room) => room.id === rid)
-				.player2Avatar,
+				.player2.data.id,
 			startTime: new Date(),
 		};
 		const mutex = new Mutex();
@@ -330,9 +342,11 @@ export class GameService {
 		return;
 	}
 
-	generate_new_id(): number {
+	async generate_new_id(): Promise<number> {
 		const id = Math.floor(Math.random() * 1_000_000 + 1);
-		if (!GameService.rooms.some((room) => room.id === id)) return id;
+		const usedId = await this.testID(id);
+		if (!GameService.rooms.some((room) => room.id === id) && !usedId)
+			return id;
 		return this.generate_new_id();
 	}
 
@@ -343,8 +357,8 @@ export class GameService {
 				const data: GameData = {
 					player1Name: room.player1Name,
 					player2Name: room.player2Name,
-					player1Avatar: room.player1Avatar,
-					player2Avater: room.player2Avatar,
+					player1Avatar: room.player1.data.id,
+					player2Avater: room.player2.data.id,
 					player1Score: room.player1Score,
 					player2Score: room.player2Score,
 					gameID: room.id,
@@ -467,6 +481,15 @@ export class GameService {
 		} catch (error) {
 			throw new ForbiddenException('getGame error : ' + error);
 		}
+	}
+
+	async testID(id: number) {
+		const game = await this.prisma.game.findUnique({
+			where: {
+				id: id,
+			},
+		});
+		return game;
 	}
 
 	async getLastGames() {

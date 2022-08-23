@@ -12,3 +12,65 @@
     transition: all 0.2s cubic-bezier(.45,1.71,.41,.97);
 }
 
+.LittleAvatar {
+    margin: auto;
+    width: 3vh;
+    height: 3vh;
+    border: 2px solid #F9F9F9;
+    border-radius: 50%;
+    padding: 15px;
+    /* background: #D8D8D8; */
+}
+
+th, td {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    padding-left: 30px;
+    padding-right: 40px;
+  }
+
+p {
+    text-align: center;
+}
+
+  .Refresh_button {
+    background-color: Transparent;
+    margin: auto;
+    min-height: 30px;
+    width: 10em;
+    cursor: pointer;
+    border: 1px solid rgb(255, 255, 255);
+    color: white;
+    opacity: 1;
+    height: 2.3em;
+    border-radius: 5px;
+    transition: opacity 1s;
+    align-items: center;
+  }
+
+  .Info-watch {
+    margin: 2% auto;
+    height: 20%;
+    overflow: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: space-between;
+    height: 7vh;
+    width: calc(177vh * 0.45);
+    /*background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -180%, rgb(57,80,127) 270%);*/
+    /*border: 2px solid rgb(255, 255, 255);
+    border-radius: 15px;*/
+    /*box-shadow: 0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 4px rgb(0, 190, 255);*/
+}
+
+.Page-top-watch {
+    margin: auto;
+    height: 30%;
+    width: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+    align-items: center;
+}

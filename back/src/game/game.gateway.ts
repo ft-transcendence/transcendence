@@ -45,7 +45,7 @@ export class GameGateway {
 			GameService.rooms[GameService.rooms.length - 1].private
 		) {
 			// no player in the queue
-			const newId = this.gameService.generate_new_id();
+			const newId = await this.gameService.generate_new_id();
 			const newRoom: Room = {
 				id: newId,
 				name: newId.toString(),
@@ -143,7 +143,7 @@ export class GameGateway {
 			playerNb: 0,
 			roomId: 0,
 		};
-		const newId = this.gameService.generate_new_id();
+		const newId = await this.gameService.generate_new_id();
 		const newRoom: Room = {
 			id: newId,
 			name: newId.toString(),

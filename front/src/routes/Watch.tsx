@@ -1,9 +1,9 @@
-import React, { MouseEventHandler } from 'react';
+import React from 'react';
 import { io } from "socket.io-client";
 import "./Game.css";
 import "./Watch.css";
-import { Link } from "react-router-dom";
-import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle } from './game.interfaces';
+import { Game_data, Coordinates, StatePong, Button, ButtonState, PaddleProps, StatePaddle, Game_data_extended } from './game.interfaces';
+import { getUserAvatarQuery } from '../queries/avatarQueries';
 
 
 class RefreshButton extends React.Component< Button, ButtonState > {
@@ -22,7 +22,7 @@ class RefreshButton extends React.Component< Button, ButtonState > {
     render() {
          const btt = this.state.showButton ? 'unset': 'none';
       return (
-            <button onClick={this.props.clickHandler} style={{display: `${btt}`,}} className="Refresh_button">Refresh</button>
+            <button className='Refresh_button'  onClick={this.props.clickHandler} style={{display: `${btt}`,}}>Refresh</button>
         )
     }
     } 
@@ -112,6 +112,10 @@ export default class Watch extends React.Component < {}, StatePong > {
                         player1Name: "player1",
                         player2Name: "player2",
                         game_list: [],
+                        settingsState: "none",
+                        avatarP1URL: "",
+                        avatarP2URL: "",
+                        soloGame: false,
                     };
     }
 
@@ -126,19 +130,27 @@ export default class Watch extends React.Component < {}, StatePong > {
         .then((response) => {
             if (response.ok) {
                 response.json()
-                .then((data: Game_data[]) => this.setState({game_list: data})); 
+                .then((data: Game_data_extended[]) => this.setState({game_list: data})); 
             };
         })
-        this.socket.on("update", (info: Game_data) =>
-            this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name}));
-        this.socket.on("end_game", (winner: number) => 
-            this.setState({gameStarted: false}));
+        this.socket.on("update", (info: Game_data) => {
+            this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name});
+            if (this.state.avatarP1URL == "" && this.state.avatarP2URL == "")
+                this.getAvatars(info.player1Avatar, info.player2Avater);
+        });
+            this.socket.on("end_game", (winner: number) => 
+            this.setState({gameStarted: false, avatarP1URL: "", avatarP2URL: ""}));
     }
 
     refreshButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
         this.refreshGameList();
     }
     
+    componentWillUnmount() {
+        this.socket.off("update");
+        this.socket.off("end_game");
+    }
+
     refreshGameList() {
         this.state.game_list.length = 0;
         fetch("http://localhost:4000/watch", {
@@ -150,7 +162,11 @@ export default class Watch extends React.Component < {}, StatePong > {
         .then((response) => {
             if (response.ok) {
                 response.json()
-                .then((data: Game_data[]) => this.setState({game_list: data})); 
+                .then((data: Game_data_extended[]) => {
+                    this.setState({game_list: data}, () => {
+                        this.getAllAvatars();
+                    });
+                }); 
             };
         })
         }
@@ -161,6 +177,7 @@ export default class Watch extends React.Component < {}, StatePong > {
         if (this.state.gameStarted)
         {    
             this.socket.emit("unjoin", {roomId: roomId}, () => {});
+            this.setState({avatarP1URL: "", avatarP2URL: ""});
             this.socket.disconnect();
             this.socket.connect();
         }
@@ -175,8 +192,33 @@ export default class Watch extends React.Component < {}, StatePong > {
         })
         }}
      
+    getAvatars = async (id1: number, id2: number) => {
+        const result_1: undefined | string | Blob | MediaSource =
+          await getUserAvatarQuery(id1);
+        const result_2: undefined | string | Blob | MediaSource =
+          await getUserAvatarQuery(id2);
+        if (result_1 !== undefined && result_1 instanceof Blob) {
+          this.setState({ avatarP1URL: URL.createObjectURL(result_1) });
+        if (result_2 !== undefined && result_2 instanceof Blob) {
+          this.setState({ avatarP2URL: URL.createObjectURL(result_2) });
+        }
+      }; }
+    
+    
+    getAllAvatars()
+    {
+        this.state.game_list.map(async (item) => {
+            let result_1 = await getUserAvatarQuery(item.player1Avatar);
+            let result_2 = await getUserAvatarQuery(item.player2Avater);
+            if (result_1 !== undefined && result_1 instanceof Blob)
+                item.avatar1URL = URL.createObjectURL(result_1);
+            if (result_2 !== undefined && result_2 instanceof Blob)
+                item.avatar2URL = URL.createObjectURL(result_2);
+        });
+    }
+
     render() {                                                                                      
-    const shoWField = this.state.gameStarted ? 'unset': 'none';
+    const shoWField = this.state.gameStarted ? 'flex': 'none';
     const shoWInfo = this.state.gameStarted ? 'flex': 'none';
     /*const showBorder = this.state.gameStarted ? '2px solid rgb(0, 255, 255)' : '0px solid rgb(0, 255, 255)';*/
     const showBorder = this.state.gameStarted ? '2px solid rgb(255, 255, 255)' : '0px solid rgb(255, 255, 255)';
@@ -188,12 +230,45 @@ export default class Watch extends React.Component < {}, StatePong > {
 
     return (
         <div className='Radial-background'>
-            <div style={{display: `${shoWInfo}`,}} className='Info-card'>
+            <div className='Page-top-watch'>
+            { this.state.game_list.length > 0 ? (
+            <table>
+                    <tbody>
+                        {this.state.game_list.map((item) => {
+                            return (
+                                <tr onClick={this.joinGame(item.gameID!)} className="Row">
+                                    <td><div className='LittleAvatar' style={{
+                                backgroundImage: `url("${item.avatar1URL}")`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }}></div></td>
+                                    <td>{ item.player1Name }</td>
+                                    <td> VS </td>
+                                    <td>{ item.player2Name }</td>
+                                    <td><div className='LittleAvatar' style={{
+                                backgroundImage: `url("${item.avatar2URL}")`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }}></div></td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>) :
+                (<p>No ongoing game</p>) }
+                <RefreshButton showButton={this.state.showStartButton} clickHandler={this.refreshButtonHandler} />
+            </div>
+            
+            <div style={{display: `${shoWInfo}`,}} className='Info-watch'>
                     <div className='Player-left'>
                         <div className='Info'>
-                            <div className='Photo'>
-                            
-                            </div>
+                        {this.state.avatarP1URL ? (
+                            <div className='Photo' style={{
+                                backgroundImage: `url("${this.state.avatarP1URL}")`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }}></div> ) : (
+                            <div className='Photo'></div>)}
                             <div className='Login' style={{textAlign: 'left'}}>
                             {leftName}
                             </div>
@@ -211,30 +286,18 @@ export default class Watch extends React.Component < {}, StatePong > {
                             <div className='Login' style={{textAlign: 'right'}}>
                             {rightName}
                             </div>
-                            <div className='Photo'>
-                            
-                            </div>
+                            {this.state.avatarP2URL ? (
+                            <div className='Photo' style={{
+                                backgroundImage: `url("${this.state.avatarP2URL}")`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                              }}></div> ) : (
+                            <div className='Photo'></div>)}
                         </div>
                     </div>
                 </div>
             <div className='Page-mid'>
-                <table>
-                    <caption>Ongoing game</caption>
-                    <tbody>
-                        {this.state.game_list.map((item) => {
-                            return (
-                                <tr onClick={this.joinGame(item.gameID!)} className="Row">
-                                    <td>{ item.player1Avatar }</td>
-                                    <td>{ item.player1Name }</td>
-                                    <td> VS </td>
-                                    <td>{ item.player2Name }</td>
-                                    <td>{ item.player2Avater }</td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-                <RefreshButton showButton={this.state.showStartButton} clickHandler={this.refreshButtonHandler} />
+                
                 <div style={{   border: `${showBorder}`, 
                                 boxShadow: `${showShadow}`,}} className='Field'>
                
