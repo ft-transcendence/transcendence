@@ -1,9 +1,5 @@
 import { authHeader } from "./headers";
 
-export const getUserFriends = () => {
-  return fetchGet("get_friends", storeFriendsInfo);
-};
-
 export const getUserBlocked = () => {
   return fetchGet("get_blocked", storeFriendsInfo);
 };

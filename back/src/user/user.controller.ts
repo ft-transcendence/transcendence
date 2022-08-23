@@ -52,10 +52,10 @@ export class UserController {
 		return this.userService.getGameHistory(otherId);
 	}
 
-	@Get('get_friends')
-	async getFriends(@Req() request) {
+	@Post('get_friends')
+	async getFriends(@Body('otherId') otherId: number) {
 		console.log('Going through getFriends in user.controller');
-		const result = await this.userService.getFriends(request.user.id);
+		const result = await this.userService.getFriends(otherId);
 		return result;
 	}
 
