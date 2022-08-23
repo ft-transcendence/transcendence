@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Col, Card, Container, Row } from "react-bootstrap";
+import { useContextMenu } from "react-contexify";
 import { ItableRow } from "../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getUserFriends } from "../../../queries/userFriendsQueries";
@@ -56,9 +57,27 @@ export default function DisplayUserFriends(props: any) {
       <Col className="p-5">
         <Card className="p-5 main-card">
           <Card.Body>
+            <Row className="public-wrapper" style={{ marginBottom: "25px" }}>
+              <Col className="text-wrapper">
+                <div
+                  className="IBM-text"
+                  style={{ fontSize: "20px", fontWeight: "500" }}
+                >
+                  Friends
+                </div>
+              </Col>
+              <Col>
+                <div
+                  className="IBM-text float-end"
+                  style={{ fontSize: "20px", fontWeight: "500" }}
+                >
+                  {friendsList ? friendsList.length : 0}
+                </div>
+              </Col>
+            </Row>
             <div
               style={{
-                maxHeight: "350px",
+                maxHeight: "200px",
                 overflowY: "auto",
                 overflowX: "auto",
               }}
@@ -90,44 +109,54 @@ export default function DisplayUserFriends(props: any) {
 }
 
 const DisplayFriendsRow = (props: any) => {
+
+  const { show } = useContextMenu();
+
+  function displayMenu(e: React.MouseEvent<HTMLElement>, targetUser: number) {
+    e.preventDefault();
+    show(e, {
+      id: "onUser",
+      props: {
+        who: targetUser,
+      },
+    });
+  }
   return (
     <main>
       <Container className="">
-        <Row className="border">
-          <Col className="" xs={1}>
+        <Row className="text-games">
+          <Col md="auto" className="">
             <div
+              id="clickableIcon"
+              onClick={(e: React.MouseEvent<HTMLElement>) =>
+                displayMenu(e, props.userModel.id)
+              }
               className="profile-pic-inside"
               style={{
-                width: "20px",
-                height: "20px",
+                width: "30px",
+                height: "30px",
                 backgroundImage: `url("${props.userModel.avatar}")`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}
             ></div>
           </Col>
-          <Col className="content" style={{ paddingLeft: "0px" }}>
-            <div className="profile-username-text" style={{ fontSize: "18px" }}>
-              @{props.userModel.username}
+          <Col
+            id="clickableIcon"
+            className="text-left public-hover"
+            onClick={(e: React.MouseEvent<HTMLElement>) =>
+              displayMenu(e, props.userModel.id)
+            }
+          >
+            <div>@{props.userModel.username}</div>
+          </Col>
+          <Col className="">
+            <div id="clickableIcon" className="buttons-round-sm float-end">
+              <i className="bi bi-caret-right-square-fill sm-icons" />
             </div>
-          </Col>
-          <Col className="">
-            <button
-              type="button"
-              className="IBM-text btn btn-sm"
-              style={{ fontSize: "15px" }}
-            >
-              fight
-            </button>
-          </Col>
-          <Col className="">
-            <button
-              type="button"
-              className="IBM-text btn btn-sm"
-              style={{ fontSize: "15px" }}
-            >
-              watch
-            </button>
+            <div id="clickableIcon" className="buttons-round-sm float-end">
+              <i className="bi bi-dpad-fill sm-icons" />
+            </div>
           </Col>
         </Row>
       </Container>
