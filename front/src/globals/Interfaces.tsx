@@ -19,5 +19,10 @@ export interface IUserInfo {
 
 export interface ItableRow {
   key: number;
-  userModel: { username: string; avatar: string; id: number };
+  userModel: { username: string; avatar: string; id: number; status: number };
+}
+
+export interface IUserStatus {
+  key: number;
+  userModel: { id: number; status: number };
 }

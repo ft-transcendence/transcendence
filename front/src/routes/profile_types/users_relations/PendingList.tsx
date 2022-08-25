@@ -30,7 +30,7 @@ export const PendingList = () => {
         for (let i = 0; i < fetchedPending.length; i++) {
           let newRow: ItableRow = {
             key: i,
-            userModel: { username: "", avatar: "", id: 0 },
+            userModel: { username: "", avatar: "", id: 0, status: 0 },
           };
 
           let avatar = await fetchDataPendingAvatar(fetchedPending[i].id);

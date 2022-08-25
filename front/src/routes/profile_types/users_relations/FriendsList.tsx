@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { getUserFriends } from "../../../queries/userQueries";
 import { ItableRow } from "../../../globals/Interfaces";
 import { DisplayRow } from "./DisplayRowUsers";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
+import { UsersStatusCxt } from "../../../App";
 
 export const FriendsList = () => {
+  const usersStatus = useContext(UsersStatusCxt);
+
   const [friendsList, setFriendsList] = useState<ItableRow[] | undefined>(
     undefined
   );
@@ -30,13 +33,18 @@ export const FriendsList = () => {
         for (let i = 0; i < fetchedFriends.length; i++) {
           let newRow: ItableRow = {
             key: i,
-            userModel: { username: "", avatar: "", id: 0 },
+            userModel: { username: "", avatar: "", id: 0, status: 0 },
           };
+          newRow.userModel.id = fetchedFriends[i].id;
+          newRow.userModel.username = fetchedFriends[i].username;
+          let found = undefined;
+          if (usersStatus) {
+            found = usersStatus.find((x) => x.key === fetchedFriends[i].id);
+            if (found) newRow.userModel.status = found.userModel.status;
+          }
 
           let avatar = await fetchDataFriendsAvatar(fetchedFriends[i].id);
 
-          newRow.userModel.id = fetchedFriends[i].id;
-          newRow.userModel.username = fetchedFriends[i].username;
           if (avatar !== undefined && avatar instanceof Blob) {
             newRow.userModel.avatar = URL.createObjectURL(avatar);
           }
@@ -49,7 +57,7 @@ export const FriendsList = () => {
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUpdated]);
+  }, [isUpdated, usersStatus]);
 
   return (
     <div style={{ overflowY: "auto", overflowX: "hidden" }}>

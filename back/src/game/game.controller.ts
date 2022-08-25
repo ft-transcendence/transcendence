@@ -1,6 +1,8 @@
 import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { GameService } from './game.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Game')
 @Controller('game')
 export class GameController {
 	constructor(private gameService: GameService) {}
@@ -17,7 +19,7 @@ export class GameController {
 		@Body('startTime') startTime: Date,
 		@Body('endTime') endTime: Date,
 	) {
-		console.log('Going through saveGame in game.controller');
+		// console.log('Going through saveGame in game.controller');
 		const result = await this.gameService.saveGame(
 			id,
 			userId1,
@@ -38,8 +40,8 @@ export class GameController {
 	}
 
 	@Get('get_last_games')
-	getLeaderboard() {
-		console.log('Going through getLastGames in game.controller');
+	getLastGames() {
+		// console.log('Going through getLastGames in game.controller');
 		return this.gameService.getLastGames();
 	}
 }
