@@ -51,8 +51,10 @@
 }
 
 .buttons-round-big {
-  width: 5vh;
-  height: 5vh;
+  width: 2vw;
+  min-width: 45px;
+  height: 2vw;
+  min-height: 45px;
   border-radius: 50%;
   background: #5d76ec;
 
@@ -63,12 +65,14 @@
 }
 
 .buttons-round-big + .buttons-round-big {
-  margin-right: 2.5vh;
+  margin-right: 1vw;
 }
 
 .buttons-round-sm {
-  width: 1.3rem;
-  height: 1.3rem;
+  width: 1vw;
+  min-width: 20px;
+  height: 1vw;
+  min-height: 20px;
   border-radius: 50%;
 
   background: #f72585;
@@ -78,19 +82,19 @@
   align-items: center;
   justify-content: center;
 
-  margin-right: 5px;
+  margin-right: 2vw;
 }
 
 .buttons-round-sm + .buttons-round-sm {
-  margin-right: 20px;
+  margin-right: 2vw;
 }
 
 .sm-icons {
-  font-size: 0.9rem;
+  font-size: 1vh;
 }
 
 .big-icons {
-  font-size: 1rem;
+  font-size: 1.5vh;
 }
 
 .text-huge {
@@ -105,7 +109,7 @@
 
 .main-card {
   max-height: 45vh;
-  overflow: hidden;
+  overflow: auto;
 
   background: #31353c;
   box-shadow: inset 10px 10px 10px rgba(0, 0, 0, 0.25),
@@ -114,9 +118,12 @@
 }
 
 .public-card {
-  min-width: 500px;
+  min-width: 400px;
 }
 
+.public-card-friends {
+  min-width: 300px;
+}
 .text-title-games {
   margin-top: 25px;
   font-family: "Raleway", sans-serif;

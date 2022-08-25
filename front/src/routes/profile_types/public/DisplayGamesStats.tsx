@@ -7,8 +7,8 @@ import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getGameStats } from "../../../queries/gamesQueries";
 
 export default function DisplayGamesStats(props: any) {
+    const usersStatus = useContext(UsersStatusCxt);
   const [games, setGames] = useState([]);
-  const usersStatus = useContext(UsersStatusCxt);
 
   useEffect(() => {
     const getPlayedGamesStats = async () => {
@@ -126,7 +126,7 @@ const DisplayGamesRow = (props: any) => {
 
   return (
     <main className="text-games">
-      <Row className="">
+      <Row className="wrapper">
         <Col>{props.game.victory ? "Victory" : "Defeat"}</Col>
         <Col className="col-auto profile-pic-round-sm">
           <div

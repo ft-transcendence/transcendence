@@ -1,12 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Col, Card, Container, Row, OverlayTrigger } from "react-bootstrap";
 import { useContextMenu } from "react-contexify";
+import { UsersStatusCxt } from "../../../App";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
-import { ItableRow } from "../../../globals/Interfaces";
+import { ItableRow, IUserStatus } from "../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getUserFriends } from "../../../queries/userFriendsQueries";
 
 export default function DisplayUserFriends(props: any) {
+  const usersStatus = useContext(UsersStatusCxt);
+
   const [friendsList, setFriendsList] = useState<ItableRow[] | undefined>(
     undefined
   );
@@ -39,6 +42,14 @@ export default function DisplayUserFriends(props: any) {
 
           newRow.userModel.id = fetchedFriends[i].id;
           newRow.userModel.username = fetchedFriends[i].username;
+          let found = undefined;
+          if (usersStatus) {
+            found = usersStatus.find(
+              (x: IUserStatus) => x.key === fetchedFriends[i].id
+            );
+            if (found) newRow.userModel.status = found.userModel.status;
+          }
+
           if (avatar !== undefined && avatar instanceof Blob) {
             newRow.userModel.avatar = URL.createObjectURL(avatar);
           }
@@ -51,7 +62,7 @@ export default function DisplayUserFriends(props: any) {
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUpdated]);
+  }, [isUpdated, usersStatus]);
 
   return (
     <main>
@@ -77,6 +88,7 @@ export default function DisplayUserFriends(props: any) {
               </Col>
             </Row>
             <div
+              className="public-card-friends"
               style={{
                 maxHeight: "200px",
                 overflowY: "auto",
@@ -87,12 +99,7 @@ export default function DisplayUserFriends(props: any) {
                 friendsList?.length !== 0 ? (
                   friendsList!.map((h, index) => {
                     return (
-                      <DisplayFriendsRow
-                        listType={"friends"}
-                        hook={setUpdate}
-                        key={index}
-                        userModel={h.userModel}
-                      />
+                      <DisplayFriendsRow key={index} userModel={h.userModel} />
                     );
                   })
                 ) : (
@@ -123,22 +130,35 @@ const DisplayFriendsRow = (props: any) => {
   }
   return (
     <main>
-      <Container className="">
-        <Row className="text-games">
-          <Col md="auto" className="">
+      <Container className="text-games">
+        <Row className="wrapper">
+          <Col className="col-auto profile-pic-round-sm">
             <div
-              id="clickableIcon"
-              onClick={(e: React.MouseEvent<HTMLElement>) =>
-                displayMenu(e, props.userModel.id)
-              }
-              className="profile-pic-inside"
-              style={{
-                width: "30px",
-                height: "30px",
-                backgroundImage: `url("${props.userModel.avatar}")`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
+              className={`profile-pic-wrapper-sm ${
+                props.userModel.status === 2 ? "ingame" : ""
+              }`}
+            >
+              <div
+                className="profile-pic-inside-sm"
+                style={{
+                  backgroundImage: `url("${props.userModel.avatar}")`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+                id="clickableIcon"
+                onClick={(e: React.MouseEvent<HTMLElement>) =>
+                  displayMenu(e, props.game.opponentId)
+                }
+              ></div>
+            </div>
+            <div
+              className={`status-private-sm ${
+                props.userModel.status === 1
+                  ? "online"
+                  : props.userModel.status === 2
+                  ? "ingame"
+                  : "offline"
+              }`}
             ></div>
           </Col>
           <Col
