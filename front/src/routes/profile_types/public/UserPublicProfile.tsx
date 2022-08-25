@@ -113,7 +113,10 @@ export default function UserProfile() {
                     @{userInfo.username}
                   </div>
                   <div className="public-rank-text"> Rank #{userInfo.rank}</div>
-                  <div className="IBM-text" style={{fontSize:"0.8em", fontWeight:"400"}}>
+                  <div
+                    className="IBM-text"
+                    style={{ fontSize: "0.8em", fontWeight: "400" }}
+                  >
                     {" "}
                     {status === 1
                       ? "online"
@@ -123,22 +126,38 @@ export default function UserProfile() {
                   </div>
                 </Col>
                 <Col className="">
-                  <OverlayTrigger overlay={renderTooltip("Watch game")}>
+                  {status === 2 ? (
+                    <OverlayTrigger overlay={renderTooltip("Watch game")}>
+                      <div
+                        id="clickableIcon"
+                        className="buttons-round-big float-end"
+                      >
+                        <i className="bi bi-caret-right-square-fill big-icons" />
+                      </div>
+                    </OverlayTrigger>
+                  ) : (
                     <div
-                      id="clickableIcon"
-                      className="buttons-round-big float-end"
+                      className="buttons-round-big-disabled float-end"
                     >
                       <i className="bi bi-caret-right-square-fill big-icons" />
                     </div>
-                  </OverlayTrigger>
-                  <OverlayTrigger overlay={renderTooltip("Challenge")}>
+                  )}
+                  {status === 1 ? (
+                    <OverlayTrigger overlay={renderTooltip("Challenge")}>
+                      <div
+                        id="clickableIcon"
+                        className="buttons-round-big float-end"
+                      >
+                        <i className="bi bi-dpad-fill big-icons" />
+                      </div>
+                    </OverlayTrigger>
+                  ) : (
                     <div
-                      id="clickableIcon"
-                      className="buttons-round-big float-end"
+                      className="buttons-round-big-disabled float-end"
                     >
                       <i className="bi bi-dpad-fill big-icons" />
                     </div>
-                  </OverlayTrigger>
+                  )}
                   <OverlayTrigger overlay={renderTooltip("Add friend")}>
                     <div
                       id="clickableIcon"
