@@ -7,6 +7,7 @@ import { Activate2FA } from "../../modals/MActivateTwoFA";
 import { UsersRelations } from "./users_relations/UsersRelations";
 import { TwoFA } from "./TwoFA";
 import { getAvatarQuery } from "../../queries/avatarQueries";
+import "./Profiles.css"
 
 export default function UserPrivateProfile() {
   const [showUsername, setShowUsername] = useState(false);

@@ -9,6 +9,7 @@ import { GUserInputsRefs } from "../../globals/variables";
 import { useAuth } from "../../globals/contexts";
 import { getUserData } from "../../queries/userQueries";
 import { TAlert } from "../../toasts/TAlert";
+import "./Auth.css"
 
 export default function Auth() {
   let navigate = useNavigate();
