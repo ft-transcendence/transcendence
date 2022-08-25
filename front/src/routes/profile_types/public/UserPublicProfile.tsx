@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import DisplayGamesStats from "./DisplayGamesStats";
 import { userModel } from "../../../globals/Interfaces";
@@ -8,6 +8,7 @@ import { getOtherUser } from "../../../queries/otherUserQueries";
 import "./UserPublicProfile.css";
 import DisplayUserFriends from "./DisplayUserFriends";
 import { COnUser } from "../../../ContextMenus/COnUser";
+import { renderTooltip } from "../../../Components/SimpleToolTip";
 
 const userInfoInit: userModel = {
   id: 0,
@@ -102,18 +103,30 @@ export default function UserProfile() {
                   <div className="public-rank-text"> Rank #{userInfo.rank}</div>
                 </Col>
                 <Col className="">
-                  <div
-                    id="clickableIcon"
-                    className="buttons-round-big float-end"
-                  >
-                    <i className="bi bi-caret-right-square-fill big-icons" />
-                  </div>
-                  <div
-                    id="clickableIcon"
-                    className="buttons-round-big float-end"
-                  >
-                    <i className="bi bi-dpad-fill big-icons" />
-                  </div>
+                  <OverlayTrigger overlay={renderTooltip("Watch game")}>
+                    <div
+                      id="clickableIcon"
+                      className="buttons-round-big float-end"
+                    >
+                      <i className="bi bi-caret-right-square-fill big-icons" />
+                    </div>
+                  </OverlayTrigger>
+                  <OverlayTrigger overlay={renderTooltip("Challenge")}>
+                    <div
+                      id="clickableIcon"
+                      className="buttons-round-big float-end"
+                    >
+                      <i className="bi bi-dpad-fill big-icons" />
+                    </div>
+                  </OverlayTrigger>
+                  <OverlayTrigger overlay={renderTooltip("Add friend")}>
+                    <div
+                      id="clickableIcon"
+                      className="buttons-round-big float-end"
+                    >
+                      <i className="bi bi-person-plus-fill big-icons" />
+                    </div>
+                  </OverlayTrigger>
                 </Col>
               </Row>
             </Container>
@@ -127,13 +140,9 @@ export default function UserProfile() {
                 <Col>Play Time</Col>
               </Row>
               <Row className="IBM-text text-huge">
-                <Col>
-                  {Math.round(userInfo.winRate * 10) / 10}
-                </Col>
+                <Col>{Math.round(userInfo.winRate * 10) / 10}</Col>
                 <Col>{userInfo.gamesWon}</Col>
-                <Col>
-                  {Math.floor(userInfo.playTime / 1000)}s
-                </Col>
+                <Col>{Math.floor(userInfo.playTime / 1000)}s</Col>
               </Row>
             </Container>
             <Container className="p-5">
