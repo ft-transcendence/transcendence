@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;300;400;500;600;700&family=Raleway:wght@400;500&family=Roboto:wght@300;400;500;700&display=swap');@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;300;400;500;600;700&family=Raleway:wght@400;500&family=Roboto:wght@300;400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap");
 :root {
   /* Text */
   --text-color-white: #dadada;
@@ -88,19 +89,12 @@
   letter-spacing: -0.4px;
 }
 
-<<<<<<< HEAD
 /* //////////////////////////////////////////////////// */
 
 /* EXISTING CLASSES */
 
 .submit-button {
   margin-left: 30px;
-=======
-<<<<<<< HEAD
-.profile-username-text {
-  font-size: 30px;
-  font-weight: 500;
-  color: var(--text-color-white);
 }
 
 .caption {
@@ -109,13 +103,10 @@
   font-size: 12px;
   font-weight: 300;
 }
-=======
 /* //////////////////////////////////////////////////// */
->>>>>>> 🐛 fixed app.css
 
 /* EXISTING CLASSES */
 
-<<<<<<< HEAD
 .profile-pic-inside {
   height: 98%;
   width: 98%;
@@ -141,11 +132,10 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-=======
+}
+
 .submit-button {
   margin-left: 30px;
->>>>>>> 🐛 fixed app.css
->>>>>>> 🐛 fixed app.css
   background: #5d76ec;
   box-shadow: 2px 3.5px 15px #1f2427, -2px -3.5px 15px #485057;
 }

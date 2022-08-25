@@ -7,10 +7,8 @@ import { getAvatarQuery } from "../../../queries/avatarQueries";
 import { ModifyEntry } from "./ModifyUserInfo";
 import { TwoFA } from "./TwoFA";
 import { UsersRelations } from "./users_relations/UsersRelations";
-import "./Profiles.css"
 import IconPen from "../../../ressources/icons/Icon_Pen.svg";
-import { getAvatarQuery } from "../../queries/avatarQueries";
-import "./Profiles.css"
+import "../Profiles.css";
 
 export default function UserPrivateProfile() {
   const navigate = useNavigate();

@@ -24,7 +24,7 @@ export class UserController {
 		return userDto;
 	}
 
-	@Get('get_user')
+	@Post('get_user')
 	getUser(@Body('otherId') otherId: number | string) {
 		if (isNumber(otherId)) {
 			const userDto = this.userService.getUser(Number(otherId));
