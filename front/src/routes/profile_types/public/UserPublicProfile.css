@@ -46,7 +46,6 @@
   font-size: 1em;
 
   letter-spacing: -0.05em;
-  /* padding-top: 1em; */
 
   color: #dadada;
 }
@@ -54,12 +53,9 @@
 .buttons-round-big {
   width: 5vh;
   height: 5vh;
-
   border-radius: 50%;
-  /* margin-left: 10px; */
-
-  /* box-sizing: border-box; */
   background: #5d76ec;
+
   box-shadow: 5px 10px 20px 2px rgba(18, 20, 26, 0.3), -5px -10px 20px #78a5e9;
   display: flex;
   align-items: center;
@@ -71,25 +67,26 @@
 }
 
 .buttons-round-sm {
-  width: 1.5rem;
-  height: 1.5rem;
-
+  width: 1.3rem;
+  height: 1.3rem;
   border-radius: 50%;
+
   background: #f72585;
 
   box-shadow: 5px 10px 20px 2px rgba(18, 20, 26, 0.3), -5px -10px 20px #484d56;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 0.5em;
+
+  margin-right: 5px;
 }
 
 .buttons-round-sm + .buttons-round-sm {
-  margin-right: 1.5em;
+  margin-right: 20px;
 }
 
 .sm-icons {
-  font-size: 0.7rem;
+  font-size: 0.9rem;
 }
 
 .big-icons {
@@ -133,14 +130,20 @@
   font-weight: 400;
   font-size: 1.2rem;
   letter-spacing: -0.03em;
-  margin-top: 1.5rem;
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
 
   color: #dadada;
 }
 
+.text-games + .text-games {
+  margin-top: 2rem;
+}
+
 .public-wrapper {
-  align-items: center;
   display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .public-left {
@@ -155,8 +158,7 @@
 }
 
 .public-hover {
-
 }
 .public-hover:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
