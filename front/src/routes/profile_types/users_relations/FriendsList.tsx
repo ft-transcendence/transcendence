@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { getUserFriends } from "../../../queries/userQueries";
-import { ItableRow } from "../../../globals/Interfaces";
+import { ItableRow, IUserStatus } from "../../../globals/Interfaces";
 import { DisplayRow } from "./DisplayRowUsers";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { UsersStatusCxt } from "../../../App";
@@ -39,7 +39,9 @@ export const FriendsList = () => {
           newRow.userModel.username = fetchedFriends[i].username;
           let found = undefined;
           if (usersStatus) {
-            found = usersStatus.find((x) => x.key === fetchedFriends[i].id);
+            found = usersStatus.find(
+              (x: IUserStatus) => x.key === fetchedFriends[i].id
+            );
             if (found) newRow.userModel.status = found.userModel.status;
           }
 
@@ -68,6 +70,7 @@ export const FriendsList = () => {
               <DisplayRow
                 listType={"friends"}
                 hook={setUpdate}
+                state={isUpdated}
                 key={index}
                 userModel={h.userModel}
               />

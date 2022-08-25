@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
-import { getUserBlocked } from "../../../queries/userQueries";
-import { ItableRow } from "../../../globals/Interfaces";
+import { useState, useEffect, useContext } from "react";
+import { getUserBlocked, getUserFriends } from "../../../queries/userQueries";
+import { ItableRow, IUserStatus } from "../../../globals/Interfaces";
 import { DisplayRow } from "./DisplayRowUsers";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
+import { UsersStatusCxt } from "../../../App";
 
 export const BlockedList = () => {
+  const usersStatus = useContext(UsersStatusCxt);
+
   const [blockedList, setBlockedList] = useState<ItableRow[] | undefined>(
     undefined
   );
@@ -32,11 +35,18 @@ export const BlockedList = () => {
             key: i,
             userModel: { username: "", avatar: "", id: 0, status: 0 },
           };
+          newRow.userModel.id = fetchedBlocked[i].id;
+          newRow.userModel.username = fetchedBlocked[i].username;
+          let found = undefined;
+          if (usersStatus) {
+            found = usersStatus.find(
+              (x: IUserStatus) => x.key === fetchedBlocked[i].id
+            );
+            if (found) newRow.userModel.status = found.userModel.status;
+          }
 
           let avatar = await fetchDataBlockedAvatar(fetchedBlocked[i].id);
 
-          newRow.userModel.id = fetchedBlocked[i].id;
-          newRow.userModel.username = fetchedBlocked[i].username;
           if (avatar !== undefined && avatar instanceof Blob) {
             newRow.userModel.avatar = URL.createObjectURL(avatar);
           }
@@ -49,7 +59,7 @@ export const BlockedList = () => {
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUpdated]);
+  }, [isUpdated, usersStatus]);
 
   return (
     <div style={{ overflowY: "auto", overflowX: "hidden" }}>
@@ -60,6 +70,7 @@ export const BlockedList = () => {
               <DisplayRow
                 listType={"blocked"}
                 hook={setUpdate}
+                state={isUpdated}
                 key={index}
                 userModel={h.userModel}
               />
@@ -74,3 +85,5 @@ export const BlockedList = () => {
     </div>
   );
 };
+
+//isFetched === "error" to add

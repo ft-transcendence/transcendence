@@ -74,15 +74,19 @@
   justify-content: center;
 }
 .profile-pic-wrapper {
-  height: 3em;
-  width: 3em;
+  height: 3.1em;
+  width: 3.1em;
   display: flex;
   align-items: center;
   justify-content: center;
-  outline: 0.125em solid;
-  outline-color: #5d76ec;
   border-radius: 50%;
 }
+
+.profile-pic-wrapper.ingame {
+  outline: 0.125em solid;
+  outline-color: var(--buttons-color-blue);
+}
+
 
 .profile-pic-inside-sm {
   height: 90%;
@@ -100,11 +104,15 @@
 }
 
 .status-private.online {
-  background: #33ff00;
+  background: var(--basic-color-green);
 }
 
 .status-private.offline {
-  background: #ff0000;
+  background: var(--basic-color-red);
+}
+
+.status-private.ingame {
+  background: var(--basic-color-green);
 }
 
 /* //////////////////////////////////////////////////// */
