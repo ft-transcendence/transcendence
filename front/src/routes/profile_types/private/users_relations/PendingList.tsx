@@ -5,7 +5,6 @@ import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
 import { getUserPending } from "../../../../queries/userQueries";
 import { DisplayRow } from "./DisplayRowUsers";
 
-
 export const PendingList = () => {
   const usersStatus = useContext(UsersStatusCxt);
 

@@ -5,7 +5,6 @@ import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
 import { getUserFriends } from "../../../../queries/userQueries";
 import { DisplayRow } from "./DisplayRowUsers";
 
-
 export const FriendsList = () => {
   const usersStatus = useContext(UsersStatusCxt);
 

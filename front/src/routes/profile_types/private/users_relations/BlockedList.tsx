@@ -5,7 +5,6 @@ import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
 import { getUserBlocked } from "../../../../queries/userQueries";
 import { DisplayRow } from "./DisplayRowUsers";
 
-
 export const BlockedList = () => {
   const usersStatus = useContext(UsersStatusCxt);
 
