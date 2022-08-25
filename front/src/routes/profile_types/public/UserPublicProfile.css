@@ -20,10 +20,8 @@
 }
 
 .public-profile-round {
-  height: 100px;
-  width: 100px;
-  left: 133px;
-  top: 82px;
+  height: 10vh;
+  width: 10vh;
   border-radius: 50%;
 
   background: #5d76ec;

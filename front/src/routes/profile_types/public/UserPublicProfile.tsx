@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Container, Row, Col, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import DisplayGamesStats from "./DisplayGamesStats";
-import { userModel } from "../../../globals/Interfaces";
+import { IUserStatus, userModel } from "../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getOtherUser } from "../../../queries/otherUserQueries";
 import "./UserPublicProfile.css";
 import DisplayUserFriends from "./DisplayUserFriends";
 import { COnUser } from "../../../ContextMenus/COnUser";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
+import { UsersStatusCxt } from "../../../App";
 
 const userInfoInit: userModel = {
   id: 0,
@@ -40,11 +41,13 @@ const initializeUser = (result: any, setUserInfo: any) => {
 };
 
 export default function UserProfile() {
+  const usersStatus = useContext(UsersStatusCxt);
   let params = useParams();
   const [userInfo, setUserInfo] = useState<userModel>(userInfoInit);
   const [isFetched, setIsFetched] = useState(false);
   const [avatarURL, setAvatarURL] = useState("");
   const [isUser, setIsUser] = useState(true);
+  const [status, setStatus] = useState(0);
 
   useEffect(() => {
     const getAvatar = async () => {
@@ -73,7 +76,16 @@ export default function UserProfile() {
     };
     fetchIsUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetched]);
+  }, [isFetched, usersStatus]);
+
+  useEffect(() => {
+    let found = undefined;
+    if (isFetched && usersStatus && userInfo) {
+      found = usersStatus.find((x: IUserStatus) => x.key === userInfo.id);
+      if (found) setStatus(found.userModel.status);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usersStatus, isFetched, userInfo]);
 
   return (
     <main>
@@ -101,6 +113,14 @@ export default function UserProfile() {
                     @{userInfo.username}
                   </div>
                   <div className="public-rank-text"> Rank #{userInfo.rank}</div>
+                  <div className="IBM-text" style={{fontSize:"0.8em", fontWeight:"400"}}>
+                    {" "}
+                    {status === 1
+                      ? "online"
+                      : status === 2
+                      ? "playing"
+                      : "offline"}
+                  </div>
                 </Col>
                 <Col className="">
                   <OverlayTrigger overlay={renderTooltip("Watch game")}>
