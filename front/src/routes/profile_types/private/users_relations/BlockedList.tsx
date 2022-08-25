@@ -30,7 +30,7 @@ export const BlockedList = () => {
         for (let i = 0; i < fetchedBlocked.length; i++) {
           let newRow: ItableRow = {
             key: i,
-            userModel: { username: "", avatar: "", id: 0 },
+            userModel: { username: "", avatar: "", id: 0, status: 0 },
           };
 
           let avatar = await fetchDataBlockedAvatar(fetchedBlocked[i].id);

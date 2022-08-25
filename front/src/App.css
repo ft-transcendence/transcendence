@@ -286,3 +286,19 @@
 .btn {
   border-radius: 12.5px;
 }
+
+.status-private.online {
+  background: #33ff00;
+}
+
+.status-private.offline {
+  background: #ff0000;
+}
+.status-private {
+  position: absolute;
+  left: 3em;
+  top: calc(3em - 0.8em + 0.125em);
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 50%;
+}

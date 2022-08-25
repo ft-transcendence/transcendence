@@ -4,9 +4,9 @@ import { removeFriendQuery, blockUserQuery, unblockUserQuery, addFriendQuery, de
 export const DisplayRow = (props: any) => {
   return (
     <main>
-      <Container className="p-2">
-        <Row className="" style={{ alignItems: "center", display: "flex" }}>
-          <Col className="p-1">
+       <Container className="">
+        <Row className="wrapper">
+          <Col className="col-auto profile-pic-round-sm">
             <div className="profile-pic-wrapper">
               <div
                 className="profile-pic-inside-sm"
@@ -17,8 +17,13 @@ export const DisplayRow = (props: any) => {
                 }}
               ></div>
             </div>
+            <div
+              className={`status-private ${
+                props.userModel.status === 1 ? "online" : "offline"
+              }`}
+            ></div>
           </Col>
-          <Col className="content" style={{ paddingLeft: "0px" }}>
+          <Col className="content">
             <div className="profile-username-text" style={{ fontSize: "18px" }}>
               @{props.userModel.username}
             </div>
@@ -41,7 +46,7 @@ export const DisplayRow = (props: any) => {
 const ButtonsFriends = (props: any) => {
   return (
     <main>
-      <Col className="">
+      <Col className="float-end">
         <button
           type="button"
           className="IBM-text btn btn-sm"
@@ -54,7 +59,7 @@ const ButtonsFriends = (props: any) => {
           Remove
         </button>
       </Col>
-      <Col className="">
+      <Col className="float-end">
         <button
           type="button"
           className="IBM-text btn btn-sm"
