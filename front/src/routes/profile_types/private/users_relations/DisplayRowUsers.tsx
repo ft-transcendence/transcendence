@@ -4,10 +4,14 @@ import { removeFriendQuery, blockUserQuery, unblockUserQuery, addFriendQuery, de
 export const DisplayRow = (props: any) => {
   return (
     <main>
-       <Container className="">
+      <Container className="">
         <Row className="wrapper">
           <Col className="col-auto profile-pic-round-sm">
-            <div className="profile-pic-wrapper">
+            <div
+              className={`profile-pic-wrapper ${
+                props.userModel.status === 2 ? "ingame" : ""
+              }`}
+            >
               <div
                 className="profile-pic-inside-sm"
                 style={{
@@ -19,7 +23,11 @@ export const DisplayRow = (props: any) => {
             </div>
             <div
               className={`status-private ${
-                props.userModel.status === 1 ? "online" : "offline"
+                props.userModel.status === 1
+                  ? "online"
+                  : props.userModel.status === 2
+                  ? "ingame"
+                  : "offline"
               }`}
             ></div>
           </Col>
@@ -30,11 +38,23 @@ export const DisplayRow = (props: any) => {
           </Col>
           <Col>
             {props.listType === "friends" ? (
-              <ButtonsFriends id={props.userModel.id} hook={props.hook} />
+              <ButtonsFriends
+                id={props.userModel.id}
+                hook={props.hook}
+                state={props.state}
+              />
             ) : props.listType === "blocked" ? (
-              <ButtonsBlocked id={props.userModel.id} hook={props.hook} />
+              <ButtonsBlocked
+                id={props.userModel.id}
+                hook={props.hook}
+                state={props.state}
+              />
             ) : props.listType === "pending" ? (
-              <ButtonsPending id={props.userModel.id} hook={props.hook} />
+              <ButtonsPending
+                id={props.userModel.id}
+                hook={props.hook}
+                state={props.state}
+              />
             ) : null}
           </Col>
         </Row>
@@ -53,7 +73,7 @@ const ButtonsFriends = (props: any) => {
           style={{ fontSize: "15px" }}
           onClick={async () => {
             await removeFriendQuery(props.id);
-            props.hook(true);
+            props.hook(!props.state);
           }}
         >
           Remove
@@ -66,7 +86,7 @@ const ButtonsFriends = (props: any) => {
           style={{ fontSize: "15px" }}
           onClick={async () => {
             await blockUserQuery(props.id);
-            props.hook(true);
+            props.hook(!props.state);
           }}
         >
           Block
@@ -80,14 +100,14 @@ const ButtonsBlocked = (props: any) => {
   return (
     <main>
       <Col className=""></Col>
-      <Col className="">
+      <Col className="float-end">
         <button
           type="button"
           className="IBM-text btn btn-sm"
           style={{ fontSize: "15px" }}
           onClick={async () => {
             await unblockUserQuery(props.id);
-            props.hook(true);
+            props.hook(!props.state);
           }}
         >
           Unblock
@@ -100,7 +120,7 @@ const ButtonsBlocked = (props: any) => {
 const ButtonsPending = (props: any) => {
   return (
     <main>
-      <Col className="">
+      <Col className="float-end">
         <button
           type="button"
           className="IBM-text btn btn-sm"
@@ -113,7 +133,7 @@ const ButtonsPending = (props: any) => {
           Accept
         </button>
       </Col>
-      <Col className="">
+      <Col className="float-end">
         <button
           type="button"
           className="IBM-text btn btn-sm"
