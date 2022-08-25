@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Col, Card, Container, Row } from "react-bootstrap";
+import { Col, Card, Container, Row, OverlayTrigger } from "react-bootstrap";
 import { useContextMenu } from "react-contexify";
+import { renderTooltip } from "../../../Components/SimpleToolTip";
 import { ItableRow } from "../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getUserFriends } from "../../../queries/userFriendsQueries";
@@ -109,7 +110,6 @@ export default function DisplayUserFriends(props: any) {
 }
 
 const DisplayFriendsRow = (props: any) => {
-
   const { show } = useContextMenu();
 
   function displayMenu(e: React.MouseEvent<HTMLElement>, targetUser: number) {
@@ -151,12 +151,16 @@ const DisplayFriendsRow = (props: any) => {
             <div>@{props.userModel.username}</div>
           </Col>
           <Col className="">
-            <div id="clickableIcon" className="buttons-round-sm float-end">
-              <i className="bi bi-caret-right-square-fill sm-icons" />
-            </div>
-            <div id="clickableIcon" className="buttons-round-sm float-end">
-              <i className="bi bi-dpad-fill sm-icons" />
-            </div>
+            <OverlayTrigger overlay={renderTooltip("Watch game")}>
+              <div id="clickableIcon" className="buttons-round-sm float-end">
+                <i className="bi bi-caret-right-square-fill sm-icons" />
+              </div>
+            </OverlayTrigger>
+            <OverlayTrigger overlay={renderTooltip("Challenge")}>
+              <div id="clickableIcon" className="buttons-round-sm float-end">
+                <i className="bi bi-dpad-fill sm-icons" />
+              </div>
+            </OverlayTrigger>
           </Col>
         </Row>
       </Container>
