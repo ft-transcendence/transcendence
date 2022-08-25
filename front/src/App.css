@@ -88,12 +88,64 @@
   letter-spacing: -0.4px;
 }
 
+<<<<<<< HEAD
 /* //////////////////////////////////////////////////// */
 
 /* EXISTING CLASSES */
 
 .submit-button {
   margin-left: 30px;
+=======
+<<<<<<< HEAD
+.profile-username-text {
+  font-size: 30px;
+  font-weight: 500;
+  color: var(--text-color-white);
+}
+
+.caption {
+  font-family: "IBM Plex Mono";
+  padding-top: 5px;
+  font-size: 12px;
+  font-weight: 300;
+}
+=======
+/* //////////////////////////////////////////////////// */
+>>>>>>> 🐛 fixed app.css
+
+/* EXISTING CLASSES */
+
+<<<<<<< HEAD
+.profile-pic-inside {
+  height: 98%;
+  width: 98%;
+  border-radius: 50%;
+}
+
+.profile-pic-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
+
+.profile-pic-inside-sm {
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+}
+
+.edit-round-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+=======
+.submit-button {
+  margin-left: 30px;
+>>>>>>> 🐛 fixed app.css
+>>>>>>> 🐛 fixed app.css
   background: #5d76ec;
   box-shadow: 2px 3.5px 15px #1f2427, -2px -3.5px 15px #485057;
 }
