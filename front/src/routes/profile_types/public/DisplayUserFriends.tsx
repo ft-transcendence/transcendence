@@ -128,6 +128,15 @@ const DisplayFriendsRow = (props: any) => {
       },
     });
   }
+
+  const handleClickWatch = (otherId: number) => {
+    console.log("waiting for watch function.", otherId);
+  };
+
+  const handleClickChallenge = (otherId: number) => {
+    console.log("waiting for challenge function.", otherId);
+  };
+
   return (
     <main>
       <Container className="text-games">
@@ -170,7 +179,13 @@ const DisplayFriendsRow = (props: any) => {
           <Col className="">
             {props.userModel.status === 2 ? (
               <OverlayTrigger overlay={renderTooltip("Watch game")}>
-                <div id="clickableIcon" className="buttons-round-sm float-end">
+                <div
+                  id="clickableIcon"
+                  className="buttons-round-sm float-end"
+                  onClick={(e: any) => {
+                    handleClickWatch(props.userModel.id);
+                  }}
+                >
                   <i className="bi bi-caret-right-square-fill sm-icons" />
                 </div>
               </OverlayTrigger>
@@ -182,7 +197,13 @@ const DisplayFriendsRow = (props: any) => {
 
             {props.userModel.status === 1 ? (
               <OverlayTrigger overlay={renderTooltip("Challenge")}>
-                <div id="clickableIcon" className="buttons-round-sm float-end">
+                <div
+                  id="clickableIcon"
+                  className="buttons-round-sm float-end"
+                  onClick={(e: any) => {
+                    handleClickChallenge(props.userModel.id);
+                  }}
+                >
                   <i className="bi bi-dpad-fill sm-icons" />
                 </div>
               </OverlayTrigger>

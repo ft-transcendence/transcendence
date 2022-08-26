@@ -11,6 +11,7 @@ import { COnUser } from "../../../ContextMenus/COnUser";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
 import { UsersStatusCxt } from "../../../App";
 import { TAlert } from "../../../toasts/TAlert";
+import { addFriendQuery } from "../../../queries/userFriendsQueries";
 
 const userInfoInit: userModel = {
   id: 0,
@@ -90,6 +91,25 @@ export default function UserProfile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usersStatus, isFetched, userInfo]);
 
+  const handleClickFriend = (otherId: number) => {
+    const addFriend = async () => {
+      const result = await addFriendQuery(otherId);
+      if (result !== "error") {
+        setText("Friend request sent to user #" + otherId + "!");
+      } else setText("Could not send friend request :(.");
+      setShowNotif(true);
+    };
+    addFriend();
+  };
+
+  const handleClickWatch = (otherId: number) => {
+    console.log("waiting for watch function.", otherId);
+  };
+
+  const handleClickChallenge = (otherId: number) => {
+    console.log("waiting for challenge function.", otherId);
+  };
+
   return (
     <main>
       {isUser && isFetched ? (
@@ -135,6 +155,9 @@ export default function UserProfile() {
                       <div
                         id="clickableIcon"
                         className="buttons-round-big float-end"
+                        onClick={(e: any) => {
+                          handleClickWatch(userInfo.id);
+                        }}
                       >
                         <i className="bi bi-caret-right-square-fill big-icons" />
                       </div>
@@ -149,6 +172,9 @@ export default function UserProfile() {
                       <div
                         id="clickableIcon"
                         className="buttons-round-big float-end"
+                        onClick={(e: any) => {
+                          handleClickChallenge(userInfo.id);
+                        }}
                       >
                         <i className="bi bi-dpad-fill big-icons" />
                       </div>
@@ -162,6 +188,9 @@ export default function UserProfile() {
                     <div
                       id="clickableIcon"
                       className="buttons-round-big float-end"
+                      onClick={(e: any) => {
+                        handleClickFriend(userInfo.id);
+                      }}
                     >
                       <i className="bi bi-person-plus-fill big-icons" />
                     </div>
