@@ -68,10 +68,15 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
       client.emit('update-status', serializedMap);
     }
 
-    if (GameService.rooms.some((room) => room.player1 === client))
-      GameService.rooms.find((room) => room.player1 === client).player1Disconnected = true;
+   if (GameService.rooms.some((room) => room.player1 === client)) {
+      if (!GameService.rooms.find((room) => room.player1 === client).player2)
+      GameService.rooms.splice(
+                GameService.rooms.findIndex((room) => room.player1 === client), 1);
+      else
+        GameService.rooms.find((room) => room.player1 === client).player1Disconnected = true;
+    }
     if (GameService.rooms.some((room) => room.player2 === client))
-    GameService.rooms.find((room) => room.player2 === client).player2Disconnected = true;
+      GameService.rooms.find((room) => room.player2 === client).player2Disconnected = true;
   }
 }
 
