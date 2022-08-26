@@ -10,6 +10,7 @@ import DisplayUserFriends from "./DisplayUserFriends";
 import { COnUser } from "../../../ContextMenus/COnUser";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
 import { UsersStatusCxt } from "../../../App";
+import { TAlert } from "../../../toasts/TAlert";
 
 const userInfoInit: userModel = {
   id: 0,
@@ -48,6 +49,8 @@ export default function UserProfile() {
   const [avatarURL, setAvatarURL] = useState("");
   const [isUser, setIsUser] = useState(true);
   const [status, setStatus] = useState(0);
+  const [showNotif, setShowNotif] = useState(false);
+  const [text, setText] = useState("");
 
   useEffect(() => {
     const getAvatar = async () => {
@@ -94,7 +97,8 @@ export default function UserProfile() {
           className="p-5"
           style={{ display: "flex", justifyContent: "center" }}
         >
-          <COnUser />
+          <COnUser setText={setText} setShowNotif={setShowNotif} />
+          <TAlert show={showNotif} setShow={setShowNotif} text={text} />
           <div className="public-left">
             <Container className="p-5">
               <Row className="wrapper public-profile-header">
@@ -136,9 +140,7 @@ export default function UserProfile() {
                       </div>
                     </OverlayTrigger>
                   ) : (
-                    <div
-                      className="buttons-round-big-disabled float-end"
-                    >
+                    <div className="buttons-round-big-disabled float-end">
                       <i className="bi bi-caret-right-square-fill big-icons" />
                     </div>
                   )}
@@ -152,9 +154,7 @@ export default function UserProfile() {
                       </div>
                     </OverlayTrigger>
                   ) : (
-                    <div
-                      className="buttons-round-big-disabled float-end"
-                    >
+                    <div className="buttons-round-big-disabled float-end">
                       <i className="bi bi-dpad-fill big-icons" />
                     </div>
                   )}

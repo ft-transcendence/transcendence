@@ -143,7 +143,7 @@ const DisplayFriendsRow = (props: any) => {
                 }}
                 id="clickableIcon"
                 onClick={(e: React.MouseEvent<HTMLElement>) =>
-                  displayMenu(e, props.game.opponentId)
+                  displayMenu(e, props.userModel.id)
                 }
               ></div>
             </div>
@@ -157,7 +157,8 @@ const DisplayFriendsRow = (props: any) => {
               }`}
             ></div>
           </Col>
-          <Col md={"auto"}
+          <Col
+            md={"auto"}
             id="clickableIcon"
             className="text-left public-hover"
             onClick={(e: React.MouseEvent<HTMLElement>) =>

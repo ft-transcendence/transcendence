@@ -19,7 +19,6 @@ export const FriendsList = () => {
 
   useEffect(() => {
     const fetchDataFriends = async () => {
-      console.log("id", +!localStorage!.getItem("userID"));
       return await getUserFriends(+!localStorage!.getItem("userID"));
     };
 
