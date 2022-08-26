@@ -83,25 +83,22 @@ export const ModifyEntry = (props: any) => {
                   <Col>
                     <button
                       type="button"
-                      className="btn btn-outline-primary btn-sm float-end"
+                      className="btn btn-sm submit-button float-end"
                       onClick={props.onClick}
                     >
                       Cancel
                     </button>
                   </Col>
                   <Col>
-                    <Button
+                    <button
                       id="handleChange"
-                      variant="primary"
-                      type="submit"
-                      className="submit-button float-end"
-                      size="sm"
+                      className="btn btn-sm submit-button float-end"
                       onClick={(e: any) => {
                         handleSubmit(e);
                       }}
                     >
                       Done
-                    </Button>
+                    </button>
                   </Col>
                 </Row>
               </div>

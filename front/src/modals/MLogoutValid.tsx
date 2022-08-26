@@ -13,10 +13,12 @@ export function MLogoutValid(props: any) {
       </Modal.Header>
       <Modal.Body>Do you wish to log out ?</Modal.Body>
       <Modal.Footer>
-        <Button variant="primary" type="submit" onClick={props.onSubmit}>
+        <Button variant="outline-danger" onClick={props.onHide}>
+          No
+        </Button>
+        <Button variant="outline-success" onClick={props.onSubmit}>
           Yes
         </Button>
-        <Button onClick={props.onHide}>No</Button>
       </Modal.Footer>
     </Modal>
   );

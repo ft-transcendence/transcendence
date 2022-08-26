@@ -1,5 +1,11 @@
 import { Container, Row, Col } from "react-bootstrap";
-import { removeFriendQuery, blockUserQuery, unblockUserQuery, addFriendQuery, denyInviteQuery } from "../../../../queries/userFriendsQueries";
+import {
+  removeFriendQuery,
+  blockUserQuery,
+  unblockUserQuery,
+  addFriendQuery,
+  denyInviteQuery,
+} from "../../../../queries/userFriendsQueries";
 
 export const DisplayRow = (props: any) => {
   return (
@@ -32,7 +38,7 @@ export const DisplayRow = (props: any) => {
             ></div>
           </Col>
           <Col className="content">
-            <div className="profile-username-text" style={{ fontSize: "18px" }}>
+            <div className="profile-username-text" style={{ fontSize: "15px" }}>
               @{props.userModel.username}
             </div>
           </Col>
@@ -69,8 +75,7 @@ const ButtonsFriends = (props: any) => {
       <Col className="float-end">
         <button
           type="button"
-          className="IBM-text btn btn-sm"
-          style={{ fontSize: "15px" }}
+          className="IBM-text btn btn-sm text-button"
           onClick={async () => {
             await removeFriendQuery(props.id);
             props.hook(!props.state);
@@ -82,8 +87,7 @@ const ButtonsFriends = (props: any) => {
       <Col className="float-end">
         <button
           type="button"
-          className="IBM-text btn btn-sm"
-          style={{ fontSize: "15px" }}
+          className="IBM-text btn btn-sm text-button"
           onClick={async () => {
             await blockUserQuery(props.id);
             props.hook(!props.state);
@@ -103,8 +107,7 @@ const ButtonsBlocked = (props: any) => {
       <Col className="float-end">
         <button
           type="button"
-          className="IBM-text btn btn-sm"
-          style={{ fontSize: "15px" }}
+          className="IBM-text btn btn-sm text-button"
           onClick={async () => {
             await unblockUserQuery(props.id);
             props.hook(!props.state);
@@ -123,8 +126,7 @@ const ButtonsPending = (props: any) => {
       <Col className="float-end">
         <button
           type="button"
-          className="IBM-text btn btn-sm"
-          style={{ fontSize: "15px" }}
+          className="IBM-text btn btn-sm text-button"
           onClick={async () => {
             await addFriendQuery(props.id);
             props.hook(true);
@@ -136,8 +138,7 @@ const ButtonsPending = (props: any) => {
       <Col className="float-end">
         <button
           type="button"
-          className="IBM-text btn btn-sm"
-          style={{ fontSize: "15px" }}
+          className="IBM-text btn btn-sm text-button"
           onClick={async () => {
             await denyInviteQuery(props.id);
             props.hook(true);

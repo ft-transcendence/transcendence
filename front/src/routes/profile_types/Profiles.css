@@ -23,6 +23,10 @@
   padding-top: 5px;
   font-size: 12px;
 }
+.caption:hover {
+  text-decoration: underline;
+  color: var(--buttons-color-blue);
+}
 
 /* PRIVATE PROFILE / CARDS */
 
@@ -59,10 +63,24 @@
 }
 
 .edit-round-icon {
+  padding: 3%;
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #5d76ec;
+  background: var(--buttons-color-blue);
+  transition: 0.3s ease;
+  outline: none;
+  outline-color: #556fe8;
+}
+
+.edit-round-icon:hover.edit-round-icon:active.edit-round-icon:focus {
+  outline-style: solid;
+  outline-width: 1px;
+  outline-offset: -1px;
+  outline-color: #3c58dd;
+  background-color: var(--buttons-color-blue-selected);
+  box-shadow: inset 2px 5px 10px rgba(15, 21, 49, 0.25),
+    inset -2px -5px 10px #556fe8;
 }
 
 /* PRIVATE PROFILE / FRIENDS LIST */

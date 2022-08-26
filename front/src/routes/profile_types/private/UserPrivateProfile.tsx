@@ -121,8 +121,9 @@ export default function UserPrivateProfile() {
                     <Col className=" text-right">
                       <button
                         type="button"
-                        className="btn btn-secondary btn-sm submit-button float-end"
-                        onClick={() => {
+                        className="btn btn-sm submit-button float-end"
+                        onClick={(e:any) => {
+                          e.preventDefault();
                           setShowUsername(true);
                           setShowFriends(false);
                           setShowEmail(false);
@@ -146,7 +147,7 @@ export default function UserPrivateProfile() {
                     <Col className=" text-right">
                       <button
                         type="button"
-                        className="btn btn-secondary btn-sm submit-button float-end"
+                        className="btn btn-sm submit-button float-end"
                         onClick={() => {
                           setShowEmail(true);
                           setShowFriends(false);
