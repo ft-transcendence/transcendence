@@ -95,47 +95,6 @@
 
 .submit-button {
   margin-left: 30px;
-}
-
-.caption {
-  font-family: "IBM Plex Mono";
-  padding-top: 5px;
-  font-size: 12px;
-  font-weight: 300;
-}
-/* //////////////////////////////////////////////////// */
-
-/* EXISTING CLASSES */
-
-.profile-pic-inside {
-  height: 98%;
-  width: 98%;
-  border-radius: 50%;
-}
-
-.profile-pic-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 50px;
-  width: 50px;
-  border-radius: 50%;
-}
-
-.profile-pic-inside-sm {
-  height: 100%;
-  width: 100%;
-  border-radius: 50%;
-}
-
-.edit-round-icon {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-}
-
-.submit-button {
-  margin-left: 30px;
   background: #5d76ec;
   box-shadow: 2px 3.5px 15px #1f2427, -2px -3.5px 15px #485057;
 }

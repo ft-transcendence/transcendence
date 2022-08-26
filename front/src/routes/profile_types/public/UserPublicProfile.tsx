@@ -1,17 +1,17 @@
 import { useContext, useEffect, useState } from "react";
-import { Container, Row, Col, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Container, Row, Col, OverlayTrigger } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import DisplayGamesStats from "./DisplayGamesStats";
 import { IUserStatus, userModel } from "../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getOtherUser } from "../../../queries/otherUserQueries";
-import "./UserPublicProfile.css";
 import DisplayUserFriends from "./DisplayUserFriends";
 import { COnUser } from "../../../ContextMenus/COnUser";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
 import { UsersStatusCxt } from "../../../App";
 import { TAlert } from "../../../toasts/TAlert";
 import { addFriendQuery } from "../../../queries/userFriendsQueries";
+import "./UserPublicProfile.css";
 
 const userInfoInit: userModel = {
   id: 0,

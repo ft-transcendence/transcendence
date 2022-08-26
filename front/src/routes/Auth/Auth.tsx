@@ -8,8 +8,8 @@ import { signUp, signIn } from "../../queries/authQueries";
 import { GUserInputsRefs } from "../../globals/variables";
 import { useAuth } from "../../globals/contexts";
 import { TAlert } from "../../toasts/TAlert";
-import "./Auth.css"
 import { getUserData } from "../../queries/userQueries";
+import "./Auth.css";
 
 export default function Auth() {
   let navigate = useNavigate();
@@ -17,7 +17,7 @@ export default function Auth() {
   let location = useLocation();
   const [showNotif, setShowNotif] = useState(false);
   const [notifText, setNotifText] = useState("Error");
-  const hrefURL = process.env.REACT_APP_BACKEND_URL + "/auth/42"
+  const hrefURL = process.env.REACT_APP_BACKEND_URL + "/auth/42";
 
   // Use a callback to avoid re-rendering
   const userSignIn = useCallback(() => {
@@ -66,25 +66,27 @@ export default function Auth() {
       userInfo.username = GUserInputsRefs.username.current.value;
     userInfo.email = GUserInputsRefs!.email!.current!.value;
     userInfo.password = GUserInputsRefs!.password!.current!.value;
-    if (userInfo.username && userInfo.email && userInfo.password)
-    {
+    if (userInfo.username && userInfo.email && userInfo.password) {
       const signUpUser = async () => {
         const result = await signUp(userInfo, userSignIn);
         if (result && result.includes("error")) {
           result.includes("signUp")
-            ? setNotifText("User already exists. Please enter another username and/or email.")
+            ? setNotifText(
+                "User already exists. Please enter another username and/or email."
+              )
             : setNotifText("Unable to sign up. Please try again.");
           setShowNotif(true);
         }
       };
       signUpUser();
-    }
-    else {
+    } else {
       const signInUser = async () => {
         const result = await signIn(userInfo, userSignIn);
         if (result && result.includes("error")) {
           result.includes("signIn")
-            ? setNotifText("User does not exists. Please enter a valid email and/or username.")
+            ? setNotifText(
+                "User does not exists. Please enter a valid email and/or username."
+              )
             : setNotifText("Could not retreive user. Please try again.");
           setShowNotif(true);
         }
@@ -142,7 +144,7 @@ export default function Auth() {
             Submit
           </Button>
           <p className="text-secondary mt-2">
-             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             Forgot your &nbsp; <a href="#">password?</a>
           </p>
         </div>

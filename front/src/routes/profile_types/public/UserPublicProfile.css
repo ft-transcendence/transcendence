@@ -42,9 +42,7 @@
   font-style: light;
   font-weight: 300;
   font-size: 1em;
-
   letter-spacing: -0.05em;
-
   color: #dadada;
 }
 
@@ -199,6 +197,7 @@
 .public-card-friends {
   min-width: 300px;
 }
+
 .text-title-games {
   margin-top: 25px;
   font-family: "Raleway", sans-serif;

@@ -7,7 +7,7 @@ import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getGameStats } from "../../../queries/gamesQueries";
 
 export default function DisplayGamesStats(props: any) {
-    const usersStatus = useContext(UsersStatusCxt);
+  const usersStatus = useContext(UsersStatusCxt);
   const [games, setGames] = useState([]);
 
   useEffect(() => {
@@ -109,7 +109,6 @@ const DisplayGamesRow = (props: any) => {
       } else if (result_1 === "error: avatar")
         console.log("Could not get avatar of ", props.game.opponentId);
     };
-
     getAvatar();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -1,9 +1,9 @@
-import { useContext, useState, useEffect } from "react";
-import { UsersStatusCxt } from "../../../../App";
+import { useState, useEffect, useContext } from "react";
 import { ItableRow, IUserStatus } from "../../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
 import { getUserFriends } from "../../../../queries/userFriendsQueries";
 import { DisplayRow } from "./DisplayRowUsers";
+import { UsersStatusCxt } from "../../../../App";
 
 export const FriendsList = () => {
   const usersStatus = useContext(UsersStatusCxt);

@@ -9,7 +9,6 @@ import { getUserFriends } from "../../../queries/userFriendsQueries";
 
 export default function DisplayUserFriends(props: any) {
   const usersStatus = useContext(UsersStatusCxt);
-
   const [friendsList, setFriendsList] = useState<ItableRow[] | undefined>(
     undefined
   );
@@ -49,7 +48,6 @@ export default function DisplayUserFriends(props: any) {
             );
             if (found) newRow.userModel.status = found.userModel.status;
           }
-
           if (avatar !== undefined && avatar instanceof Blob) {
             newRow.userModel.avatar = URL.createObjectURL(avatar);
           }
@@ -99,7 +97,12 @@ export default function DisplayUserFriends(props: any) {
                 friendsList?.length !== 0 ? (
                   friendsList!.map((h, index) => {
                     return (
-                      <DisplayFriendsRow key={index} userModel={h.userModel} />
+                      <DisplayFriendsRow
+                        listType={"friends"}
+                        hook={setUpdate}
+                        key={index}
+                        userModel={h.userModel}
+                      />
                     );
                   })
                 ) : (
