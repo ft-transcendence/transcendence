@@ -1,6 +1,4 @@
-export const getUserFriends = () => {
-  return fetchGet("get_friends", storeFriendsInfo);
-};
+import { authHeader } from "./headers";
 
 export const getUserBlocked = () => {
   return fetchGet("get_blocked", storeFriendsInfo);
@@ -18,19 +16,12 @@ export const getLeaderBoard = () => {
   return fetchGet("get_leaderboard", storeLeaderBoardInfo);
 };
 
-export const authFileHeader = () => {
-  let token = "Bearer " + localStorage.getItem("userToken");
-  let myHeaders = new Headers();
-  myHeaders.append("Authorization", token);
-  return myHeaders;
-};
-
 const fetchGet = async (url: string, callback: any) => {
   let fetchUrl = process.env.REACT_APP_BACKEND_URL + "/users/" + url;
   try {
     const response = await fetch(fetchUrl, {
       method: "GET",
-      headers: authFileHeader(),
+      headers: authHeader(),
       body: null,
       redirect: "follow",
     });
@@ -47,6 +38,7 @@ const fetchGet = async (url: string, callback: any) => {
 
 export const storeUserInfo = (result: any) => {
   localStorage.setItem("userID", result.id);
+  console.log("result.id", result.id);
   localStorage.setItem("userName", result.username);
   localStorage.setItem("userEmail", result.email);
   localStorage.setItem("userPicture", result.avatar);

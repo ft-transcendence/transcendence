@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { getUserPending } from "../../../queries/userQueries";
-import { ItableRow } from "../../../globals/Interfaces";
+import { ItableRow } from "../../../../globals/Interfaces";
+import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
+import { getUserPending } from "../../../../queries/userQueries";
 import { DisplayRow } from "./DisplayRowUsers";
-import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 
 export const PendingList = () => {
   const [PendingList, setPendingList] = useState<ItableRow[] | undefined>(

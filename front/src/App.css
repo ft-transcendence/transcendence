@@ -1,6 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Roboto&display=swap");
-
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;300;400;500;600;700&family=Raleway:wght@400;500&family=Roboto:wght@300;400;500;700&display=swap');@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@100;300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap");
 :root {
   /* Text */
   --text-color-white: #dadada;
@@ -69,14 +67,14 @@
 
 .IBM-text {
   font-family: "IBM Plex Mono";
-  font-style: normal;
+  font-weight: 400;
   letter-spacing: -0.4px;
   color: var(--text-color-white);
 }
 
 .ROBOTO-text {
-  font-family: "Roboto" sans-serif;
-  font-style: normal;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
   letter-spacing: -0.4px;
   color: var(--text-color-white);
 }
@@ -87,24 +85,22 @@
 }
 
 .content {
-  font-family: "Roboto" sans-serif;
-  font-style: normal;
+  font-family: "Roboto", sans-serif;
   padding-left: 20px;
   letter-spacing: -0.4px;
 }
 
 .profile-username-text {
+  font-size: 30px;
   font-weight: 500;
-  font-size: 25px;
-  line-height: 20px;
   color: var(--text-color-white);
 }
 
 .caption {
   font-family: "IBM Plex Mono";
-  font-style: normal;
   padding-top: 5px;
   font-size: 12px;
+  font-weight: 300;
 }
 
 .app-title {
@@ -142,7 +138,7 @@
   border-radius: 50%;
 }
 
-.profile-pic-wrapper{
+.profile-pic-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;

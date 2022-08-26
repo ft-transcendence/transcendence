@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { getUserBlocked } from "../../../queries/userQueries";
-import { ItableRow } from "../../../globals/Interfaces";
+import { ItableRow } from "../../../../globals/Interfaces";
+import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
+import { getUserBlocked } from "../../../../queries/userQueries";
 import { DisplayRow } from "./DisplayRowUsers";
-import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 
 export const BlockedList = () => {
   const [blockedList, setBlockedList] = useState<ItableRow[] | undefined>(

@@ -27,7 +27,7 @@ export class UserController {
 		return userDto;
 	}
 
-	@Get('get_user')
+	@Post('get_user')
 	getUser(@Body('otherId') otherId: number) {
 		const userDto = this.userService.getUser(otherId);
 		return userDto;
@@ -46,16 +46,16 @@ export class UserController {
 		return this.userService.getLeaderboard();
 	}
 
-	@Get('get_game_history')
+	@Post('get_game_history')
 	getGameHistory(@Body('otherId') otherId: number) {
 		console.log('Going through getGameHistory in user.controller');
 		return this.userService.getGameHistory(otherId);
 	}
 
-	@Get('get_friends')
-	async getFriends(@Req() request) {
+	@Post('get_friends')
+	async getFriends(@Body('otherId') otherId: number) {
 		console.log('Going through getFriends in user.controller');
-		const result = await this.userService.getFriends(request.user.id);
+		const result = await this.userService.getFriends(otherId);
 		return result;
 	}
 
