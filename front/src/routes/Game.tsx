@@ -153,22 +153,22 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
        }
     }
 
-
+    const socketOptions = {
+      transportOptions: {
+        polling: {
+          extraHeaders: {
+              Token: localStorage.getItem("userToken"),
+          }
+        }
+      }
+   };
+   
+  
+  const socket = io("ws://localhost:4000", socketOptions);
 
 export default class Game extends React.Component < {}, StatePong > {
 
-    socketOptions = {
-        transportOptions: {
-          polling: {
-            extraHeaders: {
-                Token: localStorage.getItem("userToken"),
-            }
-          }
-        }
-     };
-     
-    
-    socket = io("ws://localhost:4000", this.socketOptions);
+
 
     MOVE_UP   = "ArrowUp";  
     MOVE_DOWN = "ArrowDown";
@@ -206,38 +206,38 @@ export default class Game extends React.Component < {}, StatePong > {
     componentDidMount() {
         document.onkeydown = this.keyDownInput;
         document.onkeyup = this.keyUpInput;
-        this.socket.on("game_started", () => {
+        socket.on("game_started", () => {
             this.setState({gameStarted: true, showStartButton: false});
             this.avatarsFetched = false;
         });
-        this.socket.on("update", (info: Game_data) => {
+        socket.on("update", (info: Game_data) => {
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name});
             if (this.avatarsFetched === false) {
               this.avatarsFetched = true;
               this.getAvatars(info.player1Avatar, info.player2Avater);
             }
         });
-        this.socket.on("end_game", (winner: number) => 
+        socket.on("end_game", (winner: number) => 
             winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}) : this.setState({msgType: 3, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}));
     }
 
     componentWillUnmount() {
-      this.socket.off("game_started");
-      this.socket.off("update");
-      this.socket.off("end_game");
+      socket.off("game_started");
+      socket.off("update");
+      socket.off("end_game");
     }
 
     startButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (!this.state.showStartButton)
             return;
         if (this.state.buttonState === "Cancel") {
-          this.socket.disconnect();
-          this.socket.connect();
+          socket.disconnect();
+          socket.connect();
           this.setState({gameStarted: false, showStartButton: true, buttonState: "Start"});
           return;
         }
         this.setState({buttonState: "Cancel"});
-        this.socket.emit("start", {}, (player: Player) => 
+        socket.emit("start", {}, (player: Player) => 
           this.setState({roomId: player.roomId, playerNumber: player.playerNb, msgType: 1}));  
         }
     
@@ -247,19 +247,19 @@ export default class Game extends React.Component < {}, StatePong > {
     keyDownInput = (e: KeyboardEvent) => {
       if (e.key === this.MOVE_UP && this.state.gameStarted) {
         e.preventDefault();  
-        this.socket.emit("move", {dir: 1, room: this.state.roomId, player: this.state.playerNumber});
+        socket.emit("move", {dir: 1, room: this.state.roomId, player: this.state.playerNumber});
       }
 
       if (e.key === this.MOVE_DOWN) {
         e.preventDefault();  
-        this.socket.emit("move", {dir: 2, room: this.state.roomId, player: this.state.playerNumber});
+        socket.emit("move", {dir: 2, room: this.state.roomId, player: this.state.playerNumber});
       }
     }
     
     keyUpInput = (e: KeyboardEvent) => {
         if ((e.key === this.MOVE_UP || e.key === this.MOVE_DOWN) && this.state.gameStarted) {
           e.preventDefault();
-          this.socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
+          socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
         }
     }
 

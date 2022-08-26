@@ -1,11 +1,14 @@
-import { useState, useEffect } from "react";
-import { ItableRow } from "../../../../globals/Interfaces";
+import { useState, useEffect, useContext } from "react";
+import { ItableRow, IUserStatus } from "../../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
 import { getUserPending } from "../../../../queries/userQueries";
 import { DisplayRow } from "./DisplayRowUsers";
+import { UsersStatusCxt } from "../../../../App";
 
 export const PendingList = () => {
-  const [PendingList, setPendingList] = useState<ItableRow[] | undefined>(
+  const usersStatus = useContext(UsersStatusCxt);
+
+  const [pendingList, setPendingList] = useState<ItableRow[] | undefined>(
     undefined
   );
 
@@ -30,13 +33,20 @@ export const PendingList = () => {
         for (let i = 0; i < fetchedPending.length; i++) {
           let newRow: ItableRow = {
             key: i,
-            userModel: { username: "", avatar: "", id: 0 },
+            userModel: { username: "", avatar: "", id: 0, status: 0 },
           };
+          newRow.userModel.id = fetchedPending[i].id;
+          newRow.userModel.username = fetchedPending[i].username;
+          let found = undefined;
+          if (usersStatus) {
+            found = usersStatus.find(
+              (x: IUserStatus) => x.key === fetchedPending[i].id
+            );
+            if (found) newRow.userModel.status = found.userModel.status;
+          }
 
           let avatar = await fetchDataPendingAvatar(fetchedPending[i].id);
 
-          newRow.userModel.id = fetchedPending[i].id;
-          newRow.userModel.username = fetchedPending[i].username;
           if (avatar !== undefined && avatar instanceof Blob) {
             newRow.userModel.avatar = URL.createObjectURL(avatar);
           }
@@ -49,24 +59,25 @@ export const PendingList = () => {
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUpdated]);
+  }, [isUpdated, usersStatus]);
 
   return (
     <div style={{ overflowY: "auto", overflowX: "hidden" }}>
       {isFetched === "true" ? (
-        PendingList?.length !== 0 ? (
-          PendingList!.map((h, index) => {
+        pendingList?.length !== 0 ? (
+          pendingList!.map((h, index) => {
             return (
               <DisplayRow
                 listType={"pending"}
                 hook={setUpdate}
+                state={isUpdated}
                 key={index}
                 userModel={h.userModel}
               />
             );
           })
         ) : (
-          <span>No pending invites.</span>
+          <span>No friend requests.</span>
         )
       ) : (
         <div>Loading...</div>
@@ -74,3 +85,5 @@ export const PendingList = () => {
     </div>
   );
 };
+
+//isFetched === "error" to add

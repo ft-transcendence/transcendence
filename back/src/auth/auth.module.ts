@@ -15,6 +15,8 @@ import { GameModule } from 'src/game/game.module';
 import { UploadService } from 'src/upload/upload.service';
 import { UploadModule } from 'src/upload/upload.module';
 import { HttpModule } from '@nestjs/axios';
+import { ChatService } from 'src/chat/chat.service';
+import { AppGateway } from 'src/app.gateway';
 
 @Module({
 	imports: [
@@ -34,6 +36,8 @@ import { HttpModule } from '@nestjs/axios';
 		UserService,
 		GameService,
 		UploadService,
+		AppGateway,
+		ChatService,
 	],
 	exports: [AuthService],
 })
