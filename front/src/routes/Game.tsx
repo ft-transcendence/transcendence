@@ -1,7 +1,7 @@
 import React from 'react';
 import { io } from "socket.io-client";
 import "./Game.css";
-import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle, SettingsProps, SettingsState } from './game.interfaces';
+import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle, SettingsProps, SettingsState, PropsPong } from './game.interfaces';
 import FocusTrap from 'focus-trap-react';
 import { getUserAvatarQuery } from '../queries/avatarQueries';
 import SoloGame from './SoloGame';
@@ -155,7 +155,7 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
 
 
 
-export default class Game extends React.Component < {}, StatePong > {
+export default class Game extends React.Component < PropsPong, StatePong > {
 
     socketOptions = {
         transportOptions: {
@@ -174,9 +174,9 @@ export default class Game extends React.Component < {}, StatePong > {
     MOVE_DOWN = "ArrowDown";
     avatarsFetched = false;
 
-    constructor(none = {}) 
+    constructor(props: PropsPong) 
     {
-        super({});
+        super(props);
         this.state = {  paddleLeftY: 50,
                         paddleRightY: 50,
                         ballX: 50,
@@ -203,9 +203,9 @@ export default class Game extends React.Component < {}, StatePong > {
         this.quitSoloMode = this.quitSoloMode.bind(this);
     }
 
-    componentDidMount() {
-        document.onkeydown = this.keyDownInput;
-        document.onkeyup = this.keyUpInput;
+    componentDidMount() {      
+      document.onkeydown = this.keyDownInput;
+      document.onkeyup = this.keyUpInput;
         this.socket.on("game_started", () => {
             this.setState({gameStarted: true, showStartButton: false});
             this.avatarsFetched = false;
@@ -219,6 +219,20 @@ export default class Game extends React.Component < {}, StatePong > {
         });
         this.socket.on("end_game", (winner: number) => 
             winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}) : this.setState({msgType: 3, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}));
+
+      if (this.props.pvtGame && this.props.playerNumber === 1) {
+        this.socket.emit("start_private", {}, (player: Player) => 
+          this.setState({roomId: player.roomId}));
+        this.setState({playerNumber: this.props.playerNumber, msgType: 4, buttonState: "Cancel"});
+        this.socket.on("rejected", () =>
+          this.setState({roomId: 0, playerNumber: 0, msgType: 0, buttonState: "Start"})
+        );
+      } 
+
+      if (this.props.pvtGame && this.props.playerNumber === 2 && this.props.roomId) {
+        this.socket.emit("join_private", {roomId: this.props.roomId}, (player: Player) => 
+          this.setState({roomId: player.roomId, playerNumber: player.playerNb, msgType: 0}));
+      } 
     }
 
     componentWillUnmount() {

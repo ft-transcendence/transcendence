@@ -46,6 +46,12 @@ export interface StatePong {
   soloGame: boolean,
 }
 
+export interface PropsPong {
+  pvtGame?: boolean,
+  roomId?: number,
+  playerNumber?: number,
+}
+
 export interface Button {
   clickHandler: any;
   showButton: boolean;
