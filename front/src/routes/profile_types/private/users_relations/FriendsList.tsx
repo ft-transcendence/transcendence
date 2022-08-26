@@ -53,9 +53,9 @@ export const FriendsList = () => {
           }
           friends.push(newRow);
         }
-        setFriendsList(friends);
-        setFetched("true");
       }
+      setFriendsList(friends);
+      setFetched("true");
     };
 
     fetchData();
