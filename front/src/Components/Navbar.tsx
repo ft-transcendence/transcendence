@@ -21,7 +21,7 @@ const GetIcons = (props: any) => {
       : url === "game"
       ? "dpad"
       : url === "watch"
-      ? "caret-right-square"
+      ? "play-btn"
       : "box-arrow-right";
 
   return (
