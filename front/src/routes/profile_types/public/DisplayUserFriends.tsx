@@ -133,11 +133,7 @@ const DisplayFriendsRow = (props: any) => {
       <Container className="text-games">
         <Row className="wrapper">
           <Col className="col-auto profile-pic-round-sm">
-            <div
-              className={`profile-pic-wrapper-sm ${
-                props.userModel.status === 2 ? "ingame" : ""
-              }`}
-            >
+            <div className="profile-pic-wrapper-sm">
               <div
                 className="profile-pic-inside-sm"
                 style={{
@@ -161,7 +157,7 @@ const DisplayFriendsRow = (props: any) => {
               }`}
             ></div>
           </Col>
-          <Col
+          <Col md={"auto"}
             id="clickableIcon"
             className="text-left public-hover"
             onClick={(e: React.MouseEvent<HTMLElement>) =>

@@ -137,7 +137,6 @@
   align-items: center;
   justify-content: center;
 
-  margin-right: 2vw;
   transition: 0.5s ease;
 }
 
@@ -211,9 +210,9 @@
 .text-games {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
-  font-size: 1.2rem;
+  font-size: 1rem;
   letter-spacing: -0.03em;
-  margin-top: 1.5em;
+  margin-top: 1em;
   margin-bottom: 0.75em;
 
   color: #dadada;
@@ -231,13 +230,13 @@
 
 .public-left {
   width: 50vw;
-  max-width: 800px;
+  max-width: 700px;
   margin-right: 1vw;
 }
 
 .public-right {
   width: 40vw;
-  max-width: 700px;
+  max-width: 500px;
 }
 
 .public-hover {
