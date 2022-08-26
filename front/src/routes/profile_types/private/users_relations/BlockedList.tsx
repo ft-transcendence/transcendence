@@ -3,7 +3,7 @@ import { ItableRow, IUserStatus } from "../../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
 import { getUserBlocked } from "../../../../queries/userQueries";
 import { DisplayRow } from "./DisplayRowUsers";
-import { UsersStatusCxt } from "../../../App";
+import { UsersStatusCxt } from "../../../../App";
 
 export const BlockedList = () => {
   const usersStatus = useContext(UsersStatusCxt);

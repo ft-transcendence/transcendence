@@ -3,7 +3,7 @@ import { ItableRow, IUserStatus } from "../../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
 import { getUserFriends } from "../../../../queries/userFriendsQueries";
 import { DisplayRow } from "./DisplayRowUsers";
-import { UsersStatusCxt } from "../../../App";
+import { UsersStatusCxt } from "../../../../App";
 
 export const FriendsList = () => {
   const usersStatus = useContext(UsersStatusCxt);

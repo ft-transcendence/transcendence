@@ -61,6 +61,7 @@ export class UserController {
 		// console.log('Going through getFriends in user.controller');
 		const result = await this.userService.getFriends(otherId);
 		return result;
+	}
 
 	@Get('get_pending')
 	async getPending(@GetCurrentUserId() id: number) {
