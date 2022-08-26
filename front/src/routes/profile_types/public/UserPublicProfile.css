@@ -31,7 +31,7 @@
 .public-username-text {
   font-family: "Roboto", sans-serif;
   font-weight: 500;
-  font-size: 1.5em;
+  font-size: 1.2em;
 
   letter-spacing: -0.05em;
   color: var(--text-color-white);
@@ -41,22 +41,23 @@
   font-family: "Roboto", sans-serif;
   font-style: light;
   font-weight: 300;
-  font-size: 1em;
+  font-size: 0.8em;
   letter-spacing: -0.05em;
   color: #dadada;
 }
 
 .buttons-round-big-disabled {
-  width: 2vw;
-  min-width: 45px;
-  height: 2vw;
-  min-height: 45px;
+  width: 3vw;
+  /* min-width: 45px; */
+  height: 3vw;
+  /* min-height: 45px; */
   border-radius: 50%;
   background: #506df3;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: 0.5s ease;
 }
 
 .buttons-round-big-disabled .big-icons {
@@ -65,10 +66,10 @@
 }
 
 .buttons-round-big {
-  width: 2vw;
-  min-width: 45px;
-  height: 2vw;
-  min-height: 45px;
+  width: 3vw;
+  /* min-width: 45px; */
+  height: 3vw;
+  /* min-height: 45px; */
   border-radius: 50%;
   background: #5d76ec;
   border-radius: 50%;
@@ -130,7 +131,7 @@
 
   background: #f72585;
 
-  box-shadow: 5px 10px 20px 2px rgba(18, 20, 26, 0.3), -5px -10px 20px #484d56;
+  box-shadow: 0.1px 10px 20px 2px rgba(18, 20, 26, 0.3), -5px -10px 20px #484d56;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -167,11 +168,11 @@
 }
 
 .big-icons {
-  font-size: 1.5vh;
+  font-size: 1.2vh;
 }
 
 .text-huge {
-  font-size: 5em;
+  font-size: 4em;
   font-weight: 700;
   letter-spacing: -0.06em;
   background: linear-gradient(180deg, #50caff -11.53%, #4361ee 100%);
@@ -182,7 +183,7 @@
 
 .main-card {
   max-height: 45vh;
-  overflow: auto;
+  overflow-x: auto;
 
   background: #31353c;
   box-shadow: inset 10px 10px 10px rgba(0, 0, 0, 0.25),
@@ -195,30 +196,30 @@
 }
 
 .public-card-friends {
-  min-width: 300px;
+  min-width: 250px;
 }
 
 .text-title-games {
-  margin-top: 25px;
+  margin-top: 1em;
   font-family: "Raleway", sans-serif;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 0.7em;
 
   color: #dadada;
 }
 .text-games {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
-  font-size: 1rem;
+  font-size: 0.8rem;
   letter-spacing: -0.03em;
   margin-top: 1em;
-  margin-bottom: 0.75em;
+  margin-bottom: 1em;
 
   color: #dadada;
 }
 
 .text-games + .text-games {
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .public-wrapper {

@@ -25,13 +25,13 @@ export default function DisplayGamesStats(props: any) {
     <main>
       <Row>
         <Col className="">
-          <Card className="p-5 main-card">
+          <Card className="p-3 main-card">
             <Card.Body className="public-card">
               <Row className="public-wrapper">
                 <Col className="text-wrapper">
                   <div
                     className="IBM-text"
-                    style={{ fontSize: "20px", fontWeight: "500" }}
+                    style={{ fontSize: "1em", fontWeight: "500" }}
                   >
                     Latest Games
                   </div>
@@ -39,7 +39,7 @@ export default function DisplayGamesStats(props: any) {
                 <Col>
                   <div
                     className="IBM-text float-end"
-                    style={{ fontSize: "20px", fontWeight: "500" }}
+                    style={{ fontSize: "1em", fontWeight: "500" }}
                   >
                     {props.userInfo.gamesLost + props.userInfo.gamesWon}
                   </div>
@@ -55,7 +55,7 @@ export default function DisplayGamesStats(props: any) {
               <div
                 className=""
                 style={{
-                  maxHeight: "350px",
+                  maxHeight: "150px",
                   overflowY: "auto",
                   overflowX: "hidden",
                 }}

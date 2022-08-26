@@ -213,7 +213,7 @@ export default function UserProfile() {
                 <Col>{Math.floor(userInfo.playTime / 1000)}s</Col>
               </Row>
             </Container>
-            <Container className="p-5">
+            <Container className="">
               <DisplayGamesStats userInfo={userInfo} />
             </Container>
           </div>
