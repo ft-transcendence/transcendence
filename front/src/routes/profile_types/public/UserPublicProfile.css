@@ -61,6 +61,11 @@
   justify-content: center;
 }
 
+.buttons-round-big-disabled .big-icons {
+  color: #f2f2f2;
+  opacity: 0.25;
+}
+
 .buttons-round-big {
   width: 2vw;
   min-width: 45px;
@@ -74,24 +79,17 @@
   justify-content: center;
 
   box-shadow: 5px 10px 20px 2px rgba(18, 20, 26, 0.3), -5px -10px 20px #78a5e9;
+  transition: 0.5s ease;
 }
 
 .buttons-round-big:hover {
-  width: 2vw;
-  min-width: 45px;
-  height: 2vw;
-  min-height: 45px;
-  border-radius: 50%;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
   background: #3c58dd;
-
   box-shadow: inset 2px 5px 10px rgba(15, 21, 49, 0.25),
     inset -2px -5px 10px #556fe8;
-    transition: ;
+}
+
+.buttons-round-big:hover .big-icons {
+  color: #fee440;
 }
 
 .buttons-round-big + .buttons-round-big {
@@ -107,11 +105,29 @@
   margin-right: 1vw;
 }
 
+.buttons-round-sm-disabled {
+  width: 1vw;
+  min-width: 30px;
+  height: 1vw;
+  min-height: 30px;
+  border-radius: 50%;
+  background: #3b4048;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttons-round-sm-disabled .big-icons {
+  color: #f2f2f2;
+  opacity: 0.25;
+}
+
 .buttons-round-sm {
   width: 1vw;
-  min-width: 20px;
+  min-width: 30px;
   height: 1vw;
-  min-height: 20px;
+  min-height: 30px;
   border-radius: 50%;
 
   background: #f72585;
@@ -122,9 +138,30 @@
   justify-content: center;
 
   margin-right: 2vw;
+  transition: 0.5s ease;
+}
+
+.buttons-round-sm:hover {
+  background: #5d76ec;
+  box-shadow: inset 1px 3px 5px rgba(6, 13, 48, 0.25),
+    inset -1px -3px 5px #768cf2;
+}
+
+.buttons-round-sm:hover .sm-icons {
+  color: #fee440;
 }
 
 .buttons-round-sm + .buttons-round-sm {
+  margin-right: 2vw;
+}
+
+.buttons-round-sm + .buttons-round-sm-disabled {
+  margin-right: 2vw;
+}
+.buttons-round-sm-disabled + .buttons-round-sm {
+  margin-right: 2vw;
+}
+.buttons-round-sm-disabled + .buttons-round-sm-disabled {
   margin-right: 2vw;
 }
 

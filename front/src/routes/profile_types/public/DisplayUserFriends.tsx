@@ -171,16 +171,29 @@ const DisplayFriendsRow = (props: any) => {
             <div>@{props.userModel.username}</div>
           </Col>
           <Col className="">
-            <OverlayTrigger overlay={renderTooltip("Watch game")}>
-              <div id="clickableIcon" className="buttons-round-sm float-end">
+            {props.userModel.status === 2 ? (
+              <OverlayTrigger overlay={renderTooltip("Watch game")}>
+                <div id="clickableIcon" className="buttons-round-sm float-end">
+                  <i className="bi bi-caret-right-square-fill sm-icons" />
+                </div>
+              </OverlayTrigger>
+            ) : (
+              <div className="buttons-round-sm-disabled float-end">
                 <i className="bi bi-caret-right-square-fill sm-icons" />
               </div>
-            </OverlayTrigger>
-            <OverlayTrigger overlay={renderTooltip("Challenge")}>
-              <div id="clickableIcon" className="buttons-round-sm float-end">
+            )}
+
+            {props.userModel.status === 1 ? (
+              <OverlayTrigger overlay={renderTooltip("Challenge")}>
+                <div id="clickableIcon" className="buttons-round-sm float-end">
+                  <i className="bi bi-dpad-fill sm-icons" />
+                </div>
+              </OverlayTrigger>
+            ) : (
+              <div className="buttons-round-sm-disabled float-end">
                 <i className="bi bi-dpad-fill sm-icons" />
               </div>
-            </OverlayTrigger>
+            )}
           </Col>
         </Row>
       </Container>
