@@ -36,7 +36,6 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
         socket.emit("read preview", email);
 
         socket.on("set preview", (data: chatPreview[] | null) => {
-            // socket.emit("preview", data);
 
             if (data)
                 setPreviews(data);
@@ -267,7 +266,6 @@ function PreviewChat({ MENU_ID, data, onClick, selected }
 
     const { show } = useContextMenu();
     const [avatarURL, setAvatarURL] = useState("");
-    // const [avatarFetched, setAvatarFetched] = useState(false);
 
     useEffect(() => {
 
@@ -299,10 +297,6 @@ function PreviewChat({ MENU_ID, data, onClick, selected }
                         
                         <p className="preview-chat-msg">{data.lastMsg}</p>
                     </div>
-                    {/* <div className="preview-chat-info-2">
-                        <p className="preview-chat-time">{data.updateAt}</p>
-                        <p className="preview-chat-unread">{unreadCount}</p>
-                    </div> */}
                 </div>
             </div>
         </div>

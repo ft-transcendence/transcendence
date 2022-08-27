@@ -20,6 +20,7 @@ import "./context.css";
 import { AddUserIcon, QuitIcon } from "./icon";
 import ReactTags from "react-tag-autocomplete";
 import { socket } from "../Chat";
+import { getUserAvatarQuery } from "../../queries/avatarQueries";
 
 declare var global: {
     selectedData: oneUser
@@ -347,6 +348,21 @@ function OneStatus({data, setSelData, setHide}
         setHide: (d: any) => void }) {
 
     const email = localStorage.getItem("userEmail");
+    const [avatarURL, setAvatarURL] = useState("");
+
+    useEffect(() => {
+
+        getAvatar();
+      }, [data]);
+
+    const getAvatar = async () => {
+        const result: undefined | string | Blob | MediaSource =
+            await getUserAvatarQuery(data.id);
+
+        if (result !== undefined && result instanceof Blob) {
+            setAvatarURL(URL.createObjectURL(result));
+        }
+    }
 
     const goProfile = () => {
         // link to profile 
@@ -370,7 +386,10 @@ function OneStatus({data, setSelData, setHide}
             className="one-status"
             onContextMenu={email !== data?.email ? (e) => handleMenu(e) : undefined }
             onClick={goProfile}>
-                <p className="one-pic">{data?.picture}</p>
+                <p className="one-pic"
+                    style={{backgroundImage: `url("${avatarURL}")`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center"}}/>
                 <p className="one-name">{data?.username}</p>
         </div>
     )

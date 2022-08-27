@@ -934,6 +934,7 @@ export class ChatService {
 				const owner: oneUser = {
 					online: false,
 					username: source.owners[index].username,
+					id: source.owners[index].id,
 					email: source.owners[index].email,
 					picture: source.owners[index].picture,
 					isOwner: true,
@@ -971,6 +972,7 @@ export class ChatService {
 				const admin: oneUser = {
 					online: false,
 					username: source.admins[index].username,
+					id: source.admins[index].id,
 					email: source.admins[index].email,
 					picture: source.admins[index].picture,
 					isOwner: false,
@@ -1008,6 +1010,7 @@ export class ChatService {
 				const member: oneUser = {
 					online: false,
 					username: source.members[index].username,
+					id: source.members[index].id,
 					email: source.members[index].email,
 					picture: source.members[index].picture,
 					isOwner: false,
@@ -1045,6 +1048,7 @@ export class ChatService {
 				const member: oneUser = {
 					online: false,
 					username: source.inviteds[index].username,
+					id: source.inviteds[index].id,
 					email: source.inviteds[index].email,
 					picture: source.inviteds[index].picture,
 					isOwner: false,
