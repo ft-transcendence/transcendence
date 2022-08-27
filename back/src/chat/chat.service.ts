@@ -12,10 +12,12 @@ import {
 	updateChannel,
 } from './type/chat.type';
 import * as moment from 'moment';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class ChatService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(private readonly prisma: PrismaService,
+		private userService: UserService) {}
 
 	async list__allUsers() {
 		const users = await this.prisma.user.findMany();
@@ -531,6 +533,11 @@ export class ChatService {
 
 	async leave__channel(data: updateChannel) {
 		try {
+			let targetId;
+			if (data.targetId == -1)
+				targetId = this.get__id__ByEmail(data.email);
+			else
+				targetId = data.targetId;
 			await this.prisma.channel.update({
 				where: {
 					id: data.channelId,
@@ -538,22 +545,22 @@ export class ChatService {
 				data: {
 					owners: {
 						disconnect: {
-							email: data.email,
+							id: targetId,
 						},
 					},
 					admins: {
 						disconnect: {
-							email: data.email,
+							id: targetId,
 						},
 					},
 					members: {
 						disconnect: {
-							email: data.email,
+							id: targetId,
 						},
 					},
 					inviteds: {
 						disconnect: {
-							email: data.email,
+							id: targetId,
 						},
 					},
 				},
@@ -614,7 +621,7 @@ export class ChatService {
 				data: {
 					inviteds: {
 						connect: {
-							id: data.invitedId,
+							id: data.targetId,
 						},
 					},
 				},
@@ -909,9 +916,9 @@ export class ChatService {
 		}
 	}
 
-	async fetch__owners(channelId: number) {
+	async fetch__owners(id: number, channelId: number) {
 		try {
-			const source = await this.prisma.channel.findUnique({
+			const source = await this.prisma.channel.findMany({
 				where: {
 					id: channelId,
 				},
@@ -919,7 +926,7 @@ export class ChatService {
 					owners: true,
 				},
 			});
-			const owners = this.organize__owners(source);
+			const owners = this.organize__owners(id, source[1]);
 			return owners;
 		} catch (error) {
 			console.log('fetch__owners error:', error);
@@ -927,11 +934,14 @@ export class ChatService {
 		}
 	}
 
-	organize__owners(source: any) {
+	async organize__owners(id: number, source: any) {
 		const owners = [];
-		if (source)
+		if (source && source.owners)
 			for (let index = 0; index < source.owners.length; index++) {
-				const owner: oneUser = {
+				let friendship = false;
+				if (id != source.owners[index].id)
+					friendship = await this.userService.isFriend(id ,source.owners[index].id);
+				let owner: oneUser = {
 					online: false,
 					username: source.owners[index].username,
 					id: source.owners[index].id,
@@ -941,15 +951,16 @@ export class ChatService {
 					isAdmin: true,
 					isInvited: false,
 					isMuted: false,
+					isFriend: friendship
 				};
 				owners.push(owner);
 			}
 		return owners;
 	}
 
-	async fetch__admins(channelId: number) {
+	async fetch__admins(id: number, channelId: number) {
 		try {
-			const source = await this.prisma.channel.findUnique({
+			const source = await this.prisma.channel.findMany({
 				where: {
 					id: channelId,
 				},
@@ -957,7 +968,7 @@ export class ChatService {
 					admins: true,
 				},
 			});
-			const admins = this.organize__admins(source);
+			const admins = this.organize__admins(id, source[0]);
 			return admins;
 		} catch (error) {
 			console.log('fetch__admins error:', error);
@@ -965,10 +976,13 @@ export class ChatService {
 		}
 	}
 
-	organize__admins(source: any) {
+	async organize__admins(id: number, source: any) {
 		const admins = [];
 		if (source && source.admins)
 			for (let index = 0; index < source.admins.length; index++) {
+				let friendship = false;
+				if (id != source.admins[index].id)
+					friendship = await this.userService.isFriend(id ,source.admins[index].id);
 				const admin: oneUser = {
 					online: false,
 					username: source.admins[index].username,
@@ -979,15 +993,16 @@ export class ChatService {
 					isAdmin: true,
 					isInvited: false,
 					isMuted: false,
+					isFriend: friendship
 				};
 				admins.push(admin);
 			}
 		return admins;
 	}
 
-	async fetch__members(channelId: number) {
+	async fetch__members(id: number, channelId: number) {
 		try {
-			const source = await this.prisma.channel.findUnique({
+			const source = await this.prisma.channel.findMany({
 				where: {
 					id: channelId,
 				},
@@ -995,7 +1010,7 @@ export class ChatService {
 					members: true,
 				},
 			});
-			const members = this.organize__members(source);
+			const members = this.organize__members(id, source[0]);
 			return members;
 		} catch (error) {
 			console.log('fetch__members error:', error);
@@ -1003,10 +1018,13 @@ export class ChatService {
 		}
 	}
 
-	organize__members(source: any) {
+	async organize__members(id: number, source: any) {
 		const members = [];
 		if (source && source.members)
 			for (let index = 0; index < source.members.length; index++) {
+				let friendship = false;
+				if (id != source.members[index].id)
+					friendship = await this.userService.isFriend(id ,source.members[index].id);
 				const member: oneUser = {
 					online: false,
 					username: source.members[index].username,
@@ -1017,15 +1035,16 @@ export class ChatService {
 					isAdmin: false,
 					isInvited: false,
 					isMuted: false,
+					isFriend: friendship
 				};
 				members.push(member);
 			}
 		return members;
 	}
 
-	async fetch__inviteds(channelId: number) {
+	async fetch__inviteds(id: number, channelId: number) {
 		try {
-			const source = await this.prisma.channel.findUnique({
+			const source = await this.prisma.channel.findMany({
 				where: {
 					id: channelId,
 				},
@@ -1033,7 +1052,7 @@ export class ChatService {
 					inviteds: true,
 				},
 			});
-			const inviteds = this.organize__inviteds(source);
+			const inviteds = this.organize__inviteds(id, source[0]);
 			return inviteds;
 		} catch (error) {
 			console.log('fetch__inviteds error:', error);
@@ -1041,10 +1060,13 @@ export class ChatService {
 		}
 	}
 
-	organize__inviteds(source: any) {
+	async organize__inviteds(id: number, source: any) {
 		const inviteds = [];
 		if (source && source.inviteds)
 			for (let index = 0; index < source.inviteds.length; index++) {
+				let friendship = false;
+				if (id != source.inviteds[index].id)
+					friendship = await this.userService.isFriend(id ,source.inviteds[index].id);
 				const member: oneUser = {
 					online: false,
 					username: source.inviteds[index].username,
@@ -1055,6 +1077,7 @@ export class ChatService {
 					isAdmin: false,
 					isInvited: true,
 					isMuted: false,
+					isFriend: friendship
 				};
 				inviteds.push(member);
 			}
@@ -1397,12 +1420,12 @@ export class ChatService {
 				data: {
 					admins: {
 						connect: {
-							email: data.adminEmail,
+							id: data.targetId,
 						},
 					},
 					members: {
 						disconnect: {
-							email: data.adminEmail,
+							id: data.targetId,
 						},
 					},
 				},
@@ -1422,12 +1445,12 @@ export class ChatService {
 				data: {
 					admins: {
 						disconnect: {
-							email: data.adminEmail,
+							id: data.targetId,
 						},
 					},
 					members: {
 						connect: {
-							email: data.adminEmail,
+							id: data.targetId,
 						},
 					},
 				},

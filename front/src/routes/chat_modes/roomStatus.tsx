@@ -59,8 +59,7 @@ export default function RoomStatus({current, role, outsider}
             channelId: current!.id,
             email: email,
             password: "",
-            adminEmail: "",
-            invitedId: member.id,
+            targetId: member.id,
             private: false,
             isPassword: false,
             ownerPassword: "",
@@ -200,16 +199,16 @@ function Status({users, current, role}
 
     function handleAddFriend(){
         let update: updateUser = {
-            self: email,
-            other: global.selectedData.username
+            selfEmail: email,
+            otherId: global.selectedData.id
         }
         socket.emit("add friend", update);
     }
 
     function handleInviteGame(){
         let update: updateUser = {
-            self: email,
-            other: global.selectedData.username
+            selfEmail: email,
+            otherId: global.selectedData.id
         }
         socket.emit("invite game", update);
     }
@@ -225,8 +224,8 @@ function Status({users, current, role}
 
     function handleBlockUser(){
         let update: updateUser = {
-            self: email,
-            other: global.selectedData.username
+            selfEmail: email,
+            otherId: global.selectedData.id
         }
         socket.emit("block user", update);
     }
@@ -236,8 +235,7 @@ function Status({users, current, role}
             channelId: current!.id,
             email: email,
             password: "",
-            adminEmail: global.selectedData.email,
-            invitedId: 0,
+            targetId: global.selectedData.id,
             private: false,
             isPassword: false,
             ownerPassword: "",
@@ -251,8 +249,7 @@ function Status({users, current, role}
             channelId: current!.id,
             email: email,
             password: "",
-            adminEmail: global.selectedData.email,
-            invitedId: 0,
+            targetId: global.selectedData.id,
             private: false,
             isPassword: false,
             ownerPassword: "",
@@ -264,10 +261,9 @@ function Status({users, current, role}
     function handleKickOut(){
         let update: updateChannel = {
             channelId: current!.id,
-            email: global.selectedData.email,
+            email: email,
             password: "",
-            adminEmail: "",
-            invitedId: 0,
+            targetId: global.selectedData.id,
             private: false,
             isPassword: false,
             ownerPassword: "",
@@ -286,13 +282,13 @@ function Status({users, current, role}
                 )
             })}
             <Menu id={JSON.stringify(global.selectedData)} theme={theme.dark}>
-                <Item onClick={handleAddFriend} style={{backgroundColor: "grey"}}>
+                <Item onClick={handleAddFriend}>
                     add friend
                 </Item>
                 <Item onClick={handleInviteGame} style={{backgroundColor: "grey"}}>
                     invite to a game!
                 </Item>
-                <Item onClick={handleBlockUser} style={{backgroundColor: "grey"}}>
+                <Item onClick={handleBlockUser}>
                     block user
                 </Item>
                 <Separator/>
@@ -411,8 +407,7 @@ function JoinChannel({channelId, outsider, isPassword}
             channelId: channelId,
             email: email,
             password: password,
-            adminEmail: "",
-            invitedId: "",
+            targetId: -1,
             private: false,
             isPassword: false,
             ownerPassword: "",

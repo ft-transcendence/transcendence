@@ -40,7 +40,13 @@ export type oneUser = {
   isAdmin: boolean;
   isInvited: boolean;
   isMuted: boolean;
+  isFriend: boolean;
 };
+
+export type updateUser = {
+  selfEmail: string | null;
+  otherId: number;
+}
 
 export type Tag = {
   id: number;
@@ -51,8 +57,7 @@ export type updateChannel = {
   channelId: number;
   email: string | null;
   password: string;
-  adminEmail: string;
-  invitedId: number;
+  targetId: number;
   private: boolean;
   isPassword: boolean;
   ownerPassword: string;
