@@ -51,6 +51,8 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
                 setPreviews(data);
         })
 
+        socket.on("disconnect", () => {})
+
         return (() => {
             socket.off("connect");
             socket.off("set preview");
@@ -81,8 +83,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
             channelId: global.selectedData.id,
             email: email,
             password: "",
-            adminEmail: "",
-            invitedId: 0,
+            targetId: -1,
             private: false,
             isPassword: false,
             ownerPassword: "",
@@ -98,8 +99,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
             channelId: global.selectedData.id,
             email: email,
             password: "",
-            adminEmail: "",
-            invitedId: 0,
+            targetId: -1,
             private: false,
             isPassword: false,
             ownerPassword: "",

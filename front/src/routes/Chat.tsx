@@ -43,10 +43,13 @@ export default function Chat() {
             setRole(data);
         })
 
+        socket.on("disconnect", () => {})
+
         return (() => {
             socket.off("connect");
             socket.off("exception");
             socket.off("fetch role");
+            socket.off("disconnect");
         })
     }, [])
 
