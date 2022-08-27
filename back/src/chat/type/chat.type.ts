@@ -16,6 +16,7 @@ export type chatPreview = {
   lastMsg: string;
   unreadCount?: number;
   ownerEmail: string;
+  ownerId: number;
 };
 
 export type oneMsg = {

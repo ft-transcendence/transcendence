@@ -10,6 +10,7 @@ import {
 } from "react-contexify";
 import "./context.css";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
+import { getUserAvatarQuery } from "../../queries/avatarQueries";
 
 const MENU_CHANNEL = "menu_channel";
 const MENU_DM = "menu_dm";
@@ -35,6 +36,8 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
         socket.emit("read preview", email);
 
         socket.on("set preview", (data: chatPreview[] | null) => {
+            // socket.emit("preview", data);
+
             if (data)
                 setPreviews(data);
         })
@@ -54,6 +57,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
             socket.off("set preview");
             socket.off("add preview");
             socket.off("update preview");
+            socket.off("disconnect")
         })
 
     }, [email]);
@@ -262,29 +266,45 @@ function PreviewChat({ MENU_ID, data, onClick, selected }
         selected: boolean }) {
 
     const { show } = useContextMenu();
+    const [avatarURL, setAvatarURL] = useState("");
+    // const [avatarFetched, setAvatarFetched] = useState(false);
+
+    useEffect(() => {
+
+        getAvatar();
+      }, []);
+
+    const getAvatar = async () => {
+        const result: undefined | string | Blob | MediaSource =
+            await getUserAvatarQuery(data.ownerId);
+
+        if (result !== undefined && result instanceof Blob) {
+            setAvatarURL(URL.createObjectURL(result));
+        }
+    }
 
     return (
-        <>
-            <div
-            className="preview-chat"
-            onMouseDown={onClick} style={{backgroundColor: selected ? "rgb(255 255 255 / 29%)" : ""}}
-            onContextMenu={(e) => {global.selectedData = data; show(e, {id: MENU_ID})}}>
-                <div>
-                    <div className="preview-chat-img">{data.picture? data.picture : null}</div>
-                    <div className="preview-chat-info">
-                        <div className="preview-chat-info-1">
-                            <p className="preview-chat-name">{data.name}</p>
-                            
-                            <p className="preview-chat-msg">{data.lastMsg}</p>
-                        </div>
-                        {/* <div className="preview-chat-info-2">
-                            <p className="preview-chat-time">{data.updateAt}</p>
-                            <p className="preview-chat-unread">{unreadCount}</p>
-                        </div> */}
+        <div
+        className="preview-chat"
+        onMouseDown={onClick} style={{backgroundColor: selected ? "rgb(255 255 255 / 29%)" : ""}}
+        onContextMenu={(e) => {global.selectedData = data; show(e, {id: MENU_ID})}}>
+            <div>
+                <div className="preview-chat-img" 
+                    style={{backgroundImage: `url("${avatarURL}")`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center"}}/>
+                <div className="preview-chat-info">
+                    <div className="preview-chat-info-1">
+                        <p className="preview-chat-name">{data.name}</p>
+                        
+                        <p className="preview-chat-msg">{data.lastMsg}</p>
                     </div>
+                    {/* <div className="preview-chat-info-2">
+                        <p className="preview-chat-time">{data.updateAt}</p>
+                        <p className="preview-chat-unread">{unreadCount}</p>
+                    </div> */}
                 </div>
             </div>
-            
-        </>
+        </div>
     );
 }

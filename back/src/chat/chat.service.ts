@@ -123,7 +123,7 @@ export class ChatService {
 	async get__previews(email: string): Promise<chatPreview[]> {
 		try {
 			const source = await this.get__chatList__ByEmail(email);
-			const data = await this.organize__previews(source, email);
+			const data = this.organize__previews(source, email);
 			return data;
 		} catch (error) {
 			console.log('get__preview error:', error);
@@ -141,7 +141,14 @@ export class ChatService {
 							source.owner[index].owners[0].email === email
 								? source.owner[index].owners[1].username
 								: source.owner[index].owners[0].username;
-					} else dmName = 'No One';
+					} else dmName = 'Empty Chat';
+					let otherId = -1;
+					if (source.owner[index].owners.length > 1) {
+						otherId =
+							source.owner[index].owners[0].email === email
+								? source.owner[index].owners[1].id
+								: source.owner[index].owners[0].id;
+					} else otherId = -1;
 					const messageCount = source.owner[index].messages.length;
 					const element: chatPreview = {
 						id: source.owner[index].id,
@@ -156,6 +163,7 @@ export class ChatService {
 										.msg
 								: '',
 						ownerEmail: source.owner[index].owners[0].email,
+						ownerId: otherId
 					};
 					data.push(element);
 				}
@@ -176,6 +184,7 @@ export class ChatService {
 										.msg
 								: '',
 						ownerEmail: source.admin[index].owners[0].email,
+						ownerId: source.admin[index].owners[0].id
 					};
 					data.push(element);
 				}
@@ -194,6 +203,7 @@ export class ChatService {
 								? source.member[index].messages[0].msg
 								: '',
 						ownerEmail: source.member[index].owners[0].email,
+						ownerId: source.member[index].owners[0].id
 					};
 					data.push(element);
 				}
@@ -208,8 +218,9 @@ export class ChatService {
 						picture: source.invited[index].picture,
 						updateAt: source.invited[index].updateAt,
 						// eslint-disable-next-line unicorn/no-nested-ternary, prettier/prettier
-					lastMsg: source.invited[index].isPassword ? '' : (messageCount > 0 ? source.invited[index].messages[0].msg : ''),
+						lastMsg: source.invited[index].isPassword ? '' : (messageCount > 0 ? source.invited[index].messages[0].msg : ''),
 						ownerEmail: source.invited[index].owners[0].email,
+						ownerId: source.invited[index].owners[0].id
 					};
 					data.push(element);
 				}
@@ -239,7 +250,14 @@ export class ChatService {
 				source.owners[0].email === email
 					? source.owners[1].username
 					: source.owners[0].username;
-		} else dmName = 'No One';
+		} else dmName = 'Empty Chat';
+		let otherId = -1;
+					if (source.owners.length > 1) {
+						otherId =
+							source.owners[0].email === email
+								? source.owners[1].id
+								: source.owners[0].id;
+					} else otherId = source.owners[0].id;
 		const data: chatPreview = {
 			id: source.id,
 			dm: source.dm,
@@ -249,6 +267,7 @@ export class ChatService {
 			// eslint-disable-next-line unicorn/no-nested-ternary, prettier/prettier
 			lastMsg: source.isPassword ? '' : (messageCount > 0 ? source.messages[0].msg : ''),
 			ownerEmail: source.owners.length > 0 ? source.owners[0].email : '',
+			ownerId: otherId
 		};
 		return data;
 	}
@@ -268,6 +287,7 @@ export class ChatService {
 					updatedAt: true,
 					owners: {
 						select: {
+							id: true,
 							email: true,
 							username: true,
 						},
@@ -309,6 +329,7 @@ export class ChatService {
 							updatedAt: true,
 							owners: {
 								select: {
+									id: true,
 									email: true,
 									username: true,
 								},
@@ -333,6 +354,7 @@ export class ChatService {
 							updatedAt: true,
 							owners: {
 								select: {
+									id: true,
 									email: true,
 									username: true,
 								},
@@ -357,6 +379,7 @@ export class ChatService {
 							updatedAt: true,
 							owners: {
 								select: {
+									id: true,
 									email: true,
 									username: true,
 								},
@@ -381,6 +404,7 @@ export class ChatService {
 							updatedAt: true,
 							owners: {
 								select: {
+									id: true,
 									email: true,
 									username: true,
 								},
@@ -428,12 +452,21 @@ export class ChatService {
 	async new__channel(info: ChannelDto) {
 		try {
 			const password = await argon.hash(info.password);
+			const avatar = await this.prisma.user.findUnique({
+				where: {
+					email: info.email
+				},
+				select: {
+					avatar: true
+				}
+			})
 			const channel = await this.prisma.channel.create({
 				data: {
 					name: info.name,
 					private: info.private,
 					isPassword: info.isPassword,
 					password: password,
+					picture: avatar.avatar,
 					owners: {
 						connect: {
 							email: info.email,
