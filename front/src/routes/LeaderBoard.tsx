@@ -1,10 +1,15 @@
 import "./LeaderBoard.css"
 import { useEffect, useState } from "react";
+import { getLeaderBoard } from "../queries/userQueries";
 
 export default function LeaderBoard() {
     const [data, setData] = useState<[]>([]);
 
     useEffect(() => {
+        const updateLeaderBoard = async () => {
+            await getLeaderBoard();
+        }
+        updateLeaderBoard();
         setData(JSON.parse(localStorage.getItem("leaderBoard")!));
     }, [])
 
