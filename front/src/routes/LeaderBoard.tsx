@@ -1,6 +1,7 @@
 import "./LeaderBoard.css"
 import { useEffect, useState } from "react";
 import { getLeaderBoard } from "../queries/userQueries";
+import { getUserAvatarQuery } from "../queries/avatarQueries";
 
 export default function LeaderBoard() {
     const [data, setData] = useState<[]>([]);
@@ -48,7 +49,7 @@ export default function LeaderBoard() {
 
 function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPlayed, head}
     : { index: number,
-        id: number | string,
+        id: number,
         username: string,
         avatar: string,
         rank: number,
@@ -57,11 +58,28 @@ function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPl
         gamesPlayed: number,
         head: boolean} ) {
 
+        const [avatarURL, setAvatarURL] = useState("");
+
+        useEffect(() => {
+            const getAvatar = async () => {
+                const result: undefined | string | Blob | MediaSource =
+                    await getUserAvatarQuery(id);
+        
+                if (result !== undefined && result instanceof Blob) {
+                    setAvatarURL(URL.createObjectURL(result));
+                }
+            }
+            getAvatar();
+            }, [id]);
+
         switch(index) {
             case 1:
                 return(
                 <div className="top first">
-                        <div className="top-avatar"></div>
+                    <div className="top-avatar"
+                        style={{backgroundImage: `url("${avatarURL}")`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center"}}/>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
                         <BadgeReward index={index}/>
@@ -73,8 +91,11 @@ function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPl
             case 2:
                 return(
                 <div className="top second">
-                        <div className="top-avatar"></div>
-                   <div className="top-info">
+                    <div className="top-avatar"
+                        style={{backgroundImage: `url("${avatarURL}")`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center"}}/>
+                    <div className="top-info">
                         <div className="top-username">{username}</div>
                         <BadgeReward index={index}/>
                         <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
@@ -85,7 +106,10 @@ function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPl
             case 3:
                 return(
                 <div className="top third">
-                        <div className="top-avatar"></div>
+                    <div className="top-avatar"
+                        style={{backgroundImage: `url("${avatarURL}")`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center"}}/>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
                         <BadgeReward index={index}/>
@@ -101,8 +125,11 @@ function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPl
                         <div className="id">{id}</div>
                         <div className="rank">LV. 0{rank}</div>
                         <div className="user">
-                            {!head ? <div className="avatar">{avatar}</div> : <></>}
-                            
+                            {!head ? 
+                                <div className="avatar"
+                                    style={{backgroundImage: `url("${avatarURL}")`,
+                                    backgroundSize: "cover",
+                                    backgroundPosition: "center"}}/> : <></>}
                             <div className="username">{username}</div>
                         </div>
                         <div className="record">
