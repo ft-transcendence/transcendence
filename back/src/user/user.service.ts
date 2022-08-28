@@ -8,14 +8,12 @@ import {
 import { Game, User } from '@prisma/client';
 import * as argon from 'argon2';
 import { plainToClass } from 'class-transformer';
-import { userInfo } from 'node:os';
 import { GameService } from 'src/game/game.service';
 
 /* PRISMA */
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from './dto';
 import { SubjectiveGameDto } from 'src/game/dto';
-import { use } from 'passport';
 /* USER Modules */
 
 @Injectable()
@@ -141,6 +139,22 @@ export class UserService {
 			const user = await this.prisma.user.findUnique({
 				where: {
 					id: id,
+				},
+				rejectOnNotFound: true,
+			});
+			const dtoUser = plainToClass(UserDto, user);
+			return dtoUser;
+		} catch (error) {
+			throw new ForbiddenException('getUser error : ' + error);
+		}
+	}
+
+	async getUserfromUsername(username: string) {
+		// console.log('username : ', username);
+		try {
+			const user = await this.prisma.user.findUnique({
+				where: {
+					username: username,
 				},
 				rejectOnNotFound: true,
 			});
@@ -671,8 +685,8 @@ export class UserService {
 	}
 
 	async updatePlayTime(id: number, duration: number) {
-		console.log('id = ' + id);
-		console.log('duration = ' + duration);
+		// console.log('id = ' + id);
+		// console.log('duration = ' + duration);
 		const updateUser = await this.prisma.user.update({
 			where: {
 				id: id,

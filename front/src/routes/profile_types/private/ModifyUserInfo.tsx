@@ -3,8 +3,8 @@ import { Col, Card, Row, Button, Form } from "react-bootstrap";
 import {
   updateUsernameQuery,
   updateEmailQuery,
-} from "../../queries/updateUserQueries";
-import { TAlert } from "../../toasts/TAlert";
+} from "../../../queries/updateUserQueries";
+import { TAlert } from "../../../toasts/TAlert";
 
 export const ModifyEntry = (props: any) => {
   const initialValues = {
