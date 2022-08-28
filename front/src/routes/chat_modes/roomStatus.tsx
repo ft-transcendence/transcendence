@@ -23,6 +23,7 @@ import ReactTags from "react-tag-autocomplete";
 import { socket } from "../Chat";
 import { getUserAvatarQuery } from "../../queries/avatarQueries";
 import { Player } from "../game.interfaces";
+import { useNavigate } from "react-router-dom";
 
 declare var global: {
     selectedUser: oneUser
@@ -358,6 +359,7 @@ function OneStatus({data, setSelData, setHide}
 
     const email = localStorage.getItem("userEmail");
     const [avatarURL, setAvatarURL] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getAvatar = async () => {
@@ -370,10 +372,6 @@ function OneStatus({data, setSelData, setHide}
         }
         getAvatar();
       }, [data.id]);
-
-    const goProfile = () => {
-        // link to profile 
-    }
 
     const handleMenu = (event: any) => {
 
@@ -392,7 +390,8 @@ function OneStatus({data, setSelData, setHide}
             style={{display: data ? "" : "none"}}
             className="one-status"
             onContextMenu={email !== data?.email ? (e) => handleMenu(e) : undefined }
-            onClick={goProfile}>
+            onClick = {
+                () => navigate("/app/public/" + data?.id)}>
                 <p className="one-pic"
                     style={{backgroundImage: `url("${avatarURL}")`,
                         backgroundSize: "cover",
