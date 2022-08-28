@@ -11,7 +11,6 @@ export type chatPreview = {
     dm: boolean;
     name: string;
     isPassword: boolean;
-    picture?: string;
     updateAt: string;
     lastMsg: string;
     unreadCount?: number;
@@ -43,8 +42,7 @@ export type updateChannel = {
     channelId: number | undefined;
     email: string | null;
     password: string;
-    adminEmail: string;
-    invitedId: number | string;
+    targetId: number | string;
     private: boolean;
     isPassword: boolean;
     ownerPassword: string;
@@ -74,16 +72,16 @@ export type oneUser = {
     username: string;
     id: number;
     email: string;
-    picture: string;
     isOwner: boolean;
     isAdmin: boolean;
     isInvited: boolean;
     isMuted: boolean;
+    isFriend: boolean;
 }
 
 export type updateUser = {
-    self: string | null;
-    other: string;
+    selfEmail: string | null;
+    otherId: number;
 }
 
 export type setting = {

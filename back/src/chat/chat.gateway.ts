@@ -16,7 +16,9 @@ import {
 	oneMsg as oneMessage,
 	oneUser,
 	updateChannel,
+	updateUser,
 } from './type/chat.type';
+import { UserService } from 'src/user/user.service';
 
 @UsePipes(new ValidationPipe())
 @UseFilters(new HttpToWsFilter())
@@ -26,7 +28,10 @@ export class ChatGateway {
 	@WebSocketServer()
 	server: Server;
 
-	constructor(private readonly chatservice: ChatService) {}
+	constructor(
+		private readonly chatservice: ChatService,
+		private userService: UserService,
+	) {}
 
 	async handleFetchChannel(email: string, @ConnectedSocket() client: Socket) {
 		const channels = await this.chatservice.get__channelsToJoin(email);
@@ -100,13 +105,16 @@ export class ChatGateway {
 				data.channelId,
 			);
 			client.join(channelName);
+			const id = await this.chatservice.get__id__ByEmail(data.email);
 			const preview = await this.chatservice.get__previews(data.email);
 			client.emit('update preview', preview);
 			const members = await this.chatservice.fetch__members(
+				id,
 				data.channelId,
 			);
 			client.emit('fetch members', members);
 			const inviteds = await this.chatservice.fetch__inviteds(
+				id,
 				data.channelId,
 			);
 			client.emit('fetch inviteds', inviteds);
@@ -127,7 +135,11 @@ export class ChatGateway {
 		@ConnectedSocket() client: Socket,
 	) {
 		await this.chatservice.invite__toChannel(data);
-		const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
+		const id = await this.chatservice.get__id__ByEmail(data.email);
+		const inviteds = await this.chatservice.fetch__inviteds(
+			id,
+			data.channelId,
+		);
 		client.emit('fetch inviteds', inviteds);
 	}
 
@@ -169,11 +181,18 @@ export class ChatGateway {
 		@ConnectedSocket() client: Socket,
 	) {
 		await this.chatservice.leave__channel(data);
-		const admins = await this.chatservice.fetch__admins(data.channelId);
+		const id = await this.chatservice.get__id__ByEmail(data.email);
+		const admins = await this.chatservice.fetch__admins(id, data.channelId);
 		client.emit('fetch admins', admins);
-		const members = await this.chatservice.fetch__members(data.channelId);
+		const members = await this.chatservice.fetch__members(
+			id,
+			data.channelId,
+		);
 		client.emit('fetch members', members);
-		const inviteds = await this.chatservice.fetch__inviteds(data.channelId);
+		const inviteds = await this.chatservice.fetch__inviteds(
+			id,
+			data.channelId,
+		);
 		client.emit('fetch inviteds', inviteds);
 		const invitationTags = await this.chatservice.get__invitationTags(
 			data.channelId,
@@ -262,13 +281,21 @@ export class ChatGateway {
 		@MessageBody() data: any,
 		@ConnectedSocket() client: Socket,
 	) {
-		const owners = await this.chatservice.fetch__owners(data.id);
+		console.log('read status__email', data.email);
+		const id = await this.chatservice.get__id__ByEmail(data.email);
+		const owners = await this.chatservice.fetch__owners(id, data.channelId);
 		client.emit('fetch owner', owners);
-		const admins = await this.chatservice.fetch__admins(data.id);
+		const admins = await this.chatservice.fetch__admins(id, data.channelId);
 		client.emit('fetch admins', admins);
-		const members = await this.chatservice.fetch__members(data.id);
+		const members = await this.chatservice.fetch__members(
+			id,
+			data.channelId,
+		);
 		client.emit('fetch members', members);
-		const inviteds = await this.chatservice.fetch__inviteds(data.id);
+		const inviteds = await this.chatservice.fetch__inviteds(
+			id,
+			data.channelId,
+		);
 		client.emit('fetch inviteds', inviteds);
 		const role = await this.get__role(
 			data.email,
@@ -339,9 +366,13 @@ export class ChatGateway {
 		@ConnectedSocket() client: Socket,
 	) {
 		await this.chatservice.be__admin(data);
-		const admins = await this.chatservice.fetch__admins(data.channelId);
+		const id = await this.chatservice.get__id__ByEmail(data.email);
+		const admins = await this.chatservice.fetch__admins(id, data.channelId);
 		client.emit('fetch admins', admins);
-		const members = await this.chatservice.fetch__members(data.channelId);
+		const members = await this.chatservice.fetch__members(
+			id,
+			data.channelId,
+		);
 		client.emit('fetch members', members);
 	}
 
@@ -351,9 +382,13 @@ export class ChatGateway {
 		@ConnectedSocket() client: Socket,
 	) {
 		await this.chatservice.not__admin(data);
-		const admins = await this.chatservice.fetch__admins(data.channelId);
+		const id = await this.chatservice.get__id__ByEmail(data.email);
+		const admins = await this.chatservice.fetch__admins(id, data.channelId);
 		client.emit('fetch admins', admins);
-		const members = await this.chatservice.fetch__members(data.channelId);
+		const members = await this.chatservice.fetch__members(
+			id,
+			data.channelId,
+		);
 		client.emit('fetch members', members);
 	}
 
@@ -379,5 +414,23 @@ export class ChatGateway {
 	@SubscribeMessage('mute user')
 	async handleMuteUser(@MessageBody() data: mute) {
 		await this.chatservice.new__mute(data);
+	}
+
+	@SubscribeMessage('add friend')
+	async addFriend(
+		@MessageBody() data: updateUser,
+		// @ConnectedSocket() client: Socket,
+	) {
+		const id = await this.chatservice.get__id__ByEmail(data.selfEmail);
+		await this.userService.addFriend(id, data.otherId);
+	}
+
+	@SubscribeMessage('block user')
+	async blockUser(
+		@MessageBody() data: updateUser,
+		// @ConnectedSocket() client: Socket,
+	) {
+		const id = await this.chatservice.get__id__ByEmail(data.selfEmail);
+		await this.userService.blockUser(id, data.otherId);
 	}
 }
