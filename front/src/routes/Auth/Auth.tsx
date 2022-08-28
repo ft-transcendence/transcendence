@@ -9,6 +9,7 @@ import { GUserInputsRefs } from "../../globals/variables";
 import { useAuth } from "../../globals/contexts";
 import { getLeaderBoard, getUserData } from "../../queries/userQueries";
 import { TAlert } from "../../toasts/TAlert";
+import "./Auth.css"
 
 export default function Auth() {
   let navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function Auth() {
   let location = useLocation();
   const [showNotif, setShowNotif] = useState(false);
   const [notifText, setNotifText] = useState("Error");
+  const hrefURL = process.env.REACT_APP_BACKEND_URL + "/auth/42"
 
   // Use a callback to avoid re-rendering
   const userSignIn = useCallback(() => {
@@ -128,7 +130,7 @@ export default function Auth() {
             variant="secondary"
             className="submit-button"
             size="sm"
-            href="http://localhost:4000/auth/42"
+            href={hrefURL}
           >
             Sign in with 42
           </Button>

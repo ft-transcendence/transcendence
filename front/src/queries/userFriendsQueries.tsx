@@ -1,56 +1,56 @@
+import { authContentHeader } from "./headers";
+
+export const getUserFriends = (otherId: number) => {
+  let body = JSON.stringify({
+    otherId: otherId,
+  });
+  return fetchGet("get_friends", authContentHeader, body);
+};
+
 export const addFriendQuery = (otherId: number) => {
   let body = JSON.stringify({
     otherId: otherId,
   });
-  return fetchGet("add_friend", authFileHeader, body);
+  return fetchGet("add_friend", authContentHeader, body);
 };
 
 export const removeFriendQuery = (otherId: number) => {
   let body = JSON.stringify({
     otherId: otherId,
   });
-  return fetchGet("rm_friend", authFileHeader, body);
+  return fetchGet("rm_friend", authContentHeader, body);
 };
 
 export const blockUserQuery = (otherId: number) => {
   let body = JSON.stringify({
     otherId: otherId,
   });
-  return fetchGet("block_user", authFileHeader, body);
+  return fetchGet("block_user", authContentHeader, body);
 };
 
 export const unblockUserQuery = (otherId: number) => {
   let body = JSON.stringify({
     otherId: otherId,
   });
-  console.log("otherId: ", otherId);
-  return fetchGet("unblock_user", authFileHeader, body);
+  return fetchGet("/unblock_user", authContentHeader, body);
 };
 
 export const cancelInviteQuery = (otherId: number) => {
   let body = JSON.stringify({
     otherId: otherId,
   });
-  return fetchGet("cancel_invite", authFileHeader, body);
+  return fetchGet("cancel_invite", authContentHeader, body);
 };
 
 export const denyInviteQuery = (otherId: number) => {
   let body = JSON.stringify({
     otherId: otherId,
   });
-  return fetchGet("deny_invite", authFileHeader, body);
-};
-
-const authFileHeader = () => {
-  let token = "bearer " + localStorage.getItem("userToken");
-  let myHeaders = new Headers();
-  myHeaders.append("Authorization", token);
-  myHeaders.append("Content-Type", "application/json");
-  return myHeaders;
+  return fetchGet("deny_invite", authContentHeader, body);
 };
 
 const fetchGet = async (url: string, header: any, body: any) => {
-  let fetchUrl = "http://localhost:4000/users/" + url;
+  let fetchUrl = process.env.REACT_APP_BACKEND_URL + "/users/" + url;
   try {
     const response = await fetch(fetchUrl, {
       method: "POST",
@@ -63,7 +63,7 @@ const fetchGet = async (url: string, header: any, body: any) => {
       console.log("POST error on ", url);
       return "error";
     }
-    return "success";
+    return response.json();
   } catch (error) {
     return console.log("error", error);
   }

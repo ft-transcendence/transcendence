@@ -17,7 +17,7 @@ export const UsersRelations = () => {
                   }
                 >
                   FRIENDS
-                </NavLink>{" "}
+                </NavLink>
                 |{" "}
                 <NavLink
                   to="/app/private-profile/pending"
@@ -26,7 +26,7 @@ export const UsersRelations = () => {
                   }
                 >
                   PENDING
-                </NavLink>{" "}
+                </NavLink>
                 |{" "}
                 <NavLink
                   to="/app/private-profile/blocked"

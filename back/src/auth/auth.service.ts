@@ -15,6 +15,8 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { Response } from 'express';
 import { UploadService } from 'src/upload/upload.service';
+import { TwoFactorService } from './2FA/2fa.service';
+import { AppGateway } from 'src/app.gateway';
 
 /**
  * AUTHENTIFICATION SERVICE
@@ -26,6 +28,7 @@ export class AuthService {
 		private jwtService: JwtService,
 		private userService: UserService,
 		private uploadService: UploadService,
+		private appGateway: AppGateway,
 	) {}
 
 	/* SIGNUP */
@@ -44,6 +47,10 @@ export class AuthService {
 			// return a hashed user
 			const tokens = await this.signin_jwt(user.id, user.email);
 			await this.updateRefreshToken(user.id, tokens.refresh_token);
+
+			//sending status update to the front
+			this.appGateway.onlineFromService(user.id);
+
 			return tokens;
 		} catch (error) {
 			// duplicate user email
@@ -81,6 +88,9 @@ export class AuthService {
 		// update refresh token
 		await this.updateRefreshToken(user.id, tokens.refresh_token);
 
+		//sending status update to the front
+		this.appGateway.onlineFromService(user.id);
+
 		return tokens;
 	}
 
@@ -100,6 +110,8 @@ export class AuthService {
 				hashedRtoken: null,
 			},
 		});
+		//sending status update to the front
+		this.appGateway.offlineFromService(userId);
 	}
 
 	/* SIGNIN USING 42 API */
@@ -112,6 +124,9 @@ export class AuthService {
 				email: email,
 			},
 		});
+		//sending status update to the front
+		if (user) this.appGateway.onlineFromService(user.id);
+
 		// if user does not exist, create it
 		return user ?? this.create_42_user(dto);
 	}
@@ -149,6 +164,10 @@ export class AuthService {
 		if (user) {
 			await this.uploadService.download_avatar(user.id, avatar);
 		}
+
+		//sending status update to the front
+		this.appGateway.onlineFromService(user.id);
+
 		// LOG
 		console.log('create user :', username, email, rdm_string);
 		// return token

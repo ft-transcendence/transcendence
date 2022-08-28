@@ -1,4 +1,5 @@
-import { authFileHeader, getUserData } from "./userQueries";
+import { authHeader } from "./headers";
+import { getUserData } from "./userQueries";
 
 let myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
@@ -15,7 +16,7 @@ const fetchPost = async (
   userSignIn: any,
   url: string
 ) => {
-  let fetchUrl = "http://localhost:4000/auth/" + url;
+  let fetchUrl = process.env.REACT_APP_BACKEND_URL + "/auth/" + url;
 
   try {
     const response = await fetch(fetchUrl, {
@@ -78,12 +79,12 @@ export const logOut = () => {
 };
 
 const fetchPostLogout = async () => {
-  let fetchUrl = "http://localhost:4000/auth/logout";
+  let fetchUrl = process.env.REACT_APP_BACKEND_URL + "/auth/logout";
 
   try {
     const response = await fetch(fetchUrl, {
       method: "POST",
-      headers: authFileHeader(),
+      headers: authHeader(),
       redirect: "follow",
     });
     const result_1 = await response.text();

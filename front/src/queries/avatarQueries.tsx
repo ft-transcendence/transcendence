@@ -31,7 +31,7 @@ const fetchAvatar = async (
   header: any,
   url: string
 ) => {
-  let fetchUrl = "http://localhost:4000/upload/" + url;
+  let fetchUrl = process.env.REACT_APP_BACKEND_URL + "/upload/" + url;
 
   let requestOptions: RequestInit | undefined;
   if (method === "POST")
