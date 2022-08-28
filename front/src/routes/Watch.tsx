@@ -78,18 +78,20 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
        }
     }
 
-const socketOptions = {
-    transportOptions: {
-        polling: {
-        extraHeaders: {
-            Token: localStorage.getItem("userToken"),
-        }
-        }
-    }
-    };
+    const socketOptions = {
+        transportOptions: {
+          polling: {
+            extraHeaders: {
+                Token: localStorage.getItem("userToken"),
+            }
+          }
+        },
+        path: 'pong/socket.io',
+     };
     
-
-const socket = io("ws://localhost:4000", socketOptions);
+    const socketURL = process.env.REACT_APP_GAME_SOCKET ? process.env.REACT_APP_GAME_SOCKET : "";
+    
+    const socket = io(socketURL, socketOptions);
 
 export default class Watch extends React.Component < {}, StatePong > {
 

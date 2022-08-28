@@ -17,8 +17,8 @@ services:
 #    build: ./front
     volumes:
       - ./front:/app
-    ports:
-      - "3000:3000"
+#    ports:
+#      - "3000:3000"
     restart: unless-stopped
     networks:
       - backend
@@ -38,9 +38,9 @@ services:
     volumes:
       - ./back:/app
       - uploads:/app/image_dir
-    ports:
-      - "4000:4000"
-      - "5555:5555"
+#    ports:
+#      - "4000:4000"
+#      - "5555:5555"
     restart: unless-stopped
     networks:
       - backend
@@ -50,8 +50,8 @@ services:
   postgres:
     image: postgres:14-alpine
     container_name: postgres
-    ports:
-      - 5432:5432
+#    ports:
+#      - 5432:5432
     restart: unless-stopped
     volumes:
       - data:/var/lib/postgresql/data

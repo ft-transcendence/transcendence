@@ -16,7 +16,9 @@ export const UsersStatusCxt = createContext<IUserStatus[] | undefined>(
   undefined
 );
 
-export const socket = io("ws://localhost:4000");
+const socketURL = process.env.REACT_APP_GAME_SOCKET ? process.env.REACT_APP_GAME_SOCKET : "";
+
+export const socket = io(socketURL);
 
 export default function App() {
   const [usersStatus, setUsersStatus] = useState<IUserStatus[] | undefined>(

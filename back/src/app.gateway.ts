@@ -8,9 +8,11 @@ import { ArgumentsHost, Catch } from '@nestjs/common';
 import { GameService } from './game/game.service';
 import { Status } from './user/statuses';
 
-
-@WebSocketGateway({cors: {
-  origin: "http://localhost:3000"}})
+@WebSocketGateway({
+  cors: {
+    origin: process.env.FRONT_URL
+  },
+})
 
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   constructor(private readonly jwtService: JwtService, private userService: UserService, private chatService: ChatService, private gameService: GameService) {}

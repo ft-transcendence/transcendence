@@ -15,11 +15,14 @@ const socketOptions = {
           Token: localStorage.getItem("userToken"),
       }
     }
-  }
+  },
+  path: 'pongchat/socket.io',
 };
 
+const socketURL = process.env.REACT_APP_CHAT_SOCKET ? process.env.REACT_APP_CHAT_SOCKET : "";
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const socket = io("ws://localhost:4000", socketOptions);
+export const socket = io(socketURL, socketOptions);
 
 export default function Chat() {
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);

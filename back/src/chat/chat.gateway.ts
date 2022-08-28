@@ -21,7 +21,12 @@ import {
 @UsePipes(new ValidationPipe())
 @UseFilters(new HttpToWsFilter())
 @UseFilters(new ProperWsFilter())
-@WebSocketGateway()
+@WebSocketGateway({
+	cors: {
+		origin: process.env.FRONT_URL,
+	},
+	path: 'pongchat/socket.io',
+})
 export class ChatGateway {
 	@WebSocketServer()
 	server: Server;
