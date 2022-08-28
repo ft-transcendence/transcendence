@@ -2,6 +2,7 @@ import "./LeaderBoard.css"
 import { useEffect, useState } from "react";
 import { getLeaderBoard } from "../queries/userQueries";
 import { getUserAvatarQuery } from "../queries/avatarQueries";
+import { useNavigate } from "react-router-dom";
 
 export default function LeaderBoard() {
     const [data, setData] = useState<[]>([]);
@@ -57,6 +58,8 @@ function OneRow({index, id, username, rank, gamesWon, gamesLost, gamesPlayed, he
         head: boolean} ) {
 
         const [avatarURL, setAvatarURL] = useState("");
+        // const [profileURL, setProfileURL] = useState("");
+        const navigate = useNavigate();
 
         useEffect(() => {
             const getAvatar = async () => {
@@ -73,7 +76,9 @@ function OneRow({index, id, username, rank, gamesWon, gamesLost, gamesPlayed, he
         switch(index) {
             case 1:
                 return(
-                <div className="top first">
+                <div className="top first"
+                    onClick = {
+                    () => navigate("/app/public/" + id)}>
                     <div className="top-avatar"
                         style={{backgroundImage: `url("${avatarURL}")`,
                         backgroundSize: "cover",
@@ -88,7 +93,9 @@ function OneRow({index, id, username, rank, gamesWon, gamesLost, gamesPlayed, he
                 );
             case 2:
                 return(
-                <div className="top second">
+                <div className="top second"
+                    onClick = {
+                    () => navigate("/app/public/" + id)}>
                     <div className="top-avatar"
                         style={{backgroundImage: `url("${avatarURL}")`,
                         backgroundSize: "cover",
@@ -103,7 +110,9 @@ function OneRow({index, id, username, rank, gamesWon, gamesLost, gamesPlayed, he
                 );
             case 3:
                 return(
-                <div className="top third">
+                <div className="top third"
+                    onClick = {
+                    () => navigate("/app/public/" + id)}>
                     <div className="top-avatar"
                         style={{backgroundImage: `url("${avatarURL}")`,
                         backgroundSize: "cover",
@@ -118,7 +127,9 @@ function OneRow({index, id, username, rank, gamesWon, gamesLost, gamesPlayed, he
                 );
             default:
                 return (
-                    <div className="element">
+                    <div className="element"
+                        onClick = {
+                        () => navigate("/app/public/" + id)}>
                         <div className="index">#{index}</div>
                         <div className="id">{id}</div>
                         <div className="rank">LV. {rank}</div>
