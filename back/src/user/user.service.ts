@@ -64,19 +64,30 @@ export class UserService {
 	async getLeaderboard() {
 		//returns a record of all the users, ordered by rank in ascending order
 		const users = await this.prisma.user.findMany({
-			orderBy: { rank: 'asc' },
+			where: {
+				score: {
+					lt: 1199,
+				},
+			},
+			select: {
+				id: true,
+				username: true,
+				rank: true,
+				gamesLost: true,
+				gamesWon: true,
+				gamesPlayed: true,
+			},
+			orderBy: { rank: 'desc' },
 		});
 
-		const usersDTO: UserDto[] = [];
-		for (const user of users) {
-			// console.log('user:::', user);
-			// if (user.score !== 1200) {
-			const userDtO = plainToClass(UserDto, user);
-			usersDTO.push(userDtO);
-			// }
-		}
+		// const usersDTO: UserDto[] = [];
+		// for (const user of users) {
+		// 	// console.log('user:::', user);
+		// 	const userDtO = plainToClass(UserDto, user);
+		// 	usersDTO.push(userDtO);
+		// }
 		// console.log('userssss:::', usersDTO);
-		return usersDTO;
+		return users;
 	}
 
 	async getGameHistory(id: number) {

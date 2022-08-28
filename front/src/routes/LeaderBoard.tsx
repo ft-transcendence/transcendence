@@ -30,7 +30,6 @@ export default function LeaderBoard() {
                                 <OneRow
                                     index={index + 1}
                                     id={one.id}
-                                    avatar={one.avatar}
                                     rank={one.rank}
                                     username={one.username}
                                     gamesWon={one.gamesWon}
@@ -47,11 +46,10 @@ export default function LeaderBoard() {
     )
 }
 
-function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPlayed, head}
+function OneRow({index, id, username, rank, gamesWon, gamesLost, gamesPlayed, head}
     : { index: number,
         id: number,
         username: string,
-        avatar: string,
         rank: number,
         gamesWon: number,
         gamesLost: number,
@@ -70,7 +68,7 @@ function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPl
                 }
             }
             getAvatar();
-            }, [id]);
+        }, [id]);
 
         switch(index) {
             case 1:
@@ -84,7 +82,7 @@ function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPl
                         <div className="top-username">{username}</div>
                         <BadgeReward index={index}/>
                         <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
-                        <div className="top-rank">LV. 2{rank}</div>
+                        <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
                 );
@@ -99,7 +97,7 @@ function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPl
                         <div className="top-username">{username}</div>
                         <BadgeReward index={index}/>
                         <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
-                        <div className="top-rank">LV. 2{rank}</div>
+                        <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
                 );
@@ -114,7 +112,7 @@ function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPl
                         <div className="top-username">{username}</div>
                         <BadgeReward index={index}/>
                         <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
-                        <div className="top-rank">LV. 1{rank}</div>
+                        <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
                 );
@@ -123,7 +121,7 @@ function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPl
                     <div className="element">
                         <div className="index">#{index}</div>
                         <div className="id">{id}</div>
-                        <div className="rank">LV. 0{rank}</div>
+                        <div className="rank">LV. {rank}</div>
                         <div className="user">
                             {!head ? 
                                 <div className="avatar"
