@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./roomStatus.css";
 import { 
     chatPreview, 
+    gameInvitation, 
     mute, 
     oneUser, 
     Tag, 
@@ -21,6 +22,7 @@ import { AddUserIcon, QuitIcon } from "./icon";
 import ReactTags from "react-tag-autocomplete";
 import { socket } from "../Chat";
 import { getUserAvatarQuery } from "../../queries/avatarQueries";
+import { Player } from "../game.interfaces";
 
 declare var global: {
     selectedUser: oneUser
@@ -136,11 +138,21 @@ function MemberStatus({current, role}
             setInviteds(data);
         })
 
+        socket.on("game info", (data: Player) => {
+            const invitation: gameInvitation = {
+                gameInfo: data,
+                targetId: global.selectedUser.id
+            }
+            socket.emit("invite to game", invitation)
+        })
+
+
         return (() => {
             socket.off("fetch owner");
             socket.off("fetch admins");
             socket.off("fetch members");
             socket.off("fetch inviteds");
+            socket.off("game info");
         })
         
     }, [current])
@@ -205,11 +217,12 @@ function Status({users, current, role}
         socket.emit("add friend", update);
     }
 
-    function handleInviteGame(){
+    function handleCreateGame(){
         let update: updateUser = {
             selfEmail: email,
             otherId: global.selectedUser.id
         }
+        socket.emit("start_private");
         socket.emit("invite game", update);
     }
 
@@ -285,7 +298,7 @@ function Status({users, current, role}
                 <Item onClick={handleAddFriend}>
                     add friend
                 </Item>
-                <Item onClick={handleInviteGame} style={{backgroundColor: "grey"}}>
+                <Item onClick={handleCreateGame}>
                     invite to a game!
                 </Item>
                 <Item onClick={handleBlockUser}>

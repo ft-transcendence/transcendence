@@ -918,7 +918,6 @@ export class ChatService {
 					owners: true,
 				},
 			});
-			//console.log('ownerHEYY', source);
 			const owners = await this.organize__owners(userId, source);
 			return owners;
 		} catch (error) {
@@ -964,7 +963,6 @@ export class ChatService {
 					admins: true,
 				},
 			});
-			// console.log('admins', source);
 			const admins = await this.organize__admins(id, source);
 			return admins;
 		} catch (error) {
@@ -1010,7 +1008,6 @@ export class ChatService {
 					members: true,
 				},
 			});
-			console.log('member', source);
 			const members = await this.organize__members(id, source);
 			return members;
 		} catch (error) {
@@ -1056,7 +1053,6 @@ export class ChatService {
 					inviteds: true,
 				},
 			});
-			// console.log('inviteds', source);
 			const inviteds = await this.organize__inviteds(id, source);
 			return inviteds;
 		} catch (error) {

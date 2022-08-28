@@ -1,3 +1,5 @@
+import { Player } from "../../game.interfaces";
+
 export type oneSuggestion = {
     catagory: string;
     picture: string;
@@ -93,4 +95,9 @@ export type mute = {
     duration: number;
     email: string;
     chanelId: number;
+}
+
+export type gameInvitation = {
+    gameInfo: Player;
+    targetId: number;
 }
