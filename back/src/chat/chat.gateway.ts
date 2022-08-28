@@ -282,7 +282,6 @@ export class ChatGateway {
 		@MessageBody() data: any,
 		@ConnectedSocket() client: Socket,
 	) {
-		console.log('read status__email', data.email);
 		const id = await this.chatservice.get__id__ByEmail(data.email);
 		const owners = await this.chatservice.fetch__owners(id, data.channelId);
 		client.emit('fetch owner', owners);
