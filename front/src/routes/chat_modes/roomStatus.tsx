@@ -432,9 +432,10 @@ function JoinChannel({channelId, outsider, isPassword}
                     <input
                         className="password-input"
                         id="password"
+                        type="password"
                         value={password}
                         onChange={handleSetPass}
-                        placeholder="********"
+                        placeholder="password"
                         onKeyDown={(e) => {
                             if (e.key === "Enter")
                                 handleJoin()}}/>

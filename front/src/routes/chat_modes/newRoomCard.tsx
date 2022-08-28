@@ -151,6 +151,7 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
         <div style={{ display: isPassword ? "" : "none" }}>
           <input
             id="password"
+            type="password"
             value={roomPass}
             onChange={(e) => handleString(e.target.value, setRoomPass)}
             className="password"
