@@ -14,9 +14,9 @@ export function Activate2FA(props: any) {
   const getQRCode = async () => {
     const result = await twoFAGenerate();
     if (!result)
-    setImage(
-      "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
-    );
+      setImage(
+        "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
+      );
     else setImage(result);
   };
 
@@ -29,11 +29,17 @@ export function Activate2FA(props: any) {
     e.preventDefault();
     const twoFAActivate = async () => {
       const result = await twoFAOn(FACodeModal);
-      if (!result) console.log("error: cannot activate 2FA");
-      else {
+      if (!result) {
+        props.setNotifText("Wrong code. Please try again.");
+        props.setShowNotif(true);
+      } else {
         props.onHide();
         props.onSubmit();
         localStorage.setItem("userAuth", "true");
+        props.setNotifText(
+          "TwoFA activated. A code will be asked on each login."
+        );
+        props.setShowNotif(true);
       }
     };
     twoFAActivate();

@@ -11,6 +11,7 @@ import IconPen from "../../../ressources/icons/Icon_Pen.svg";
 import "../Profiles.css";
 import { COnUserSimple } from "../../../ContextMenus/COnUserSimple";
 import { io } from "socket.io-client";
+import { TAlert } from "../../../toasts/TAlert";
 
 export default function UserPrivateProfile() {
 
@@ -40,6 +41,8 @@ export default function UserPrivateProfile() {
 
   const [showFriends, setShowFriends] = useState(true);
   const onClickShowFriends = () => setShowFriends((curent) => !curent);
+  const [showNotif, setShowNotif] = useState(false);
+  const [notifText, setNotifText] = useState("Error");
 
   const userInfoInit = {
     email: localStorage.getItem("userEmail"),
@@ -75,6 +78,7 @@ export default function UserPrivateProfile() {
 
   return (
     <main>
+      <TAlert show={showNotif} setShow={setShowNotif} text={notifText} />
       <MUploadAvatar
         show={modalShow}
         onHide={() => setModalShow(false)}
@@ -84,6 +88,8 @@ export default function UserPrivateProfile() {
         show={modalShowAuth}
         onSubmit={() => setAuthStatus("true")}
         onHide={() => setModalShowAuth(false)}
+        setShowNotif={setShowNotif}
+        setNotifText={setNotifText}
       />
       <COnUserSimple />
       <h1 className="app-title">My account</h1>
