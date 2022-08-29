@@ -83,6 +83,8 @@ export default function UserPrivateProfile() {
         show={modalShow}
         onHide={() => setModalShow(false)}
         isAvatarUpdated={() => setAvatarFetched(!avatarFetched)}
+        setShowNotif={setShowNotif}
+        setNotifText={setNotifText}
       />
       <Activate2FA
         show={modalShowAuth}

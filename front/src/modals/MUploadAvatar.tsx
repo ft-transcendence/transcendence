@@ -13,10 +13,15 @@ export function MUploadAvatar(props: any) {
     if (newAvatar) {
       const uploadAvatar = async () => {
         const result_1 = await uploadAvatarQuery(newAvatar);
-        if (result_1 !== "error: avatar") {
+        if (result_1 !== "error") {
           props.isAvatarUpdated();
           props.onHide();
-        } else console.log("Could not post avatar.");
+        } else {
+          props.setNotifText(
+            "Unable to upload avatar. Please try again later."
+          );
+          props.setShowNotif(true);
+        }
       };
       uploadAvatar();
     }

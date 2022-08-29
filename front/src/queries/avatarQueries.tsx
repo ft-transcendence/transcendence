@@ -52,8 +52,7 @@ const fetchAvatar = async (
     const response = await fetch(fetchUrl, requestOptions);
     const result_1 = await response.blob();
     if (!response.ok) {
-      console.log("POST error on ", url);
-      return "error: " + url;
+      return "error";
     }
     return result_1;
   } catch (error) {
