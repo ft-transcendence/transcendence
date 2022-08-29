@@ -1,4 +1,5 @@
 import { Container, Row, Col } from "react-bootstrap";
+import { useContextMenu } from "react-contexify";
 import {
   removeFriendQuery,
   blockUserQuery,
@@ -8,11 +9,29 @@ import {
 } from "../../../../queries/userFriendsQueries";
 
 export const DisplayRow = (props: any) => {
+  const { show } = useContextMenu();
+
+  function displayMenu(e: React.MouseEvent<HTMLElement>, targetUser: number) {
+    e.preventDefault();
+    show(e, {
+      id: "onUserSimple",
+      props: {
+        who: targetUser,
+      },
+    });
+  }
+  
   return (
     <main>
       <Container className="">
         <Row className="wrapper">
-          <Col className="col-auto profile-pic-round-sm">
+          <Col
+            className="col-auto profile-pic-round-sm"
+            id="clickableIcon"
+            onClick={(e: React.MouseEvent<HTMLElement>) =>
+              displayMenu(e, props.userModel.id)
+            }
+          >
             <div
               className={`profile-pic-wrapper ${
                 props.userModel.status === 2 ? "ingame" : ""
@@ -37,7 +56,13 @@ export const DisplayRow = (props: any) => {
               }`}
             ></div>
           </Col>
-          <Col className="content">
+          <Col
+            className="content"
+            id="clickableIcon"
+            onClick={(e: React.MouseEvent<HTMLElement>) =>
+              displayMenu(e, props.userModel.id)
+            }
+          >
             <div className="profile-username-text" style={{ fontSize: "15px" }}>
               @{props.userModel.username}
             </div>
