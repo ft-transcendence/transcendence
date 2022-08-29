@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Spinner } from "react-bootstrap";
 import { twoFAGenerate, twoFAOn } from "../queries/twoFAQueries";
 
 export function Activate2FA(props: any) {
@@ -11,15 +11,17 @@ export function Activate2FA(props: any) {
     setCodeModal(value);
   };
 
+  const getQRCode = async () => {
+    const result = await twoFAGenerate();
+    if (!result)
+    setImage(
+      "https://user-images.githubusercontent.com/24848110/33519396-7e56363c-d79d-11e7-969b-09782f5ccbab.png"
+    );
+    else setImage(result);
+  };
+
   useEffect(() => {
-    if (props.show && image === "") {
-      const QRCode = async () => {
-        return await twoFAGenerate();
-      };
-      QRCode()
-        .then((data) => setImage(data))
-        .then(() => console.log("QR code generated"));
-    }
+    if (props.show && image === "") getQRCode();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.show]);
 
@@ -51,11 +53,21 @@ export function Activate2FA(props: any) {
       </Modal.Header>
       <Modal.Body>
         {image ? (
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <img src={image} alt="2FA" />
+          <div>
+            <i
+              id="clickableIcon"
+              className="bi bi-arrow-clockwise icons thick float-end"
+              onClick={(e: any) => {
+                e.preventDefault();
+                getQRCode();
+              }}
+            />
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <img src={image} alt="2FA" />
+            </div>
           </div>
         ) : (
-          <div>Loading...</div>
+          <Spinner animation="border" />
         )}
         <Form.Group className="mb-3" controlId="formbasicString">
           <Form.Label> Enter Code </Form.Label>
