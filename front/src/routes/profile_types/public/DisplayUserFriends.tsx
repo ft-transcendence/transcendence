@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Col, Card, Container, Row, OverlayTrigger } from "react-bootstrap";
+import { Col, Card, Container, Row, OverlayTrigger, Spinner } from "react-bootstrap";
 import { useContextMenu } from "react-contexify";
 import { UsersStatusCxt } from "../../../App";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
@@ -109,7 +109,7 @@ export default function DisplayUserFriends(props: any) {
                   <span>No friends.</span>
                 )
               ) : (
-                <div>Loading...</div>
+                <Spinner animation="border" />
               )}
             </div>
           </Card.Body>

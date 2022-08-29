@@ -4,6 +4,7 @@ import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
 import { getUserBlocked } from "../../../../queries/userQueries";
 import { DisplayRow } from "./DisplayRowUsers";
 import { UsersStatusCxt } from "../../../../App";
+import { Spinner } from "react-bootstrap";
 
 export const BlockedList = () => {
   const usersStatus = useContext(UsersStatusCxt);
@@ -80,7 +81,7 @@ export const BlockedList = () => {
           <span>No blocked users.</span>
         )
       ) : (
-        <div>Loading...</div>
+        <Spinner animation="border" />
       )}
     </div>
   );

@@ -4,6 +4,7 @@ import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
 import { getUserFriends } from "../../../../queries/userFriendsQueries";
 import { DisplayRow } from "./DisplayRowUsers";
 import { UsersStatusCxt } from "../../../../App";
+import { Spinner } from "react-bootstrap";
 
 export const FriendsList = () => {
   const usersStatus = useContext(UsersStatusCxt);
@@ -81,7 +82,7 @@ export const FriendsList = () => {
           <span>No friends.</span>
         )
       ) : (
-        <div>Loading...</div>
+        <Spinner animation="border" />
       )}
     </div>
   );
