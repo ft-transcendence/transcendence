@@ -110,6 +110,10 @@ export default function UserProfile() {
     console.log("waiting for challenge function.", otherId);
   };
 
+  let myId: number = 0;
+  if (localStorage.getItem("userID"))
+    myId = Number(localStorage.getItem("userID"));
+
   return (
     <main>
       {isUser && isFetched ? (
@@ -141,7 +145,6 @@ export default function UserProfile() {
                     className="IBM-text"
                     style={{ fontSize: "0.8em", fontWeight: "400" }}
                   >
-                    {" "}
                     {status === 1
                       ? "online"
                       : status === 2
@@ -184,17 +187,19 @@ export default function UserProfile() {
                       <i className="bi bi-dpad-fill big-icons" />
                     </div>
                   )}
-                  <OverlayTrigger overlay={renderTooltip("Add friend")}>
-                    <div
-                      id="clickableIcon"
-                      className="buttons-round-big float-end"
-                      onClick={(e: any) => {
-                        handleClickFriend(userInfo.id);
-                      }}
-                    >
-                      <i className="bi bi-person-plus-fill big-icons" />
-                    </div>
-                  </OverlayTrigger>
+                  {myId !== 0 && userInfo.id === myId ? null : (
+                    <OverlayTrigger overlay={renderTooltip("Add friend")}>
+                      <div
+                        id="clickableIcon"
+                        className="buttons-round-big float-end"
+                        onClick={(e: any) => {
+                          handleClickFriend(userInfo.id);
+                        }}
+                      >
+                        <i className="bi bi-person-plus-fill big-icons" />
+                      </div>
+                    </OverlayTrigger>
+                  )}
                 </Col>
               </Row>
             </Container>
