@@ -26,7 +26,7 @@ import {
 		origin: process.env.FRONT_URL,
 	},
 	path: '/pongchat',
-	namespace: '/chatspace',
+	namespace: 'chatspace',
 })
 export class ChatGateway {
 	@WebSocketServer()

@@ -4,8 +4,11 @@ import {
 	MessageBody,
 	ConnectedSocket,
 	WebSocketServer,
+	OnGatewayConnection,
+	OnGatewayDisconnect,
+	WsException,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { Room } from './interfaces/room.interface';
 import { GameService } from './game.service';
 import { Player } from './interfaces/player.interface';
@@ -20,9 +23,9 @@ import { AppGateway } from 'src/app.gateway';
 		origin: process.env.FRONT_URL,
 	},
 	path: '/pong',
-	namespace: '/gamespace',
+	namespace: 'gamespace',
 })
-export class GameGateway {
+export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
 		private gameService: GameService,
 		private readonly jwtService: JwtService,
@@ -32,6 +35,33 @@ export class GameGateway {
 
 	@WebSocketServer()
 	server: Server;
+
+	handleConnection(client: Socket) {
+		try {
+			console.log('game socket connection');
+			const UserId: number = this.jwtService.verify(
+				String(client.handshake.headers.token),
+				{ secret: process.env.JWT_SECRET },
+			).sub;
+			const user = this.userService.getUser(UserId);
+			client.data.id = UserId;
+			if (!user) throw new WsException('Invalid token.');
+		} catch {
+			console.log('connection failed');
+			return false;
+		}
+	}
+
+	handleDisconnect(client: Socket) {
+		if (GameService.rooms.some((room) => room.player1 === client))
+			GameService.rooms.find(
+				(room) => room.player1 === client,
+			).player1Disconnected = true;
+		if (GameService.rooms.some((room) => room.player2 === client))
+			GameService.rooms.find(
+				(room) => room.player2 === client,
+			).player2Disconnected = true;
+	}
 
 	@SubscribeMessage('start')
 	async handleStart(@ConnectedSocket() client: Client): Promise<Player> {

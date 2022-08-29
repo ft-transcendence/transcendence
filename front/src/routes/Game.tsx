@@ -164,10 +164,17 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
       path: '/api/pong/',
    };
   
-  const socketURL = '/api/gamespace';
+  const socketURL = '/gamespace';
   
   const socket = io(socketURL, socketOptions);
 
+  socket.on("connect_error", (err) => {
+    console.log(`connect_error due to ${err.message}`);
+  });
+
+  socket.on("error", (err) => {
+    console.log(`error due to ${err.message}`);
+  });
 export default class Game extends React.Component < {}, StatePong > {
 
     MOVE_UP   = "ArrowUp";  

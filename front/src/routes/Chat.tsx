@@ -19,7 +19,7 @@ const socketOptions = {
   path: '/api/pongchat',
 };
 
-const socketURL = '/api/chatspace';
+const socketURL = '/chatspace';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const socket = io(socketURL, socketOptions);
