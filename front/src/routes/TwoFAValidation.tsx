@@ -3,12 +3,16 @@ import { Button, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../globals/contexts";
 import { twoFAAuth } from "../queries/twoFAQueries";
+import { TAlert } from "../toasts/TAlert";
 
 export default function TwoFAValidation() {
   let location = useLocation();
   let navigate = useNavigate();
   let auth = useAuth();
   let username = localStorage.getItem("userName");
+
+  const [showNotif, setShowNotif] = useState(false);
+  const [notifText, setNotifText] = useState("Error");
 
   const [twoFACode, setCode] = useState("");
 
@@ -31,17 +35,18 @@ export default function TwoFAValidation() {
 
     const userSignIn = () => {
       let username = localStorage.getItem("userName");
-      console.log("username: ", username);
       if (username)
         auth.signin(username, () => {
           navigate("/app/private-profile", { replace: true });
         });
-      console.log("user is signed in");
     };
-
     if (username !== "undefined" && username) {
       const twoFAValid = async (username: string) => {
-        return await twoFAAuth(twoFACode, username, userSignIn);
+        const result = await twoFAAuth(twoFACode, username, userSignIn);
+        if (!result) {
+          setShowNotif(true);
+          setNotifText("Incorrect code. Please try again.");
+        }
       };
       twoFAValid(username);
     } else console.log("username is undefined");
@@ -49,6 +54,7 @@ export default function TwoFAValidation() {
 
   return (
     <div className="p-5">
+      <TAlert show={showNotif} setShow={setShowNotif} text={notifText} />
       <div className="Auth-form-container">
         <form className="Auth-form" onSubmit={handleSubmit}>
           <div className="Auth-form-content">
