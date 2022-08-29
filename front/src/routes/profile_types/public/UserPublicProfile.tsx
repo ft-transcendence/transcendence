@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
-import { Container, Row, Col, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { useContext, useEffect, useState } from "react";
+import { Container, Row, Col, OverlayTrigger } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import DisplayGamesStats from "./DisplayGamesStats";
-import { userModel } from "../../../globals/Interfaces";
+import { IUserStatus, userModel } from "../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getOtherUser } from "../../../queries/otherUserQueries";
-import "./UserPublicProfile.css";
 import DisplayUserFriends from "./DisplayUserFriends";
 import { COnUser } from "../../../ContextMenus/COnUser";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
+import { UsersStatusCxt } from "../../../App";
+import { TAlert } from "../../../toasts/TAlert";
+import { addFriendQuery } from "../../../queries/userFriendsQueries";
+import "./UserPublicProfile.css";
 
 const userInfoInit: userModel = {
   id: 0,
@@ -40,11 +43,15 @@ const initializeUser = (result: any, setUserInfo: any) => {
 };
 
 export default function UserProfile() {
+  const usersStatus = useContext(UsersStatusCxt);
   let params = useParams();
   const [userInfo, setUserInfo] = useState<userModel>(userInfoInit);
   const [isFetched, setIsFetched] = useState(false);
   const [avatarURL, setAvatarURL] = useState("");
   const [isUser, setIsUser] = useState(true);
+  const [status, setStatus] = useState(0);
+  const [showNotif, setShowNotif] = useState(false);
+  const [text, setText] = useState("");
 
   useEffect(() => {
     const getAvatar = async () => {
@@ -73,7 +80,35 @@ export default function UserProfile() {
     };
     fetchIsUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetched]);
+  }, [isFetched, usersStatus]);
+
+  useEffect(() => {
+    let found = undefined;
+    if (isFetched && usersStatus && userInfo) {
+      found = usersStatus.find((x: IUserStatus) => x.key === userInfo.id);
+      if (found) setStatus(found.userModel.status);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usersStatus, isFetched, userInfo]);
+
+  const handleClickFriend = (otherId: number) => {
+    const addFriend = async () => {
+      const result = await addFriendQuery(otherId);
+      if (result !== "error") {
+        setText("Friend request sent to user #" + otherId + "!");
+      } else setText("Could not send friend request :(.");
+      setShowNotif(true);
+    };
+    addFriend();
+  };
+
+  const handleClickWatch = (otherId: number) => {
+    console.log("waiting for watch function.", otherId);
+  };
+
+  const handleClickChallenge = (otherId: number) => {
+    console.log("waiting for challenge function.", otherId);
+  };
 
   return (
     <main>
@@ -82,7 +117,8 @@ export default function UserProfile() {
           className="p-5"
           style={{ display: "flex", justifyContent: "center" }}
         >
-          <COnUser />
+          <COnUser setText={setText} setShowNotif={setShowNotif} />
+          <TAlert show={showNotif} setShow={setShowNotif} text={text} />
           <div className="public-left">
             <Container className="p-5">
               <Row className="wrapper public-profile-header">
@@ -101,28 +137,60 @@ export default function UserProfile() {
                     @{userInfo.username}
                   </div>
                   <div className="public-rank-text"> Rank #{userInfo.rank}</div>
+                  <div
+                    className="IBM-text"
+                    style={{ fontSize: "0.8em", fontWeight: "400" }}
+                  >
+                    {" "}
+                    {status === 1
+                      ? "online"
+                      : status === 2
+                      ? "playing"
+                      : "offline"}
+                  </div>
                 </Col>
                 <Col className="">
-                  <OverlayTrigger overlay={renderTooltip("Watch game")}>
-                    <div
-                      id="clickableIcon"
-                      className="buttons-round-big float-end"
-                    >
+                  {status === 2 ? (
+                    <OverlayTrigger overlay={renderTooltip("Watch game")}>
+                      <div
+                        id="clickableIcon"
+                        className="buttons-round-big float-end"
+                        onClick={(e: any) => {
+                          handleClickWatch(userInfo.id);
+                        }}
+                      >
+                        <i className="bi bi-caret-right-square-fill big-icons" />
+                      </div>
+                    </OverlayTrigger>
+                  ) : (
+                    <div className="buttons-round-big-disabled float-end">
                       <i className="bi bi-caret-right-square-fill big-icons" />
                     </div>
-                  </OverlayTrigger>
-                  <OverlayTrigger overlay={renderTooltip("Challenge")}>
-                    <div
-                      id="clickableIcon"
-                      className="buttons-round-big float-end"
-                    >
+                  )}
+                  {status === 1 ? (
+                    <OverlayTrigger overlay={renderTooltip("Challenge")}>
+                      <div
+                        id="clickableIcon"
+                        className="buttons-round-big float-end"
+                        onClick={(e: any) => {
+                          handleClickChallenge(userInfo.id);
+                        }}
+                      >
+                        <i className="bi bi-dpad-fill big-icons" />
+                      </div>
+                    </OverlayTrigger>
+                  ) : (
+                    <div className="buttons-round-big-disabled float-end">
                       <i className="bi bi-dpad-fill big-icons" />
                     </div>
-                  </OverlayTrigger>
+                  )}
                   <OverlayTrigger overlay={renderTooltip("Add friend")}>
                     <div
                       id="clickableIcon"
                       className="buttons-round-big float-end"
+                      onClick={(e: any) => {
+                        handleClickFriend(userInfo.id);
+                      }}
                     >
                       <i className="bi bi-person-plus-fill big-icons" />
                     </div>
@@ -145,7 +213,7 @@ export default function UserProfile() {
                 <Col>{Math.floor(userInfo.playTime / 1000)}s</Col>
               </Row>
             </Container>
-            <Container className="p-5">
+            <Container className="">
               <DisplayGamesStats userInfo={userInfo} />
             </Container>
           </div>
