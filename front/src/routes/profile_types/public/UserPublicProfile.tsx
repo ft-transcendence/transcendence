@@ -152,42 +152,42 @@ export default function UserProfile() {
                       : "offline"}
                   </div>
                 </Col>
-                <Col className="">
-                  {status === 2 ? (
-                    <OverlayTrigger overlay={renderTooltip("Watch game")}>
-                      <div
-                        id="clickableIcon"
-                        className="buttons-round-big float-end"
-                        onClick={(e: any) => {
-                          handleClickWatch(userInfo.id);
-                        }}
-                      >
+                {myId !== 0 && userInfo.id === myId ? null : (
+                  <Col className="">
+                    {status === 2 ? (
+                      <OverlayTrigger overlay={renderTooltip("Watch game")}>
+                        <div
+                          id="clickableIcon"
+                          className="buttons-round-big float-end"
+                          onClick={(e: any) => {
+                            handleClickWatch(userInfo.id);
+                          }}
+                        >
+                          <i className="bi bi-caret-right-square-fill big-icons" />
+                        </div>
+                      </OverlayTrigger>
+                    ) : (
+                      <div className="buttons-round-big-disabled float-end">
                         <i className="bi bi-caret-right-square-fill big-icons" />
                       </div>
-                    </OverlayTrigger>
-                  ) : (
-                    <div className="buttons-round-big-disabled float-end">
-                      <i className="bi bi-caret-right-square-fill big-icons" />
-                    </div>
-                  )}
-                  {status === 1 ? (
-                    <OverlayTrigger overlay={renderTooltip("Challenge")}>
-                      <div
-                        id="clickableIcon"
-                        className="buttons-round-big float-end"
-                        onClick={(e: any) => {
-                          handleClickChallenge(userInfo.id);
-                        }}
-                      >
+                    )}
+                    {status === 1 ? (
+                      <OverlayTrigger overlay={renderTooltip("Challenge")}>
+                        <div
+                          id="clickableIcon"
+                          className="buttons-round-big float-end"
+                          onClick={(e: any) => {
+                            handleClickChallenge(userInfo.id);
+                          }}
+                        >
+                          <i className="bi bi-dpad-fill big-icons" />
+                        </div>
+                      </OverlayTrigger>
+                    ) : (
+                      <div className="buttons-round-big-disabled float-end">
                         <i className="bi bi-dpad-fill big-icons" />
                       </div>
-                    </OverlayTrigger>
-                  ) : (
-                    <div className="buttons-round-big-disabled float-end">
-                      <i className="bi bi-dpad-fill big-icons" />
-                    </div>
-                  )}
-                  {myId !== 0 && userInfo.id === myId ? null : (
+                    )}
                     <OverlayTrigger overlay={renderTooltip("Add friend")}>
                       <div
                         id="clickableIcon"
@@ -199,8 +199,8 @@ export default function UserProfile() {
                         <i className="bi bi-person-plus-fill big-icons" />
                       </div>
                     </OverlayTrigger>
-                  )}
-                </Col>
+                  </Col>
+                )}
               </Row>
             </Container>
             <Container className="p-5 text-center">
