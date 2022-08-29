@@ -187,6 +187,8 @@ export default function UserPrivateProfile() {
                   auth={authStatus}
                   onClick={() => setModalShowAuth(true)}
                   onDeactivate={() => setAuthStatus("false")}
+                  setShowNotif={setShowNotif}
+                  setNotifText={setNotifText}
                 />
               </Card.Body>
             </Card>

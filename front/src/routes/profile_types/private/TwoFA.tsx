@@ -6,8 +6,12 @@ export const TwoFA = (props: any) => {
     e.preventDefault();
     const twoFADeactivate = async () => {
       const result = await twoFAOff();
-      if (!result) console.log("error: cannot deactivate 2FA");
-      else {
+      if (!result) {
+        props.setNotifText("Cannot deactivate 2FA. Please try again.");
+        props.setShowNotif(true);
+      } else {
+        props.setNotifText("2FA successfully deactivated.");
+        props.setShowNotif(true);
         props.onDeactivate();
         localStorage.setItem("userAuth", "false");
       }

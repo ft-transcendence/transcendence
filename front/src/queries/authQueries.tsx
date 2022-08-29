@@ -68,8 +68,6 @@ export const signUp = (userInfo: any, userSignIn: any) => {
 };
 
 export const storeToken = (token: any) => {
-  console.log("token= ", token.access_token);
-  console.log("refresh token = ", token.access_token);
   localStorage.setItem("userToken", token.access_token);
   localStorage.setItem("userRefreshToken", token.refresh_token);
 };
