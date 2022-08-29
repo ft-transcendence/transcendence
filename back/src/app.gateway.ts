@@ -12,10 +12,17 @@ import { Status } from './user/statuses';
   cors: {
     origin: process.env.FRONT_URL
   },
+  namespace: '/connect',
+  path: '/status',
 })
 
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
-  constructor(private readonly jwtService: JwtService, private userService: UserService, private chatService: ChatService, private gameService: GameService) {}
+  constructor(
+    private readonly jwtService: JwtService, 
+    private userService: UserService, 
+    private chatService: ChatService, 
+    private gameService: GameService
+    ) {}
   
 	@WebSocketServer()
 	server: Server;

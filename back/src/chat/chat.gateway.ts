@@ -25,7 +25,8 @@ import {
 	cors: {
 		origin: process.env.FRONT_URL,
 	},
-	path: 'pongchat/socket.io',
+	path: '/pongchat',
+	namespace: '/chatspace',
 })
 export class ChatGateway {
 	@WebSocketServer()

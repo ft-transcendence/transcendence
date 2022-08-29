@@ -16,9 +16,20 @@ export const UsersStatusCxt = createContext<IUserStatus[] | undefined>(
   undefined
 );
 
-const socketURL = process.env.REACT_APP_GAME_SOCKET ? process.env.REACT_APP_GAME_SOCKET : "";
+const socketURL = '/api/connect'
 
-export const socket = io(socketURL);
+const socketOptions = {
+  transportOptions: {
+    polling: {
+      extraHeaders: {
+          Token: localStorage.getItem("userToken"),
+      }
+    }
+  },
+  path: '/api/status',
+};
+
+export const socket = io(socketURL, socketOptions);
 
 export default function App() {
   const [usersStatus, setUsersStatus] = useState<IUserStatus[] | undefined>(

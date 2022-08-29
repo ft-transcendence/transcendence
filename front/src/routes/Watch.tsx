@@ -86,10 +86,10 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
             }
           }
         },
-        path: 'pong/socket.io',
+        path: '/api/pong',
      };
     
-    const socketURL = process.env.REACT_APP_GAME_SOCKET ? process.env.REACT_APP_GAME_SOCKET : "";
+    const socketURL = '/api/gamespace';
     
     const socket = io(socketURL, socketOptions);
 

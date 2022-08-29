@@ -16,10 +16,10 @@ const socketOptions = {
       }
     }
   },
-  path: 'pongchat/socket.io',
+  path: '/api/pongchat',
 };
 
-const socketURL = process.env.REACT_APP_CHAT_SOCKET ? process.env.REACT_APP_CHAT_SOCKET : "";
+const socketURL = '/api/chatspace';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const socket = io(socketURL, socketOptions);

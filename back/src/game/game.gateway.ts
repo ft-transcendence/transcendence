@@ -19,7 +19,8 @@ import { AppGateway } from 'src/app.gateway';
 	cors: {
 		origin: process.env.FRONT_URL,
 	},
-	path: 'pong/socket.io',
+	path: '/pong',
+	namespace: '/gamespace',
 })
 export class GameGateway {
 	constructor(
