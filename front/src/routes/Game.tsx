@@ -452,7 +452,7 @@ export default class Game extends React.Component<{}, StatePong> {
                 buttonText={this.state.buttonState}
               />
               <StartButton
-                showButton={this.state.showStartButton}
+                showButton={this.state.showStartButton && this.state.buttonState !== "Cancel"}
                 clickHandler={this.soloButtonHandler}
                 buttonText="Solo mode"
               />
