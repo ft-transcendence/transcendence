@@ -20,7 +20,8 @@ export const PendingList = () => {
 
   useEffect(() => {
     const fetchDataPending = async () => {
-      return await getUserPending();
+      const result = await getUserPending();
+      if (result !== "error") return result;
     };
 
     const fetchDataPendingAvatar = async (otherId: number) => {

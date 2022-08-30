@@ -20,7 +20,8 @@ export const BlockedList = () => {
 
   useEffect(() => {
     const fetchDataBlocked = async () => {
-      return await getUserBlocked();
+      const result = await getUserBlocked();
+      if (result !== "error") return result;
     };
 
     const fetchDataBlockedAvatar = async (otherId: number) => {

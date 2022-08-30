@@ -27,7 +27,8 @@ export default function DisplayUserFriends(props: any) {
 
   useEffect(() => {
     const fetchDataFriends = async () => {
-      return await getUserFriends(props.userInfo.id);
+      const result = await getUserFriends(props.userInfo.id);
+      if (result !== "error") return result;
     };
 
     const fetchDataFriendsAvatar = async (otherId: number) => {
