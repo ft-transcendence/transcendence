@@ -175,6 +175,15 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
   socket.on("error", (err) => {
     console.log(`error due to ${err.message}`);
   });
+
+  socket.on("connect", () => {
+    console.log("connected to gamespace");
+  });
+
+  socket.on("connection-failed", (msg) => {
+    console.log("connection-failed", msg);
+  });
+
 export default class Game extends React.Component < {}, StatePong > {
 
     MOVE_UP   = "ArrowUp";  

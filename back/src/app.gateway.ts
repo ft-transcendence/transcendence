@@ -12,7 +12,7 @@ import { Status } from './user/statuses';
   cors: {
     origin: process.env.FRONT_URL
   },
-  namespace: '/connect',
+  namespace: 'connect',
   path: '/status',
 })
 

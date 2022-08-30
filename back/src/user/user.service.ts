@@ -134,6 +134,7 @@ export class UserService {
 	}
 
 	async getUser(id: number) {
+		if (!id) throw new ForbiddenException('id is undefined');
 		console.log('id', id);
 		try {
 			const user = await this.prisma.user.findUnique({

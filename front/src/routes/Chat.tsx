@@ -24,6 +24,18 @@ const socketURL = '/chatspace';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const socket = io(socketURL, socketOptions);
 
+socket.on("connect_error", (err) => {
+    console.log(`connect_error due to ${err.message}`);
+  });
+
+socket.on("error", (err) => {
+  console.log(`error due to ${err.message}`);
+});
+
+socket.on("connect", () => {
+    console.log("connected to chatspace");
+  });
+
 export default function Chat() {
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
     const [newRoomRequest, setNewRoomRequest] = useState(false);

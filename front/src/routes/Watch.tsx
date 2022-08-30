@@ -101,6 +101,10 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
       console.log(`error due to ${err.message}`);
     });
 
+    socket.on("connect", () => {
+        console.log("connected to gamespace (watch)");
+      });
+
 export default class Watch extends React.Component < {}, StatePong > {
 
     constructor(none = {}) 

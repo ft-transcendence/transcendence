@@ -16,7 +16,7 @@ export const UsersStatusCxt = createContext<IUserStatus[] | undefined>(
   undefined
 );
 
-const socketURL = '/api/connect'
+const socketURL = '/connect'
 
 const socketOptions = {
   transportOptions: {
@@ -30,6 +30,18 @@ const socketOptions = {
 };
 
 export const socket = io(socketURL, socketOptions);
+
+socket.on("connect_error", (err) => {
+  console.log(`connect_error due to ${err.message}`);
+});
+
+socket.on("error", (err) => {
+console.log(`error due to ${err.message}`);
+});
+
+socket.on("connect", () => {
+  console.log("connected to status");
+});
 
 export default function App() {
   const [usersStatus, setUsersStatus] = useState<IUserStatus[] | undefined>(
