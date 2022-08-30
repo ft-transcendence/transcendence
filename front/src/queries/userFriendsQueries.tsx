@@ -63,7 +63,6 @@ const fetchGet = async (url: string, header: any, body: any) => {
       console.log("POST error on ", url);
       return "error";
     }
-    console.log("result", result);
     return result;
   } catch (error) {
     return console.log("error", error);

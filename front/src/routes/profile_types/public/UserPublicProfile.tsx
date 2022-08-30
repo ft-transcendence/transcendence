@@ -223,7 +223,7 @@ export default function UserProfile() {
             </Container>
           </div>
           <div className="public-right">
-            <DisplayUserFriends userInfo={userInfo} />
+            <DisplayUserFriends userInfo={userInfo} myId={myId} />
           </div>
         </main>
       ) : isUser && !isFetched ? null : (
