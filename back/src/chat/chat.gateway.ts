@@ -12,7 +12,6 @@ import { UseMessageDto, ChannelDto, DMDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { HttpToWsFilter, ProperWsFilter } from './filter/transformation-filter';
 import {
-	gameInvitation,
 	mute,
 	oneMsg as oneMessage,
 	oneUser,
@@ -433,12 +432,4 @@ export class ChatGateway {
 		const id = await this.chatservice.get__id__ByEmail(data.selfEmail);
 		await this.userService.blockUser(id, data.otherId);
 	}
-
-	/* I need a function from user status, to get the target socket */
-
-	// @SubscribeMessage('invite to game')
-	// async gameInvitation(@MessageBody() data: gameInvitation) {
-	// 	const client = this.findClient(data.targetId);
-	// 	client.emit('invite to game', data);
-	// }
 }

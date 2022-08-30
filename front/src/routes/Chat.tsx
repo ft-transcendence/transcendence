@@ -44,8 +44,9 @@ export default function Chat() {
             setRole(data);
         })
 
-        socket.on("invite to game", (data: Player) => {
-            socket.emit("join_private", {rid: data.roomId})
+        socket.on("game invitation", (roomId: any) => {
+            // console.log("got invitation:::roomid ", roomId)
+            socket.emit("join_private", {rid: roomId})
         })
 
         socket.on("disconnect", () => {})

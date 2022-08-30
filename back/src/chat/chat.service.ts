@@ -18,7 +18,7 @@ import { UserService } from 'src/user/user.service';
 export class ChatService {
 	constructor(
 		private readonly prisma: PrismaService,
-		private userService: UserService,
+		private readonly userService: UserService,
 	) {}
 
 	async list__allUsers() {

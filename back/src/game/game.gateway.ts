@@ -141,6 +141,7 @@ export class GameGateway {
 	async handleStartPrivate(@ConnectedSocket() client: Client) {
 		// const user = await this.userService.getUser(client.data.id);
 		// data to be provided to the client
+		// console.log('arrived in start_private');
 		const newId = await this.gameService.generate_new_id();
 		const newRoom: Room = {
 			id: newId,
@@ -166,7 +167,7 @@ export class GameGateway {
 			playerNb: 1,
 			roomId: GameService.rooms[GameService.rooms.length - 1].id,
 		};
-		client.emit('game roomId', player); // send data to client
+		return player;
 	}
 
 	@SubscribeMessage('join_private')
@@ -174,6 +175,7 @@ export class GameGateway {
 		@MessageBody('roomId') rid: number,
 		@ConnectedSocket() client: Client,
 	): Promise<Player | boolean> {
+		// console.log('arrive at join_private');
 		if (this.server.sockets.adapter.rooms.has(String(rid))) {
 			const player: Player = {
 				playerNb: 0,

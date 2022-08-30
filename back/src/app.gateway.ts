@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { WebSocketGateway, WsException, OnGatewayConnection, OnGatewayDisconnect, BaseWsExceptionFilter, WebSocketServer  } from '@nestjs/websockets';
+import { WebSocketGateway, WsException, OnGatewayConnection, OnGatewayDisconnect, BaseWsExceptionFilter, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket  } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from 'src/user/user.service'; 
@@ -7,18 +7,20 @@ import { ChatService } from './chat/chat.service';
 import { ArgumentsHost, Catch } from '@nestjs/common';
 import { GameService } from './game/game.service';
 import { Status } from './user/statuses';
+import { gameInvitation } from './chat/type/chat.type';
 
 
 @WebSocketGateway({cors: {
   origin: "http://localhost:3000"}})
 
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
-  constructor(private readonly jwtService: JwtService, private userService: UserService, private chatService: ChatService, private gameService: GameService) {}
+  constructor(private readonly jwtService: JwtService, private userService: UserService, private readonly chatService: ChatService, private gameService: GameService) {}
   
 	@WebSocketServer()
 	server: Server;
 
   userStatusMap = new Map<number, Status>();
+  clientSocket = new Map<number, Socket>();
 
   onlineFromService(id: number) {
     this.userStatusMap.set(id, Status.online);
@@ -51,6 +53,8 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
       this.userStatusMap.set(client.data.id, Status.online);
       const serializedMap = [...this.userStatusMap.entries()];
       this.server.emit('update-status', serializedMap);
+      //add to chat clientSocket
+      this.set__clientSocket(client.data.id, client);
     }  
     // eslint-disable-next-line unicorn/prefer-optional-catch-binding, unicorn/catch-error-name, unicorn/prevent-abbreviations
     catch(e)
@@ -66,6 +70,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
       this.userStatusMap.set(client.data.id, Status.offline)
       const serializedMap = [...this.userStatusMap.entries()];
       client.emit('update-status', serializedMap);
+      this.delete__clientSocket(client.data.id);
     }
 
     if (GameService.rooms.some((room) => room.player1 === client))
@@ -73,6 +78,31 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
     if (GameService.rooms.some((room) => room.player2 === client))
     GameService.rooms.find((room) => room.player2 === client).player2Disconnected = true;
   }
+
+	set__clientSocket(id: number, client: Socket) {
+    // console.log('set client')
+		this.clientSocket.set(id, client);
+	}
+
+	delete__clientSocket(id: number) {
+    // console.log('delete client')
+		this.clientSocket.delete(id);
+	}
+
+	async get__clientSocket(id: number) {
+		if (this.clientSocket.has(id)) {
+			const socket = this.clientSocket.get(id);
+      // console.log('got client')
+			return socket;
+		}
+	}
+
+	@SubscribeMessage('send invitation')
+	async gameInvitation(@MessageBody() data: gameInvitation) {
+		const client = await this.get__clientSocket(data.targetId);
+		if (client) {
+      client.emit('game invitation', data.gameInfo.roomId);}
+	}
 }
 
 @Catch()
