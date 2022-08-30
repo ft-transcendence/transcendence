@@ -30,7 +30,7 @@ export const TwoFA = (props: any) => {
         <Col>
           <button
             type="button"
-            className="btn btn-secondary btn-sm submit-button float-end"
+            className="btn btn-sm submit-button float-end"
             onClick={
               props.auth === "true" ? (e) => handleTurnOff(e) : props.onClick
             }

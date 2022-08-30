@@ -1,12 +1,37 @@
 import { Container, Row, Col } from "react-bootstrap";
-import { removeFriendQuery, blockUserQuery, unblockUserQuery, addFriendQuery, denyInviteQuery } from "../../../../queries/userFriendsQueries";
+import { useContextMenu } from "react-contexify";
+import {
+  removeFriendQuery,
+  blockUserQuery,
+  unblockUserQuery,
+  addFriendQuery,
+  denyInviteQuery,
+} from "../../../../queries/userFriendsQueries";
 
 export const DisplayRow = (props: any) => {
+  const { show } = useContextMenu();
+
+  function displayMenu(e: React.MouseEvent<HTMLElement>, targetUser: number) {
+    e.preventDefault();
+    show(e, {
+      id: "onUserSimple",
+      props: {
+        who: targetUser,
+      },
+    });
+  }
+  
   return (
     <main>
       <Container className="">
         <Row className="wrapper">
-          <Col className="col-auto profile-pic-round-sm">
+          <Col
+            className="col-auto profile-pic-round-sm"
+            id="clickableIcon"
+            onClick={(e: React.MouseEvent<HTMLElement>) =>
+              displayMenu(e, props.userModel.id)
+            }
+          >
             <div
               className={`profile-pic-wrapper ${
                 props.userModel.status === 2 ? "ingame" : ""
@@ -31,8 +56,14 @@ export const DisplayRow = (props: any) => {
               }`}
             ></div>
           </Col>
-          <Col className="content">
-            <div className="profile-username-text" style={{ fontSize: "18px" }}>
+          <Col
+            className="content"
+            id="clickableIcon"
+            onClick={(e: React.MouseEvent<HTMLElement>) =>
+              displayMenu(e, props.userModel.id)
+            }
+          >
+            <div className="profile-username-text" style={{ fontSize: "15px" }}>
               @{props.userModel.username}
             </div>
           </Col>
@@ -69,8 +100,7 @@ const ButtonsFriends = (props: any) => {
       <Col className="float-end">
         <button
           type="button"
-          className="IBM-text btn btn-sm"
-          style={{ fontSize: "15px" }}
+          className="IBM-text btn btn-sm text-button"
           onClick={async () => {
             await removeFriendQuery(props.id);
             props.hook(!props.state);
@@ -82,8 +112,7 @@ const ButtonsFriends = (props: any) => {
       <Col className="float-end">
         <button
           type="button"
-          className="IBM-text btn btn-sm"
-          style={{ fontSize: "15px" }}
+          className="IBM-text btn btn-sm text-button"
           onClick={async () => {
             await blockUserQuery(props.id);
             props.hook(!props.state);
@@ -103,8 +132,7 @@ const ButtonsBlocked = (props: any) => {
       <Col className="float-end">
         <button
           type="button"
-          className="IBM-text btn btn-sm"
-          style={{ fontSize: "15px" }}
+          className="IBM-text btn btn-sm text-button"
           onClick={async () => {
             await unblockUserQuery(props.id);
             props.hook(!props.state);
@@ -123,8 +151,7 @@ const ButtonsPending = (props: any) => {
       <Col className="float-end">
         <button
           type="button"
-          className="IBM-text btn btn-sm"
-          style={{ fontSize: "15px" }}
+          className="IBM-text btn btn-sm text-button"
           onClick={async () => {
             await addFriendQuery(props.id);
             props.hook(true);
@@ -136,8 +163,7 @@ const ButtonsPending = (props: any) => {
       <Col className="float-end">
         <button
           type="button"
-          className="IBM-text btn btn-sm"
-          style={{ fontSize: "15px" }}
+          className="IBM-text btn btn-sm text-button"
           onClick={async () => {
             await denyInviteQuery(props.id);
             props.hook(true);

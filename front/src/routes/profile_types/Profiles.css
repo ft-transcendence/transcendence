@@ -23,6 +23,10 @@
   padding-top: 5px;
   font-size: 12px;
 }
+.caption:hover {
+  text-decoration: underline;
+  color: var(--buttons-color-blue);
+}
 
 /* PRIVATE PROFILE / CARDS */
 
@@ -59,10 +63,24 @@
 }
 
 .edit-round-icon {
+  padding: 3%;
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #5d76ec;
+  background: var(--buttons-color-blue);
+  transition: 0.3s ease;
+  outline: none;
+  outline-color: #556fe8;
+}
+
+.edit-round-icon:hover.edit-round-icon:active.edit-round-icon:focus {
+  outline-style: solid;
+  outline-width: 1px;
+  outline-offset: -1px;
+  outline-color: #3c58dd;
+  background-color: var(--buttons-color-blue-selected);
+  box-shadow: inset 2px 5px 10px rgba(15, 21, 49, 0.25),
+    inset -2px -5px 10px #556fe8;
 }
 
 /* PRIVATE PROFILE / FRIENDS LIST */
@@ -73,6 +91,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .profile-pic-wrapper {
   height: 3.1em;
   width: 3.1em;
@@ -87,7 +106,6 @@
   outline-color: var(--buttons-color-blue);
 }
 
-
 .profile-pic-inside-sm {
   height: 90%;
   width: 90%;
@@ -101,6 +119,7 @@
   width: 0.8em;
   height: 0.8em;
   border-radius: 50%;
+  transition: 0.5s ease;
 }
 
 .status-private.online {
@@ -116,3 +135,40 @@
 }
 
 /* //////////////////////////////////////////////////// */
+
+/* GAMES LIST */
+
+.profile-pic-wrapper-sm {
+  height: 2.1em;
+  width: 2.1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.profile-pic-wrapper-sm.ingame {
+  outline: 0.125em solid;
+  outline-color: var(--buttons-color-blue);
+}
+
+.status-private-sm {
+  position: absolute;
+  left: calc(2em + 0.25em);
+  top: calc(2em - 0.25em);
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+}
+
+.status-private-sm.online {
+  background: var(--basic-color-green);
+}
+
+.status-private-sm.offline {
+  background: var(--basic-color-red);
+}
+
+.status-private-sm.ingame {
+  background: var(--basic-color-green);
+}

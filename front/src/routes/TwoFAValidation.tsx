@@ -48,30 +48,38 @@ export default function TwoFAValidation() {
   };
 
   return (
-    <div>
-      <Form.Group className="mb-3">
-        <Form.Label className="IBM-text" style={{ fontSize: "20px" }}>
-          Enter your 2FA code
-        </Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="6-digit-code"
-          onChange={handleInputChange}
-          value={twoFACode}
-          name="twoFAcode"
-        />
-        <Button
-          variant="primary"
-          type="submit"
-          className="submit-button"
-          size="sm"
-          onClick={(e: any) => {
-            handleSubmit(e);
-          }}
-        >
-          Submit
-        </Button>
-      </Form.Group>
+    <div className="p-5">
+      <div className="Auth-form-container">
+        <form className="Auth-form" onSubmit={handleSubmit}>
+          <div className="Auth-form-content">
+            <h3 className="Auth-form-title">Login with 2FA.</h3>
+            <div className="text-secondary">
+              Open your favorite authentication app, and enter the corresponding
+              code.
+            </div>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="text"
+                placeholder="6-digit-code"
+                onChange={handleInputChange}
+                value={twoFACode}
+                name="twoFAcode"
+              />
+            </Form.Group>
+            <Button
+              variant="primary"
+              type="submit"
+              className="submit-button float-end"
+              size="sm"
+              onClick={(e: any) => {
+                handleSubmit(e);
+              }}
+            >
+              Submit
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
