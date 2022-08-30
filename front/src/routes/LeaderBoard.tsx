@@ -32,6 +32,7 @@ export default function LeaderBoard() {
                                     index={index + 1}
                                     id={one.id}
                                     rank={one.rank}
+                                    winRate={one.winRate}
                                     username={one.username}
                                     gamesWon={one.gamesWon}
                                     gamesLost={one.gamesLost}
@@ -47,18 +48,18 @@ export default function LeaderBoard() {
     )
 }
 
-function OneRow({index, id, username, rank, gamesWon, gamesLost, gamesPlayed, head}
+function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesPlayed, head}
     : { index: number,
         id: number,
         username: string,
         rank: number,
+        winRate: number,
         gamesWon: number,
         gamesLost: number,
         gamesPlayed: number,
         head: boolean} ) {
 
         const [avatarURL, setAvatarURL] = useState("");
-        // const [profileURL, setProfileURL] = useState("");
         const navigate = useNavigate();
 
         useEffect(() => {
@@ -86,7 +87,7 @@ function OneRow({index, id, username, rank, gamesWon, gamesLost, gamesPlayed, he
                     <div className="top-info">
                         <div className="top-username">{username}</div>
                         <BadgeReward index={index}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
                         <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
@@ -103,7 +104,7 @@ function OneRow({index, id, username, rank, gamesWon, gamesLost, gamesPlayed, he
                     <div className="top-info">
                         <div className="top-username">{username}</div>
                         <BadgeReward index={index}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
                         <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
@@ -120,7 +121,7 @@ function OneRow({index, id, username, rank, gamesWon, gamesLost, gamesPlayed, he
                     <div className="top-info">
                         <div className="top-username">{username}</div>
                         <BadgeReward index={index}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
                         <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
@@ -145,7 +146,7 @@ function OneRow({index, id, username, rank, gamesWon, gamesLost, gamesPlayed, he
                             {gamesWon}/{gamesLost}/{gamesPlayed}
                         </div>
                         <div className="rate">
-                            {(gamesWon / gamesPlayed).toFixed(2)}
+                            {winRate}
                         </div>
                     </div>
                 )
