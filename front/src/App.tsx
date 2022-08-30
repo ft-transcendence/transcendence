@@ -16,7 +16,7 @@ export const UsersStatusCxt = createContext<IUserStatus[] | undefined>(
   undefined
 );
 
-const socketURL = '/connect'
+const socketURL = '/gamespace'
 
 const socketOptions = {
   transportOptions: {
@@ -26,7 +26,7 @@ const socketOptions = {
       }
     }
   },
-  path: '/api/status',
+  path: '/api/pong',
 };
 
 export const socket = io(socketURL, socketOptions);

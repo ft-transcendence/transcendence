@@ -25,7 +25,7 @@ import { AppGateway } from 'src/app.gateway';
 	path: '/pong',
 	namespace: 'gamespace',
 })
-export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class GameGateway {
 	constructor(
 		private gameService: GameService,
 		private readonly jwtService: JwtService,
@@ -35,34 +35,6 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 	@WebSocketServer()
 	server: Server;
-
-	handleConnection(client: Socket) {
-		try {
-			console.log('game socket connection');
-			const UserId: number = this.jwtService.verify(
-				String(client.handshake.headers.token),
-				{ secret: process.env.JWT_SECRET },
-			).sub;
-			const user = this.userService.getUser(UserId);
-			client.data.id = UserId;
-			if (!user) throw new WsException('Invalid token.');
-		} catch {
-			console.log('connection failed');
-			this.server.emit('connection-failed', 'Invalid token.');
-			return false;
-		}
-	}
-
-	handleDisconnect(client: Socket) {
-		if (GameService.rooms.some((room) => room.player1 === client))
-			GameService.rooms.find(
-				(room) => room.player1 === client,
-			).player1Disconnected = true;
-		if (GameService.rooms.some((room) => room.player2 === client))
-			GameService.rooms.find(
-				(room) => room.player2 === client,
-			).player2Disconnected = true;
-	}
 
 	@SubscribeMessage('start')
 	async handleStart(@ConnectedSocket() client: Client): Promise<Player> {
@@ -138,8 +110,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 			return player; // send data to client
 		} catch (error) {
-			console.log('handle start error', error.status);
-			throw new WsException('user is not connected');
+			console.log('handle start error:', error.status, error.message);
+			//throw new WsException('user is not connected');
 		}
 	}
 
@@ -158,6 +130,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		@MessageBody('roomId') rid: number,
 		@ConnectedSocket() client: Client,
 	): boolean {
+		console.log(rid);
+		console.log('server is :', this.server);
 		if (this.server.sockets.adapter.rooms.has(String(rid))) {
 			client.join(String(rid));
 			return true;

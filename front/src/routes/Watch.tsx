@@ -78,32 +78,7 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
        }
     }
 
-    const socketOptions = {
-        transportOptions: {
-          polling: {
-            extraHeaders: {
-                Token: localStorage.getItem("userToken"),
-            }
-          }
-        },
-        path: '/api/pong',
-     };
-    
-    const socketURL = '/gamespace';
-    
-    const socket = io(socketURL, socketOptions);
 
-    socket.on("connect_error", (err) => {
-        console.log(`connect_error due to ${err.message}`);
-      });
-
-    socket.on("error", (err) => {
-      console.log(`error due to ${err.message}`);
-    });
-
-    socket.on("connect", () => {
-        console.log("connected to gamespace (watch)");
-      });
 
 export default class Watch extends React.Component < {}, StatePong > {
 
@@ -130,6 +105,32 @@ export default class Watch extends React.Component < {}, StatePong > {
                         soloGame: false,
                     };
     }
+    socketOptions = {
+        transportOptions: {
+          polling: {
+            extraHeaders: {
+                Token: localStorage.getItem("userToken"),
+            }
+          }
+        },
+        path: '/api/pong',
+     };
+    
+    socketURL = '/gamespace';
+    
+    socket = io(this.socketURL, this.socketOptions);
+
+    // socket.on("connect_error", (err) => {
+    //     console.log(`connect_error due to ${err.message}`);
+    //   });
+
+    // socket.on("error", (err) => {
+    //   console.log(`error due to ${err.message}`);
+    // });
+
+    // socket.on("connect", () => {
+    //     console.log("connected to gamespace (watch)");
+    //   });
 
     componentDidMount() {
         var t = this;
@@ -145,12 +146,12 @@ export default class Watch extends React.Component < {}, StatePong > {
                 .then((data: Game_data_extended[]) => this.setState({game_list: data})); 
             };
         })
-        socket.on("update", (info: Game_data) => {
+        this.socket.on("update", (info: Game_data) => {
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name});
             if (this.state.avatarP1URL == "" && this.state.avatarP2URL == "")
                 this.getAvatars(info.player1Avatar, info.player2Avater);
         });
-            socket.on("end_game", (winner: number) => 
+            this.socket.on("end_game", (winner: number) => 
             this.setState({gameStarted: false, avatarP1URL: "", avatarP2URL: ""}));
     }
 
@@ -159,8 +160,8 @@ export default class Watch extends React.Component < {}, StatePong > {
     }
     
     componentWillUnmount() {
-        socket.off("update");
-        socket.off("end_game");
+        this.socket.off("update");
+        this.socket.off("end_game");
     }
 
     refreshGameList() {
@@ -188,12 +189,12 @@ export default class Watch extends React.Component < {}, StatePong > {
         return (e) => {
         if (this.state.gameStarted)
         {    
-            socket.emit("unjoin", {roomId: roomId}, () => {});
+            this.socket.emit("unjoin", {roomId: roomId}, () => {});
             this.setState({avatarP1URL: "", avatarP2URL: ""});
-            socket.disconnect();
-            socket.connect();
+            this.socket.disconnect();
+            this.socket.connect();
         }
-        socket.emit("join", {roomId: roomId}, (ok: boolean) => {
+        this.socket.emit("join", {roomId: roomId}, (ok: boolean) => {
             if (ok) {
                 this.setState({gameStarted: true, roomId: roomId
                 });
