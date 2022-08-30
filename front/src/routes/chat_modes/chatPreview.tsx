@@ -29,18 +29,13 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
     
     useEffect(() => {
 
-        socket.on("connect", () => {
-            socket.emit("read preview", email);
-        });
+        socket.on("connect", () => {});
 
-        socket.emit("read preview", email);
-
-        socket.on("set preview", (data: chatPreview[] | null) => {
-
+        socket.emit("read preview", email, (data: chatPreview[] | null) => {
             if (data)
                 setPreviews(data);
         })
-        
+
         socket.on("add preview", (data: chatPreview) => {
             if (data)
                 setPreviews(oldPreviews => [...oldPreviews, data]);
@@ -50,6 +45,14 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
             if (data)
                 setPreviews(data);
         })
+
+        socket.on("ask for update preview", () => {
+            socket.emit("read preview", email, (data: chatPreview[] | null) => {
+                if (data)
+                    setPreviews(data);
+            })
+        })
+        
 
         socket.on("disconnect", () => {})
 

@@ -73,7 +73,9 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
             email: email,
             members: addedMember,
         }
-        socket.emit("new channel", data);
+        socket.emit("new channel", data, (data: newChannel) => {
+          socket.emit('fetch new channel', data);
+        });
         initVars();
         onNewRoomRequest();
         socket.emit("get search suggest", email);

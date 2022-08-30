@@ -8,6 +8,7 @@ import { ArgumentsHost, Catch } from '@nestjs/common';
 import { GameService } from './game/game.service';
 import { Status } from './user/statuses';
 import { gameInvitation } from './chat/type/chat.type';
+import { ChannelDto } from './chat/dto/chat.dto';
 
 
 @WebSocketGateway({cors: {
@@ -96,6 +97,16 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
 			return socket;
 		}
 	}
+  
+  @SubscribeMessage('fetch new channel')
+  async newChannelFetch(@MessageBody() data: ChannelDto) {
+    data.members.map(async (member) => {
+      const client = await this.get__clientSocket(member.id);
+      client.join(data.name);
+      client.emit('ask for update preview');
+    })
+  }
+
 
 	@SubscribeMessage('send invitation')
 	async gameInvitation(@MessageBody() data: gameInvitation) {

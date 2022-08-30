@@ -47,7 +47,7 @@ export class ChatGateway {
 	) {
 		await this.handleFetchChannel(email, client);
 		const data = await this.chatservice.get__previews(email);
-		client.emit('set preview', data);
+		return data;
 	}
 
 	@SubscribeMessage('add preview')
@@ -89,6 +89,7 @@ export class ChatGateway {
 			);
 			client.join(preview.name);
 			client.emit('add preview', preview);
+			return data;
 		}
 	}
 
