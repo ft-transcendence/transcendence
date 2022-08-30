@@ -38,7 +38,6 @@ const fetchGet = async (url: string, callback: any) => {
 
 export const storeUserInfo = (result: any) => {
   localStorage.setItem("userID", result.id);
-  console.log("result.id", result.id);
   localStorage.setItem("userName", result.username);
   localStorage.setItem("userEmail", result.email);
   localStorage.setItem("userPicture", result.avatar);
