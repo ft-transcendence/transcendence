@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Col, Card, Container, Row, OverlayTrigger } from "react-bootstrap";
 import { useContextMenu } from "react-contexify";
+import { UsersStatusCxt } from "../../../App";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
-import { ItableRow } from "../../../globals/Interfaces";
+import { ItableRow, IUserStatus } from "../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getUserFriends } from "../../../queries/userFriendsQueries";
 
 export default function DisplayUserFriends(props: any) {
+  const usersStatus = useContext(UsersStatusCxt);
   const [friendsList, setFriendsList] = useState<ItableRow[] | undefined>(
     undefined
   );
@@ -39,6 +41,13 @@ export default function DisplayUserFriends(props: any) {
 
           newRow.userModel.id = fetchedFriends[i].id;
           newRow.userModel.username = fetchedFriends[i].username;
+          let found = undefined;
+          if (usersStatus) {
+            found = usersStatus.find(
+              (x: IUserStatus) => x.key === fetchedFriends[i].id
+            );
+            if (found) newRow.userModel.status = found.userModel.status;
+          }
           if (avatar !== undefined && avatar instanceof Blob) {
             newRow.userModel.avatar = URL.createObjectURL(avatar);
           }
@@ -51,18 +60,18 @@ export default function DisplayUserFriends(props: any) {
 
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isUpdated]);
+  }, [isUpdated, usersStatus]);
 
   return (
     <main>
-      <Col className="p-5">
-        <Card className="p-5 main-card">
+      <Col className="p-3">
+        <Card className="p-3 main-card">
           <Card.Body>
             <Row className="public-wrapper" style={{ marginBottom: "25px" }}>
               <Col className="text-wrapper">
                 <div
                   className="IBM-text"
-                  style={{ fontSize: "20px", fontWeight: "500" }}
+                  style={{ fontSize: "1em", fontWeight: "500" }}
                 >
                   Friends
                 </div>
@@ -70,15 +79,16 @@ export default function DisplayUserFriends(props: any) {
               <Col>
                 <div
                   className="IBM-text float-end"
-                  style={{ fontSize: "20px", fontWeight: "500" }}
+                  style={{ fontSize: "1em", fontWeight: "500" }}
                 >
                   {friendsList ? friendsList.length : 0}
                 </div>
               </Col>
             </Row>
             <div
+              className="public-card-friends"
               style={{
-                maxHeight: "200px",
+                maxHeight: "150px",
                 overflowY: "auto",
                 overflowX: "auto",
               }}
@@ -121,27 +131,52 @@ const DisplayFriendsRow = (props: any) => {
       },
     });
   }
+
+  const handleClickWatch = (otherId: number) => {
+    console.log("waiting for watch function.", otherId);
+  };
+
+  const handleClickChallenge = (otherId: number) => {
+    console.log("waiting for challenge function.", otherId);
+  };
+
   return (
     <main>
-      <Container className="">
-        <Row className="text-games">
-          <Col md="auto" className="">
+      <Container
+        className="text-games"
+        style={{
+          marginTop: "calc(1vw + 15px)",
+          marginBottom: "calc(1vw + 15px)",
+        }}
+      >
+        <Row className="wrapper">
+          <Col className="col-auto profile-pic-round-sm">
+            <div className="profile-pic-wrapper-sm">
+              <div
+                className="profile-pic-inside-sm"
+                style={{
+                  backgroundImage: `url("${props.userModel.avatar}")`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+                id="clickableIcon"
+                onClick={(e: React.MouseEvent<HTMLElement>) =>
+                  displayMenu(e, props.userModel.id)
+                }
+              ></div>
+            </div>
             <div
-              id="clickableIcon"
-              onClick={(e: React.MouseEvent<HTMLElement>) =>
-                displayMenu(e, props.userModel.id)
-              }
-              className="profile-pic-inside"
-              style={{
-                width: "30px",
-                height: "30px",
-                backgroundImage: `url("${props.userModel.avatar}")`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
+              className={`status-private-sm ${
+                props.userModel.status === 1
+                  ? "online"
+                  : props.userModel.status === 2
+                  ? "ingame"
+                  : "offline"
+              }`}
             ></div>
           </Col>
           <Col
+            md={"auto"}
             id="clickableIcon"
             className="text-left public-hover"
             onClick={(e: React.MouseEvent<HTMLElement>) =>
@@ -151,16 +186,41 @@ const DisplayFriendsRow = (props: any) => {
             <div>@{props.userModel.username}</div>
           </Col>
           <Col className="">
-            <OverlayTrigger overlay={renderTooltip("Watch game")}>
-              <div id="clickableIcon" className="buttons-round-sm float-end">
+            {props.userModel.status === 2 ? (
+              <OverlayTrigger overlay={renderTooltip("Watch game")}>
+                <div
+                  id="clickableIcon"
+                  className="buttons-round-sm float-end"
+                  onClick={(e: any) => {
+                    handleClickWatch(props.userModel.id);
+                  }}
+                >
+                  <i className="bi bi-caret-right-square-fill sm-icons" />
+                </div>
+              </OverlayTrigger>
+            ) : (
+              <div className="buttons-round-sm-disabled float-end">
                 <i className="bi bi-caret-right-square-fill sm-icons" />
               </div>
-            </OverlayTrigger>
-            <OverlayTrigger overlay={renderTooltip("Challenge")}>
-              <div id="clickableIcon" className="buttons-round-sm float-end">
+            )}
+
+            {props.userModel.status === 1 ? (
+              <OverlayTrigger overlay={renderTooltip("Challenge")}>
+                <div
+                  id="clickableIcon"
+                  className="buttons-round-sm float-end"
+                  onClick={(e: any) => {
+                    handleClickChallenge(props.userModel.id);
+                  }}
+                >
+                  <i className="bi bi-dpad-fill sm-icons" />
+                </div>
+              </OverlayTrigger>
+            ) : (
+              <div className="buttons-round-sm-disabled float-end">
                 <i className="bi bi-dpad-fill sm-icons" />
               </div>
-            </OverlayTrigger>
+            )}
           </Col>
         </Row>
       </Container>

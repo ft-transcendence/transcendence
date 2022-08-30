@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Row, Col, Card } from "react-bootstrap";
 import { useContextMenu } from "react-contexify";
+import { UsersStatusCxt } from "../../../App";
+import { IUserStatus } from "../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
 import { getGameStats } from "../../../queries/gamesQueries";
 
 export default function DisplayGamesStats(props: any) {
+  const usersStatus = useContext(UsersStatusCxt);
   const [games, setGames] = useState([]);
 
   useEffect(() => {
@@ -22,13 +25,13 @@ export default function DisplayGamesStats(props: any) {
     <main>
       <Row>
         <Col className="">
-          <Card className="p-5 main-card">
+          <Card className="p-3 main-card">
             <Card.Body className="public-card">
               <Row className="public-wrapper">
                 <Col className="text-wrapper">
                   <div
                     className="IBM-text"
-                    style={{ fontSize: "20px", fontWeight: "500" }}
+                    style={{ fontSize: "1em", fontWeight: "500" }}
                   >
                     Latest Games
                   </div>
@@ -36,7 +39,7 @@ export default function DisplayGamesStats(props: any) {
                 <Col>
                   <div
                     className="IBM-text float-end"
-                    style={{ fontSize: "20px", fontWeight: "500" }}
+                    style={{ fontSize: "1em", fontWeight: "500" }}
                   >
                     {props.userInfo.gamesLost + props.userInfo.gamesWon}
                   </div>
@@ -52,7 +55,7 @@ export default function DisplayGamesStats(props: any) {
               <div
                 className=""
                 style={{
-                  maxHeight: "350px",
+                  maxHeight: "150px",
                   overflowY: "auto",
                   overflowX: "hidden",
                 }}
@@ -60,7 +63,11 @@ export default function DisplayGamesStats(props: any) {
                 {games !== undefined
                   ? games!.map((_h, index) => {
                       return (
-                        <DisplayGamesRow key={index} game={games[index]} />
+                        <DisplayGamesRow
+                          key={index}
+                          game={games[index]}
+                          statuses={usersStatus}
+                        />
                       );
                     })
                   : null}
@@ -76,6 +83,22 @@ export default function DisplayGamesStats(props: any) {
 const DisplayGamesRow = (props: any) => {
   const { show } = useContextMenu();
   const [avatarURL, setAvatarURL] = useState("");
+  const [status, setStatus] = useState(0);
+
+  useEffect(() => {
+    const getOppStatus = () => {
+      let found = undefined;
+
+      if (props.statuses) {
+        found = props.statuses.find(
+          (x: IUserStatus) => x.key === props.game.opponentId
+        );
+        if (found) setStatus(found.userModel.status);
+      }
+    };
+    getOppStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.statuses]);
 
   useEffect(() => {
     const getAvatar = async () => {
@@ -101,23 +124,30 @@ const DisplayGamesRow = (props: any) => {
   }
 
   return (
-    <main>
-      <Row className="text-games">
+    <main className="text-games">
+      <Row className="wrapper">
         <Col>{props.game.victory ? "Victory" : "Defeat"}</Col>
-        <Col xs={1}>
+        <Col className="col-auto profile-pic-round-sm">
           <div
-            id="clickableIcon"
-            onClick={(e: React.MouseEvent<HTMLElement>) =>
-              displayMenu(e, props.game.opponentId)
-            }
-            className="profile-pic-inside"
-            style={{
-              width: "25px",
-              height: "25px",
-              backgroundImage: `url("${avatarURL}")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
+            className={`profile-pic-wrapper-sm ${status === 2 ? "ingame" : ""}`}
+          >
+            <div
+              className="profile-pic-inside-sm"
+              style={{
+                backgroundImage: `url("${avatarURL}")`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+              id="clickableIcon"
+              onClick={(e: React.MouseEvent<HTMLElement>) =>
+                displayMenu(e, props.game.opponentId)
+              }
+            ></div>
+          </div>
+          <div
+            className={`status-private-sm ${
+              status === 1 ? "online" : status === 2 ? "ingame" : "offline"
+            }`}
           ></div>
         </Col>
         <Col

@@ -93,10 +93,52 @@
 
 /* EXISTING CLASSES */
 
+.text-button {
+  font-size: 13px;
+}
+
+.text-button:hover {
+  color: var(--buttons-color-blue);
+  text-decoration: underline;
+  transition: 0.2 ease;
+}
+
 .submit-button {
   margin-left: 30px;
-  background: #5d76ec;
+  background: var(--buttons-color-blue);
   box-shadow: 2px 3.5px 15px #1f2427, -2px -3.5px 15px #485057;
+  transition: 0.2s ease;
+  border: none;
+  outline: none;
+  color: var(--text-color-white);
+}
+
+.submit-button:hover {
+  background: #3c58dd;
+  box-shadow: inset 2px 3.5px 15px rgba(15, 21, 49, 0.25),
+    inset -2px -3.5px 15px #556fe8;
+  color: var(--text-color-white);
+  border-color: none;
+  outline: 0;
+}
+
+.submit-button:focus {
+  margin-left: 30px;
+  background: var(--buttons-color-blue);
+  box-shadow: 2px 3.5px 15px #1f2427, -2px -3.5px 15px #485057;
+  transition: 0.2s ease;
+  border: none;
+  outline: none;
+  color: var(--text-color-white);
+}
+
+.submit-button:active {
+  color: var(--text-color-white);
+  background-color: #3c58dd;
+  box-shadow: inset 2px 3.5px 15px rgba(15, 21, 49, 0.25),
+    inset -2px -3.5px 15px #556fe8;
+  border-color: none;
+  outline: 0;
 }
 
 .btn {

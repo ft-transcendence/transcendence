@@ -153,270 +153,332 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
        }
     }
 
-    const socketOptions = {
-      transportOptions: {
-        polling: {
-          extraHeaders: {
-              Token: localStorage.getItem("userToken"),
-          }
-        }
-      },
-      path: '/api/pong/',
-   };
+export default class Game extends React.Component<{}, StatePong> {
   
-  const socketURL = '/gamespace';
-  
-  const socket = io(socketURL, socketOptions);
-
-  socket.on("connect_error", (err) => {
-    console.log(`connect_error due to ${err.message}`);
-  });
-
-  socket.on("error", (err) => {
-    console.log(`error due to ${err.message}`);
-  });
-
-  socket.on("connect", () => {
-    console.log("connected to gamespace");
-  });
-
-  socket.on("connection-failed", (msg) => {
-    console.log("connection-failed", msg);
-  });
-
-export default class Game extends React.Component < {}, StatePong > {
-
-    MOVE_UP   = "ArrowUp";  
-    MOVE_DOWN = "ArrowDown";
-    avatarsFetched = false;
-
-    constructor(none = {}) 
-    {
-        super({});
-        this.state = {  paddleLeftY: 50,
-                        paddleRightY: 50,
-                        ballX: 50,
-                        ballY: 50,
-                        gameStarted: false,
-                        showStartButton: true,
-                        roomId: 0,
-                        playerNumber: 0,
-                        player1Score: 0,
-                        player2Score: 0,
-                        msgType: 0,
-                        player1Name: "player1",
-                        player2Name: "player2",
-                        game_list: [],
-                        isSettingsShown: false,
-                        settingsState: "up",
-                        buttonState: "Start",
-                        avatarP1URL: "",
-                        avatarP2URL: "",
-                        soloGame: false,
-                    };
-        this.onSettingsKeyDown = this.onSettingsKeyDown.bind(this);
-        this.onSettingsClickClose = this.onSettingsClickClose.bind(this);
-        this.quitSoloMode = this.quitSoloMode.bind(this);
-    }
-
-    componentDidMount() {
-        document.onkeydown = this.keyDownInput;
-        document.onkeyup = this.keyUpInput;
-        socket.on("game_started", () => {
-            this.setState({gameStarted: true, showStartButton: false});
-            this.avatarsFetched = false;
-        });
-        socket.on("update", (info: Game_data) => {
-            this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name});
-            if (this.avatarsFetched === false) {
-              this.avatarsFetched = true;
-              this.getAvatars(info.player1Avatar, info.player2Avater);
-            }
-        });
-        socket.on("end_game", (winner: number) => 
-            winner === this.state.playerNumber ? this.setState({msgType: 2, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}) : this.setState({msgType: 3, gameStarted: false, showStartButton: true, buttonState: "New Game", avatarP1URL: "", avatarP2URL: ""}));
-    }
-
-    componentWillUnmount() {
-      socket.off("game_started");
-      socket.off("update");
-      socket.off("end_game");
-    }
-
-    startButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-        if (!this.state.showStartButton)
-            return;
-        if (this.state.buttonState === "Cancel") {
-          socket.disconnect();
-          socket.connect();
-          this.setState({gameStarted: false, showStartButton: true, buttonState: "Start"});
-          return;
+  socketOptions = {
+    transportOptions: {
+      polling: {
+        extraHeaders: {
+            Token: localStorage.getItem("userToken"),
         }
-        this.setState({buttonState: "Cancel"});
-        socket.emit("start", {}, (player: Player) => 
-          this.setState({roomId: player.roomId, playerNumber: player.playerNb, msgType: 1}));  
-        }
-    
-    soloButtonHandler = () =>
-        this.setState({soloGame: true});
-   
-    keyDownInput = (e: KeyboardEvent) => {
-      if (e.key === this.MOVE_UP && this.state.gameStarted) {
-        e.preventDefault();  
-        socket.emit("move", {dir: 1, room: this.state.roomId, player: this.state.playerNumber});
       }
+    },
+    path: '/api/pong/',
+ };
+ socketURL = '/gamespace';
 
-      if (e.key === this.MOVE_DOWN) {
-        e.preventDefault();  
-        socket.emit("move", {dir: 2, room: this.state.roomId, player: this.state.playerNumber});
-      }
-    }
-    
-    keyUpInput = (e: KeyboardEvent) => {
-        if ((e.key === this.MOVE_UP || e.key === this.MOVE_DOWN) && this.state.gameStarted) {
-          e.preventDefault();
-          socket.emit("move", {dir: 0, room: this.state.roomId, player: this.state.playerNumber});
-        }
-    }
+ socket = io(this.socketURL, this.socketOptions);
 
-    onSettingsKeyDown = (e: KeyboardEvent) => {
-      if (this.state.settingsState === "up") {
-        this.setState({settingsState: "down"});
-        this.MOVE_UP = e.key;
-      }
-      else if (this.state.settingsState! === "down") {
-        this.setState({isSettingsShown: false, settingsState: "up"});
-        this.MOVE_DOWN = e.key
-      }
+  MOVE_UP = "ArrowUp";
+  MOVE_DOWN = "ArrowDown";
+  avatarsFetched = false;
+
+  constructor(none = {}) {
+    super({});
+    this.state = {
+      paddleLeftY: 50,
+      paddleRightY: 50,
+      ballX: 50,
+      ballY: 50,
+      gameStarted: false,
+      showStartButton: true,
+      roomId: 0,
+      playerNumber: 0,
+      player1Score: 0,
+      player2Score: 0,
+      msgType: 0,
+      player1Name: "player1",
+      player2Name: "player2",
+      game_list: [],
+      isSettingsShown: false,
+      settingsState: "up",
+      buttonState: "Start",
+      avatarP1URL: "",
+      avatarP2URL: "",
+      soloGame: false,
     };
+    this.onSettingsKeyDown = this.onSettingsKeyDown.bind(this);
+    this.onSettingsClickClose = this.onSettingsClickClose.bind(this);
+    this.quitSoloMode = this.quitSoloMode.bind(this);
+  }
 
-    onSettingsClickClose() {
-      this.setState({isSettingsShown: false, settingsState: "up"});
-    };
+  componentDidMount() {
+    document.onkeydown = this.keyDownInput;
+    document.onkeyup = this.keyUpInput;
+    this.socket.on("game_started", () => {
+      this.setState({ gameStarted: true, showStartButton: false });
+      this.avatarsFetched = false;
+    });
+    this.socket.on("update", (info: Game_data) => {
+      this.setState({
+        ballX: info.xBall,
+        ballY: info.yBall,
+        paddleLeftY: info.paddleLeft,
+        paddleRightY: info.paddleRight,
+        player1Score: info.player1Score,
+        player2Score: info.player2Score,
+        player1Name: info.player1Name,
+        player2Name: info.player2Name,
+      });
+      if (this.avatarsFetched === false) {
+        this.avatarsFetched = true;
+        this.getAvatars(info.player1Avatar, info.player2Avater);
+      }
+    });
+    this.socket.on("end_game", (winner: number) =>
+      winner === this.state.playerNumber
+        ? this.setState({
+            msgType: 2,
+            gameStarted: false,
+            showStartButton: true,
+            buttonState: "New Game",
+            avatarP1URL: "",
+            avatarP2URL: "",
+          })
+        : this.setState({
+            msgType: 3,
+            gameStarted: false,
+            showStartButton: true,
+            buttonState: "New Game",
+            avatarP1URL: "",
+            avatarP2URL: "",
+          })
+    );
+  }
 
-    showSettings() {
-      this.setState({isSettingsShown: true});
+  componentWillUnmount() {
+    this.socket.off("game_started");
+    this.socket.off("update");
+    this.socket.off("end_game");
+  }
+
+  startButtonHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!this.state.showStartButton) return;
+    if (this.state.buttonState === "Cancel") {
+      this.socket.disconnect();
+      this.socket.connect();
+      this.setState({
+        gameStarted: false,
+        showStartButton: true,
+        buttonState: "Start",
+      });
+      return;
+    }
+    this.setState({ buttonState: "Cancel" });
+    this.socket.emit("start", {}, (player: Player) =>
+      this.setState({
+        roomId: player.roomId,
+        playerNumber: player.playerNb,
+        msgType: 1,
+      })
+    );
+  };
+
+  soloButtonHandler = () => this.setState({ soloGame: true });
+
+  keyDownInput = (e: KeyboardEvent) => {
+    if (e.key === this.MOVE_UP && this.state.gameStarted) {
+      e.preventDefault();
+      this.socket.emit("move", {
+        dir: 1,
+        room: this.state.roomId,
+        player: this.state.playerNumber,
+      });
     }
 
-    getAvatars = async (id1: number, id2: number) => {
-      const result_1: undefined | string | Blob | MediaSource =
-        await getUserAvatarQuery(id1);
-      const result_2: undefined | string | Blob | MediaSource =
-        await getUserAvatarQuery(id2);
-      if (result_1 !== undefined && result_1 instanceof Blob) {
-        this.setState({ avatarP1URL: URL.createObjectURL(result_1) });
+    if (e.key === this.MOVE_DOWN) {
+      e.preventDefault();
+      this.socket.emit("move", {
+        dir: 2,
+        room: this.state.roomId,
+        player: this.state.playerNumber,
+      });
+    }
+  };
+
+  keyUpInput = (e: KeyboardEvent) => {
+    if (
+      (e.key === this.MOVE_UP || e.key === this.MOVE_DOWN) &&
+      this.state.gameStarted
+    ) {
+      e.preventDefault();
+      this.socket.emit("move", {
+        dir: 0,
+        room: this.state.roomId,
+        player: this.state.playerNumber,
+      });
+    }
+  };
+
+  onSettingsKeyDown = (e: KeyboardEvent) => {
+    if (this.state.settingsState === "up") {
+      this.setState({ settingsState: "down" });
+      this.MOVE_UP = e.key;
+    } else if (this.state.settingsState! === "down") {
+      this.setState({ isSettingsShown: false, settingsState: "up" });
+      this.MOVE_DOWN = e.key;
+    }
+  };
+
+  onSettingsClickClose() {
+    this.setState({ isSettingsShown: false, settingsState: "up" });
+  }
+
+  showSettings() {
+    this.setState({ isSettingsShown: true });
+  }
+
+  getAvatars = async (id1: number, id2: number) => {
+    const result_1: undefined | string | Blob | MediaSource =
+      await getUserAvatarQuery(id1);
+    const result_2: undefined | string | Blob | MediaSource =
+      await getUserAvatarQuery(id2);
+    if (result_1 !== undefined && result_1 instanceof Blob) {
+      this.setState({ avatarP1URL: URL.createObjectURL(result_1) });
       if (result_2 !== undefined && result_2 instanceof Blob) {
         this.setState({ avatarP2URL: URL.createObjectURL(result_2) });
       }
-    }; }
-    
-    quitSoloMode() {
-      this.setState({soloGame: false});
     }
+  };
 
-    render() {
-    const shoWInfo = this.state.gameStarted ? 'flex': 'none';
+  quitSoloMode() {
+    this.setState({ soloGame: false });
+  }
+
+  render() {
+    const shoWInfo = this.state.gameStarted ? "flex" : "none";
     /*const showBorder = this.state.gameStarted ? '2px solid rgb(0, 255, 255)' : '0px solid rgb(0, 255, 255)';*/
-    const showBorder = this.state.gameStarted ? '2px solid rgb(255, 255, 255)' : '0px solid rgb(255, 255, 255)';
+    const showBorder = this.state.gameStarted
+      ? "2px solid rgb(255, 255, 255)"
+      : "0px solid rgb(255, 255, 255)";
     /*const showShadow = this.state.gameStarted ? '0px 0px 5px 5px rgb(80, 200, 255), inset 0px 0px 5px 5px rgb(0, 190, 255)' : '0';*/
-    const showShadow = '0';
+    const showShadow = "0";
 
     var leftName = String(this.state.player1Name);
     var rightName = String(this.state.player2Name);
 
     return (
       <div>
-      {this.state.soloGame ? (
-        <SoloGame clickHandler={this.quitSoloMode}></SoloGame>) : (
-        <div className='Radial-background'>
-            <div className='Page-top'>
-            <div style={{display: `${shoWInfo}`,}} className='Info-card'>
-                    <div className='Player-left'>
-                        <div className='Info'>
-                        {this.state.avatarP1URL ? (
-                            <div className='Photo' style={{
-                                backgroundImage: `url("${this.state.avatarP1URL}")`,
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                              }}></div> ) : (
-                              <div className='Photo'></div>)}
-                            <div className='Login' style={{textAlign: 'left'}}>
-                            {leftName}
-                            </div>
-                        </div>
-                        <div className='Score'>
-                        {this.state.player1Score}
-                        </div>
+        {this.state.soloGame ? (
+          <SoloGame clickHandler={this.quitSoloMode}></SoloGame>
+        ) : (
+          <div className="Radial-background">
+            <div className="Page-top">
+              <div style={{ display: `${shoWInfo}` }} className="Info-card">
+                <div className="Player-left">
+                  <div className="Info">
+                    {this.state.avatarP1URL ? (
+                      <div
+                        className="Photo"
+                        style={{
+                          backgroundImage: `url("${this.state.avatarP1URL}")`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
+                      ></div>
+                    ) : (
+                      <div className="Photo"></div>
+                    )}
+                    <div className="Login" style={{ textAlign: "left" }}>
+                      {leftName}
                     </div>
-                    <div className='Player-right'>
-                        <div className='Score'>
-                        {this.state.player2Score}
-                        </div>
-                        <div className='Info'>
-                        
-                            <div className='Login' style={{textAlign: 'right'}}>
-                            {rightName}
-                            </div>
-                            {this.state.avatarP2URL ? (
-                            <div className='Photo' style={{
-                                backgroundImage: `url("${this.state.avatarP2URL}")`,
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                              }}></div> ) : (
-                              <div className='Photo'></div>)}    
-                        </div>
-                    </div>
+                  </div>
+                  <div className="Score">{this.state.player1Score}</div>
                 </div>
-            </div>
-            <div className='Page-mid'>
-             
-                <div style={{   border: `${showBorder}`, 
-                                boxShadow: `${showShadow}`,}} className='Field'>
-               
-                  
-                    <Paddle show={this.state.gameStarted} side={"left"} y={this.state.paddleLeftY} ystart={this.state.paddleLeftY} />
-                    <Paddle show={this.state.gameStarted} side={"right"} y={this.state.paddleRightY} ystart={this.state.paddleRightY} />
-
-                  
-                    <div className='Center-zone' style={{display: `${shoWInfo}`,}}>    
-                        <div className='Middle-line-top'></div>
-                        <div className='Center-circle'></div>
-                        <div className='Middle-line-bottom'></div>
+                <div className="Player-right">
+                  <div className="Score">{this.state.player2Score}</div>
+                  <div className="Info">
+                    <div className="Login" style={{ textAlign: "right" }}>
+                      {rightName}
                     </div>
-                    
-                    <div className='Pad-right'></div>
-                 
-                                  
-                    <Ball showBall={this.state.gameStarted} x={this.state.ballX} y={this.state.ballY} />
-                    
+                    {this.state.avatarP2URL ? (
+                      <div
+                        className="Photo"
+                        style={{
+                          backgroundImage: `url("${this.state.avatarP2URL}")`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
+                      ></div>
+                    ) : (
+                      <div className="Photo"></div>
+                    )}
+                  </div>
                 </div>
-         
+              </div>
+            </div>
+            <div className="Page-mid">
+              <div
+                style={{ border: `${showBorder}`, boxShadow: `${showShadow}` }}
+                className="Field"
+              >
+                <Paddle
+                  show={this.state.gameStarted}
+                  side={"left"}
+                  y={this.state.paddleLeftY}
+                  ystart={this.state.paddleLeftY}
+                />
+                <Paddle
+                  show={this.state.gameStarted}
+                  side={"right"}
+                  y={this.state.paddleRightY}
+                  ystart={this.state.paddleRightY}
+                />
+
+                <div className="Center-zone" style={{ display: `${shoWInfo}` }}>
+                  <div className="Middle-line-top"></div>
+                  <div className="Center-circle"></div>
+                  <div className="Middle-line-bottom"></div>
+                </div>
+
+                <div className="Pad-right"></div>
+
+                <Ball
+                  showBall={this.state.gameStarted}
+                  x={this.state.ballX}
+                  y={this.state.ballY}
+                />
+              </div>
             </div>
 
-            <div className='Button-msg-zone'>
-                    <Message showMsg={this.state.buttonState !== "Start" && !this.state.gameStarted} type={this.state.msgType} />
-                    <StartButton showButton={this.state.showStartButton} clickHandler={this.startButtonHandler} buttonText={this.state.buttonState} />
-                    <StartButton showButton={this.state.showStartButton} clickHandler={this.soloButtonHandler} buttonText="Solo mode" />
+            <div className="Button-msg-zone">
+              <Message
+                showMsg={
+                  this.state.buttonState !== "Start" && !this.state.gameStarted
+                }
+                type={this.state.msgType}
+              />
+              <StartButton
+                showButton={this.state.showStartButton}
+                clickHandler={this.startButtonHandler}
+                buttonText={this.state.buttonState}
+              />
+              <StartButton
+                showButton={this.state.showStartButton}
+                clickHandler={this.soloButtonHandler}
+                buttonText="Solo mode"
+              />
             </div>
             <div>
-                {this.state.isSettingsShown ? (
-            <Settings
-              message={this.state.settingsState!}
-              onKeyDown={this.onSettingsKeyDown}
-              onClickClose={this.onSettingsClickClose}
-            />
-          ) : null}
+              {this.state.isSettingsShown ? (
+                <Settings
+                  message={this.state.settingsState!}
+                  onKeyDown={this.onSettingsKeyDown}
+                  onClickClose={this.onSettingsClickClose}
+                />
+              ) : null}
             </div>
-            <div className='Page-foot'>
-                <div className='bar'>
+            <div className="Page-foot">
+              <div className="bar"></div>
+              <div className="innerFoot">
+                <div className="Button" onClick={() => this.showSettings()}>
+                  Settings
                 </div>
-                <div className='innerFoot'>
-                    <div className='Button' onClick={() => this.showSettings()}>
-                        Settings
-                    </div>
-                </div>
+              </div>
             </div>
-        </div>
-    )}
-    </div>)}
+          </div>
+        )}
+      </div>
+    );
+  }
 }

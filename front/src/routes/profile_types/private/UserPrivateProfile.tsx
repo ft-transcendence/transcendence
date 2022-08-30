@@ -9,6 +9,7 @@ import { TwoFA } from "./TwoFA";
 import { UsersRelations } from "./users_relations/UsersRelations";
 import IconPen from "../../../ressources/icons/Icon_Pen.svg";
 import "../Profiles.css";
+import { COnUserSimple } from "../../../ContextMenus/COnUserSimple";
 
 export default function UserPrivateProfile() {
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ export default function UserPrivateProfile() {
         onSubmit={() => setAuthStatus("true")}
         onHide={() => setModalShowAuth(false)}
       />
-
+      <COnUserSimple />
       <h1 className="app-title">My account</h1>
       <Container className="p-5 h-100">
         <Row className="wrapper">
@@ -102,7 +103,6 @@ export default function UserPrivateProfile() {
           </Col>
         </Row>
       </Container>
-
       <Container className="p-5">
         <Row className="flex">
           <Col className="col-6">
@@ -121,8 +121,9 @@ export default function UserPrivateProfile() {
                     <Col className=" text-right">
                       <button
                         type="button"
-                        className="btn btn-secondary btn-sm submit-button float-end"
-                        onClick={() => {
+                        className="btn btn-sm submit-button float-end"
+                        onClick={(e: any) => {
+                          e.preventDefault();
                           setShowUsername(true);
                           setShowFriends(false);
                           setShowEmail(false);
@@ -146,7 +147,7 @@ export default function UserPrivateProfile() {
                     <Col className=" text-right">
                       <button
                         type="button"
-                        className="btn btn-secondary btn-sm submit-button float-end"
+                        className="btn btn-sm submit-button float-end"
                         onClick={() => {
                           setShowEmail(true);
                           setShowFriends(false);
