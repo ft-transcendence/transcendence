@@ -154,7 +154,8 @@ const ButtonsPending = (props: any) => {
           className="IBM-text btn btn-sm text-button"
           onClick={async () => {
             await addFriendQuery(props.id);
-            props.hook(true);
+
+            props.hook(!props.state);
           }}
         >
           Accept
@@ -166,7 +167,7 @@ const ButtonsPending = (props: any) => {
           className="IBM-text btn btn-sm text-button"
           onClick={async () => {
             await denyInviteQuery(props.id);
-            props.hook(true);
+            props.hook(!props.state);
           }}
         >
           Ignore
