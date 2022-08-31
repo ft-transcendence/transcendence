@@ -59,19 +59,6 @@ export class ChatService {
 		}
 	}
 
-	async get__cId__ByCname(name: string) {
-		try {
-			const channel = await this.prisma.channel.findUnique({
-				where: {
-					name: name,
-				},
-			});
-			return channel.id;
-		} catch (error) {
-			console.log('get__cId__ByCname error:', error);
-		}
-	}
-
 	async get__Cname__ByCId(cid: number) {
 		try {
 			const channel = await this.prisma.channel.findMany({
@@ -89,11 +76,11 @@ export class ChatService {
 		}
 	}
 
-	async get__channelsToJoin(email: string) {
+	async get__channelsUserIn(id: number) {
 		try {
 			const source = await this.prisma.user.findUnique({
 				where: {
-					email: email,
+					id: id,
 				},
 				select: {
 					admin: true,
@@ -909,10 +896,9 @@ export class ChatService {
 
 	async fetch__owners(userId: number, channelId: number) {
 		try {
-			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					name: name,
+					id: channelId,
 				},
 				select: {
 					owners: true,
@@ -954,10 +940,9 @@ export class ChatService {
 
 	async fetch__admins(id: number, channelId: number) {
 		try {
-			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					name: name,
+					id: channelId,
 				},
 				select: {
 					admins: true,
@@ -999,10 +984,9 @@ export class ChatService {
 
 	async fetch__members(id: number, channelId: number) {
 		try {
-			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					name: name,
+					id: channelId,
 				},
 				select: {
 					members: true,
@@ -1044,10 +1028,9 @@ export class ChatService {
 
 	async fetch__inviteds(id: number, channelId: number) {
 		try {
-			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					name: name,
+					id: channelId,
 				},
 				select: {
 					inviteds: true,
