@@ -106,7 +106,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
     data.members.map(async (member) => {
       const client = await this.get__clientSocket(member.id);
       client.join(data.name);
-      client.emit('ask for update preview');
+      client.emit('update channel request');
     })
   }
 

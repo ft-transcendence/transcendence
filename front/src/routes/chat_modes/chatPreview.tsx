@@ -46,13 +46,6 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
                 setPreviews(data);
         })
 
-        socket.on("ask for update preview", () => {
-            socket.emit("read preview", email, (data: chatPreview[] | null) => {
-                if (data)
-                    setPreviews(data);
-            })
-        })
-
         socket.on("update channel request", () => {
             socket.emit("read preview", email, (data: chatPreview[] | null) => {
                 if (data)
@@ -66,7 +59,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
             socket.off("connect");
             socket.off("add preview");
             socket.off("update preview");
-            socket.off("ask for update preview");
+            socket.off("update channel request");
             socket.off("disconnect")
         })
 

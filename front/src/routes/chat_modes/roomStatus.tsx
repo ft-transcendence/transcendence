@@ -54,7 +54,7 @@ export default function RoomStatus({current, role, outsider}
             if (current)
             {
                 socket.emit("read room status", {channelId: current?.id, email: email});
-                socket.emit("get invitation tags", current!.id);
+                socket.emit("get invitation tags", current?.id);
             }
         })
 
