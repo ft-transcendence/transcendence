@@ -49,9 +49,18 @@ export default function RoomStatus({current, role, outsider}
         socket.on("invitation tags", (data: Tag[]) => {
             setTag(data);
         })
+        
+        socket.on("update channel request", () => {
+            if (current)
+            {
+                socket.emit("read room status", {channelId: current?.id, email: email});
+                socket.emit("get invitation tags", current!.id);
+            }
+        })
 
         return (() => {
             socket.off("invitation tags");
+            socket.off("update channel request");
         })
 
     }, [current, email])

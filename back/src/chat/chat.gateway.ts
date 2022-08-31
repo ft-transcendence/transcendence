@@ -86,6 +86,7 @@ export class ChatGateway {
 			);
 			client.join(preview.name);
 			client.emit('add preview', preview);
+			this.updateChannelRequest('update channel request', 'default_all');
 			return data;
 		}
 	}
@@ -124,6 +125,7 @@ export class ChatGateway {
 				inviteds,
 			);
 			client.emit('fetch role', role);
+			this.updateChannelRequest('update channel request', channelName);
 		}
 	}
 
@@ -132,6 +134,7 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.invite__toChannel(data);
 		const id = await this.chatservice.get__id__ByEmail(data.email);
 		const inviteds = await this.chatservice.fetch__inviteds(
@@ -139,6 +142,7 @@ export class ChatGateway {
 			data.channelId,
 		);
 		client.emit('fetch inviteds', inviteds);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('block channel')
@@ -146,6 +150,7 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.block__channel(data);
 		const preview = await this.chatservice.get__previews(data.email);
 		client.emit('update preview', preview);
@@ -155,6 +160,7 @@ export class ChatGateway {
 		client.emit('fetch admins', []);
 		client.emit('fetch members', []);
 		client.emit('fetch inviteds', []);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('leave channel')
@@ -162,6 +168,7 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.leave__channel(data);
 		const preview = await this.chatservice.get__previews(data.email);
 		client.emit('update preview', preview);
@@ -171,6 +178,7 @@ export class ChatGateway {
 		client.emit('fetch admins', []);
 		client.emit('fetch members', []);
 		client.emit('fetch inviteds', []);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('kick out')
@@ -178,6 +186,7 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.leave__channel(data);
 		const id = await this.chatservice.get__id__ByEmail(data.email);
 		const admins = await this.chatservice.fetch__admins(id, data.channelId);
@@ -198,6 +207,7 @@ export class ChatGateway {
 		client.emit('invitation tags', invitationTags);
 		const users = await this.chatservice.get__searchSuggest(data.email);
 		client.emit('search suggest', users);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('new dm')
@@ -343,6 +353,7 @@ export class ChatGateway {
 		@MessageBody() data: UseMessageDto,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.delete__msg(data);
 		const fetch = await this.chatservice.fetch__msgs(data.channelId);
 		client.emit('fetch msgs', fetch);
@@ -356,6 +367,7 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.be__admin(data);
 		const id = await this.chatservice.get__id__ByEmail(data.email);
 		const admins = await this.chatservice.fetch__admins(id, data.channelId);
@@ -365,6 +377,7 @@ export class ChatGateway {
 			data.channelId,
 		);
 		client.emit('fetch members', members);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('not admin')
@@ -372,6 +385,7 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.not__admin(data);
 		const id = await this.chatservice.get__id__ByEmail(data.email);
 		const admins = await this.chatservice.fetch__admins(id, data.channelId);
@@ -381,6 +395,7 @@ export class ChatGateway {
 			data.channelId,
 		);
 		client.emit('fetch members', members);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('get setting')
@@ -397,9 +412,11 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.update__setting(data);
 		const info = await this.chatservice.get__setting(data.channelId);
 		client.emit('setting info', info);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('mute user')

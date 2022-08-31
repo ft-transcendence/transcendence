@@ -7,7 +7,6 @@ import RoomStatus from "./chat_modes/roomStatus";
 import { chatPreview } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 import { SettingCard } from "./chat_modes/settingCard";
-import { Player } from "./game.interfaces";
 
 const socketOptions = {
   transportOptions: {

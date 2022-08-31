@@ -30,6 +30,9 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
         socket.on("user tags", (data: Tag[]) => {
             setUserTag(data);
         })
+        socket.on("update channel request", () => {
+          socket.emit("get user tags", email);
+        })
 
         return  (() => {
             socket.off("user tags");
@@ -73,9 +76,7 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
             email: email,
             members: addedMember,
         }
-        socket.emit("new channel", data, (data: newChannel) => {
-          socket.emit('fetch new channel', data);
-        });
+        socket.emit("new channel", data);
         initVars();
         onNewRoomRequest();
         socket.emit("get search suggest", email);

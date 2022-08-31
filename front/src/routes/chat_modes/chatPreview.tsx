@@ -52,15 +52,21 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
                     setPreviews(data);
             })
         })
-        
 
+        socket.on("update channel request", () => {
+            socket.emit("read preview", email, (data: chatPreview[] | null) => {
+                if (data)
+                    setPreviews(data);
+            })
+        })
+        
         socket.on("disconnect", () => {})
 
         return (() => {
             socket.off("connect");
-            socket.off("set preview");
             socket.off("add preview");
             socket.off("update preview");
+            socket.off("ask for update preview");
             socket.off("disconnect")
         })
 
@@ -188,9 +194,13 @@ function ChatSearch({onSearchMyChat, onSearchPublicChat}
         socket.on("search suggest", (data: oneSuggestion[]) => {
             setSug(data);
         })
+        socket.on('update channel request', () => {
+            socket.emit("get search suggest", email);
+        })
 
         return  (() => {
             socket.off("search suggest");
+            socket.off("update channel request");
         })
 
     }, [email])

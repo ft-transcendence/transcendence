@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { WebSocketGateway, WsException, OnGatewayConnection, OnGatewayDisconnect, BaseWsExceptionFilter, WebSocketServer, SubscribeMessage, MessageBody, ConnectedSocket  } from '@nestjs/websockets';
+import { WebSocketGateway, WsException, OnGatewayConnection, OnGatewayDisconnect, BaseWsExceptionFilter, WebSocketServer, SubscribeMessage, MessageBody } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from 'src/user/user.service'; 
@@ -9,13 +9,13 @@ import { GameService } from './game/game.service';
 import { Status } from './user/statuses';
 import { gameInvitation } from './chat/type/chat.type';
 import { ChannelDto } from './chat/dto/chat.dto';
-
+import { ChatGateway } from './chat/chat.gateway';
 
 @WebSocketGateway({cors: {
   origin: "http://localhost:3000"}})
 
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
-  constructor(private readonly jwtService: JwtService, private userService: UserService, private readonly chatService: ChatService, private gameService: GameService) {}
+  constructor(private readonly jwtService: JwtService, private userService: UserService, private readonly chatGateway: ChatGateway, private readonly chatService: ChatService, private gameService: GameService) {}
   
 	@WebSocketServer()
 	server: Server;

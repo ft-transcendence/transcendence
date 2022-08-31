@@ -41,6 +41,15 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
             setBlocked(data);
         })
 
+        socket.on("update channel request", () => {
+            if (show && current)
+            {
+                const cId = current.id;
+                socket.emit("read msgs", cId);
+                socket.emit("get setting", cId);
+            }
+        })
+
         socket.on("disconnect", () => {})
 
         if (show && current)
