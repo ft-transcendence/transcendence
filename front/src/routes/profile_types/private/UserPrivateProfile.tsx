@@ -10,8 +10,26 @@ import { UsersRelations } from "./users_relations/UsersRelations";
 import IconPen from "../../../ressources/icons/Icon_Pen.svg";
 import "../Profiles.css";
 import { COnUserSimple } from "../../../ContextMenus/COnUserSimple";
+import { io } from "socket.io-client";
 
 export default function UserPrivateProfile() {
+
+  const socketOptions = {
+    transportOptions: {
+      polling: {
+        extraHeaders: {
+          Token: localStorage.getItem("userToken"),
+        },
+      },
+    },
+  };
+
+  const socket = io("ws://localhost:4000", socketOptions);
+
+  socket.on("connect", () => {
+    console.log(localStorage.getItem("userID"), "connected to socket");
+  })
+  
   const navigate = useNavigate();
 
   const [showUsername, setShowUsername] = useState(false);

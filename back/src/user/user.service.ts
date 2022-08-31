@@ -241,6 +241,24 @@ export class UserService {
 		}
 	}
 
+	async isAdding(id1: number, id2: number) {
+		try {
+			const user = await this.prisma.user.findUnique({
+				where: {
+					id: id1,
+				},
+				rejectOnNotFound: true,
+			});
+			const index = user.adding.indexOf(id2);
+			if (index != -1) {
+				return true;
+			}
+			return false;
+		} catch (error) {
+			throw new ForbiddenException('isAdding error : ' + error);
+		}
+	}
+	
 	async getBlocks(id: number) {
 		const BlocksIdList = await this.prisma.user.findMany({
 			where: {
@@ -392,7 +410,11 @@ export class UserService {
 	}
 
 	async addFriend(id: number, otherId: number) {
-		if (id == otherId || (await this.isFriend(id, otherId))) {
+		if (
+			id == otherId ||
+			(await this.isFriend(id, otherId)) ||
+			(await this.isAdding(id, otherId))
+		) {
 			throw new ForbiddenException('Cannot invite this user');
 		}
 		const user = await this.prisma.user.update({
