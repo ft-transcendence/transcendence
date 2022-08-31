@@ -42,7 +42,7 @@ const fetchPost = async (
       if (localStorage.getItem("userToken")) {
         await getUserData();
         if (localStorage.getItem("userName")) userSignIn();
-        else return "error: getUserData";
+        else return "error";
       }
     }
   } catch (error) {

@@ -41,13 +41,24 @@ export default function Auth() {
       // keywords. Otherwise, things might happen in the wrong order.
       const fetchData = async () => {
         const data = await getUserData();
-        await getLeaderBoard();
-        console.log("data: ", data);
+        if (data === "error") {
+          notif?.setNotifText(
+            "Unable to retrieve your informations. Please try again later!"
+          );
+        } else {
+          await getLeaderBoard();
+          userSignIn();
+          notif?.setNotifText(
+            "Welcome " + localStorage.getItem("userName") + "!"
+          );
+        }
+        notif?.setNotifShow(true);
       };
       // sign in the user
-      fetchData().then(() => userSignIn());
+      fetchData();
     }
-  }, [location.search, userSignIn]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]);
 
   const handleSubmit = (event: any) => {
     let userInfo: IUserInfo = {
@@ -75,8 +86,11 @@ export default function Auth() {
                 "User already exists. Please enter another username and/or email."
               )
             : notif?.setNotifText("Unable to sign up. Please try again.");
-          notif?.setNotifShow(true);
-        }
+        } else
+          notif?.setNotifText(
+            "Welcome " + localStorage.getItem("userName") + "!"
+          );
+        notif?.setNotifShow(true);
       };
       signUpUser();
     } else {
@@ -88,8 +102,11 @@ export default function Auth() {
                 "User does not exists. Please enter a valid email and/or username."
               )
             : notif?.setNotifText("Could not retreive user. Please try again.");
-          notif?.setNotifShow(true);
-        }
+        } else
+          notif?.setNotifText(
+            "Welcome back " + localStorage.getItem("userName") + "!"
+          );
+        notif?.setNotifShow(true);
       };
       signInUser();
     }
