@@ -1,17 +1,20 @@
+import { useContext } from "react";
 import { Menu, Item } from "react-contexify";
 import { useNavigate } from "react-router-dom";
+import { NotifCxt } from "../App";
 import { addFriendQuery } from "../queries/userFriendsQueries";
 
 export const COnUser = (props: any) => {
   const navigate = useNavigate();
+  const notif = useContext(NotifCxt);
 
   const handleClick = (otherId: number) => {
     const addFriend = async () => {
       const result = await addFriendQuery(otherId);
       if (result !== "error") {
-        props.setText("Friend request sent to user #" + otherId + "!");
-      } else props.setText("Could not send friend request :(.");
-      props.setShowNotif(true);
+        notif?.setNotifText("Friend request sent to user #" + otherId + "!");
+      } else notif?.setNotifText("Could not send friend request :(.");
+      notif?.setNotifShow(true);
     };
     addFriend();
   };

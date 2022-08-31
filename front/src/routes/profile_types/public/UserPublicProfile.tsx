@@ -8,7 +8,7 @@ import { getOtherUser } from "../../../queries/otherUserQueries";
 import DisplayUserFriends from "./DisplayUserFriends";
 import { COnUser } from "../../../ContextMenus/COnUser";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
-import { UsersStatusCxt } from "../../../App";
+import { NotifCxt, UsersStatusCxt } from "../../../App";
 import { TAlert } from "../../../toasts/TAlert";
 import { addFriendQuery } from "../../../queries/userFriendsQueries";
 import "./UserPublicProfile.css";
@@ -44,6 +44,7 @@ const initializeUser = (result: any, setUserInfo: any) => {
 
 export default function UserProfile() {
   const usersStatus = useContext(UsersStatusCxt);
+  const notif = useContext(NotifCxt);
   let params = useParams();
   const [userInfo, setUserInfo] = useState<userModel>(userInfoInit);
   const [isFetched, setIsFetched] = useState(false);
@@ -95,9 +96,9 @@ export default function UserProfile() {
     const addFriend = async () => {
       const result = await addFriendQuery(otherId);
       if (result !== "error") {
-        setText("Friend request sent to user #" + otherId + "!");
-      } else setText("Could not send friend request :(.");
-      setShowNotif(true);
+        notif?.setNotifText("Friend request sent to user #" + otherId + "!");
+      } else notif?.setNotifText("Could not send friend request :(.");
+      notif?.setNotifShow(true);
     };
     addFriend();
   };
