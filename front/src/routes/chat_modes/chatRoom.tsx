@@ -129,7 +129,8 @@ function MsgStream({email, channelId, blocked}
         })
 
         socket.on("broadcast", (msg: oneMsg) => {
-            setMsgs(oldMsgs => [...oldMsgs, msg]);
+            if (msg.channelId === channelId)
+                setMsgs(oldMsgs => [...oldMsgs, msg]);
         })
 
         return (() => {
@@ -170,7 +171,7 @@ function MsgStream({email, channelId, blocked}
             className="msg-stream" ref={scroll}>
             {
                 msgs.map((value, index) => {
-                    const isBlocked = blocked.find((blocked) => {
+                    const isBlocked: Tag | undefined = blocked.find((blocked) => {
                         return value.id === blocked.id
                     });
                     return (
