@@ -7,6 +7,7 @@ import RoomStatus from "./chat_modes/roomStatus";
 import { chatPreview } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 import { SettingCard } from "./chat_modes/settingCard";
+import { Player } from "./game.interfaces";
 
 const socketOptions = {
   transportOptions: {
@@ -43,10 +44,18 @@ export default function Chat() {
             setRole(data);
         })
 
+        socket.on("invite to game", (data: Player) => {
+            socket.emit("join_private", {rid: data.roomId})
+        })
+
+        socket.on("disconnect", () => {})
+
         return (() => {
             socket.off("connect");
             socket.off("exception");
             socket.off("fetch role");
+            socket.off("invite to game");
+            socket.off("disconnect");
         })
     }, [])
 
