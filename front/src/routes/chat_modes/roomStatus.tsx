@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./roomStatus.css";
 import { 
     chatPreview, 
+    gameInvitation, 
     mute, 
     oneUser, 
     Tag, 
@@ -20,9 +21,11 @@ import "./context.css";
 import { AddUserIcon, QuitIcon } from "./icon";
 import ReactTags from "react-tag-autocomplete";
 import { socket } from "../Chat";
+import { getUserAvatarQuery } from "../../queries/avatarQueries";
+import { Player } from "../game.interfaces";
 
 declare var global: {
-    selectedData: oneUser
+    selectedUser: oneUser
 }
 
 export default function RoomStatus({current, role, outsider}
@@ -38,7 +41,7 @@ export default function RoomStatus({current, role, outsider}
 
         if (current)
         {
-            socket.emit("read room status", {id: current?.id, email: email});
+            socket.emit("read room status", {channelId: current?.id, email: email});
             socket.emit("get invitation tags", current!.id);
         }
 
@@ -58,8 +61,7 @@ export default function RoomStatus({current, role, outsider}
             channelId: current!.id,
             email: email,
             password: "",
-            adminEmail: "",
-            invitedId: member.id,
+            targetId: member.id,
             private: false,
             isPassword: false,
             ownerPassword: "",
@@ -136,11 +138,21 @@ function MemberStatus({current, role}
             setInviteds(data);
         })
 
+        socket.on("game info", (data: Player) => {
+            const invitation: gameInvitation = {
+                gameInfo: data,
+                targetId: global.selectedUser.id
+            }
+            socket.emit("invite to game", invitation)
+        })
+
+
         return (() => {
             socket.off("fetch owner");
             socket.off("fetch admins");
             socket.off("fetch members");
             socket.off("fetch inviteds");
+            socket.off("game info");
         })
         
     }, [current])
@@ -199,24 +211,25 @@ function Status({users, current, role}
 
     function handleAddFriend(){
         let update: updateUser = {
-            self: email,
-            other: global.selectedData.username
+            selfEmail: email,
+            otherId: global.selectedUser.id
         }
         socket.emit("add friend", update);
     }
 
-    function handleInviteGame(){
+    function handleCreateGame(){
         let update: updateUser = {
-            self: email,
-            other: global.selectedData.username
+            selfEmail: email,
+            otherId: global.selectedUser.id
         }
+        socket.emit("start_private");
         socket.emit("invite game", update);
     }
 
     function handleMute(mins: number){
         let update: mute = {
             duration: mins,
-            email: global.selectedData.email,
+            email: global.selectedUser.email,
             chanelId: current!.id
         }
         socket.emit("mute user", update);
@@ -224,8 +237,8 @@ function Status({users, current, role}
 
     function handleBlockUser(){
         let update: updateUser = {
-            self: email,
-            other: global.selectedData.username
+            selfEmail: email,
+            otherId: global.selectedUser.id
         }
         socket.emit("block user", update);
     }
@@ -235,8 +248,7 @@ function Status({users, current, role}
             channelId: current!.id,
             email: email,
             password: "",
-            adminEmail: global.selectedData.email,
-            invitedId: 0,
+            targetId: global.selectedUser.id,
             private: false,
             isPassword: false,
             ownerPassword: "",
@@ -250,8 +262,7 @@ function Status({users, current, role}
             channelId: current!.id,
             email: email,
             password: "",
-            adminEmail: global.selectedData.email,
-            invitedId: 0,
+            targetId: global.selectedUser.id,
             private: false,
             isPassword: false,
             ownerPassword: "",
@@ -263,10 +274,9 @@ function Status({users, current, role}
     function handleKickOut(){
         let update: updateChannel = {
             channelId: current!.id,
-            email: global.selectedData.email,
+            email: email,
             password: "",
-            adminEmail: "",
-            invitedId: 0,
+            targetId: global.selectedUser.id,
             private: false,
             isPassword: false,
             ownerPassword: "",
@@ -284,35 +294,35 @@ function Status({users, current, role}
                 </div>
                 )
             })}
-            <Menu id={JSON.stringify(global.selectedData)} theme={theme.dark}>
-                <Item onClick={handleAddFriend} style={{backgroundColor: "grey"}}>
+            <Menu id={JSON.stringify(global.selectedUser)} theme={theme.dark}>
+                <Item onClick={handleAddFriend}>
                     add friend
                 </Item>
-                <Item onClick={handleInviteGame} style={{backgroundColor: "grey"}}>
+                <Item onClick={handleCreateGame}>
                     invite to a game!
                 </Item>
-                <Item onClick={handleBlockUser} style={{backgroundColor: "grey"}}>
+                <Item onClick={handleBlockUser}>
                     block user
                 </Item>
                 <Separator/>
                 {role === "owner" && 
-                    (global.selectedData?.isInvited === false) ?
+                    (global.selectedUser?.isInvited === false) ?
                     <>
                         <Item 
                             style={{display:
-                                (global.selectedData?.isAdmin === false) ? "" : "none"}}
+                                (global.selectedUser?.isAdmin === false) ? "" : "none"}}
                             onClick={handleBeAdmin}>
                             assign as admin
                         </Item>
                         <Item 
                             style={{display: 
-                                (global.selectedData?.isAdmin === true) ? "" : "none"}}
+                                (global.selectedUser?.isAdmin === true) ? "" : "none"}}
                             onClick={handleNotAdmin}>
                             unset admin right
                         </Item>
                     </> : <></>}
                 {(role === "admin" || role === "owner") && 
-                    (global.selectedData?.isInvited === false) ? 
+                    (global.selectedUser?.isInvited === false) ? 
                     <>
                         <Submenu label="mute">
                             <Item 
@@ -347,6 +357,19 @@ function OneStatus({data, setSelData, setHide}
         setHide: (d: any) => void }) {
 
     const email = localStorage.getItem("userEmail");
+    const [avatarURL, setAvatarURL] = useState("");
+
+    useEffect(() => {
+        const getAvatar = async () => {
+            const result: undefined | string | Blob | MediaSource =
+                await getUserAvatarQuery(data.id);
+    
+            if (result !== undefined && result instanceof Blob) {
+                setAvatarURL(URL.createObjectURL(result));
+            }
+        }
+        getAvatar();
+      }, [data.id]);
 
     const goProfile = () => {
         // link to profile 
@@ -356,10 +379,10 @@ function OneStatus({data, setSelData, setHide}
 
         // eslint-disable-next-line react-hooks/rules-of-hooks
         let { hideAll } = useContextMenu({ 
-            id: JSON.stringify(global.selectedData)
+            id: JSON.stringify(global.selectedUser)
         });
         setHide(hideAll);
-        global.selectedData = data;
+        global.selectedUser = data;
         event.preventDefault();
         setSelData({data: data, event: event});
     }
@@ -370,7 +393,10 @@ function OneStatus({data, setSelData, setHide}
             className="one-status"
             onContextMenu={email !== data?.email ? (e) => handleMenu(e) : undefined }
             onClick={goProfile}>
-                <p className="one-pic">{data?.picture}</p>
+                <p className="one-pic"
+                    style={{backgroundImage: `url("${avatarURL}")`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center"}}/>
                 <p className="one-name">{data?.username}</p>
         </div>
     )
@@ -392,8 +418,7 @@ function JoinChannel({channelId, outsider, isPassword}
             channelId: channelId,
             email: email,
             password: password,
-            adminEmail: "",
-            invitedId: "",
+            targetId: -1,
             private: false,
             isPassword: false,
             ownerPassword: "",
@@ -420,9 +445,10 @@ function JoinChannel({channelId, outsider, isPassword}
                     <input
                         className="password-input"
                         id="password"
+                        type="password"
                         value={password}
                         onChange={handleSetPass}
-                        placeholder="********"
+                        placeholder="password"
                         onKeyDown={(e) => {
                             if (e.key === "Enter")
                                 handleJoin()}}/>

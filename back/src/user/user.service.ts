@@ -64,19 +64,33 @@ export class UserService {
 	async getLeaderboard() {
 		//returns a record of all the users, ordered by rank in ascending order
 		const users = await this.prisma.user.findMany({
-			orderBy: { rank: 'asc' },
+			where: {
+				NOT: {
+					gamesPlayed: {
+						equals: 0,
+					},
+				},
+			},
+			select: {
+				id: true,
+				username: true,
+				rank: true,
+				winRate: true,
+				gamesLost: true,
+				gamesWon: true,
+				gamesPlayed: true,
+			},
+			orderBy: { rank: 'desc' },
 		});
 
-		const usersDTO: UserDto[] = [];
-		for (const user of users) {
-			// console.log('user:::', user);
-			// if (user.score !== 1200) {
-			const userDtO = plainToClass(UserDto, user);
-			usersDTO.push(userDtO);
-			// }
-		}
+		// const usersDTO: UserDto[] = [];
+		// for (const user of users) {
+		// 	// console.log('user:::', user);
+		// 	const userDtO = plainToClass(UserDto, user);
+		// 	usersDTO.push(userDtO);
+		// }
 		// console.log('userssss:::', usersDTO);
-		return usersDTO;
+		return users;
 	}
 
 	async getGameHistory(id: number) {
@@ -135,7 +149,6 @@ export class UserService {
 
 	async getUser(id: number) {
 		if (!id) throw new ForbiddenException('id is undefined');
-		console.log('id', id);
 		try {
 			const user = await this.prisma.user.findUnique({
 				where: {

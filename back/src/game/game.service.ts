@@ -61,11 +61,15 @@ export class GameService {
 		// game windows is 16/9 format - so 1.77, ball radius is 1vh
 
 		// ball collision with floor or ceilling
-		if (
-			GameService.rooms.find((room) => room.id === roomId).yball >= 98 ||
-			GameService.rooms.find((room) => room.id === roomId).yball <= 2
-		)
+		if (GameService.rooms.find((room) => room.id === roomId).yball > 98) {
+			GameService.rooms.find((room) => room.id === roomId).yball = 98;
 			GameService.rooms.find((room) => room.id === roomId).ySpeed *= -1;
+		}
+
+		if (GameService.rooms.find((room) => room.id === roomId).yball < 2) {
+			GameService.rooms.find((room) => room.id === roomId).yball = 2;
+			GameService.rooms.find((room) => room.id === roomId).ySpeed *= -1;
+		}
 
 		// ball collision with right paddle (paddle position is 3% from the border, paddle height is 10% of the game windows)
 		if (

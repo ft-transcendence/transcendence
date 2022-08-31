@@ -156,16 +156,9 @@ export class GameGateway {
 	}
 
 	@SubscribeMessage('start_private')
-	async handleStartPrivate(
-		@ConnectedSocket() client: Client,
-	): Promise<Player> {
-		const user = await this.userService.getUser(client.data.id);
-
+	async handleStartPrivate(@ConnectedSocket() client: Client) {
+		// const user = await this.userService.getUser(client.data.id);
 		// data to be provided to the client
-		const player: Player = {
-			playerNb: 0,
-			roomId: 0,
-		};
 		const newId = await this.gameService.generate_new_id();
 		const newRoom: Room = {
 			id: newId,
@@ -186,12 +179,12 @@ export class GameGateway {
 			private: true,
 		};
 		GameService.rooms.push(newRoom);
-		client.join(GameService.rooms[GameService.rooms.length - 1].name); // create a new websocket room
-		player.playerNb = 1;
-
-		player.roomId = GameService.rooms[GameService.rooms.length - 1].id;
-
-		return player; // send data to client
+		await client.join(GameService.rooms[GameService.rooms.length - 1].name); // create a new websocket room
+		const player: Player = {
+			playerNb: 1,
+			roomId: GameService.rooms[GameService.rooms.length - 1].id,
+		};
+		client.emit('game roomId', player); // send data to client
 	}
 
 	@SubscribeMessage('join_private')

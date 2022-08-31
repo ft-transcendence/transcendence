@@ -7,8 +7,8 @@ import { IUserInfo } from "../../globals/Interfaces";
 import { signUp, signIn } from "../../queries/authQueries";
 import { GUserInputsRefs } from "../../globals/variables";
 import { useAuth } from "../../globals/contexts";
+import { getLeaderBoard, getUserData } from "../../queries/userQueries";
 import { TAlert } from "../../toasts/TAlert";
-import { getUserData } from "../../queries/userQueries";
 import "./Auth.css";
 
 export default function Auth() {
@@ -42,6 +42,7 @@ export default function Auth() {
       // keywords. Otherwise, things might happen in the wrong order.
       const fetchData = async () => {
         const data = await getUserData();
+        await getLeaderBoard();
         console.log("data: ", data);
       };
       // sign in the user
