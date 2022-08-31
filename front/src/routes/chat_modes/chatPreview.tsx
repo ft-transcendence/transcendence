@@ -10,12 +10,13 @@ import {
 } from "react-contexify";
 import "./context.css";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
+import { getUserAvatarQuery } from "../../queries/avatarQueries";
 
 const MENU_CHANNEL = "menu_channel";
 const MENU_DM = "menu_dm";
 
 declare var global: {
-    selectedData: chatPreview
+    selectedChat: chatPreview
 }
 
 export default function Preview ({ current, onSelect, onNewRoomRequest}
@@ -35,6 +36,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
         socket.emit("read preview", email);
 
         socket.on("set preview", (data: chatPreview[] | null) => {
+
             if (data)
                 setPreviews(data);
         })
@@ -49,11 +51,14 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
                 setPreviews(data);
         })
 
+        socket.on("disconnect", () => {})
+
         return (() => {
             socket.off("connect");
             socket.off("set preview");
             socket.off("add preview");
             socket.off("update preview");
+            socket.off("disconnect")
         })
 
     }, [email]);
@@ -75,11 +80,10 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
 
     function handleLeave(){
         let update: updateChannel = {
-            channelId: global.selectedData.id,
+            channelId: global.selectedChat.id,
             email: email,
             password: "",
-            adminEmail: "",
-            invitedId: 0,
+            targetId: -1,
             private: false,
             isPassword: false,
             ownerPassword: "",
@@ -92,11 +96,10 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
 
     function handleBlockChannel(){
         let update: updateChannel = {
-            channelId: global.selectedData.id,
+            channelId: global.selectedChat.id,
             email: email,
             password: "",
-            adminEmail: "",
-            invitedId: 0,
+            targetId: -1,
             private: false,
             isPassword: false,
             ownerPassword: "",
@@ -106,20 +109,19 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
         onSelect(undefined);
     }
 
-    // function handleBlockUser(){
-    //     let update: updateChannel = {
-    //         channelId: global.selectedData.id,
-    //         email: email,
-    //         password: "",
-    //         adminEmail: "",
-    //         invitedId: 0,
-    //         private: false,
-    //         isPassword: false,
-    //         ownerPassword: "",
-    //         newPassword: ""
-    //     }
-    //     socket.emit("block user", update);
-    // }
+    function handleBlockUser(){
+        let update: updateChannel = {
+            channelId: global.selectedChat.id,
+            email: email,
+            password: "",
+            targetId: -1,
+            private: false,
+            isPassword: false,
+            ownerPassword: "",
+            newPassword: ""
+        }
+        socket.emit("block user", update);
+    }
 
     return(
         <div className="preview-zone">
@@ -160,7 +162,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
                         delete message
                     </Item>
                     <Item 
-                        // onClick={handleBlockUser}
+                        onClick={handleBlockUser}
                         style={{backgroundColor: "grey"}}
                     >
                         Block user
@@ -262,29 +264,40 @@ function PreviewChat({ MENU_ID, data, onClick, selected }
         selected: boolean }) {
 
     const { show } = useContextMenu();
+    const [avatarURL, setAvatarURL] = useState("");
+
+    useEffect(() => {
+        const getAvatar = async () => {
+            const result: undefined | string | Blob | MediaSource =
+                await getUserAvatarQuery(data.ownerId);
+    
+            if (result !== undefined && result instanceof Blob) {
+                setAvatarURL(URL.createObjectURL(result));
+            }
+        }
+        getAvatar();
+      }, [data.ownerId]);
 
     return (
         <>
             <div
             className="preview-chat"
             onMouseDown={onClick} style={{backgroundColor: selected ? "rgb(255 255 255 / 29%)" : ""}}
-            onContextMenu={(e) => {global.selectedData = data; show(e, {id: MENU_ID})}}>
+            onContextMenu={(e) => {global.selectedChat = data; show(e, {id: MENU_ID})}}>
                 <div>
-                    <div className="preview-chat-img">{data.picture? data.picture : null}</div>
+                    <div className="preview-chat-img"
+                        style={{backgroundImage: `url("${avatarURL}")`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center"}}/>
                     <div className="preview-chat-info">
                         <div className="preview-chat-info-1">
                             <p className="preview-chat-name">{data.name}</p>
                             
                             <p className="preview-chat-msg">{data.lastMsg}</p>
                         </div>
-                        {/* <div className="preview-chat-info-2">
-                            <p className="preview-chat-time">{data.updateAt}</p>
-                            <p className="preview-chat-unread">{unreadCount}</p>
-                        </div> */}
                     </div>
                 </div>
             </div>
-            
         </>
     );
 }

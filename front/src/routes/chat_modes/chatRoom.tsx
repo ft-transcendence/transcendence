@@ -41,6 +41,8 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
             setBlocked(data);
         })
 
+        socket.on("disconnect", () => {})
+
         if (show && current)
         {
             const cId = current.id;
@@ -51,6 +53,7 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
         return (() => {
             socket.off("connect")
             socket.off("fetch blocked");
+            socket.off("disconnect");
         })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [show, current])

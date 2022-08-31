@@ -12,10 +12,14 @@ import {
 	updateChannel,
 } from './type/chat.type';
 import * as moment from 'moment';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class ChatService {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private userService: UserService,
+	) {}
 
 	async list__allUsers() {
 		const users = await this.prisma.user.findMany();
@@ -45,6 +49,9 @@ export class ChatService {
 				where: {
 					email: email,
 				},
+				select: {
+					id: true,
+				},
 			});
 			return user.id;
 		} catch (error) {
@@ -67,12 +74,15 @@ export class ChatService {
 
 	async get__Cname__ByCId(cid: number) {
 		try {
-			const channel = await this.prisma.channel.findUnique({
+			const channel = await this.prisma.channel.findMany({
 				where: {
 					id: cid,
 				},
+				select: {
+					name: true,
+				},
 			});
-			return channel.name;
+			return channel[0].name;
 		} catch (error) {
 			console.log('get__Cname__ByCId error:', error);
 			throw new WsException(error);
@@ -123,7 +133,7 @@ export class ChatService {
 	async get__previews(email: string): Promise<chatPreview[]> {
 		try {
 			const source = await this.get__chatList__ByEmail(email);
-			const data = await this.organize__previews(source, email);
+			const data = this.organize__previews(source, email);
 			return data;
 		} catch (error) {
 			console.log('get__preview error:', error);
@@ -141,14 +151,20 @@ export class ChatService {
 							source.owner[index].owners[0].email === email
 								? source.owner[index].owners[1].username
 								: source.owner[index].owners[0].username;
-					} else dmName = 'No One';
+					} else dmName = 'Empty Chat';
+					let otherId = -1;
+					if (source.owner[index].owners.length > 1) {
+						otherId =
+							source.owner[index].owners[0].email === email
+								? source.owner[index].owners[1].id
+								: source.owner[index].owners[0].id;
+					} else otherId = -1;
 					const messageCount = source.owner[index].messages.length;
 					const element: chatPreview = {
 						id: source.owner[index].id,
 						dm: source.owner[index].dm,
 						name: dmName,
 						isPassword: source.owner[index].isPassword,
-						picture: source.owner[index].picture,
 						updateAt: source.owner[index].updateAt,
 						lastMsg:
 							messageCount > 0
@@ -156,6 +172,7 @@ export class ChatService {
 										.msg
 								: '',
 						ownerEmail: source.owner[index].owners[0].email,
+						ownerId: otherId,
 					};
 					data.push(element);
 				}
@@ -168,7 +185,6 @@ export class ChatService {
 						dm: source.admin[index].dm,
 						isPassword: source.admin[index].isPassword,
 						name: source.admin[index].name,
-						picture: source.admin[index].picture,
 						updateAt: source.admin[index].updateAt,
 						lastMsg:
 							messageCount > 0
@@ -176,6 +192,7 @@ export class ChatService {
 										.msg
 								: '',
 						ownerEmail: source.admin[index].owners[0].email,
+						ownerId: source.admin[index].owners[0].id,
 					};
 					data.push(element);
 				}
@@ -187,13 +204,13 @@ export class ChatService {
 						dm: source.member[index].dm,
 						name: source.member[index].name,
 						isPassword: source.member[index].isPassword,
-						picture: source.member[index].picture,
 						updateAt: source.member[index].updateAt,
 						lastMsg:
 							messageCount > 0
 								? source.member[index].messages[0].msg
 								: '',
 						ownerEmail: source.member[index].owners[0].email,
+						ownerId: source.member[index].owners[0].id,
 					};
 					data.push(element);
 				}
@@ -205,11 +222,11 @@ export class ChatService {
 						dm: source.invited[index].dm,
 						name: source.invited[index].name,
 						isPassword: source.invited[index].isPassword,
-						picture: source.invited[index].picture,
 						updateAt: source.invited[index].updateAt,
 						// eslint-disable-next-line unicorn/no-nested-ternary, prettier/prettier
-					lastMsg: source.invited[index].isPassword ? '' : (messageCount > 0 ? source.invited[index].messages[0].msg : ''),
+						lastMsg: source.invited[index].isPassword ? '' : (messageCount > 0 ? source.invited[index].messages[0].msg : ''),
 						ownerEmail: source.invited[index].owners[0].email,
+						ownerId: source.invited[index].owners[0].id,
 					};
 					data.push(element);
 				}
@@ -239,7 +256,14 @@ export class ChatService {
 				source.owners[0].email === email
 					? source.owners[1].username
 					: source.owners[0].username;
-		} else dmName = 'No One';
+		} else dmName = 'Empty Chat';
+		let otherId = -1;
+		if (source.owners.length > 1) {
+			otherId =
+				source.owners[0].email === email
+					? source.owners[1].id
+					: source.owners[0].id;
+		} else otherId = source.owners[0].id;
 		const data: chatPreview = {
 			id: source.id,
 			dm: source.dm,
@@ -249,6 +273,7 @@ export class ChatService {
 			// eslint-disable-next-line unicorn/no-nested-ternary, prettier/prettier
 			lastMsg: source.isPassword ? '' : (messageCount > 0 ? source.messages[0].msg : ''),
 			ownerEmail: source.owners.length > 0 ? source.owners[0].email : '',
+			ownerId: otherId,
 		};
 		return data;
 	}
@@ -268,6 +293,7 @@ export class ChatService {
 					updatedAt: true,
 					owners: {
 						select: {
+							id: true,
 							email: true,
 							username: true,
 						},
@@ -304,11 +330,11 @@ export class ChatService {
 							id: true,
 							dm: true,
 							name: true,
-							picture: true,
 							isPassword: true,
 							updatedAt: true,
 							owners: {
 								select: {
+									id: true,
 									email: true,
 									username: true,
 								},
@@ -329,10 +355,10 @@ export class ChatService {
 							dm: true,
 							name: true,
 							isPassword: true,
-							picture: true,
 							updatedAt: true,
 							owners: {
 								select: {
+									id: true,
 									email: true,
 									username: true,
 								},
@@ -353,10 +379,10 @@ export class ChatService {
 							dm: true,
 							name: true,
 							isPassword: true,
-							picture: true,
 							updatedAt: true,
 							owners: {
 								select: {
+									id: true,
 									email: true,
 									username: true,
 								},
@@ -377,10 +403,10 @@ export class ChatService {
 							dm: true,
 							name: true,
 							isPassword: true,
-							picture: true,
 							updatedAt: true,
 							owners: {
 								select: {
+									id: true,
 									email: true,
 									username: true,
 								},
@@ -498,6 +524,11 @@ export class ChatService {
 
 	async leave__channel(data: updateChannel) {
 		try {
+			let targetId: number | Promise<number> = 0;
+			targetId =
+				data.targetId == -1
+					? await this.get__id__ByEmail(data.email)
+					: data.targetId;
 			await this.prisma.channel.update({
 				where: {
 					id: data.channelId,
@@ -505,22 +536,22 @@ export class ChatService {
 				data: {
 					owners: {
 						disconnect: {
-							email: data.email,
+							id: targetId,
 						},
 					},
 					admins: {
 						disconnect: {
-							email: data.email,
+							id: targetId,
 						},
 					},
 					members: {
 						disconnect: {
-							email: data.email,
+							id: targetId,
 						},
 					},
 					inviteds: {
 						disconnect: {
-							email: data.email,
+							id: targetId,
 						},
 					},
 				},
@@ -581,7 +612,7 @@ export class ChatService {
 				data: {
 					inviteds: {
 						connect: {
-							id: data.invitedId,
+							id: data.targetId,
 						},
 					},
 				},
@@ -876,17 +907,18 @@ export class ChatService {
 		}
 	}
 
-	async fetch__owners(channelId: number) {
+	async fetch__owners(userId: number, channelId: number) {
 		try {
+			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					id: channelId,
+					name: name,
 				},
 				select: {
 					owners: true,
 				},
 			});
-			const owners = this.organize__owners(source);
+			const owners = await this.organize__owners(userId, source);
 			return owners;
 		} catch (error) {
 			console.log('fetch__owners error:', error);
@@ -894,36 +926,44 @@ export class ChatService {
 		}
 	}
 
-	organize__owners(source: any) {
+	async organize__owners(userId: number, source: any) {
 		const owners = [];
-		if (source)
+		if (source && source.owners)
 			for (let index = 0; index < source.owners.length; index++) {
+				let friendship = false;
+				if (userId != source.owners[index].id)
+					friendship = await this.userService.isFriend(
+						userId,
+						source.owners[index].id,
+					);
 				const owner: oneUser = {
 					online: false,
 					username: source.owners[index].username,
+					id: source.owners[index].id,
 					email: source.owners[index].email,
-					picture: source.owners[index].picture,
 					isOwner: true,
 					isAdmin: true,
 					isInvited: false,
 					isMuted: false,
+					isFriend: friendship,
 				};
 				owners.push(owner);
 			}
 		return owners;
 	}
 
-	async fetch__admins(channelId: number) {
+	async fetch__admins(id: number, channelId: number) {
 		try {
+			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					id: channelId,
+					name: name,
 				},
 				select: {
 					admins: true,
 				},
 			});
-			const admins = this.organize__admins(source);
+			const admins = await this.organize__admins(id, source);
 			return admins;
 		} catch (error) {
 			console.log('fetch__admins error:', error);
@@ -931,36 +971,44 @@ export class ChatService {
 		}
 	}
 
-	organize__admins(source: any) {
+	async organize__admins(id: number, source: any) {
 		const admins = [];
 		if (source && source.admins)
 			for (let index = 0; index < source.admins.length; index++) {
+				let friendship = false;
+				if (id != source.admins[index].id)
+					friendship = await this.userService.isFriend(
+						id,
+						source.admins[index].id,
+					);
 				const admin: oneUser = {
 					online: false,
 					username: source.admins[index].username,
+					id: source.admins[index].id,
 					email: source.admins[index].email,
-					picture: source.admins[index].picture,
 					isOwner: false,
 					isAdmin: true,
 					isInvited: false,
 					isMuted: false,
+					isFriend: friendship,
 				};
 				admins.push(admin);
 			}
 		return admins;
 	}
 
-	async fetch__members(channelId: number) {
+	async fetch__members(id: number, channelId: number) {
 		try {
+			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					id: channelId,
+					name: name,
 				},
 				select: {
 					members: true,
 				},
 			});
-			const members = this.organize__members(source);
+			const members = await this.organize__members(id, source);
 			return members;
 		} catch (error) {
 			console.log('fetch__members error:', error);
@@ -968,36 +1016,44 @@ export class ChatService {
 		}
 	}
 
-	organize__members(source: any) {
+	async organize__members(id: number, source: any) {
 		const members = [];
 		if (source && source.members)
 			for (let index = 0; index < source.members.length; index++) {
+				let friendship = false;
+				if (id != source.members[index].id)
+					friendship = await this.userService.isFriend(
+						id,
+						source.members[index].id,
+					);
 				const member: oneUser = {
 					online: false,
 					username: source.members[index].username,
+					id: source.members[index].id,
 					email: source.members[index].email,
-					picture: source.members[index].picture,
 					isOwner: false,
 					isAdmin: false,
 					isInvited: false,
 					isMuted: false,
+					isFriend: friendship,
 				};
 				members.push(member);
 			}
 		return members;
 	}
 
-	async fetch__inviteds(channelId: number) {
+	async fetch__inviteds(id: number, channelId: number) {
 		try {
+			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					id: channelId,
+					name: name,
 				},
 				select: {
 					inviteds: true,
 				},
 			});
-			const inviteds = this.organize__inviteds(source);
+			const inviteds = await this.organize__inviteds(id, source);
 			return inviteds;
 		} catch (error) {
 			console.log('fetch__inviteds error:', error);
@@ -1005,19 +1061,26 @@ export class ChatService {
 		}
 	}
 
-	organize__inviteds(source: any) {
+	async organize__inviteds(id: number, source: any) {
 		const inviteds = [];
 		if (source && source.inviteds)
 			for (let index = 0; index < source.inviteds.length; index++) {
+				let friendship = false;
+				if (id != source.inviteds[index].id)
+					friendship = await this.userService.isFriend(
+						id,
+						source.inviteds[index].id,
+					);
 				const member: oneUser = {
 					online: false,
 					username: source.inviteds[index].username,
+					id: source.inviteds[index].id,
 					email: source.inviteds[index].email,
-					picture: source.inviteds[index].picture,
 					isOwner: false,
 					isAdmin: false,
 					isInvited: true,
 					isMuted: false,
+					isFriend: friendship,
 				};
 				inviteds.push(member);
 			}
@@ -1360,12 +1423,12 @@ export class ChatService {
 				data: {
 					admins: {
 						connect: {
-							email: data.adminEmail,
+							id: data.targetId,
 						},
 					},
 					members: {
 						disconnect: {
-							email: data.adminEmail,
+							id: data.targetId,
 						},
 					},
 				},
@@ -1385,12 +1448,12 @@ export class ChatService {
 				data: {
 					admins: {
 						disconnect: {
-							email: data.adminEmail,
+							id: data.targetId,
 						},
 					},
 					members: {
 						connect: {
-							email: data.adminEmail,
+							id: data.targetId,
 						},
 					},
 				},

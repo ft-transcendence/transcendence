@@ -149,6 +149,7 @@
     {
         color: white;
         font-size: large;
+        text-align: left;
         margin-bottom: auto;
     }
 
@@ -158,13 +159,13 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        text-align: left;
     }
 
 .preview-chat-info-2
 {
     flex: 1;
     width: 80%;
-
 }
 
     .preview-chat-time {

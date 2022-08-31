@@ -1,11 +1,20 @@
 import "./LeaderBoard.css"
 import { useEffect, useState } from "react";
+import { getLeaderBoard } from "../queries/userQueries";
+import { getUserAvatarQuery } from "../queries/avatarQueries";
+import { useNavigate } from "react-router-dom";
 
 export default function LeaderBoard() {
     const [data, setData] = useState<[]>([]);
 
     useEffect(() => {
-        setData(JSON.parse(localStorage.getItem("leaderBoard")!));
+        const updateLeaderBoard = async () => {
+            await getLeaderBoard();
+        }
+        updateLeaderBoard();
+        console.log(data);
+        if (localStorage.getItem("leaderBoard") !== null)
+            setData(JSON.parse(localStorage.getItem("leaderBoard")!));
     }, [])
 
     return (
@@ -15,96 +24,141 @@ export default function LeaderBoard() {
                 <b>B<span>oa</span>r<span>d</span></b>
             </div>
             <div className="block"/>
-            <div className="leaderboard">
-                <div className="list">
-                    {
-                        data?.map((one:any, index) => {
-                            return( 
-                            <div key={index}>
-                                <OneRow
-                                    index={index + 1}
-                                    id={one.id}
-                                    avatar={one.avatar}
-                                    rank={one.rank}
-                                    username={one.username}
-                                    gamesWon={one.gamesWon}
-                                    gamesLost={one.gamesLost}
-                                    gamesPlayed={one.gamesPlayed}
-                                    head={false}
-                                />
-                            </div>
-                        )})
-                    }
+            {
+                data == null || data.length === 0 ?
+                <div className="leardboard-logo" style={{marginTop: "160px", height: "60px"}}>
+                    <b style={{font: "500 65px \"Clip\""}}><span>N</span>o  </b>
+                    <b style={{font: "500 65px \"Clip\""}}>G<span>am</span><span>e</span>  </b>
+                    <b style={{font: "500 65px \"Clip\""}}>Re<span>co</span>r<span>d</span>     </b>
+                    <b style={{font: "500 65px \"Clip\""}}><span>Y</span>e<span>t</span></b>
                 </div>
-            </div>
+                :
+                <div className="leaderboard">
+                    <div className="list">
+                        {
+                            data?.map((one:any, index) => {
+                                return( 
+                                <div key={index}>
+                                    <OneRow
+                                        index={index + 1}
+                                        id={one.id}
+                                        rank={one.rank}
+                                        winRate={(one.winRate).toFixed(2)}
+                                        username={one.username}
+                                        gamesWon={one.gamesWon}
+                                        gamesLost={one.gamesLost}
+                                        gamesPlayed={one.gamesPlayed}
+                                        head={false}
+                                    />
+                                </div>
+                            )})
+                        }
+                    </div>
+                </div>
+            }
         </div>
     )
 }
 
-function OneRow({index, id, username, avatar, rank, gamesWon, gamesLost, gamesPlayed, head}
+function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesPlayed, head}
     : { index: number,
-        id: number | string,
+        id: number,
         username: string,
-        avatar: string,
         rank: number,
+        winRate: number,
         gamesWon: number,
         gamesLost: number,
         gamesPlayed: number,
         head: boolean} ) {
 
+        const [avatarURL, setAvatarURL] = useState("");
+        const navigate = useNavigate();
+
+        useEffect(() => {
+            const getAvatar = async () => {
+                const result: undefined | string | Blob | MediaSource =
+                    await getUserAvatarQuery(id);
+        
+                if (result !== undefined && result instanceof Blob) {
+                    setAvatarURL(URL.createObjectURL(result));
+                }
+            }
+            getAvatar();
+        }, [id]);
+
         switch(index) {
             case 1:
                 return(
-                <div className="top first">
-                        <div className="top-avatar"></div>
+                <div className="top first"
+                    onClick = {
+                    () => navigate("/app/public/" + id)}>
+                    <div className="top-avatar"
+                        style={{backgroundImage: `url("${avatarURL}")`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center"}}/>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
                         <BadgeReward index={index}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
-                        <div className="top-rank">LV. 2{rank}</div>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
+                        <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
                 );
             case 2:
                 return(
-                <div className="top second">
-                        <div className="top-avatar"></div>
-                   <div className="top-info">
+                <div className="top second"
+                    onClick = {
+                    () => navigate("/app/public/" + id)}>
+                    <div className="top-avatar"
+                        style={{backgroundImage: `url("${avatarURL}")`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center"}}/>
+                    <div className="top-info">
                         <div className="top-username">{username}</div>
                         <BadgeReward index={index}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
-                        <div className="top-rank">LV. 2{rank}</div>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
+                        <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
                 );
             case 3:
                 return(
-                <div className="top third">
-                        <div className="top-avatar"></div>
+                <div className="top third"
+                    onClick = {
+                    () => navigate("/app/public/" + id)}>
+                    <div className="top-avatar"
+                        style={{backgroundImage: `url("${avatarURL}")`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center"}}/>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
                         <BadgeReward index={index}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {(gamesWon / gamesPlayed).toFixed(2)}</div>
-                        <div className="top-rank">LV. 1{rank}</div>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
+                        <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
                 );
             default:
                 return (
-                    <div className="element">
+                    <div className="element"
+                        onClick = {
+                        () => navigate("/app/public/" + id)}>
                         <div className="index">#{index}</div>
                         <div className="id">{id}</div>
-                        <div className="rank">LV. 0{rank}</div>
+                        <div className="rank">LV. {rank}</div>
                         <div className="user">
-                            {!head ? <div className="avatar">{avatar}</div> : <></>}
-                            
+                            {!head ? 
+                                <div className="avatar"
+                                    style={{backgroundImage: `url("${avatarURL}")`,
+                                    backgroundSize: "cover",
+                                    backgroundPosition: "center"}}/> : <></>}
                             <div className="username">{username}</div>
                         </div>
                         <div className="record">
                             {gamesWon}/{gamesLost}/{gamesPlayed}
                         </div>
                         <div className="rate">
-                            {(gamesWon / gamesPlayed).toFixed(2)}
+                            {winRate}
                         </div>
                     </div>
                 )
