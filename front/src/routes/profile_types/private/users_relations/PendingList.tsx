@@ -25,7 +25,11 @@ export const PendingList = () => {
     };
 
     const fetchDataPendingAvatar = async (otherId: number) => {
-      return await getUserAvatarQuery(otherId);
+      const result: undefined | string | Blob | MediaSource =
+        await getUserAvatarQuery(otherId);
+      if (result !== "error") return result;
+      else
+        return "https://img.myloview.fr/stickers/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg";
     };
 
     const fetchData = async () => {
@@ -49,9 +53,9 @@ export const PendingList = () => {
 
           let avatar = await fetchDataPendingAvatar(fetchedPending[i].id);
 
-          if (avatar !== undefined && avatar instanceof Blob) {
+          if (avatar !== undefined && avatar instanceof Blob)
             newRow.userModel.avatar = URL.createObjectURL(avatar);
-          }
+          else if (avatar) newRow.userModel.avatar = avatar;
           pending.push(newRow);
         }
       }

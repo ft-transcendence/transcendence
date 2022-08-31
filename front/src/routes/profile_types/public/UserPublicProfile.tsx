@@ -58,8 +58,10 @@ export default function UserProfile() {
         await getUserAvatarQuery(userInfoInit.id);
       if (result_1 !== undefined && result_1 instanceof Blob) {
         setAvatarURL(URL.createObjectURL(result_1));
-      } else if (result_1 === "error: avatar")
-        console.log("Could not get avatar of ", userInfoInit.id);
+      } else if (result_1 === "error")
+        setAvatarURL(
+          "https://img.myloview.fr/stickers/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg"
+        );
     };
     if (isFetched && userInfoInit.id) getAvatar();
   }, [isFetched]);

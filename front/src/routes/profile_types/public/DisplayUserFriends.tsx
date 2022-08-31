@@ -32,7 +32,11 @@ export default function DisplayUserFriends(props: any) {
     };
 
     const fetchDataFriendsAvatar = async (otherId: number) => {
-      return await getUserAvatarQuery(otherId);
+      const result: undefined | string | Blob | MediaSource =
+        await getUserAvatarQuery(otherId);
+      if (result !== "error") return result;
+      else
+        return "https://img.myloview.fr/stickers/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg";
     };
 
     const fetchData = async () => {
@@ -56,9 +60,9 @@ export default function DisplayUserFriends(props: any) {
             );
             if (found) newRow.userModel.status = found.userModel.status;
           }
-          if (avatar !== undefined && avatar instanceof Blob) {
+          if (avatar !== undefined && avatar instanceof Blob)
             newRow.userModel.avatar = URL.createObjectURL(avatar);
-          }
+          else if (avatar) newRow.userModel.avatar = avatar;
           friends.push(newRow);
         }
       }
