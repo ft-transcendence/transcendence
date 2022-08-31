@@ -17,6 +17,7 @@ import { Response } from 'express';
 import { UploadService } from 'src/upload/upload.service';
 import { TwoFactorService } from './2FA/2fa.service';
 import { AppGateway } from 'src/app.gateway';
+import { ChatGateway } from 'src/chat/chat.gateway';
 
 /**
  * AUTHENTIFICATION SERVICE
@@ -29,6 +30,7 @@ export class AuthService {
 		private userService: UserService,
 		private uploadService: UploadService,
 		private appGateway: AppGateway,
+		private readonly chatGateway: ChatGateway,
 	) {}
 
 	/* SIGNUP */

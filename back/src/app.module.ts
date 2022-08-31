@@ -13,6 +13,7 @@ import { AppGateway } from './app.gateway';
 import { ChatService } from './chat/chat.service';
 import { UploadModule } from './upload/upload.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { ChatGateway } from './chat/chat.gateway';
 
 // Set the env file path
 let environmentFilePath = '.env';
@@ -50,7 +51,7 @@ console.log('Using upload dir: ' + process.env.UPLOAD_DIR);
 		JwtModule.register({ secret: process.env.JWT_SECRET }),
 		UploadModule,
 	],
-	providers: [GameService, GameGateway, UserService, AppGateway, ChatService],
+	providers: [GameService, GameGateway, UserService, AppGateway],
 	// NOT USED AS OF YET
 	// controllers: [AppController],
 })
