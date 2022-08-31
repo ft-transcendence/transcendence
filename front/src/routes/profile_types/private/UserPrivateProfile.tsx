@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Activate2FA } from "../../../modals/MActivateTwoFA";
@@ -11,11 +11,9 @@ import IconPen from "../../../ressources/icons/Icon_Pen.svg";
 import "../Profiles.css";
 import { COnUserSimple } from "../../../ContextMenus/COnUserSimple";
 import { io } from "socket.io-client";
-import { TAlert } from "../../../toasts/TAlert";
 import { NotifCxt } from "../../../App";
 
 export default function UserPrivateProfile() {
-
   const socketOptions = {
     transportOptions: {
       polling: {
@@ -30,9 +28,7 @@ export default function UserPrivateProfile() {
 
   socket.on("connect", () => {
     console.log(localStorage.getItem("userID"), "connected to socket");
-  })
-  
-  const notif = useContext(NotifCxt);
+  });
   const navigate = useNavigate();
 
   const [showUsername, setShowUsername] = useState(false);
