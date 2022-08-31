@@ -12,7 +12,9 @@ export default function LeaderBoard() {
             await getLeaderBoard();
         }
         updateLeaderBoard();
-        setData(JSON.parse(localStorage.getItem("leaderBoard")!));
+        console.log(data);
+        if (localStorage.getItem("leaderBoard") !== null)
+            setData(JSON.parse(localStorage.getItem("leaderBoard")!));
     }, [])
 
     return (
@@ -22,28 +24,38 @@ export default function LeaderBoard() {
                 <b>B<span>oa</span>r<span>d</span></b>
             </div>
             <div className="block"/>
-            <div className="leaderboard">
-                <div className="list">
-                    {
-                        data?.map((one:any, index) => {
-                            return( 
-                            <div key={index}>
-                                <OneRow
-                                    index={index + 1}
-                                    id={one.id}
-                                    rank={one.rank}
-                                    winRate={(one.winRate).toFixed(2)}
-                                    username={one.username}
-                                    gamesWon={one.gamesWon}
-                                    gamesLost={one.gamesLost}
-                                    gamesPlayed={one.gamesPlayed}
-                                    head={false}
-                                />
-                            </div>
-                        )})
-                    }
+            {
+                data == null || data.length === 0 ?
+                <div className="leardboard-logo" style={{marginTop: "160px", height: "60px"}}>
+                    <b style={{font: "500 65px \"Clip\""}}><span>N</span>o  </b>
+                    <b style={{font: "500 65px \"Clip\""}}>G<span>am</span><span>e</span>  </b>
+                    <b style={{font: "500 65px \"Clip\""}}>Re<span>co</span>r<span>d</span>     </b>
+                    <b style={{font: "500 65px \"Clip\""}}><span>Y</span>e<span>t</span></b>
                 </div>
-            </div>
+                :
+                <div className="leaderboard">
+                    <div className="list">
+                        {
+                            data?.map((one:any, index) => {
+                                return( 
+                                <div key={index}>
+                                    <OneRow
+                                        index={index + 1}
+                                        id={one.id}
+                                        rank={one.rank}
+                                        winRate={(one.winRate).toFixed(2)}
+                                        username={one.username}
+                                        gamesWon={one.gamesWon}
+                                        gamesLost={one.gamesLost}
+                                        gamesPlayed={one.gamesPlayed}
+                                        head={false}
+                                    />
+                                </div>
+                            )})
+                        }
+                    </div>
+                </div>
+            }
         </div>
     )
 }
