@@ -10,10 +10,8 @@ import { ChatModule } from './chat/chat.module';
 import { JwtModule } from '@nestjs/jwt';
 import { UserService } from './user/user.service';
 import { AppGateway } from './app.gateway';
-import { ChatService } from './chat/chat.service';
 import { UploadModule } from './upload/upload.module';
 import { MulterModule } from '@nestjs/platform-express';
-import { ChatGateway } from './chat/chat.gateway';
 
 // Set the env file path
 let environmentFilePath = '.env';

@@ -33,19 +33,16 @@ export class ChatGateway {
 		private userService: UserService,
 	) {}
 
-	async handleFetchChannel(email: string, @ConnectedSocket() client: Socket) {
-		const channels = await this.chatservice.get__channelsToJoin(email);
+	async handleJoinSocket(id: number, @ConnectedSocket() client: Socket) {
+		const channels = await this.chatservice.get__channelsUserIn(id);
+		client.join('default_all');
 		if (channels)
 			for (let index = 0; index < channels.length; index++)
 				client.join(channels[index]);
 	}
 
 	@SubscribeMessage('read preview')
-	async handleReadPreview(
-		@MessageBody() email: string,
-		@ConnectedSocket() client: Socket,
-	) {
-		await this.handleFetchChannel(email, client);
+	async handleReadPreview(@MessageBody() email: string) {
 		const data = await this.chatservice.get__previews(email);
 		return data;
 	}
@@ -240,6 +237,11 @@ export class ChatGateway {
 	async broadcast(event: string, message: oneMessage, channelId: number) {
 		const cName = await this.chatservice.get__Cname__ByCId(channelId);
 		this.server.in(cName).emit(event, message);
+	}
+
+	async updateChannelRequest(event: string, cName: string) {
+		console.log('update request');
+		this.server.in(cName).emit(event);
 	}
 
 	async get__role(

@@ -52,6 +52,10 @@ export class AuthService {
 
 			//sending status update to the front
 			this.appGateway.onlineFromService(user.id);
+			this.chatGateway.updateChannelRequest(
+				'update channel request',
+				'default_all',
+			);
 
 			return tokens;
 		} catch (error) {
