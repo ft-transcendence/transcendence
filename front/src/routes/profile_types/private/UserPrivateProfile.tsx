@@ -11,7 +11,6 @@ import IconPen from "../../../ressources/icons/Icon_Pen.svg";
 import "../Profiles.css";
 import { COnUserSimple } from "../../../ContextMenus/COnUserSimple";
 import { io } from "socket.io-client";
-import { NotifCxt } from "../../../App";
 
 export default function UserPrivateProfile() {
   const socketOptions = {
