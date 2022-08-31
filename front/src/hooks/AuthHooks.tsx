@@ -3,7 +3,6 @@ import { useLocation, Navigate } from "react-router-dom";
 import { NotifCxt } from "../App";
 import { AuthContext, useAuth } from "../globals/contexts";
 import { logOut } from "../queries/authQueries";
-import { TAlert } from "../toasts/TAlert";
 
 export const RequireAuth = ({ children }: { children: JSX.Element }) => {
   let auth = useAuth();

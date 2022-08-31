@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
+import { NotifCxt } from "../App";
 import { twoFAGenerate, twoFAOn } from "../queries/twoFAQueries";
 
 export function Activate2FA(props: any) {
+  const notif = useContext(NotifCxt);
   const [image, setImage] = useState<string>("");
   const [FACodeModal, setCodeModal] = useState("");
 
@@ -30,16 +32,16 @@ export function Activate2FA(props: any) {
     const twoFAActivate = async () => {
       const result = await twoFAOn(FACodeModal);
       if (!result) {
-        props.setNotifText("Wrong code. Please try again.");
-        props.setShowNotif(true);
+        notif?.setNotifText("Wrong code. Please try again.");
+        notif?.setNotifShow(true);
       } else {
         props.onHide();
         props.onSubmit();
         localStorage.setItem("userAuth", "true");
-        props.setNotifText(
+        notif?.setNotifText(
           "TwoFA activated. A code will be asked on each login."
         );
-        props.setShowNotif(true);
+        notif?.setNotifShow(true);
       }
     };
     twoFAActivate();

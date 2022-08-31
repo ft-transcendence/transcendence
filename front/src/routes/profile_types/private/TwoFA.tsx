@@ -1,17 +1,21 @@
+import { useContext } from "react";
 import { Row, Col } from "react-bootstrap";
+import { NotifCxt } from "../../../App";
 import { twoFAOff } from "../../../queries/twoFAQueries";
 
 export const TwoFA = (props: any) => {
+  const notif = useContext(NotifCxt);
+
   const handleTurnOff = (e: any) => {
     e.preventDefault();
     const twoFADeactivate = async () => {
       const result = await twoFAOff();
       if (!result) {
-        props.setNotifText("Cannot deactivate 2FA. Please try again.");
-        props.setShowNotif(true);
+        notif?.setNotifText("Cannot deactivate 2FA. Please try again.");
+        notif?.setNotifShow(true);
       } else {
-        props.setNotifText("2FA successfully deactivated.");
-        props.setShowNotif(true);
+        notif?.setNotifText("2FA successfully deactivated.");
+        notif?.setNotifShow(true);
         props.onDeactivate();
         localStorage.setItem("userAuth", "false");
       }

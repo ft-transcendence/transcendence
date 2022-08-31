@@ -9,7 +9,6 @@ import DisplayUserFriends from "./DisplayUserFriends";
 import { COnUser } from "../../../ContextMenus/COnUser";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
 import { NotifCxt, UsersStatusCxt } from "../../../App";
-import { TAlert } from "../../../toasts/TAlert";
 import { addFriendQuery } from "../../../queries/userFriendsQueries";
 import "./UserPublicProfile.css";
 
@@ -51,8 +50,6 @@ export default function UserProfile() {
   const [avatarURL, setAvatarURL] = useState("");
   const [isUser, setIsUser] = useState(true);
   const [status, setStatus] = useState(0);
-  const [showNotif, setShowNotif] = useState(false);
-  const [text, setText] = useState("");
 
   useEffect(() => {
     const getAvatar = async () => {
@@ -122,8 +119,7 @@ export default function UserProfile() {
           className="p-5"
           style={{ display: "flex", justifyContent: "center" }}
         >
-          <COnUser setText={setText} setShowNotif={setShowNotif} />
-          <TAlert show={showNotif} setShow={setShowNotif} text={text} />
+          <COnUser />
           <div className="public-left">
             <Container className="p-5">
               <Row className="wrapper public-profile-header">

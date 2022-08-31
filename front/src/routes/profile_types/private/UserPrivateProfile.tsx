@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Activate2FA } from "../../../modals/MActivateTwoFA";
@@ -12,6 +12,7 @@ import "../Profiles.css";
 import { COnUserSimple } from "../../../ContextMenus/COnUserSimple";
 import { io } from "socket.io-client";
 import { TAlert } from "../../../toasts/TAlert";
+import { NotifCxt } from "../../../App";
 
 export default function UserPrivateProfile() {
 
@@ -31,6 +32,7 @@ export default function UserPrivateProfile() {
     console.log(localStorage.getItem("userID"), "connected to socket");
   })
   
+  const notif = useContext(NotifCxt);
   const navigate = useNavigate();
 
   const [showUsername, setShowUsername] = useState(false);
@@ -41,8 +43,6 @@ export default function UserPrivateProfile() {
 
   const [showFriends, setShowFriends] = useState(true);
   const onClickShowFriends = () => setShowFriends((curent) => !curent);
-  const [showNotif, setShowNotif] = useState(false);
-  const [notifText, setNotifText] = useState("Error");
 
   const userInfoInit = {
     email: localStorage.getItem("userEmail"),
@@ -80,20 +80,15 @@ export default function UserPrivateProfile() {
 
   return (
     <main>
-      <TAlert show={showNotif} setShow={setShowNotif} text={notifText} />
       <MUploadAvatar
         show={modalShow}
         onHide={() => setModalShow(false)}
         isAvatarUpdated={() => setAvatarFetched(!avatarFetched)}
-        setShowNotif={setShowNotif}
-        setNotifText={setNotifText}
       />
       <Activate2FA
         show={modalShowAuth}
         onSubmit={() => setAuthStatus("true")}
         onHide={() => setModalShowAuth(false)}
-        setShowNotif={setShowNotif}
-        setNotifText={setNotifText}
       />
       <COnUserSimple />
       <h1 className="app-title">My account</h1>
@@ -191,8 +186,6 @@ export default function UserPrivateProfile() {
                   auth={authStatus}
                   onClick={() => setModalShowAuth(true)}
                   onDeactivate={() => setAuthStatus("false")}
-                  setShowNotif={setShowNotif}
-                  setNotifText={setNotifText}
                 />
               </Card.Body>
             </Card>

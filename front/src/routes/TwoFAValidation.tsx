@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
+import { NotifCxt } from "../App";
 import { useAuth } from "../globals/contexts";
 import { twoFAAuth } from "../queries/twoFAQueries";
-import { TAlert } from "../toasts/TAlert";
 
 export default function TwoFAValidation() {
+  const notif = useContext(NotifCxt);
   let location = useLocation();
   let navigate = useNavigate();
   let auth = useAuth();
   let username = localStorage.getItem("userName");
-
-  const [showNotif, setShowNotif] = useState(false);
-  const [notifText, setNotifText] = useState("Error");
 
   const [twoFACode, setCode] = useState("");
 
@@ -44,8 +42,8 @@ export default function TwoFAValidation() {
       const twoFAValid = async (username: string) => {
         const result = await twoFAAuth(twoFACode, username, userSignIn);
         if (!result) {
-          setShowNotif(true);
-          setNotifText("Incorrect code. Please try again.");
+          notif?.setNotifShow(true);
+          notif?.setNotifText("Incorrect code. Please try again.");
         }
       };
       twoFAValid(username);
@@ -54,7 +52,6 @@ export default function TwoFAValidation() {
 
   return (
     <div className="p-5">
-      <TAlert show={showNotif} setShow={setShowNotif} text={notifText} />
       <div className="Auth-form-container">
         <form className="Auth-form" onSubmit={handleSubmit}>
           <div className="Auth-form-content">

@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { NotifCxt } from "../App";
 import { uploadAvatarQuery } from "../queries/avatarQueries";
 
 export function MUploadAvatar(props: any) {
+  const notif = useContext(NotifCxt);
   const [newAvatar, setNewAvatar] = useState<any>();
 
   const onChange = (e: any) => {
@@ -17,10 +19,10 @@ export function MUploadAvatar(props: any) {
           props.isAvatarUpdated();
           props.onHide();
         } else {
-          props.setNotifText(
+          notif?.setNotifText(
             "Unable to upload avatar. Please try again later."
           );
-          props.setShowNotif(true);
+          notif?.setNotifShow(true);
         }
       };
       uploadAvatar();
