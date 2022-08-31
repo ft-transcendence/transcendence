@@ -9,7 +9,6 @@ import { GUserInputsRefs } from "../../globals/variables";
 import { useAuth } from "../../globals/contexts";
 import { getLeaderBoard, getUserData } from "../../queries/userQueries";
 import { TAlert } from "../../toasts/TAlert";
-import { getUserData } from "../../queries/userQueries";
 import "./Auth.css";
 
 export default function Auth() {

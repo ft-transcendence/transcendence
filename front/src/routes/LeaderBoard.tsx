@@ -32,7 +32,7 @@ export default function LeaderBoard() {
                                     index={index + 1}
                                     id={one.id}
                                     rank={one.rank}
-                                    winRate={one.winRate}
+                                    winRate={(one.winRate).toFixed(2)}
                                     username={one.username}
                                     gamesWon={one.gamesWon}
                                     gamesLost={one.gamesLost}
