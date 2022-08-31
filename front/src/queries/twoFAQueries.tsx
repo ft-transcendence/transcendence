@@ -41,7 +41,7 @@ const authRawHeader = () => {
 };
 
 const fetchPost = async (body: any, url: string, userSignIn: any) => {
-  let fetchUrl = "http://localhost:4000/auth/2fa/" + url;
+  let fetchUrl = process.env.REACT_APP_BACKEND_URL + "/auth/2fa/" + url;
 
   try {
     const response = await fetch(fetchUrl, {

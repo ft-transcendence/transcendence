@@ -276,6 +276,7 @@ export default class SoloGame extends React.Component < PropsSoloPong, StateSolo
       // game windows is 16/9 format - so 1.77, ball radius is 1vh
   
       // ball collision with floor or ceilling
+<<<<<<< HEAD
       if (
         this.yBall >= 98 ||
         this.yBall <= 2
@@ -283,6 +284,17 @@ export default class SoloGame extends React.Component < PropsSoloPong, StateSolo
         this.speedY *= -1;
   
         
+=======
+      if (this.yBall > 98) {
+        this.yBall = 98;
+        this.speedY *= -1;
+      }
+      if (this.yBall < 2) {
+        this.yBall = 2;
+        this.speedY *= -1;
+      }
+             
+>>>>>>> main
       // ball collision with left paddle (paddle position is 3% from the border, paddle height is 10% of the game windows)
       // ball radius is 1vh
       if (

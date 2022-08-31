@@ -44,12 +44,15 @@ export interface StatePong {
   avatarP1URL: string,
   avatarP2URL: string,
   soloGame: boolean,
+<<<<<<< HEAD
 }
 
 export interface PropsPong {
   pvtGame?: boolean,
   roomId?: number,
   playerNumber?: number,
+=======
+>>>>>>> main
 }
 
 export interface Button {

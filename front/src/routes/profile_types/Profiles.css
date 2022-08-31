@@ -1,0 +1,174 @@
+/* PRIVATE PROFILE */
+
+.app-title {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 20px;
+  letter-spacing: -0.4px;
+  color: var(--text-color-white);
+}
+
+.profile-username-text {
+  font-weight: 500;
+  font-size: 25px;
+  line-height: 20px;
+  color: var(--text-color-white);
+}
+
+.caption {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  padding-top: 5px;
+  font-size: 12px;
+}
+.caption:hover {
+  text-decoration: underline;
+  color: var(--buttons-color-blue);
+}
+
+/* PRIVATE PROFILE / CARDS */
+
+.profile-card {
+  background: #31353c;
+  box-shadow: -10px -5px 30px 5px #34373c, 10px 5px 30px 5px #24282d;
+  border-radius: 10px;
+}
+
+.modify-card {
+  background: #2e3238;
+  box-shadow: inset 5px 4px 30px #23262b, inset -4px -5px 30px #434851;
+  border-radius: 10px;
+  max-height: 80%;
+}
+
+/* PRIVATE PROFILE / AVATAR */
+
+.profile-pic-round {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  background: var(--buttons-color-gray-disabled);
+  box-shadow: 7px 7px 30px #1f2427, -7px -7px 30px #485057;
+}
+
+.profile-pic-inside {
+  height: 98%;
+  width: 98%;
+  border-radius: 50%;
+}
+
+.edit-round-icon {
+  padding: 3%;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--buttons-color-blue);
+  transition: 0.3s ease;
+  outline: none;
+  outline-color: #556fe8;
+}
+
+.edit-round-icon:hover.edit-round-icon:active.edit-round-icon:focus {
+  outline-style: solid;
+  outline-width: 1px;
+  outline-offset: -1px;
+  outline-color: #3c58dd;
+  background-color: var(--buttons-color-blue-selected);
+  box-shadow: inset 2px 5px 10px rgba(15, 21, 49, 0.25),
+    inset -2px -5px 10px #556fe8;
+}
+
+/* PRIVATE PROFILE / FRIENDS LIST */
+
+.profile-pic-round-sm {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-pic-wrapper {
+  height: 3.1em;
+  width: 3.1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.profile-pic-wrapper.ingame {
+  outline: 0.125em solid;
+  outline-color: var(--buttons-color-blue);
+}
+
+.profile-pic-inside-sm {
+  height: 90%;
+  width: 90%;
+  border-radius: 50%;
+}
+
+.status-private {
+  position: absolute;
+  left: 3em;
+  top: calc(3em - 0.8em + 0.125em);
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: 50%;
+  transition: 0.5s ease;
+}
+
+.status-private.online {
+  background: var(--basic-color-green);
+}
+
+.status-private.offline {
+  background: var(--basic-color-red);
+}
+
+.status-private.ingame {
+  background: var(--basic-color-green);
+}
+
+/* //////////////////////////////////////////////////// */
+
+/* GAMES LIST */
+
+.profile-pic-wrapper-sm {
+  height: 2.1em;
+  width: 2.1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.profile-pic-wrapper-sm.ingame {
+  outline: 0.125em solid;
+  outline-color: var(--buttons-color-blue);
+}
+
+.status-private-sm {
+  position: absolute;
+  left: calc(2em + 0.25em);
+  top: calc(2em - 0.25em);
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+}
+
+.status-private-sm.online {
+  background: var(--basic-color-green);
+}
+
+.status-private-sm.offline {
+  background: var(--basic-color-red);
+}
+
+.status-private-sm.ingame {
+  background: var(--basic-color-green);
+}

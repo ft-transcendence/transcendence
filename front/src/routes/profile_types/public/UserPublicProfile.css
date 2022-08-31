@@ -1,0 +1,246 @@
+:root {
+  --padding-sides: 30px;
+  --padding-tops: 20px;
+  /* Text */
+  --text-color-white: #dadada;
+  --text-color-blue: #b9c5ff;
+  --text-color-gray: #31353c;
+}
+
+.public-profile-header {
+  border-radius: calc((100px + (2 * var(--padding-tops)) / 2));
+  padding: var(--padding-tops);
+  padding-left: var(--padding-sides);
+  padding-right: var(--padding-sides);
+
+  /* cards/blue */
+  background: #4361ee;
+  box-shadow: inset 5px 10px 10px rgba(15, 21, 49, 0.25),
+    inset -5px -10px 10px #667ce7;
+}
+
+.public-profile-round {
+  height: 10vh;
+  width: 10vh;
+  border-radius: 50%;
+
+  background: #5d76ec;
+  box-shadow: 4px 8px 15px rgba(18, 20, 26, 0.3), -4px -8px 15px #78a5e9;
+}
+
+.public-username-text {
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  font-size: 1.2em;
+
+  letter-spacing: -0.05em;
+  color: var(--text-color-white);
+}
+
+.public-rank-text {
+  font-family: "Roboto", sans-serif;
+  font-style: light;
+  font-weight: 300;
+  font-size: 0.8em;
+  letter-spacing: -0.05em;
+  color: #dadada;
+}
+
+.buttons-round-big-disabled {
+  width: 3vw;
+  /* min-width: 45px; */
+  height: 3vw;
+  /* min-height: 45px; */
+  border-radius: 50%;
+  background: #506df3;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.5s ease;
+}
+
+.buttons-round-big-disabled .big-icons {
+  color: #f2f2f2;
+  opacity: 0.25;
+}
+
+.buttons-round-big {
+  width: 3vw;
+  /* min-width: 45px; */
+  height: 3vw;
+  /* min-height: 45px; */
+  border-radius: 50%;
+  background: #5d76ec;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 5px 10px 20px 2px rgba(18, 20, 26, 0.3), -5px -10px 20px #78a5e9;
+  transition: 0.5s ease;
+}
+
+.buttons-round-big:hover {
+  background: #3c58dd;
+  box-shadow: inset 2px 5px 10px rgba(15, 21, 49, 0.25),
+    inset -2px -5px 10px #556fe8;
+}
+
+.buttons-round-big:hover .big-icons {
+  color: #fee440;
+}
+
+.buttons-round-big + .buttons-round-big {
+  margin-right: 1vw;
+}
+.buttons-round-big + .buttons-round-big-disabled {
+  margin-right: 1vw;
+}
+.buttons-round-big-disabled + .buttons-round-big {
+  margin-right: 1vw;
+}
+.buttons-round-big-disabled + .buttons-round-big-disabled {
+  margin-right: 1vw;
+}
+
+.buttons-round-sm-disabled {
+  width: 1vw;
+  min-width: 30px;
+  height: 1vw;
+  min-height: 30px;
+  border-radius: 50%;
+  background: #3b4048;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttons-round-sm-disabled .big-icons {
+  color: #f2f2f2;
+  opacity: 0.25;
+}
+
+.buttons-round-sm {
+  width: 1vw;
+  min-width: 30px;
+  height: 1vw;
+  min-height: 30px;
+  border-radius: 50%;
+
+  background: #f72585;
+
+  box-shadow: 0.1px 10px 20px 2px rgba(18, 20, 26, 0.3), -5px -10px 20px #484d56;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.5s ease;
+}
+
+.buttons-round-sm:hover {
+  background: #5d76ec;
+  box-shadow: inset 1px 3px 5px rgba(6, 13, 48, 0.25),
+    inset -1px -3px 5px #768cf2;
+}
+
+.buttons-round-sm:hover .sm-icons {
+  color: #fee440;
+}
+
+.buttons-round-sm + .buttons-round-sm {
+  margin-right: 2vw;
+}
+
+.buttons-round-sm + .buttons-round-sm-disabled {
+  margin-right: 2vw;
+}
+.buttons-round-sm-disabled + .buttons-round-sm {
+  margin-right: 2vw;
+}
+.buttons-round-sm-disabled + .buttons-round-sm-disabled {
+  margin-right: 2vw;
+}
+
+.sm-icons {
+  font-size: 1vh;
+}
+
+.big-icons {
+  font-size: 1.2vh;
+}
+
+.text-huge {
+  font-size: 4em;
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  background: linear-gradient(180deg, #50caff -11.53%, #4361ee 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.main-card {
+  max-height: 45vh;
+  overflow-x: auto;
+
+  background: #31353c;
+  box-shadow: inset 10px 10px 10px rgba(0, 0, 0, 0.25),
+    inset -10px -10px 10px #30343a;
+  border-radius: 10px;
+}
+
+.public-card {
+  min-width: 400px;
+}
+
+.public-card-friends {
+  min-width: 250px;
+}
+
+.text-title-games {
+  margin-top: 1em;
+  font-family: "Raleway", sans-serif;
+  font-weight: 500;
+  font-size: 0.7em;
+
+  color: #dadada;
+}
+.text-games {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 0.8rem;
+  letter-spacing: -0.03em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+
+  color: #dadada;
+}
+
+.text-games + .text-games {
+  margin-top: 1rem;
+}
+
+.public-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.public-left {
+  width: 50vw;
+  max-width: 700px;
+  margin-right: 1vw;
+}
+
+.public-right {
+  width: 40vw;
+  max-width: 500px;
+}
+
+.public-hover {
+}
+.public-hover:hover {
+  text-decoration: underline;
+}

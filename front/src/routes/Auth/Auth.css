@@ -1,0 +1,91 @@
+/* AUTHENTICATION */
+
+.Auth-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.Auth-form-content {
+  padding-left: 12%;
+  padding-right: 12%;
+}
+
+.Auth-form {
+  justify-content: left;
+  align-items: left;
+  padding-top: 30px;
+  padding-bottom: 50px;
+  box-sizing: border-box;
+
+  width: 30%;
+  min-width: 400px;
+  max-width: 400px;
+
+  background: var(--cards-color-gray-up);
+  box-shadow: inset 5px 4px 30px #23262b, inset -4px -5px 30px #434851;
+  border-radius: 10px;
+}
+
+.form-test {
+  font-family: "IBM Plex Mono", monospace;
+  color: var(--text-color-white);
+  letter-spacing: +2px;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.form-control {
+  font-family: "IBM Plex Mono", monospace;
+  color: var(--text-color-gray);
+  background: #ecf0f3;
+  box-shadow: inset 4px 4px 5px #c3c3c3, inset -6px -4px 5px #ffffff;
+  border-radius: 17.5px;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.form-help-block {
+  padding-top: 5px;
+  padding-bottom: 10px;
+  display: flex;
+  align-items: flex-end;
+  font-family: "Roboto" sans-serif;
+  font-style: normal;
+  font-weight: 200;
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+.Auth-form-title {
+  font-family: "Roboto" sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 20px;
+
+  letter-spacing: -0.4px;
+  color: var(--text-color-white);
+}
+
+.text-secondary {
+  padding-top: 16px;
+  padding-bottom: 36px;
+  display: flex;
+  align-items: flex-end;
+  font-family: "Roboto" sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+
+  letter-spacing: -0.4px;
+  color: var(--text-color-white);
+  opacity: 0.8;
+}
+
+/* ////////////////////////////////////////////// */

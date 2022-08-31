@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { Client } from './interfaces/client.interface';
 import { User } from '.prisma/client';
+import { AppGateway } from 'src/app.gateway';
 
 @WebSocketGateway({
 	cors: {
@@ -24,6 +25,7 @@ export class GameGateway {
 		private gameService: GameService,
 		private readonly jwtService: JwtService,
 		private userService: UserService,
+		private appGateway: AppGateway,
 	) {}
 
 	@WebSocketServer()
@@ -91,6 +93,9 @@ export class GameGateway {
 		}
 
 		player.roomId = GameService.rooms[GameService.rooms.length - 1].id;
+
+		//sending status update to the front
+		this.appGateway.inGameFromService(user.id);
 
 		return player; // send data to client
 	}

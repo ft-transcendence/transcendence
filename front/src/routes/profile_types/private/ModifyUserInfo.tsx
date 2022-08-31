@@ -3,8 +3,8 @@ import { Col, Card, Row, Button, Form } from "react-bootstrap";
 import {
   updateUsernameQuery,
   updateEmailQuery,
-} from "../../queries/updateUserQueries";
-import { TAlert } from "../../toasts/TAlert";
+} from "../../../queries/updateUserQueries";
+import { TAlert } from "../../../toasts/TAlert";
 
 export const ModifyEntry = (props: any) => {
   const initialValues = {
@@ -83,25 +83,22 @@ export const ModifyEntry = (props: any) => {
                   <Col>
                     <button
                       type="button"
-                      className="btn btn-outline-primary btn-sm float-end"
+                      className="btn btn-sm submit-button float-end"
                       onClick={props.onClick}
                     >
                       Cancel
                     </button>
                   </Col>
                   <Col>
-                    <Button
+                    <button
                       id="handleChange"
-                      variant="primary"
-                      type="submit"
-                      className="submit-button float-end"
-                      size="sm"
+                      className="btn btn-sm submit-button float-end"
                       onClick={(e: any) => {
                         handleSubmit(e);
                       }}
                     >
                       Done
-                    </Button>
+                    </button>
                   </Col>
                 </Row>
               </div>

@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import { Container, Row, Col, Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { Activate2FA } from "../../../modals/MActivateTwoFA";
+import { MUploadAvatar } from "../../../modals/MUploadAvatar";
+import { getAvatarQuery } from "../../../queries/avatarQueries";
 import { ModifyEntry } from "./ModifyUserInfo";
-import IconPen from "../../ressources/icons/Icon_Pen.svg";
-import { MUploadAvatar } from "../../modals/MUploadAvatar";
-import { Activate2FA } from "../../modals/MActivateTwoFA";
-import { UsersRelations } from "./users_relations/UsersRelations";
 import { TwoFA } from "./TwoFA";
-import { getAvatarQuery } from "../../queries/avatarQueries";
+import { UsersRelations } from "./users_relations/UsersRelations";
+import IconPen from "../../../ressources/icons/Icon_Pen.svg";
+import "../Profiles.css";
+import { COnUserSimple } from "../../../ContextMenus/COnUserSimple";
 
 export default function UserPrivateProfile() {
+  const navigate = useNavigate();
+
   const [showUsername, setShowUsername] = useState(false);
   const onClickEditUsername = () => setShowUsername((curent) => !curent);
 
@@ -62,7 +67,7 @@ export default function UserPrivateProfile() {
         onSubmit={() => setAuthStatus("true")}
         onHide={() => setModalShowAuth(false)}
       />
-
+      <COnUserSimple />
       <h1 className="app-title">My account</h1>
       <Container className="p-5 h-100">
         <Row className="wrapper">
@@ -75,7 +80,6 @@ export default function UserPrivateProfile() {
                 backgroundPosition: "center",
               }}
             >
-              {/* <img src={avatarURL} alt="avatar"></img> */}
               <input
                 type="image"
                 alt="avatar of user"
@@ -87,11 +91,18 @@ export default function UserPrivateProfile() {
           </div>
           <Col className=" content">
             <div className="profile-username-text">@{userInfo.userName}</div>
-            <div className="caption"> See Public Profile</div>
+            <span
+              id="clickableIcon"
+              className="caption"
+              onClick={() =>
+                navigate("/app/public/" + localStorage.getItem("userID"))
+              }
+            >
+              See Public Profile
+            </span>
           </Col>
         </Row>
       </Container>
-
       <Container className="p-5">
         <Row className="flex">
           <Col className="col-6">
@@ -101,8 +112,7 @@ export default function UserPrivateProfile() {
                   <Row className="wrapper p-3">
                     <Col className="text-wrapper">
                       <div className="IBM-text" style={{ fontSize: "20px" }}>
-                        {" "}
-                        USERNAME{" "}
+                        USERNAME
                       </div>
                       <div className="ROBOTO-text" style={{ fontSize: "15px" }}>
                         {userInfo.userName}
@@ -111,8 +121,9 @@ export default function UserPrivateProfile() {
                     <Col className=" text-right">
                       <button
                         type="button"
-                        className="btn btn-secondary btn-sm submit-button float-end"
-                        onClick={() => {
+                        className="btn btn-sm submit-button float-end"
+                        onClick={(e: any) => {
+                          e.preventDefault();
                           setShowUsername(true);
                           setShowFriends(false);
                           setShowEmail(false);
@@ -127,8 +138,7 @@ export default function UserPrivateProfile() {
                   <Row className="wrapper p-3">
                     <Col className="text-wrapper">
                       <div className="IBM-text" style={{ fontSize: "20px" }}>
-                        {" "}
-                        EMAIL{" "}
+                        EMAIL
                       </div>
                       <div className="ROBOTO-text" style={{ fontSize: "15px" }}>
                         {userInfo.email}
@@ -137,7 +147,7 @@ export default function UserPrivateProfile() {
                     <Col className=" text-right">
                       <button
                         type="button"
-                        className="btn btn-secondary btn-sm submit-button float-end"
+                        className="btn btn-sm submit-button float-end"
                         onClick={() => {
                           setShowEmail(true);
                           setShowFriends(false);
@@ -147,21 +157,6 @@ export default function UserPrivateProfile() {
                         Edit
                       </button>
                     </Col>
-                  </Row>
-                </div>
-                <div>
-                  <Row className="wrapper p-3">
-                    <button
-                      type="button"
-                      className="col-5 btn btn-outline-primary btn-sm"
-                      onClick={() => {
-                        setShowEmail(false);
-                        setShowFriends(false);
-                        setShowUsername(false);
-                      }}
-                    >
-                      Change Password
-                    </button>
                   </Row>
                 </div>
                 <TwoFA
