@@ -42,8 +42,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   }
 
   // eslint-disable-next-line unicorn/prevent-abbreviations, @typescript-eslint/no-unused-vars
-  handleConnection(client: Socket, ...args: any[]) {
+  async handleConnection(client: Socket, ...args: any[]) {
     try { 
+      client.setMaxListeners(20);
       const UserId: number = this.jwtService.verify(String(client.handshake.headers.token), {secret: process.env.JWT_SECRET}).sub;
       const user = this.userService.getUser(UserId);
       client.data.id = UserId;
@@ -54,8 +55,9 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
       this.userStatusMap.set(client.data.id, Status.online);
       const serializedMap = [...this.userStatusMap.entries()];
       this.server.emit('update-status', serializedMap);
-      //add to chat clientSocket
-      this.set__clientSocket(client.data.id, client);
+      //add to clientSocket
+      this.set__clientSocket(UserId, client);
+      await this.chatGateway.handleJoinSocket(UserId, client);
     }  
     // eslint-disable-next-line unicorn/prefer-optional-catch-binding, unicorn/catch-error-name, unicorn/prevent-abbreviations
     catch(e)
@@ -65,7 +67,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   }
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  handleDisconnect(client: Socket){
+  async handleDisconnect(client: Socket){
 
     if (client.data.id !== undefined) {
       this.userStatusMap.set(client.data.id, Status.offline)
@@ -78,6 +80,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
       GameService.rooms.find((room) => room.player1 === client).player1Disconnected = true;
     if (GameService.rooms.some((room) => room.player2 === client))
     GameService.rooms.find((room) => room.player2 === client).player2Disconnected = true;
+    client.removeAllListeners();
   }
 
 	set__clientSocket(id: number, client: Socket) {
