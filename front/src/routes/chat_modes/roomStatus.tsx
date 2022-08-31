@@ -222,7 +222,7 @@ function Status({users, current, role}
         let update: mute = {
             duration: mins,
             email: global.selectedUser.email,
-            chanelId: current!.id
+            channelId: current!.id
         }
         socket.emit("mute user", update);
     }

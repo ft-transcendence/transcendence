@@ -348,18 +348,7 @@ export class ChatGateway {
 		client.emit('fetch msgs', fetch);
 		const preview = await this.chatservice.get__previews(data.email);
 		client.emit('update preview', preview);
-	}
-
-	@SubscribeMessage('edit msg')
-	async handleEditMsg(
-		@MessageBody() data: UseMessageDto,
-		@ConnectedSocket() client: Socket,
-	) {
-		await this.chatservice.edit__msg(data);
-		const fetch = await this.chatservice.fetch__msgs(data.channelId);
-		client.emit('fetch msgs', fetch);
-		const preview = await this.chatservice.get__previews(data.email);
-		client.emit('update preview', preview);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('be admin')

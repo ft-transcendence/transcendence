@@ -687,6 +687,7 @@ export class ChatService {
 					const element: oneMessage = {
 						msgId: source.messages[index].id,
 						id: source.messages[index].owner.id,
+						channelId: source.messages[index].channelId,
 						email: source.messages[index].owner.email,
 						username: source.messages[index].owner.username,
 						msg: source.messages[index].msg,
@@ -846,6 +847,7 @@ export class ChatService {
 				const element: oneMessage = {
 					msgId: source.id,
 					id: source.owner.id,
+					channelId: source.channelId,
 					email: source.owner.email,
 					username: source.owner.username,
 					msg: source.msg,
@@ -1523,7 +1525,7 @@ export class ChatService {
 						.add(data.duration, 'minute')
 						.toISOString(),
 					userId: id,
-					cid: data.chanelId,
+					cid: data.channelId,
 				},
 			});
 		} catch (error) {
