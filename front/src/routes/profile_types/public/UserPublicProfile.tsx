@@ -72,7 +72,6 @@ export default function UserProfile() {
       if (!isFetched && params.userName !== undefined) {
         result = await getOtherUser(+params.userName);
         if (result !== "error") {
-          console.log("result: ", result);
           initializeUser(result, setUserInfo);
           setIsFetched(true);
         } else setIsUser(false);

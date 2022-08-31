@@ -159,7 +159,7 @@ export class UserService {
 			const dtoUser = plainToClass(UserDto, user);
 			return dtoUser;
 		} catch (error) {
-			// throw new ForbiddenException('getUser error : ' + error);
+			throw new ForbiddenException('getUser error : ' + error);
 		}
 	}
 
