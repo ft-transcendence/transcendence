@@ -113,26 +113,29 @@ export default class Watch extends React.Component < {}, StatePong > {
             }
           }
         },
-        path: '/api/pong',
+        path: '/sockets',
      };
     
-    socketURL = '/gamespace';
+    socketURL = '/';
     
     socket = io(this.socketURL, this.socketOptions);
 
-    // socket.on("connect_error", (err) => {
-    //     console.log(`connect_error due to ${err.message}`);
-    //   });
-
-    // socket.on("error", (err) => {
-    //   console.log(`error due to ${err.message}`);
-    // });
-
-    // socket.on("connect", () => {
-    //     console.log("connected to gamespace (watch)");
-    //   });
 
     componentDidMount() {
+
+        this.socket.on("connect_error", (err) => {
+            console.log(`connect_error due to ${err.message}`);
+          });
+
+        this.socket.on("error", (err) => {
+          console.log(`error due to ${err.message}`);
+        });
+
+        this.socket.on("connect", () => {
+            console.log("connected to gamespace (watch)");
+          });
+
+
         var t = this;
         fetch(process.env.REACT_APP_BACKEND_URL + "/watch", {
             method: "GET",
@@ -247,9 +250,9 @@ export default class Watch extends React.Component < {}, StatePong > {
             { this.state.game_list.length > 0 ? (
             <table>
                     <tbody>
-                        {this.state.game_list.map((item) => {
+                        {this.state.game_list.map((item, index) => {
                             return (
-                                <tr onClick={this.joinGame(item.gameID!)} className="Row">
+                                <tr key={index} onClick={this.joinGame(item.gameID!)} className="Row">
                                     <td><div className='LittleAvatar' style={{
                                 backgroundImage: `url("${item.avatar1URL}")`,
                                 backgroundSize: "cover",

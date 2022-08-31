@@ -163,9 +163,9 @@ export default class Game extends React.Component<{}, StatePong> {
         }
       }
     },
-    path: '/api/pong/',
+    path: '/sockets/',
  };
- socketURL = '/gamespace';
+ socketURL = '/';
 
  socket = io(this.socketURL, this.socketOptions);
 

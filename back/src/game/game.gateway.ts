@@ -22,8 +22,8 @@ import { AppGateway } from 'src/app.gateway';
 	cors: {
 		origin: process.env.FRONT_URL,
 	},
-	path: '/pong',
-	namespace: 'gamespace',
+	path: '/sockets/',
+	//namespace: 'gamespace',
 })
 export class GameGateway {
 	constructor(
@@ -131,7 +131,8 @@ export class GameGateway {
 		@ConnectedSocket() client: Client,
 	): boolean {
 		console.log(rid);
-		console.log('server is :', this.server);
+		console.log('server sockets is :', this.server.sockets);
+		//console.log(this.server.sockets);
 		if (this.server.sockets.adapter.rooms.has(String(rid))) {
 			client.join(String(rid));
 			return true;

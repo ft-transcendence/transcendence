@@ -12,8 +12,8 @@ import { Status } from './user/statuses';
   cors: {
     origin: process.env.FRONT_URL
   },
-  namespace: 'gamespace',
-  path: '/pong',
+  //namespace: 'gamespace',
+  path: '/sockets/',
 })
 
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
