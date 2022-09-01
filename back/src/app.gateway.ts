@@ -7,7 +7,7 @@ import { ChatService } from './chat/chat.service';
 import { ArgumentsHost, Catch } from '@nestjs/common';
 import { GameService } from './game/game.service';
 import { Status } from './user/statuses';
-import { gameInvitation, updateChannel } from './chat/type/chat.type';
+import { gameInvitation, updateChannel, fetchDM } from './chat/type/chat.type';
 import { ChannelDto } from './chat/dto/chat.dto';
 import { ChatGateway } from './chat/chat.gateway';
 
@@ -110,6 +110,14 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
       client.join(data.name);
       client.emit('update channel request');
     })
+  }
+
+  @SubscribeMessage('fetch new DM')
+  async newDMFetch(@MessageBody() data: fetchDM) {
+    const cName =  await this.chatService.get__Cname__ByCId(data.channelId);
+    const client = await this.get__clientSocket(data.targetId);
+    await client.join(cName);
+    client.emit('update channel request');
   }
 
   @SubscribeMessage('fetch new invite')

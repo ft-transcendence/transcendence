@@ -1,7 +1,7 @@
 import "./chatPreview.css";
 import { useEffect, useState } from "react";
 import { socket } from "../Chat";
-import { chatPreview, newDM, oneSuggestion, updateChannel } from "./type/chat.type";
+import { chatPreview, newDM, fetchDM, oneSuggestion, updateChannel } from "./type/chat.type";
 import {
     Menu,
     Item,
@@ -204,9 +204,15 @@ function ChatSearch({onSearchMyChat, onSearchPublicChat}
         {
             let dm: newDM = {
                 email: email,
-                added_id: data.data_id,
+                targetId: data.data_id,
             }
-            socket.emit("new dm", dm);
+            socket.emit("new dm", dm, (channelId: number) => {
+                let fetch: fetchDM = {
+                    channelId: channelId,
+                    targetId: data.data_id,
+                }
+                socket.emit('fetch new DM', fetch);
+            });
         }
         else if (data.catagory === "my chat")
             onSearchMyChat(data.data_id);

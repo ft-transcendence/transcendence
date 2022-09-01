@@ -30,9 +30,13 @@ export type newChannel = {
 }
 
 export type newDM = {
-
     email: string | null;
-    added_id: number;
+    targetId: number;
+}
+
+export type fetchDM = {
+    channelId: number;
+    targetId: number;
 }
 
 export type Tag = {

@@ -76,3 +76,8 @@ export type gameInvitation = {
 	gameInfo: Player;
 	targetId: number;
 };
+
+export type fetchDM = {
+	channelId: number;
+	targetId: number;
+};
