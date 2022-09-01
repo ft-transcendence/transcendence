@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+	IsEmail,
+	IsNotEmpty,
+	IsString,
+	MaxLength,
+	MinLength,
+} from 'class-validator';
 
 /**
  * DTO - Data Transfer Object
@@ -8,17 +14,20 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 export class SignUpDto {
 	@IsEmail()
 	@IsNotEmpty()
+	@MaxLength(50)
 	email: string;
 
 	@IsString()
 	@IsNotEmpty()
+	@MinLength(8)
+	@MaxLength(32)
 	password: string;
 
 	@IsString()
 	@IsNotEmpty()
+	@MaxLength(32)
 	username: string;
 }
-
 // Signin DTO
 export class SignInDto {
 	@IsString()

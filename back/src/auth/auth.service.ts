@@ -15,7 +15,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { Response } from 'express';
 import { UploadService } from 'src/upload/upload.service';
-import { TwoFactorService } from './2FA/2fa.service';
 import { AppGateway } from 'src/app.gateway';
 
 /**
@@ -47,7 +46,10 @@ export class AuthService {
 			// return a hashed user
 			const tokens = await this.signin_jwt(user.id, user.email);
 			await this.updateRefreshToken(user.id, tokens.refresh_token);
-
+			await this.uploadService.download_avatar(
+				user.id,
+				process.env.DEFAULT_AVATAR,
+			);
 			//sending status update to the front
 			this.appGateway.onlineFromService(user.id);
 
