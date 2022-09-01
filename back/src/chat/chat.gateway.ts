@@ -37,8 +37,9 @@ export class ChatGateway {
 		const channels = await this.chatservice.get__channelsUserIn(id);
 		client.join('default_all');
 		if (channels)
-			for (let index = 0; index < channels.length; index++)
-				client.join(channels[index]);
+			for (const channel of channels) {
+				client.join(channel);
+			}
 	}
 
 	@SubscribeMessage('read preview')

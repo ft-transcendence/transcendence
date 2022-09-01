@@ -61,7 +61,7 @@ export class ChatService {
 
 	async get__Cname__ByCId(cid: number) {
 		try {
-			const channel = await this.prisma.channel.findMany({
+			const channel = await this.prisma.channel.findUnique({
 				where: {
 					id: cid,
 				},
@@ -69,7 +69,7 @@ export class ChatService {
 					name: true,
 				},
 			});
-			return channel[0].name;
+			return channel.name;
 		} catch (error) {
 			console.log('get__Cname__ByCId error:', error);
 			throw new WsException(error);
@@ -83,6 +83,11 @@ export class ChatService {
 					id: id,
 				},
 				select: {
+					owner: {
+						where: {
+							dm: true,
+						},
+					},
 					admin: true,
 					member: true,
 					invited: true,
@@ -98,6 +103,11 @@ export class ChatService {
 	organize__channelToJoin(source: any) {
 		const channels = [];
 		if (source) {
+			if (source.owner)
+				for (let index = 0; index < source.owner.length; index++) {
+					const channel = source.owner[index].name;
+					channels.push(channel);
+				}
 			if (source.admin)
 				for (let index = 0; index < source.admin.length; index++) {
 					const channel = source.admin[index].name;
