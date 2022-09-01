@@ -106,8 +106,10 @@ const DisplayGamesRow = (props: any) => {
         await getUserAvatarQuery(props.game.opponentId);
       if (result_1 !== undefined && result_1 instanceof Blob) {
         setAvatarURL(URL.createObjectURL(result_1));
-      } else if (result_1 === "error: avatar")
-        console.log("Could not get avatar of ", props.game.opponentId);
+      } else if (result_1 === "error")
+        setAvatarURL(
+          "https://img.myloview.fr/stickers/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg"
+        );
     };
     getAvatar();
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -27,7 +27,6 @@ const fetchGet = async (url: string, callback: any) => {
     });
     const result_1 = await response.json();
     if (!response.ok) {
-      console.log("POST error on ", url);
       return "error";
     }
     return callback(result_1);
@@ -38,7 +37,6 @@ const fetchGet = async (url: string, callback: any) => {
 
 export const storeUserInfo = (result: any) => {
   localStorage.setItem("userID", result.id);
-  console.log("result.id", result.id);
   localStorage.setItem("userName", result.username);
   localStorage.setItem("userEmail", result.email);
   localStorage.setItem("userPicture", result.avatar);

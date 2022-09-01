@@ -8,8 +8,7 @@ import { getOtherUser } from "../../../queries/otherUserQueries";
 import DisplayUserFriends from "./DisplayUserFriends";
 import { COnUser } from "../../../ContextMenus/COnUser";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
-import { UsersStatusCxt } from "../../../App";
-import { TAlert } from "../../../toasts/TAlert";
+import { NotifCxt, UsersStatusCxt } from "../../../App";
 import { addFriendQuery } from "../../../queries/userFriendsQueries";
 import "./UserPublicProfile.css";
 
@@ -44,14 +43,13 @@ const initializeUser = (result: any, setUserInfo: any) => {
 
 export default function UserProfile() {
   const usersStatus = useContext(UsersStatusCxt);
+  const notif = useContext(NotifCxt);
   let params = useParams();
   const [userInfo, setUserInfo] = useState<userModel>(userInfoInit);
   const [isFetched, setIsFetched] = useState(false);
   const [avatarURL, setAvatarURL] = useState("");
   const [isUser, setIsUser] = useState(true);
   const [status, setStatus] = useState(0);
-  const [showNotif, setShowNotif] = useState(false);
-  const [text, setText] = useState("");
 
   useEffect(() => {
     const getAvatar = async () => {
@@ -60,8 +58,10 @@ export default function UserProfile() {
         await getUserAvatarQuery(userInfoInit.id);
       if (result_1 !== undefined && result_1 instanceof Blob) {
         setAvatarURL(URL.createObjectURL(result_1));
-      } else if (result_1 === "error: avatar")
-        console.log("Could not get avatar of ", userInfoInit.id);
+      } else if (result_1 === "error")
+        setAvatarURL(
+          "https://img.myloview.fr/stickers/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg"
+        );
     };
     if (isFetched && userInfoInit.id) getAvatar();
   }, [isFetched]);
@@ -72,7 +72,6 @@ export default function UserProfile() {
       if (!isFetched && params.userName !== undefined) {
         result = await getOtherUser(+params.userName);
         if (result !== "error") {
-          console.log("result: ", result);
           initializeUser(result, setUserInfo);
           setIsFetched(true);
         } else setIsUser(false);
@@ -95,9 +94,9 @@ export default function UserProfile() {
     const addFriend = async () => {
       const result = await addFriendQuery(otherId);
       if (result !== "error") {
-        setText("Friend request sent to user #" + otherId + "!");
-      } else setText("Could not send friend request :(.");
-      setShowNotif(true);
+        notif?.setNotifText("Friend request sent to user #" + otherId + "!");
+      } else notif?.setNotifText("Could not send friend request :(.");
+      notif?.setNotifShow(true);
     };
     addFriend();
   };
@@ -121,8 +120,7 @@ export default function UserProfile() {
           className="p-5"
           style={{ display: "flex", justifyContent: "center" }}
         >
-          <COnUser setText={setText} setShowNotif={setShowNotif} />
-          <TAlert show={showNotif} setShow={setShowNotif} text={text} />
+          <COnUser />
           <div className="public-left">
             <Container className="p-5">
               <Row className="wrapper public-profile-header">
@@ -223,7 +221,7 @@ export default function UserProfile() {
             </Container>
           </div>
           <div className="public-right">
-            <DisplayUserFriends userInfo={userInfo} />
+            <DisplayUserFriends userInfo={userInfo} myId={myId} />
           </div>
         </main>
       ) : isUser && !isFetched ? null : (

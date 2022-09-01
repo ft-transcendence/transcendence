@@ -26,14 +26,18 @@ export class UserController {
 
 	@Post('get_user')
 	getUser(@Body('otherId') otherId: number | string) {
-		if (isNumber(otherId)) {
-			const userDto = this.userService.getUser(Number(otherId));
-			return userDto;
-		} else {
-			const userDto = this.userService.getUserfromUsername(
-				String(otherId),
-			);
-			return userDto;
+		try {
+			if (isNumber(otherId)) {
+				const userDto = this.userService.getUser(Number(otherId));
+				return userDto;
+			} else {
+				const userDto = this.userService.getUserfromUsername(
+					String(otherId),
+				);
+				return userDto;
+			}
+		} catch {
+			throw new ForbiddenException('get_user error');
 		}
 	}
 

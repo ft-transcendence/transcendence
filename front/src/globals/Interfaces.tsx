@@ -1,3 +1,5 @@
+import { Dispatch } from "react";
+
 export interface AuthContextType {
   user: string | null;
   signin: (user: string | null, callback: VoidFunction) => void;
@@ -63,4 +65,9 @@ export class Users {
     opponentScore: 0,
     victory: false,
   };
+}
+
+export interface INotifCxt {
+  setNotifShow: Dispatch<React.SetStateAction<boolean>>;
+  setNotifText: Dispatch<React.SetStateAction<string>>;
 }
