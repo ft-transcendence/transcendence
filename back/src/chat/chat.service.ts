@@ -165,8 +165,7 @@ export class ChatService {
 						updateAt: source.owner[index].updateAt,
 						lastMsg:
 							messageCount > 0
-								? source.owner[index].messages[messageCount - 1]
-										.msg
+								? source.owner[index].messages[0].msg
 								: '',
 						ownerEmail: source.owner[index].owners[0].email,
 						ownerId: otherId,
@@ -185,8 +184,7 @@ export class ChatService {
 						updateAt: source.admin[index].updateAt,
 						lastMsg:
 							messageCount > 0
-								? source.admin[index].messages[messageCount - 1]
-										.msg
+								? source.admin[index].messages[0].msg
 								: '',
 						ownerEmail: source.admin[index].owners[0].email,
 						ownerId: source.admin[index].owners[0].id,
@@ -299,9 +297,13 @@ export class ChatService {
 						where: {
 							unsent: false,
 						},
+						orderBy: {
+							createdAt: 'asc',
+						},
 						select: {
 							msg: true,
 						},
+						take: 1,
 					},
 				},
 			});
@@ -340,9 +342,13 @@ export class ChatService {
 								where: {
 									unsent: false,
 								},
+								orderBy: {
+									createdAt: 'desc',
+								},
 								select: {
 									msg: true,
 								},
+								take: 1,
 							},
 						},
 					},
@@ -364,9 +370,13 @@ export class ChatService {
 								where: {
 									unsent: false,
 								},
+								orderBy: {
+									createdAt: 'desc',
+								},
 								select: {
 									msg: true,
 								},
+								take: 1,
 							},
 						},
 					},
@@ -388,9 +398,13 @@ export class ChatService {
 								where: {
 									unsent: false,
 								},
+								orderBy: {
+									createdAt: 'desc',
+								},
 								select: {
 									msg: true,
 								},
+								take: 1,
 							},
 						},
 					},
@@ -412,9 +426,13 @@ export class ChatService {
 								where: {
 									unsent: false,
 								},
+								orderBy: {
+									createdAt: 'desc',
+								},
 								select: {
 									msg: true,
 								},
+								take: 1,
 							},
 						},
 					},
@@ -431,7 +449,7 @@ export class ChatService {
 		try {
 			const ids: number[] = [];
 			const id = await this.get__id__ByEmail(info.email);
-			ids.push(id, info.added_id);
+			ids.push(id, info.targetId);
 			const dm = await this.prisma.channel.create({
 				data: {
 					dm: true,
@@ -666,11 +684,13 @@ export class ChatService {
 						where: {
 							unsent: false,
 						},
+						orderBy: {
+							createdAt: 'asc',
+						},
 						select: {
 							id: true,
 							msg: true,
 							createdAt: true,
-							updatedAt: true,
 							owner: {
 								select: {
 									id: true,
@@ -835,6 +855,7 @@ export class ChatService {
 					msg: true,
 					createdAt: true,
 					updatedAt: true,
+					cid: true,
 					owner: {
 						select: {
 							id: true,
@@ -857,7 +878,7 @@ export class ChatService {
 				const element: oneMessage = {
 					msgId: source.id,
 					id: source.owner.id,
-					channelId: source.channelId,
+					channelId: source.cid,
 					email: source.owner.email,
 					username: source.owner.username,
 					msg: source.msg,
@@ -908,10 +929,9 @@ export class ChatService {
 
 	async fetch__owners(userId: number, channelId: number) {
 		try {
-			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					name: name,
+					id: channelId,
 				},
 				select: {
 					owners: true,
@@ -953,10 +973,9 @@ export class ChatService {
 
 	async fetch__admins(id: number, channelId: number) {
 		try {
-			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					name: name,
+					id: channelId,
 				},
 				select: {
 					admins: true,
@@ -998,10 +1017,9 @@ export class ChatService {
 
 	async fetch__members(id: number, channelId: number) {
 		try {
-			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					name: name,
+					id: channelId,
 				},
 				select: {
 					members: true,
@@ -1043,10 +1061,9 @@ export class ChatService {
 
 	async fetch__inviteds(id: number, channelId: number) {
 		try {
-			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					name: name,
+					id: channelId,
 				},
 				select: {
 					inviteds: true,
