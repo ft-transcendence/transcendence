@@ -242,6 +242,10 @@ export class ChatGateway {
 			this.broadcast('broadcast', message, data.channelId);
 			const preview = await this.chatservice.get__previews(data.email);
 			client.emit('update preview', preview);
+			const cName = await this.chatservice.get__Cname__ByCId(
+				data.channelId,
+			);
+			this.updateChannelRequest('update channel request', cName);
 		}
 	}
 

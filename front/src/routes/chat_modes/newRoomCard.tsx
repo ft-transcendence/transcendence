@@ -9,9 +9,10 @@ import Switch from "react-switch";
 import ReactTags, { Tag } from "react-tag-autocomplete";
 import { matchSorter } from "match-sorter";
 
-export function NewRoomCard({newRoomRequest, onNewRoomRequest}
+export function NewRoomCard({newRoomRequest, onNewRoomRequest, updateStatus}
     : { newRoomRequest: boolean,
-        onNewRoomRequest: () => void}) {
+        onNewRoomRequest: () => void,
+        updateStatus: number}) {
     const email = localStorage.getItem("userEmail");
     const [userTag, setUserTag] = useState<Tag[]>([]);
     const [roomName, setRoomName] = useState("");
@@ -22,6 +23,12 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
     const scroll = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+      if (updateStatus === 0)
+        return;
+      socket.emit("get user tags", email);
+    }, [email, updateStatus])
+
+    useEffect(() => {
 
         if (newRoomRequest === false)
             initVars();
@@ -29,9 +36,6 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
         socket.emit("get user tags", email);
         socket.on("user tags", (data: Tag[]) => {
             setUserTag(data);
-        })
-        socket.on("update channel request", () => {
-          socket.emit("get user tags", email);
         })
 
         return  (() => {

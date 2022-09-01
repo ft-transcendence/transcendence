@@ -7,7 +7,6 @@ import RoomStatus from "./chat_modes/roomStatus";
 import { chatPreview } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 import { SettingCard } from "./chat_modes/settingCard";
-import { Player } from "./game.interfaces";
 
 const socketOptions = {
   transportOptions: {
@@ -29,6 +28,7 @@ export default function Chat() {
     const [outsider, setOutsider] = useState<boolean | undefined>(undefined);
     const [show, setShow] = useState<boolean | undefined>(undefined);
     const [role, setRole] = useState("");
+    const [updateStatus, setUpdateStatus] = useState(0);
 
     useEffect(() => {
 
@@ -49,6 +49,11 @@ export default function Chat() {
             socket.emit("join_private", {rid: roomId})
         })
 
+        socket.on("update channel request", () => {
+            setUpdateStatus(u => u+1);
+        })
+
+
         socket.on("disconnect", () => {})
 
         return (() => {
@@ -57,6 +62,7 @@ export default function Chat() {
             socket.off("fetch role");
             socket.off("invite to game");
             socket.off("disconnect");
+            socket.off("update channel request");
         })
     }, [])
 
@@ -70,7 +76,7 @@ export default function Chat() {
             setShow((!selectedChat.isPassword) || !outsider)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [outsider])
-
+    
     const newRoomCardDisappear = () => {
         setNewRoomRequest(old => {return !old})
     }
@@ -89,18 +95,23 @@ export default function Chat() {
                     onNewRoomRequest={() => {
                         setNewRoomRequest(old => {return !old})
                     }}
+                    updateStatus={updateStatus}
                 />
                 <ChatRoom
                     current={selectedChat}
                     show={show}
                     role={role}
                     outsider={outsider}
-                    setSettingRequest={() => {setSettingRequest(old => {return !old})}}/>
+                    setSettingRequest={() => {setSettingRequest(old => {return !old})}}
+                    updateStatus={updateStatus}
+                />
             <div style={{display: selectedChat?.dm ? "none" : "", backgroundColor: "#003e60"}}>
                 <RoomStatus
                     current={selectedChat}
                     role={role}
-                    outsider={outsider}/>
+                    outsider={outsider}
+                    updateStatus={updateStatus}
+                />
             </div>
             <div
                 onClick={newRoomCardDisappear}
@@ -113,7 +124,9 @@ export default function Chat() {
                             newRoomRequest={newRoomRequest}
                             onNewRoomRequest={() => {
                                 setNewRoomRequest(old => {return !old})
-                        }}/>
+                            }}
+                            updateStatus={updateStatus}
+                        />
                 </div>
             </div>
             <div

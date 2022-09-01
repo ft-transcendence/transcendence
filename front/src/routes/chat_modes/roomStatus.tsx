@@ -29,38 +29,31 @@ declare var global: {
     selectedUser: oneUser
 }
 
-export default function RoomStatus({current, role, outsider}
+export default function RoomStatus({current, role, outsider, updateStatus}
     : { current: chatPreview | undefined,
         role: string,
-        outsider: boolean | undefined}) {
+        outsider: boolean | undefined,
+        updateStatus: number}) {
     const [add, setAdd] = useState<boolean>(false);
     const [invitationTag, setTag] = useState<Tag[]>([]);
  
     const email = localStorage.getItem("userEmail");
 
     useEffect(() => {
-
         if (current)
         {
             socket.emit("read room status", {channelId: current?.id, email: email});
-            socket.emit("get invitation tags", current!.id);
+            socket.emit("get invitation tags", current?.id);
         }
+    }, [updateStatus, current, email])
 
+    useEffect(() => {
         socket.on("invitation tags", (data: Tag[]) => {
             setTag(data);
-        })
-        
-        socket.on("update channel request", () => {
-            if (current)
-            {
-                socket.emit("read room status", {channelId: current?.id, email: email});
-                socket.emit("get invitation tags", current?.id);
-            }
         })
 
         return (() => {
             socket.off("invitation tags");
-            socket.off("update channel request");
         })
 
     }, [current, email])
