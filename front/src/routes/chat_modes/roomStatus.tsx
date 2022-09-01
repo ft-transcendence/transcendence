@@ -150,11 +150,21 @@ function MemberStatus({current, role}
             setInviteds(data);
         })
 
+        socket.on("game info", (data: Player) => {
+            const invitation: gameInvitation = {
+                gameInfo: data,
+                targetId: global.selectedUser.id
+            }
+            socket.emit("invite to game", invitation)
+        })
+
+
         return (() => {
             socket.off("fetch owner");
             socket.off("fetch admins");
             socket.off("fetch members");
             socket.off("fetch inviteds");
+            socket.off("game info");
         })
         
     }, [current])

@@ -138,6 +138,7 @@ function MsgStream({email, channelId, blocked}
             socket.off("broadcast");
         })
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleDeleteMsg = () => {

@@ -64,19 +64,33 @@ export class UserService {
 	async getLeaderboard() {
 		//returns a record of all the users, ordered by rank in ascending order
 		const users = await this.prisma.user.findMany({
-			orderBy: { rank: 'asc' },
+			where: {
+				NOT: {
+					gamesPlayed: {
+						equals: 0,
+					},
+				},
+			},
+			select: {
+				id: true,
+				username: true,
+				rank: true,
+				winRate: true,
+				gamesLost: true,
+				gamesWon: true,
+				gamesPlayed: true,
+			},
+			orderBy: { rank: 'desc' },
 		});
 
-		const usersDTO: UserDto[] = [];
-		for (const user of users) {
-			// console.log('user:::', user);
-			// if (user.score !== 1200) {
-			const userDtO = plainToClass(UserDto, user);
-			usersDTO.push(userDtO);
-			// }
-		}
+		// const usersDTO: UserDto[] = [];
+		// for (const user of users) {
+		// 	// console.log('user:::', user);
+		// 	const userDtO = plainToClass(UserDto, user);
+		// 	usersDTO.push(userDtO);
+		// }
 		// console.log('userssss:::', usersDTO);
-		return usersDTO;
+		return users;
 	}
 
 	async getGameHistory(id: number) {
@@ -145,7 +159,7 @@ export class UserService {
 			const dtoUser = plainToClass(UserDto, user);
 			return dtoUser;
 		} catch (error) {
-			throw new ForbiddenException('getUser error : ' + error);
+			// throw new ForbiddenException('getUser error : ' + error);
 		}
 	}
 
@@ -227,6 +241,24 @@ export class UserService {
 		}
 	}
 
+	async isAdding(id1: number, id2: number) {
+		try {
+			const user = await this.prisma.user.findUnique({
+				where: {
+					id: id1,
+				},
+				rejectOnNotFound: true,
+			});
+			const index = user.adding.indexOf(id2);
+			if (index != -1) {
+				return true;
+			}
+			return false;
+		} catch (error) {
+			throw new ForbiddenException('isAdding error : ' + error);
+		}
+	}
+	
 	async getBlocks(id: number) {
 		const BlocksIdList = await this.prisma.user.findMany({
 			where: {
@@ -378,7 +410,11 @@ export class UserService {
 	}
 
 	async addFriend(id: number, otherId: number) {
-		if (id == otherId || (await this.isFriend(id, otherId))) {
+		if (
+			id == otherId ||
+			(await this.isFriend(id, otherId)) ||
+			(await this.isAdding(id, otherId))
+		) {
 			throw new ForbiddenException('Cannot invite this user');
 		}
 		const user = await this.prisma.user.update({

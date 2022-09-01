@@ -72,11 +72,11 @@ export function Activate2FA(props: any) {
         </Form.Group>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={props.onHide}>Close</Button>
+        <Button variant="outline-danger" size="sm" onClick={props.onHide}>
+          Close
+        </Button>
         <Button
-          variant="primary"
-          type="submit"
-          className="submit-button"
+          variant="outline-success"
           size="sm"
           onClick={(e: any) => {
             handleSubmit(e);

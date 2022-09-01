@@ -898,9 +898,10 @@ export class ChatService {
 
 	async fetch__owners(userId: number, channelId: number) {
 		try {
+			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					id: channelId,
+					name: name,
 				},
 				select: {
 					owners: true,
@@ -942,9 +943,10 @@ export class ChatService {
 
 	async fetch__admins(id: number, channelId: number) {
 		try {
+			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					id: channelId,
+					name: name,
 				},
 				select: {
 					admins: true,
@@ -986,9 +988,10 @@ export class ChatService {
 
 	async fetch__members(id: number, channelId: number) {
 		try {
+			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					id: channelId,
+					name: name,
 				},
 				select: {
 					members: true,
@@ -1030,9 +1033,10 @@ export class ChatService {
 
 	async fetch__inviteds(id: number, channelId: number) {
 		try {
+			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					id: channelId,
+					name: name,
 				},
 				select: {
 					inviteds: true,

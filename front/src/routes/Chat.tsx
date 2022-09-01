@@ -7,6 +7,7 @@ import RoomStatus from "./chat_modes/roomStatus";
 import { chatPreview } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 import { SettingCard } from "./chat_modes/settingCard";
+import { Player } from "./game.interfaces";
 
 const socketOptions = {
   transportOptions: {
@@ -43,7 +44,7 @@ export default function Chat() {
             setRole(data);
         })
 
-        socket.on("game invitation", (roomId: any) => {
+        socket.on("game invitation", (roomId: number) => {
             // console.log("got invitation:::roomid ", roomId)
             socket.emit("join_private", {rid: roomId})
         })

@@ -61,6 +61,6 @@ export class Users {
     duration: 0,
     userScore: 0,
     opponentScore: 0,
-    victory: false
+    victory: false,
   };
 }

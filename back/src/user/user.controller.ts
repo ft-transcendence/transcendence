@@ -52,7 +52,7 @@ export class UserController {
 
 	@Post('get_game_history')
 	getGameHistory(@Body('otherId') otherId: number) {
-		console.log('Going through getGameHistory in user.controller');
+		// console.log('Going through getGameHistory in user.controller');
 		return this.userService.getGameHistory(otherId);
 	}
 

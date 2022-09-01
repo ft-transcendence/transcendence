@@ -42,8 +42,10 @@ export function MUploadAvatar(props: any) {
         </Form.Group>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={props.onHide}>Close</Button>
-        <Button variant="primary" type="submit" onClick={handleSubmit}>
+        <Button variant="outline-danger" onClick={props.onHide}>
+          Close
+        </Button>
+        <Button variant="outline-success" onClick={handleSubmit}>
           Submit
         </Button>
       </Modal.Footer>
