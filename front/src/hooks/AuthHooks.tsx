@@ -1,26 +1,36 @@
 import { ReactNode, useContext, useState } from "react";
-import { useLocation, Navigate } from "react-router-dom";
 import { NotifCxt } from "../App";
+import { useLocation, Navigate, matchPath } from "react-router-dom";
 import { AuthContext, useAuth } from "../globals/contexts";
 import { logOut } from "../queries/authQueries";
 
-export const RequireAuth = ({ children }: { children: JSX.Element }) => {
-  let auth = useAuth();
-  let location = useLocation();
+export const RedirectWhenAuth = ({ children }: { children: JSX.Element }) => {
+  const location = useLocation();
+  if (
+    matchPath(location.pathname, "/auth/signin") &&
+    localStorage!.getItem("userLogged") === "true"
+  )
+    return (
+      <Navigate to="/app/private-profile" state={{ from: location }} replace />
+    );
+  return children;
+};
 
-  if (localStorage!.getItem("userLogged")! === "true") {
+export const RequireAuth = ({ children }: { children: JSX.Element }) => {
+  const auth = useAuth();
+  const location = useLocation();
+
+  if (localStorage!.getItem("userLogged")! === "true")
     auth.signin(localStorage.getItem("userName"), () => {});
-  } else {
-    return <Navigate to="/auth/signin" state={{ from: location }} replace />;
-  }
+  else return <Navigate to="/auth/signin" state={{ from: location }} replace />;
   return children;
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  let [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<any>(null);
   const notif = useContext(NotifCxt);
 
-  let signin = (newUser: string | null, callback: VoidFunction) => {
+  const signin = (newUser: string | null, callback: VoidFunction) => {
     return fakeAuthProvider.signin(() => {
       setUser(newUser);
       localStorage.setItem("userLogged", "true");
@@ -28,7 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  let signout = (callback: VoidFunction) => {
+  const signout = (callback: VoidFunction) => {
     return fakeAuthProvider.signout(() => {
       const postLogout = async () => {
         const result = await logOut();
@@ -47,7 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       postLogout();
     });
   };
-  let value = { user, signin, signout };
+  const value = { user, signin, signout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

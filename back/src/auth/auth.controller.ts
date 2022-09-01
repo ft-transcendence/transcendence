@@ -8,6 +8,7 @@ import {
 	Controller,
 	Get,
 	HttpCode,
+	Logger,
 	Post,
 	Req,
 	Res,
@@ -42,6 +43,7 @@ export class AuthController {
 		private twoFAService: TwoFactorService,
 	) {}
 
+	logger = new Logger('Authentification');
 	/**
 	 *	/signup - create account
 	 * Creates a new user email/username/password
@@ -50,7 +52,7 @@ export class AuthController {
 	@ApiResponse({ status: 403, description: 'Credentials already exist' })
 	@Post('/signup')
 	signup(@Body() dto: SignUpDto) {
-		console.log(dto);
+		this.logger.log('User Signup: ' + dto.username);
 		return this.authService.signup(dto);
 	}
 
@@ -62,7 +64,7 @@ export class AuthController {
 	@ApiResponse({ status: 403, description: 'Invalid Credentials' })
 	@Post('/signin')
 	signin(@Body() dto: SignInDto) {
-		console.log(dto);
+		this.logger.log('User Signup: ' + dto.username);
 		return this.authService.signin(dto);
 	}
 
@@ -73,9 +75,12 @@ export class AuthController {
 	@Post('logout')
 	@HttpCode(200)
 	@ApiResponse({ status: 401, description: 'Unauthorized' })
-	logout(@GetCurrentUserId() userId: number) {
+	logout(
+		@GetCurrentUserId() userId: number,
+		@GetCurrentUser('username') username: string,
+	) {
 		// LOG
-		console.log('logout', userId);
+		this.logger.log('User logout ' + username);
 		return this.authService.signout(userId);
 	}
 
@@ -93,7 +98,6 @@ export class AuthController {
 		@GetCurrentUserId() userId: number,
 		@GetCurrentUser('refreshToken') refreshToken: string,
 	) {
-		console.log('refresh route id:', userId, 'token:', refreshToken);
 		return this.authService.refresh_token(userId, refreshToken);
 	}
 	/* 42 API  */
@@ -118,14 +122,13 @@ export class AuthController {
 	@UseFilters(RedirectOnLogin)
 	@Get('42/callback')
 	async callback_42(@Req() request: any, @Res() response: Response) {
-		console.log('test');
 		// Generate token using API response
 		const user = await this.authService.signin_42(
 			request.user as Profile_42,
 		);
 		const { username, twoFA, id, email } = user;
 		// LOG
-		console.log('42 API signin', username, twoFA);
+		this.logger.log('42 API signin ' + username);
 		return twoFA
 			? this.twoFAService.signin_2FA(response, username)
 			: this.authService.signin_42_token(response, id, email);
