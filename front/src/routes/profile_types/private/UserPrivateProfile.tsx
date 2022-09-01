@@ -13,7 +13,6 @@ import { COnUserSimple } from "../../../ContextMenus/COnUserSimple";
 import { io } from "socket.io-client";
 
 export default function UserPrivateProfile() {
-
   const socketOptions = {
     transportOptions: {
       polling: {
@@ -28,8 +27,7 @@ export default function UserPrivateProfile() {
 
   socket.on("connect", () => {
     console.log(localStorage.getItem("userID"), "connected to socket");
-  })
-  
+  });
   const navigate = useNavigate();
 
   const [showUsername, setShowUsername] = useState(false);
@@ -67,8 +65,10 @@ export default function UserPrivateProfile() {
         await getAvatarQuery();
       if (result_1 !== undefined && result_1 instanceof Blob) {
         setAvatarURL(URL.createObjectURL(result_1));
-      } else if (result_1 === "error: avatar")
-        console.log("Could not get avatar of self.");
+      } else if (result_1 === "error")
+        setAvatarURL(
+          "https://img.myloview.fr/stickers/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg"
+        );
     };
     getAvatar();
   }, [avatarFetched]);

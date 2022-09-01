@@ -61,6 +61,7 @@ const fetchPost = async (body: any, url: string, userSignIn: any) => {
         if (localStorage.getItem("userToken")) {
           await getUserData();
           if (localStorage.getItem("userName")) userSignIn();
+          else return null;
         }
       }
     }

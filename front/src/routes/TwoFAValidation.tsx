@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
+import { NotifCxt } from "../App";
 import { useAuth } from "../globals/contexts";
 import { twoFAAuth } from "../queries/twoFAQueries";
 
 export default function TwoFAValidation() {
+  const notif = useContext(NotifCxt);
   let location = useLocation();
   let navigate = useNavigate();
   let auth = useAuth();
@@ -31,17 +33,18 @@ export default function TwoFAValidation() {
 
     const userSignIn = () => {
       let username = localStorage.getItem("userName");
-      console.log("username: ", username);
       if (username)
         auth.signin(username, () => {
           navigate("/app/private-profile", { replace: true });
         });
-      console.log("user is signed in");
     };
-
     if (username !== "undefined" && username) {
       const twoFAValid = async (username: string) => {
-        return await twoFAAuth(twoFACode, username, userSignIn);
+        const result = await twoFAAuth(twoFACode, username, userSignIn);
+        if (!result) {
+          notif?.setNotifShow(true);
+          notif?.setNotifText("Incorrect code. Please try again.");
+        }
       };
       twoFAValid(username);
     } else console.log("username is undefined");

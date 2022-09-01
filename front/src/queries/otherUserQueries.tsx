@@ -17,10 +17,7 @@ const fetchGetOtherUser = async (url: string, body: any) => {
       redirect: "follow",
     });
     const result_1 = await response.json();
-    if (!response.ok) {
-      console.log("POST error on ", url);
-      return "error";
-    }
+    if (!response.ok) return "error";
     return result_1;
   } catch (error) {
     return console.log("error", error);

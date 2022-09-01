@@ -4,6 +4,7 @@ import { getUserAvatarQuery } from "../../../../queries/avatarQueries";
 import { getUserBlocked } from "../../../../queries/userQueries";
 import { DisplayRow } from "./DisplayRowUsers";
 import { UsersStatusCxt } from "../../../../App";
+import { Spinner } from "react-bootstrap";
 
 export const BlockedList = () => {
   const usersStatus = useContext(UsersStatusCxt);
@@ -19,11 +20,16 @@ export const BlockedList = () => {
 
   useEffect(() => {
     const fetchDataBlocked = async () => {
-      return await getUserBlocked();
+      const result = await getUserBlocked();
+      if (result !== "error") return result;
     };
 
     const fetchDataBlockedAvatar = async (otherId: number) => {
-      return await getUserAvatarQuery(otherId);
+      const result: undefined | string | Blob | MediaSource =
+        await getUserAvatarQuery(otherId);
+      if (result !== "error") return result;
+      else
+        return "https://img.myloview.fr/stickers/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg";
     };
 
     const fetchData = async () => {
@@ -47,9 +53,9 @@ export const BlockedList = () => {
 
           let avatar = await fetchDataBlockedAvatar(fetchedBlocked[i].id);
 
-          if (avatar !== undefined && avatar instanceof Blob) {
+          if (avatar !== undefined && avatar instanceof Blob)
             newRow.userModel.avatar = URL.createObjectURL(avatar);
-          }
+          else if (avatar) newRow.userModel.avatar = avatar;
           blocked.push(newRow);
         }
       }
@@ -80,7 +86,7 @@ export const BlockedList = () => {
           <span>No blocked users.</span>
         )
       ) : (
-        <div>Loading...</div>
+        <Spinner animation="border" />
       )}
     </div>
   );

@@ -1,8 +1,8 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useContext, useState } from "react";
 import { useLocation, Navigate } from "react-router-dom";
+import { NotifCxt } from "../App";
 import { AuthContext, useAuth } from "../globals/contexts";
 import { logOut } from "../queries/authQueries";
-import { TAlert } from "../toasts/TAlert";
 
 export const RequireAuth = ({ children }: { children: JSX.Element }) => {
   let auth = useAuth();
@@ -18,8 +18,7 @@ export const RequireAuth = ({ children }: { children: JSX.Element }) => {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   let [user, setUser] = useState<any>(null);
-  const [showNotif, setShowNotif] = useState(false);
-  const [notifText, setNotifText] = useState("Error");
+  const notif = useContext(NotifCxt);
 
   let signin = (newUser: string | null, callback: VoidFunction) => {
     return fakeAuthProvider.signin(() => {
@@ -34,15 +33,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const postLogout = async () => {
         const result = await logOut();
         if (result !== "error") {
-          setNotifText("See you soon " + user + " !");
-          setShowNotif(true);
+          notif?.setNotifText("See you soon " + user + " !");
+          notif?.setNotifShow(true);
           setUser(null);
           localStorage.clear();
           localStorage.setItem("userLogged", "false");
           callback();
         } else {
-          setNotifText("Could not log out. Please, try again.");
-          setShowNotif(true);
+          notif?.setNotifText("Could not log out. Please, try again.");
+          notif?.setNotifShow(true);
         }
       };
       postLogout();
@@ -50,12 +49,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   let value = { user, signin, signout };
 
-  return (
-    <main>
-      <TAlert show={showNotif} setShow={setShowNotif} text={notifText} />
-      <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-    </main>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 const fakeAuthProvider = {

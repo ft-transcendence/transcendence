@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -8,15 +8,14 @@ import { signUp, signIn } from "../../queries/authQueries";
 import { GUserInputsRefs } from "../../globals/variables";
 import { useAuth } from "../../globals/contexts";
 import { getLeaderBoard, getUserData } from "../../queries/userQueries";
-import { TAlert } from "../../toasts/TAlert";
 import "./Auth.css";
+import { NotifCxt } from "../../App";
 
 export default function Auth() {
+  const notif = useContext(NotifCxt);
   let navigate = useNavigate();
   let auth = useAuth();
   let location = useLocation();
-  const [showNotif, setShowNotif] = useState(false);
-  const [notifText, setNotifText] = useState("Error");
   const hrefURL = process.env.REACT_APP_BACKEND_URL + "/auth/42";
 
   // Use a callback to avoid re-rendering
@@ -42,13 +41,24 @@ export default function Auth() {
       // keywords. Otherwise, things might happen in the wrong order.
       const fetchData = async () => {
         const data = await getUserData();
-        await getLeaderBoard();
-        console.log("data: ", data);
+        if (data === "error") {
+          notif?.setNotifText(
+            "Unable to retrieve your informations. Please try again later!"
+          );
+        } else {
+          await getLeaderBoard();
+          userSignIn();
+          notif?.setNotifText(
+            "Welcome " + localStorage.getItem("userName") + "!"
+          );
+        }
+        notif?.setNotifShow(true);
       };
       // sign in the user
-      fetchData().then(() => userSignIn());
+      fetchData();
     }
-  }, [location.search, userSignIn]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search]);
 
   const handleSubmit = (event: any) => {
     let userInfo: IUserInfo = {
@@ -72,12 +82,15 @@ export default function Auth() {
         const result = await signUp(userInfo, userSignIn);
         if (result && result.includes("error")) {
           result.includes("signUp")
-            ? setNotifText(
+            ? notif?.setNotifText(
                 "User already exists. Please enter another username and/or email."
               )
-            : setNotifText("Unable to sign up. Please try again.");
-          setShowNotif(true);
-        }
+            : notif?.setNotifText("Unable to sign up. Please try again.");
+        } else
+          notif?.setNotifText(
+            "Welcome " + localStorage.getItem("userName") + "!"
+          );
+        notif?.setNotifShow(true);
       };
       signUpUser();
     } else {
@@ -85,12 +98,15 @@ export default function Auth() {
         const result = await signIn(userInfo, userSignIn);
         if (result && result.includes("error")) {
           result.includes("signIn")
-            ? setNotifText(
+            ? notif?.setNotifText(
                 "User does not exists. Please enter a valid email and/or username."
               )
-            : setNotifText("Could not retreive user. Please try again.");
-          setShowNotif(true);
-        }
+            : notif?.setNotifText("Could not retreive user. Please try again.");
+        } else
+          notif?.setNotifText(
+            "Welcome back " + localStorage.getItem("userName") + "!"
+          );
+        notif?.setNotifShow(true);
       };
       signInUser();
     }
@@ -98,7 +114,6 @@ export default function Auth() {
 
   return (
     <div className="Auth-form-container">
-      <TAlert show={showNotif} setShow={setShowNotif} text={notifText} />
       <form className="Auth-form" onSubmit={handleSubmit}>
         <div className="Auth-form-content">
           <Outlet />
