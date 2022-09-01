@@ -107,7 +107,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   async newChannelFetch(@MessageBody() data: ChannelDto) {
     data.members.map(async (member) => {
       const client = await this.get__clientSocket(member.id);
-      client.join(data.name);
+      await client.join(data.name)
       client.emit('update channel request');
     })
   }
@@ -122,10 +122,10 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
   @SubscribeMessage('fetch new invite')
   async newInviteFetch(@MessageBody() data: updateChannel) {
-      const client = await this.get__clientSocket(data.targetId);
-      const cName = await this.chatService.get__Cname__ByCId(data.channelId);
-      client.join(cName);
-      client.emit('update channel request');
+    const client = await this.get__clientSocket(data.targetId);
+    const cName = await this.chatService.get__Cname__ByCId(data.channelId);
+    await client.join(cName);
+    client.emit('update channel request');
   }
 
 	@SubscribeMessage('send invitation')

@@ -35,10 +35,10 @@ export class ChatGateway {
 
 	async handleJoinSocket(id: number, @ConnectedSocket() client: Socket) {
 		const channels = await this.chatservice.get__channelsUserIn(id);
-		client.join('default_all');
+		await client.join('default_all');
 		if (channels)
 			for (const channel of channels) {
-				client.join(channel);
+				await client.join(channel);
 			}
 	}
 
@@ -57,7 +57,7 @@ export class ChatGateway {
 			data.channelId,
 			data.email,
 		);
-		client.join(preview.name);
+		await client.join(preview.name);
 		client.emit('add preview', preview);
 	}
 
@@ -85,7 +85,7 @@ export class ChatGateway {
 				channelId,
 				data.email,
 			);
-			client.join(preview.name);
+			await client.join(preview.name);
 			client.emit('add preview', preview);
 			this.updateChannelRequest('update channel request', 'default_all');
 			return data;
@@ -104,7 +104,7 @@ export class ChatGateway {
 			const channelName = await this.chatservice.get__Cname__ByCId(
 				data.channelId,
 			);
-			client.join(channelName);
+			await client.join(channelName);
 			const id = await this.chatservice.get__id__ByEmail(data.email);
 			const preview = await this.chatservice.get__previews(data.email);
 			client.emit('update preview', preview);
@@ -219,8 +219,9 @@ export class ChatGateway {
 			data.email,
 		);
 		const channelName = await this.chatservice.get__Cname__ByCId(channelId);
-		client.join(channelName);
+		await client.join(channelName);
 		client.emit('add preview', preview);
+		return channelId;
 	}
 
 	@SubscribeMessage('read msgs')

@@ -57,5 +57,5 @@ export class DMDto {
 
 	@IsNumber()
 	@IsNotEmpty()
-	added_id: number;
+	targetId: number;
 }
