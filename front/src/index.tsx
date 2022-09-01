@@ -7,7 +7,7 @@ import SignIn from "./routes/Auth/SignIn";
 import SignUp from "./routes/Auth/SignUp";
 import Chat from "./routes/Chat";
 import UserInterface from "./routes/UserInterface";
-import { AuthProvider, RequireAuth } from "./hooks/AuthHooks";
+import { AuthProvider, RedirectWhenAuth, RequireAuth } from "./hooks/AuthHooks";
 import TwoFAValidation from "./routes/TwoFAValidation";
 import Watch from "./routes/Watch";
 import LeaderBoard from "./routes/LeaderBoard";
@@ -28,7 +28,14 @@ root.render(
           <Route path="2FA" element={<TwoFAValidation />} />
           <Route path="/auth" element={<Auth />}>
             <Route index element={<Navigate to="/auth/signin" />} />
-            <Route path="signin" element={<SignIn />} />
+            <Route
+              path="signin"
+              element={
+                <RedirectWhenAuth>
+                  <SignIn />
+                </RedirectWhenAuth>
+              }
+            />
             <Route path="signup" element={<SignUp />} />
             <Route path="*" element={<Navigate to="/auth/signin" />} />
           </Route>
