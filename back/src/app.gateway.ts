@@ -7,7 +7,7 @@ import { ChatService } from './chat/chat.service';
 import { ArgumentsHost, Catch } from '@nestjs/common';
 import { GameService } from './game/game.service';
 import { Status } from './user/statuses';
-import { gameInvitation } from './chat/type/chat.type';
+import { gameInvitation, updateChannel } from './chat/type/chat.type';
 import { ChannelDto } from './chat/dto/chat.dto';
 import { ChatGateway } from './chat/chat.gateway';
 
@@ -84,19 +84,16 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   }
 
 	set__clientSocket(id: number, client: Socket) {
-    // console.log('set client')
 		this.clientSocket.set(id, client);
 	}
 
 	delete__clientSocket(id: number) {
-    // console.log('delete client')
 		this.clientSocket.delete(id);
 	}
 
 	async get__clientSocket(id: number) {
 		if (this.clientSocket.has(id)) {
 			const socket = this.clientSocket.get(id);
-      // console.log('got client')
 			return socket;
 		}
 	}
@@ -110,6 +107,13 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
     })
   }
 
+  @SubscribeMessage('fetch new invite')
+  async newInviteFetch(@MessageBody() data: updateChannel) {
+      const client = await this.get__clientSocket(data.targetId);
+      const cName = await this.chatService.get__Cname__ByCId(data.channelId);
+      client.join(cName);
+      client.emit('update channel request');
+  }
 
 	@SubscribeMessage('send invitation')
 	async gameInvitation(@MessageBody() data: gameInvitation) {

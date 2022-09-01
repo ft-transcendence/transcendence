@@ -77,7 +77,9 @@ export default function RoomStatus({current, role, outsider}
             ownerPassword: "",
             newPassword: ""
         }
-        socket.emit("invite to channel", update);
+        socket.emit("invite to channel", update, () => {
+            socket.emit('fetch new invite');
+        });
     }
 
     const onDelete = (i: number) => {}
