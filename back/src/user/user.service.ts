@@ -4,6 +4,7 @@ import {
 	ForbiddenException,
 	Inject,
 	forwardRef,
+	BadRequestException,
 } from '@nestjs/common';
 import { Game, User } from '@prisma/client';
 import * as argon from 'argon2';
@@ -148,6 +149,9 @@ export class UserService {
 	}
 
 	async getUser(id: number) {
+		if (id === undefined) {
+			throw new BadRequestException('Undefined user ID');
+		}
 		// console.log('id', id);
 		try {
 			const user = await this.prisma.user.findUnique({
