@@ -270,7 +270,7 @@ export default class Game extends React.Component<PropsPong, StatePong> {
     );
 
     if (this.props.pvtGame && localStorage.getItem("playernb") === "1") {
-      var RoomId = Number(localStorage.getItem("roomid")!);
+      let RoomId = Number(localStorage.getItem("roomid")!);
       this.setState({roomId: RoomId});
       this.setState({playerNumber: 1, msgType: 4, buttonState: "Cancel"});
       this.socket.on("rejected", () =>
@@ -278,9 +278,9 @@ export default class Game extends React.Component<PropsPong, StatePong> {
       );
     } 
 
-    if (this.props.pvtGame && this.props.playerNumber === 2 && this.props.roomId) {
-      this.socket.emit("join_private", {roomId: this.props.roomId}, (player: Player) => 
-        this.setState({roomId: player.roomId, playerNumber: player.playerNb, msgType: 0}));
+    if (this.props.pvtGame && localStorage.getItem("playernb") === "2") {
+      let RoomId = Number(localStorage.getItem("roomid")!);
+      this.setState({roomId: RoomId, playerNumber: 2, msgType: 0});
     } 
   }
 
