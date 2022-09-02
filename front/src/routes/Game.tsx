@@ -127,6 +127,9 @@ class Message extends React.Component< Msg, MsgState > {
                 case 3:
                     message = "You lose";
                     break;
+                case 4:
+                    message = "Waiting for your opponent to accept the invitation";
+                    break;
                 default:
                     message = "error";
              }
@@ -186,7 +189,7 @@ export default class Game extends React.Component<PropsPong, StatePong> {
   MOVE_DOWN = "ArrowDown";
   avatarsFetched = false;
 
-  constructor(props: PropsPong)) {
+  constructor(props: PropsPong) {
     super(props);
     this.state = {
       paddleLeftY: 50,
@@ -272,8 +275,6 @@ export default class Game extends React.Component<PropsPong, StatePong> {
       this.socket.emit("join_private", {roomId: this.props.roomId}, (player: Player) => 
         this.setState({roomId: player.roomId, playerNumber: player.playerNb, msgType: 0}));
     } 
-  }
-
   }
 
   componentWillUnmount() {
