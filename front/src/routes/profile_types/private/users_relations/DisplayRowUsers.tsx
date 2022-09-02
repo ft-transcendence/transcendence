@@ -66,7 +66,12 @@ export const DisplayRow = (props: any) => {
             }
           >
             <div className="profile-username-text" style={{ fontSize: "15px" }}>
-              @{props.userModel.username}
+              @
+              {props.userModel && props.userModel.username
+                ? props.userModel.username.length > 10
+                  ? props.userModel.username.substring(0, 7) + "..."
+                  : props.userModel.username
+                : null}
             </div>
           </Col>
           <Col>

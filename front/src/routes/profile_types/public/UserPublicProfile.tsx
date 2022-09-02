@@ -137,7 +137,10 @@ export default function UserProfile() {
                 </div>
                 <Col md="auto" className="">
                   <div className="public-username-text">
-                    @{userInfo.username}
+                    @
+                    {userInfo.username.length > 10
+                      ? userInfo.username.substring(0, 7) + "..."
+                      : userInfo.username}
                   </div>
                   <div className="public-rank-text"> Rank #{userInfo.rank}</div>
                   <div

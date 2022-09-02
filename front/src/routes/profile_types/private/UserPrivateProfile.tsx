@@ -108,7 +108,14 @@ export default function UserPrivateProfile() {
             </div>
           </div>
           <Col className=" content">
-            <div className="profile-username-text">@{userInfo.userName}</div>
+            <div className="profile-username-text">
+              @
+              {userInfo && userInfo.userName
+                ? userInfo.userName.length > 10
+                  ? userInfo!.userName.substring(0, 7) + "..."
+                  : userInfo!.userName
+                : null}
+            </div>
             <span
               id="clickableIcon"
               className="caption"
@@ -133,7 +140,11 @@ export default function UserPrivateProfile() {
                         USERNAME
                       </div>
                       <div className="ROBOTO-text" style={{ fontSize: "15px" }}>
-                        {userInfo.userName}
+                        {userInfo && userInfo.userName
+                          ? userInfo.userName.length > 10
+                            ? userInfo!.userName.substring(0, 7) + "..."
+                            : userInfo!.userName
+                          : null}
                       </div>
                     </Col>
                     <Col className=" text-right">

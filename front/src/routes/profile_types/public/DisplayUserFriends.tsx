@@ -198,7 +198,12 @@ const DisplayFriendsRow = (props: any) => {
               displayMenu(e, props.userModel.id)
             }
           >
-            <div>@{props.userModel.username}</div>
+            <div>
+              @
+              {props.userModel.username.length > 10
+                ? props.userModel.username.substring(0, 7) + "..."
+                : props.userModel.username}
+            </div>
           </Col>
           {props.myId !== 0 && props.userModel.id === props.myId ? null : (
             <Col className="">
