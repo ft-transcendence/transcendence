@@ -8,6 +8,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { useContextMenu } from "react-contexify";
+import { useNavigate } from "react-router-dom";
 import { UsersStatusCxt } from "../../../App";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
 import { ItableRow, IUserStatus } from "../../../globals/Interfaces";
@@ -134,6 +135,7 @@ export default function DisplayUserFriends(props: any) {
 
 const DisplayFriendsRow = (props: any) => {
   const { show } = useContextMenu();
+  const navigate = useNavigate();
 
   function displayMenu(e: React.MouseEvent<HTMLElement>, targetUser: number) {
     e.preventDefault();
@@ -146,7 +148,7 @@ const DisplayFriendsRow = (props: any) => {
   }
 
   const handleClickWatch = (otherId: number) => {
-    console.log("waiting for watch function.", otherId);
+    navigate("/app/watch", { replace: false });
   };
 
   const handleClickChallenge = (otherId: number) => {

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Container, Row, Col, OverlayTrigger } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import DisplayGamesStats from "./DisplayGamesStats";
 import { IUserStatus, userModel } from "../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
@@ -45,6 +45,7 @@ export default function UserProfile() {
   const usersStatus = useContext(UsersStatusCxt);
   const notif = useContext(NotifCxt);
   let params = useParams();
+  const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<userModel>(userInfoInit);
   const [isFetched, setIsFetched] = useState(false);
   const [avatarURL, setAvatarURL] = useState("");
@@ -102,7 +103,7 @@ export default function UserProfile() {
   };
 
   const handleClickWatch = (otherId: number) => {
-    console.log("waiting for watch function.", otherId);
+    navigate("/app/watch", { replace: false });
   };
 
   const handleClickChallenge = (otherId: number) => {
