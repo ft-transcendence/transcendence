@@ -70,7 +70,7 @@ class Ball extends React.Component< Coordinates, {} >
 {
   render() {
     const show = this.props.showBall ? 'unset': 'none';
-    if(window.innerHeight >= window.innerWidth){
+    if(window.innerHeight <= window.innerWidth){
       return (
          <div
             style={{
@@ -83,7 +83,7 @@ class Ball extends React.Component< Coordinates, {} >
          />
       );
     }
-    if(window.innerHeight < window.innerWidth){
+    if(window.innerHeight > window.innerWidth){
       return (
          <div
             style={{
