@@ -30,9 +30,13 @@ export type newChannel = {
 }
 
 export type newDM = {
-
     email: string | null;
-    added_id: number;
+    targetId: number;
+}
+
+export type fetchDM = {
+    channelId: number;
+    targetId: number;
 }
 
 export type Tag = {
@@ -61,6 +65,7 @@ export type useMsg = {
 export type oneMsg = {
     msgId: number;
     id: number;
+    channelId: number;
     email: string;
     username: string;
     msg: string;
@@ -94,7 +99,7 @@ export type setting = {
 export type mute = {
     duration: number;
     email: string;
-    chanelId: number;
+    channelId: number;
 }
 
 export type gameInvitation = {

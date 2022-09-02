@@ -1,7 +1,7 @@
 import "./chatPreview.css";
 import { useEffect, useState } from "react";
 import { socket } from "../Chat";
-import { chatPreview, newDM, oneSuggestion, updateChannel } from "./type/chat.type";
+import { chatPreview, newDM, fetchDM, oneSuggestion, updateChannel } from "./type/chat.type";
 import {
     Menu,
     Item,
@@ -19,28 +19,33 @@ declare var global: {
     selectedChat: chatPreview
 }
 
-export default function Preview ({ current, onSelect, onNewRoomRequest}
+export default function Preview ({ current, onSelect, onNewRoomRequest, updateStatus}
     : { current: chatPreview | undefined, 
         onSelect: (chatPreview:chatPreview | undefined) => void,
-        onNewRoomRequest: () => void }) {
+        onNewRoomRequest: () => void,
+        updateStatus: number }) {
 
     const [roomPreview, setPreviews] = useState<chatPreview[]>([]);
     const email = localStorage.getItem("userEmail");
     
     useEffect(() => {
-
-        socket.on("connect", () => {
-            socket.emit("read preview", email);
-        });
-
-        socket.emit("read preview", email);
-
-        socket.on("set preview", (data: chatPreview[] | null) => {
-
+        if (updateStatus === 0)
+            return;
+        socket.emit("read preview", email, (data: chatPreview[] | null) => {
             if (data)
                 setPreviews(data);
         })
-        
+    }, [updateStatus, email]);
+
+    useEffect(() => {
+
+        socket.on("connect", () => {});
+
+        socket.emit("read preview", email, (data: chatPreview[] | null) => {
+            if (data)
+                setPreviews(data);
+        })
+
         socket.on("add preview", (data: chatPreview) => {
             if (data)
                 setPreviews(oldPreviews => [...oldPreviews, data]);
@@ -51,18 +56,19 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
                 setPreviews(data);
         })
 
+        
         socket.on("disconnect", () => {})
 
         return (() => {
             socket.off("connect");
-            socket.off("set preview");
             socket.off("add preview");
             socket.off("update preview");
             socket.off("disconnect")
         })
 
-    }, [email]);
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+        
     const addPreview = (channelId: number) => {
         socket.emit("add preview", {channelId: channelId, email: email})
     }
@@ -129,6 +135,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
                 <ChatSearch
                     onSearchMyChat={(channelId) => search(channelId)}
                     onSearchPublicChat={(channelId) => addPreview(channelId)}
+                    updateStatus={updateStatus}
                 />
                 <AddRoom
                     onRequest={() => {onNewRoomRequest()}}
@@ -142,7 +149,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
                             MENU_ID={current?.dm ? MENU_DM : MENU_CHANNEL}
                             data={value} 
                             onClick={()=>{onSelect(value)}}
-                            selected={value === current}/>
+                            selected={value.id === current?.id}/>
                     </div>);
                 })
                 }
@@ -173,12 +180,19 @@ export default function Preview ({ current, onSelect, onNewRoomRequest}
     )
 }
 
-function ChatSearch({onSearchMyChat, onSearchPublicChat}
+function ChatSearch({onSearchMyChat, onSearchPublicChat, updateStatus}
     : { onSearchMyChat: (channelId: number) => void,
-        onSearchPublicChat: (channelId: number) => void }) {
+        onSearchPublicChat: (channelId: number) => void,
+        updateStatus: number}) {
 
     const [suggestion, setSug] = useState<oneSuggestion[]>([]);
     const email = localStorage.getItem("userEmail");
+
+    useEffect(() => {
+        if (updateStatus === 0)
+            return;
+        socket.emit("get search suggest", email);
+    }, [updateStatus, email]);
 
     useEffect(() => {
         socket.emit("get search suggest", email);
@@ -198,9 +212,15 @@ function ChatSearch({onSearchMyChat, onSearchPublicChat}
         {
             let dm: newDM = {
                 email: email,
-                added_id: data.data_id,
+                targetId: data.data_id,
             }
-            socket.emit("new dm", dm);
+            socket.emit("new dm", dm, (channelId: number) => {
+                let fetch: fetchDM = {
+                    channelId: channelId,
+                    targetId: data.data_id,
+                }
+                socket.emit('fetch new DM', fetch);
+            });
         }
         else if (data.catagory === "my chat")
             onSearchMyChat(data.data_id);

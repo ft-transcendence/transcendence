@@ -88,6 +88,8 @@
     .msg-sender {
         margin-bottom: auto;
         font-size: 12px;
+        text-align: left;
+        color:rgba(37, 36, 36, 0.884);
     }
 
 

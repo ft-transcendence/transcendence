@@ -16,6 +16,7 @@ import { UserService } from 'src/user/user.service';
 import { Response } from 'express';
 import { UploadService } from 'src/upload/upload.service';
 import { AppGateway } from 'src/app.gateway';
+import { ChatGateway } from 'src/chat/chat.gateway';
 
 /**
  * AUTHENTIFICATION SERVICE
@@ -28,6 +29,7 @@ export class AuthService {
 		private userService: UserService,
 		private uploadService: UploadService,
 		private appGateway: AppGateway,
+		private readonly chatGateway: ChatGateway,
 	) {}
 
 	/* SIGNUP */
@@ -52,6 +54,10 @@ export class AuthService {
 			);
 			//sending status update to the front
 			this.appGateway.onlineFromService(user.id);
+			this.chatGateway.updateChannelRequest(
+				'update channel request',
+				'default_all',
+			);
 
 			return tokens;
 		} catch (error) {

@@ -21,15 +21,26 @@ declare var global: {
     selectedData: oneMsg
 }
 
-export default function ChatRoom({current, show, role, outsider, setSettingRequest}
+export default function ChatRoom({current, show, role, outsider, setSettingRequest, updateStatus}
     : { current: chatPreview | undefined,
         show: boolean | undefined,
         role: string,
         outsider: boolean | undefined,
-        setSettingRequest: () => void}) {
+        setSettingRequest: () => void, updateStatus: number}) {
 
         const [blocked, setBlocked] = useState<Tag[]>([]);
         const email = localStorage.getItem("userEmail");
+
+    useEffect(() => {
+        if (show && current)
+        {
+            const cId = current.id;
+            socket.emit("read msgs", cId);
+            socket.emit("get setting", cId);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [updateStatus, current, show]);
+    
 
     useEffect(() => {
 
@@ -42,13 +53,6 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
         })
 
         socket.on("disconnect", () => {})
-
-        if (show && current)
-        {
-            const cId = current.id;
-            socket.emit("read msgs", cId);
-            socket.emit("get setting", cId);
-        }
 
         return (() => {
             socket.off("connect")
@@ -120,7 +124,8 @@ function MsgStream({email, channelId, blocked}
         })
 
         socket.on("broadcast", (msg: oneMsg) => {
-            setMsgs(oldMsgs => [...oldMsgs, msg]);
+            if (msg.channelId === channelId)
+                setMsgs(oldMsgs => [...oldMsgs, msg]);
         })
 
         return (() => {
@@ -128,7 +133,7 @@ function MsgStream({email, channelId, blocked}
             socket.off("broadcast");
         })
         
-    }, [])
+    }, [channelId, msgs])
 
     const handleDeleteMsg = () => {
         let msg: useMsg = {
@@ -161,7 +166,7 @@ function MsgStream({email, channelId, blocked}
             className="msg-stream" ref={scroll}>
             {
                 msgs.map((value, index) => {
-                    const isBlocked = blocked.find((blocked) => {
+                    const isBlocked: Tag | undefined = blocked.find((blocked) => {
                         return value.id === blocked.id
                     });
                     return (

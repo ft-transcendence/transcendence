@@ -15,6 +15,7 @@ export default function LeaderBoard() {
         console.log(data);
         if (localStorage.getItem("leaderBoard") !== null)
             setData(JSON.parse(localStorage.getItem("leaderBoard")!));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (

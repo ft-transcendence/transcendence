@@ -24,6 +24,7 @@ export type chatPreview = {
 export type oneMsg = {
 	msgId: number;
 	id: number;
+	channelId: number;
 	email: string;
 	username: string;
 	msg: string;
@@ -68,10 +69,15 @@ export type updateChannel = {
 export type mute = {
 	duration: number;
 	email: string;
-	chanelId: number;
+	channelId: number;
 };
 
 export type gameInvitation = {
 	gameInfo: Player;
+	targetId: number;
+};
+
+export type fetchDM = {
+	channelId: number;
 	targetId: number;
 };

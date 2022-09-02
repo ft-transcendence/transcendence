@@ -10,7 +10,6 @@ import { ChatModule } from './chat/chat.module';
 import { JwtModule } from '@nestjs/jwt';
 import { UserService } from './user/user.service';
 import { AppGateway } from './app.gateway';
-import { ChatService } from './chat/chat.service';
 import { UploadModule } from './upload/upload.module';
 import { MulterModule } from '@nestjs/platform-express';
 
@@ -50,7 +49,7 @@ console.log('Using upload dir: ' + process.env.UPLOAD_DIR);
 		JwtModule.register({ secret: process.env.JWT_SECRET }),
 		UploadModule,
 	],
-	providers: [GameService, GameGateway, UserService, AppGateway, ChatService],
+	providers: [GameService, GameGateway, UserService, AppGateway],
 	// NOT USED AS OF YET
 	// controllers: [AppController],
 })

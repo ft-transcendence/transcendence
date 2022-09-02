@@ -23,28 +23,31 @@ import ReactTags from "react-tag-autocomplete";
 import { socket } from "../Chat";
 import { getUserAvatarQuery } from "../../queries/avatarQueries";
 import { Player } from "../game.interfaces";
+import { useNavigate } from "react-router-dom";
 
 declare var global: {
     selectedUser: oneUser
 }
 
-export default function RoomStatus({current, role, outsider}
+export default function RoomStatus({current, role, outsider, updateStatus}
     : { current: chatPreview | undefined,
         role: string,
-        outsider: boolean | undefined}) {
+        outsider: boolean | undefined,
+        updateStatus: number}) {
     const [add, setAdd] = useState<boolean>(false);
     const [invitationTag, setTag] = useState<Tag[]>([]);
  
     const email = localStorage.getItem("userEmail");
 
     useEffect(() => {
-
         if (current)
         {
             socket.emit("read room status", {channelId: current?.id, email: email});
-            socket.emit("get invitation tags", current!.id);
+            socket.emit("get invitation tags", current?.id);
         }
+    }, [updateStatus, current, email])
 
+    useEffect(() => {
         socket.on("invitation tags", (data: Tag[]) => {
             setTag(data);
         })
@@ -67,7 +70,9 @@ export default function RoomStatus({current, role, outsider}
             ownerPassword: "",
             newPassword: ""
         }
-        socket.emit("invite to channel", update);
+        socket.emit("invite to channel", update, () => {
+            socket.emit('fetch new invite');
+        });
     }
 
     const onDelete = (i: number) => {}
@@ -218,19 +223,20 @@ function Status({users, current, role}
     }
 
     function handleCreateGame(){
-        let update: updateUser = {
-            selfEmail: email,
-            otherId: global.selectedUser.id
-        }
-        socket.emit("start_private");
-        socket.emit("invite game", update);
+        socket.emit("start_private", (player: Player) => {
+            const invitation: gameInvitation = {
+                gameInfo: player,
+                targetId: global.selectedUser.id
+            }
+            socket.emit("send invitation", invitation)
+        });
     }
 
     function handleMute(mins: number){
         let update: mute = {
             duration: mins,
             email: global.selectedUser.email,
-            chanelId: current!.id
+            channelId: current!.id
         }
         socket.emit("mute user", update);
     }
@@ -358,6 +364,7 @@ function OneStatus({data, setSelData, setHide}
 
     const email = localStorage.getItem("userEmail");
     const [avatarURL, setAvatarURL] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getAvatar = async () => {
@@ -370,10 +377,6 @@ function OneStatus({data, setSelData, setHide}
         }
         getAvatar();
       }, [data.id]);
-
-    const goProfile = () => {
-        // link to profile 
-    }
 
     const handleMenu = (event: any) => {
 
@@ -392,7 +395,8 @@ function OneStatus({data, setSelData, setHide}
             style={{display: data ? "" : "none"}}
             className="one-status"
             onContextMenu={email !== data?.email ? (e) => handleMenu(e) : undefined }
-            onClick={goProfile}>
+            onClick = {
+                () => navigate("/app/public/" + data?.id)}>
                 <p className="one-pic"
                     style={{backgroundImage: `url("${avatarURL}")`,
                         backgroundSize: "cover",
