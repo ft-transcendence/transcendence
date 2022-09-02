@@ -24,6 +24,7 @@ import { socket } from "../Chat";
 import { getUserAvatarQuery } from "../../queries/avatarQueries";
 import { Player } from "../game.interfaces";
 import { useNavigate } from "react-router-dom";
+import { Router } from "react-bootstrap-icons";
 
 declare var global: {
     selectedUser: oneUser
@@ -202,6 +203,8 @@ function Status({users, current, role}
     const [selData, setSelData] = useState<any>(null);
     const { show } = useContextMenu();
     const [hide, setHide] = useState<any>();
+
+    const navigate = useNavigate();
     
     useEffect(() => {
 
@@ -228,8 +231,11 @@ function Status({users, current, role}
                 gameInfo: player,
                 targetId: global.selectedUser.id
             }
-            socket.emit("send invitation", invitation)
+            localStorage.setItem("roomid", player.roomId.toString());
+            localStorage.setItem("playernb", "1");
+            socket.emit("send invitation", invitation);
         });
+        navigate("/app/privateGame");
     }
 
     function handleMute(mins: number){

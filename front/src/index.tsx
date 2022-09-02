@@ -66,6 +66,7 @@ root.render(
             />
             <Route path="leaderboard" element={<LeaderBoard />} />
             <Route path="game" element={<Game />} />
+            <Route path="privateGame" element={<Game pvtGame={true} />} />
             <Route path="watch" element={<Watch />} />
             <Route path="*" element={<Navigate to="/app/private-profile" />} />
           </Route>

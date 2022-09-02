@@ -1,10 +1,11 @@
 import React from 'react';
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import "./Game.css";
 import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle, SettingsProps, SettingsState, PropsPong } from './game.interfaces';
 import FocusTrap from 'focus-trap-react';
 import { getUserAvatarQuery } from '../queries/avatarQueries';
 import SoloGame from './SoloGame';
+import { socket as chatSocket } from './Chat';
 
  
 
@@ -114,30 +115,32 @@ class Message extends React.Component< Msg, MsgState > {
           };
         }
       
+
         render() {
-             const disp = this.state.showMsg ? 'unset': 'none';
-             var message: string;
-             switch(this.state.type) {
-                case 1:
-                    message = "Please wait for another player";
-                    break;
-                case 2:
-                    message = "You win";
-                    break;
-                case 3:
-                    message = "You lose";
-                    break;
-                case 4:
-                    message = "Waiting for your opponent to accept the invitation";
-                    break;
-                default:
-                    message = "error";
-             }
-          return (
-                <div style={{display: `${disp}`,}} className="Message">{message}</div>
-            )
-        }
-        } 
+          const disp = this.state.showMsg ? 'unset': 'none';
+          var message: string;
+          switch(this.state.type) {
+             case 1:
+                 message = "Please wait for another player";
+                 break;
+             case 2:
+                 message = "You win";
+                 break;
+             case 3:
+                 message = "You lose";
+                 break;
+              case 4:
+                 message = "Waiting for your opponent to accept the invitation";
+                 break;
+             default:
+                 message = "error";
+          }
+       return (
+             <div style={{display: `${disp}`,}} className="Message">{message}</div>
+         )
+     }
+     } 
+       
 
 class Paddle extends React.Component< PaddleProps, StatePaddle > {
     constructor(props: PaddleProps){
@@ -183,7 +186,7 @@ export default class Game extends React.Component<PropsPong, StatePong> {
     },
   };
 
-  socket = io("ws://localhost:4000", this.socketOptions);
+  socket: Socket;
 
   MOVE_UP = "ArrowUp";
   MOVE_DOWN = "ArrowDown";
@@ -213,6 +216,10 @@ export default class Game extends React.Component<PropsPong, StatePong> {
       avatarP2URL: "",
       soloGame: false,
     };
+    if (this.props.pvtGame === false) 
+      this.socket = io("ws://localhost:4000", this.socketOptions);
+    else
+      this.socket = chatSocket;
     this.onSettingsKeyDown = this.onSettingsKeyDown.bind(this);
     this.onSettingsClickClose = this.onSettingsClickClose.bind(this);
     this.quitSoloMode = this.quitSoloMode.bind(this);
@@ -262,10 +269,10 @@ export default class Game extends React.Component<PropsPong, StatePong> {
           })
     );
 
-    if (this.props.pvtGame && this.props.playerNumber === 1) {
-      this.socket.emit("start_private", {}, (player: Player) => 
-        this.setState({roomId: player.roomId}));
-      this.setState({playerNumber: this.props.playerNumber, msgType: 4, buttonState: "Cancel"});
+    if (this.props.pvtGame && localStorage.getItem("playernb") === "1") {
+      var RoomId = Number(localStorage.getItem("roomid")!);
+      this.setState({roomId: RoomId});
+      this.setState({playerNumber: 1, msgType: 4, buttonState: "Cancel"});
       this.socket.on("rejected", () =>
         this.setState({roomId: 0, playerNumber: 0, msgType: 0, buttonState: "Start"})
       );
