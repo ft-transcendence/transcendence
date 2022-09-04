@@ -151,9 +151,6 @@ const DisplayFriendsRow = (props: any) => {
     navigate("/app/watch", { replace: false });
   };
 
-  const handleClickChallenge = (otherId: number) => {
-    console.log("waiting for challenge function.", otherId);
-  };
 
   return (
     <main>
@@ -222,24 +219,6 @@ const DisplayFriendsRow = (props: any) => {
               ) : (
                 <div className="buttons-round-sm-disabled float-end">
                   <i className="bi bi-caret-right-square-fill sm-icons" />
-                </div>
-              )}
-
-              {props.userModel.status === 1 ? (
-                <OverlayTrigger overlay={renderTooltip("Challenge")}>
-                  <div
-                    id="clickableIcon"
-                    className="buttons-round-sm float-end"
-                    onClick={(e: any) => {
-                      handleClickChallenge(props.userModel.id);
-                    }}
-                  >
-                    <i className="bi bi-dpad-fill sm-icons" />
-                  </div>
-                </OverlayTrigger>
-              ) : (
-                <div className="buttons-round-sm-disabled float-end">
-                  <i className="bi bi-dpad-fill sm-icons" />
                 </div>
               )}
             </Col>
