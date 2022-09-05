@@ -80,7 +80,7 @@ export class UserService {
 				gamesWon: true,
 				gamesPlayed: true,
 			},
-			orderBy: { rank: 'desc' },
+			orderBy: { rank: 'asc' },
 		});
 
 		// const usersDTO: UserDto[] = [];

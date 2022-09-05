@@ -37,11 +37,10 @@ export default function LeaderBoard() {
                 <div className="leaderboard">
                     <div className="list">
                         {
-                            data?.map((one:any, index) => {
+                            data?.map((one:any, rank) => {
                                 return( 
-                                <div key={index}>
+                                <div key={rank}>
                                     <OneRow
-                                        index={index + 1}
                                         id={one.id}
                                         rank={one.rank}
                                         winRate={(one.winRate).toFixed(2)}
@@ -61,11 +60,10 @@ export default function LeaderBoard() {
     )
 }
 
-function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesPlayed, head}
-    : { index: number,
+function OneRow({rank, id, username, winRate, gamesWon, gamesLost, gamesPlayed, head}
+    : { rank: number,
         id: number,
         username: string,
-        rank: number,
         winRate: number,
         gamesWon: number,
         gamesLost: number,
@@ -87,7 +85,7 @@ function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesP
             getAvatar();
         }, [id]);
 
-        switch(index) {
+        switch(rank) {
             case 1:
                 return(
                 <div className="top first"
@@ -99,9 +97,8 @@ function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesP
                         backgroundPosition: "center"}}/>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
-                        <BadgeReward index={index}/>
+                        <BadgeReward rank={rank}/>
                         <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
-                        <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
                 );
@@ -116,9 +113,8 @@ function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesP
                         backgroundPosition: "center"}}/>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
-                        <BadgeReward index={index}/>
+                        <BadgeReward rank={rank}/>
                         <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
-                        <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
                 );
@@ -133,9 +129,8 @@ function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesP
                         backgroundPosition: "center"}}/>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
-                        <BadgeReward index={index}/>
+                        <BadgeReward rank={rank}/>
                         <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
-                        <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
                 );
@@ -144,9 +139,8 @@ function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesP
                     <div className="element"
                         onClick = {
                         () => navigate("/app/public/" + id)}>
-                        <div className="index">#{index}</div>
+                        <div className="index">#{rank}</div>
                         <div className="id">{id}</div>
-                        <div className="rank">LV. {rank}</div>
                         <div className="user">
                             {!head ? 
                                 <div className="avatar"
@@ -166,12 +160,12 @@ function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesP
         }
     }
 
-    function BadgeReward({index}:
-        {index: number}) {
+    function BadgeReward({rank}:
+        {rank: number}) {
         return(
             <div className="badge">
                 <div className="top-index">
-                    {index}
+                    {rank}
                 </div>
                 <svg width="40" height="40" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M472.038 443.917L412.343 279.908C429.649 251.901 439.653 218.926 439.653 183.654C439.653 
