@@ -162,6 +162,15 @@
       line-height: 2;
     }
 
+    .top-username {
+      margin: auto;
+      width: 50%;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
 
 .list {
   padding: 10px;
@@ -209,6 +218,12 @@
   border-radius: 50%;
   height: 30px;
   width: 30px;
+}
+
+.username {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .record {
