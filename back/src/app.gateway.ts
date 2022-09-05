@@ -130,9 +130,14 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 	@SubscribeMessage('send invitation')
 	async gameInvitation(@MessageBody() data: gameInvitation) {
+    // console.log('in gameINvitation app.gateway')
 		const client = await this.get__clientSocket(data.targetId);
 		if (client) {
-      client.emit('game invitation', data.gameInfo.roomId);}
+      // console.log('sending invitation')
+      client.emit('game invitation', data);
+    }
+    else
+      console.log('client not found')
 	}
 }
 

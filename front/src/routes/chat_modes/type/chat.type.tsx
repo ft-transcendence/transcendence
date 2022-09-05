@@ -104,5 +104,7 @@ export type mute = {
 
 export type gameInvitation = {
     gameInfo: Player;
+    inviterId: number;
+    inviterName: string;
     targetId: number;
 }

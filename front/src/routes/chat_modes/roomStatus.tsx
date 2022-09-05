@@ -24,7 +24,6 @@ import { socket } from "../Chat";
 import { getUserAvatarQuery } from "../../queries/avatarQueries";
 import { Player } from "../game.interfaces";
 import { useNavigate } from "react-router-dom";
-import { Router } from "react-bootstrap-icons";
 
 declare var global: {
     selectedUser: oneUser
@@ -144,21 +143,11 @@ function MemberStatus({current, role}
             setInviteds(data);
         })
 
-        socket.on("game info", (data: Player) => {
-            const invitation: gameInvitation = {
-                gameInfo: data,
-                targetId: global.selectedUser.id
-            }
-            socket.emit("invite to game", invitation)
-        })
-
-
         return (() => {
             socket.off("fetch owner");
             socket.off("fetch admins");
             socket.off("fetch members");
             socket.off("fetch inviteds");
-            socket.off("game info");
         })
         
     }, [current])
@@ -229,7 +218,9 @@ function Status({users, current, role}
         socket.emit("start_private", (player: Player) => {
             const invitation: gameInvitation = {
                 gameInfo: player,
-                targetId: global.selectedUser.id
+                inviterId: Number(localStorage.getItem("userID")),
+                inviterName: localStorage.getItem("userName")!,
+                targetId: global.selectedUser.id,
             }
             socket.emit("send invitation", invitation);
             localStorage.setItem("roomid", player.roomId.toString());

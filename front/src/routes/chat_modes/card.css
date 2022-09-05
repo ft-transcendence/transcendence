@@ -120,3 +120,61 @@
     color: red;
     font-size: 14px;
 }
+
+.challenger-avatar {
+    margin: auto;
+    margin-top: 0px;
+    border-radius: 50%;
+    height: 110px;
+    width: 110px;
+}
+
+.text {
+    margin: auto;
+    margin-top: 12px;
+    width: 260px;
+    text-align: center;
+    color: grey;
+    font-weight: 600;
+    line-height: 2;
+}
+
+
+.join-button {
+    padding: 20px;
+    width: 120px;
+    height:fit-content;
+    margin-left: 50px;
+    margin-right: 20px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+    /* color: rgb(97, 95, 95); */
+    color: green;
+    cursor: pointer;
+}
+
+.join-button:active {
+    background-color: rgb(177, 169, 169);
+    color: black;
+}
+
+
+.decline-button {
+    padding: 20px;
+    width: 120px;
+    height:fit-content;
+    margin-left: 20px;
+    margin-right: 50px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+    /* color: rgb(97, 95, 95); */
+    color: rgb(194, 7, 7);
+    cursor: pointer;
+}
+
+.decline-button:active {
+    background-color: rgb(177, 169, 169);
+    color: black;
+}

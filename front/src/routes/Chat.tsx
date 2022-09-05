@@ -4,11 +4,10 @@ import "./Chat.css";
 import Preview from "./chat_modes/chatPreview";
 import ChatRoom from "./chat_modes/chatRoom";
 import RoomStatus from "./chat_modes/roomStatus";
-import { chatPreview } from "./chat_modes/type/chat.type";
+import { chatPreview, gameInvitation } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 import { SettingCard } from "./chat_modes/settingCard";
-import { useNavigate } from "react-router-dom";
-import { Player } from "./game.interfaces";
+import { GameRequestCard } from "./chat_modes/gameRequestCard";
 
 const socketOptions = {
   transportOptions: {
@@ -27,11 +26,12 @@ export default function Chat() {
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
     const [newRoomRequest, setNewRoomRequest] = useState(false);
     const [settingRequest, setSettingRequest] = useState(false);
+    const [gameRequest, setGameRequest] = useState(false);
+    const [gameInfo, setGameInfo] = useState<gameInvitation | undefined>(undefined);
     const [outsider, setOutsider] = useState<boolean | undefined>(undefined);
     const [show, setShow] = useState<boolean | undefined>(undefined);
     const [role, setRole] = useState("");
     const [updateStatus, setUpdateStatus] = useState(0);
-    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -47,19 +47,15 @@ export default function Chat() {
             setRole(data);
         })
 
-        socket.on("game invitation", (roomId: number) => {
-            console.log("got invitation:::roomid ", roomId)
-            socket.emit("join_private", {roomId: roomId}, (player: Player) =>{
-                localStorage.setItem("roomid", player.roomId.toString());
-                localStorage.setItem("playernb", player.playerNb.toString());
-                navigate("/app/privateGame");
-            });
+        socket.on("game invitation", (game: gameInvitation) => {
+            // console.log('set game request true')
+            setGameRequest(true);
+            setGameInfo(game);
         })
 
         socket.on("update channel request", () => {
             setUpdateStatus(u => u+1);
         })
-
 
         socket.on("disconnect", () => {})
 
@@ -90,6 +86,10 @@ export default function Chat() {
 
     const settingCardDisappear = () => {
         setSettingRequest(old => {return !old})
+    }
+
+    const gameRequestDisappear = () => {
+        setGameRequest(old => {return !old})
     }
 
     return (
@@ -148,6 +148,21 @@ export default function Chat() {
                             settingRequest={settingRequest}
                             onSettingRequest={() => {
                                 setSettingRequest(old => {return !old})
+                        }}/>
+                </div>
+            </div>
+            <div
+                onClick={gameRequestDisappear}
+                className="card-disappear-click-zone"
+                style={{display: gameRequest ? "" : "none"}}>
+                <div 
+                    className="add-zone"
+                    onClick={event => event.stopPropagation()}>
+                        <GameRequestCard
+                            game={gameInfo}
+                            gameRequest={gameRequest}
+                            onGameRequest={() => {
+                                setGameRequest(old => {return !old})
                         }}/>
                 </div>
             </div>
