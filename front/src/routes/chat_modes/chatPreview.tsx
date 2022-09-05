@@ -92,7 +92,6 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
             targetId: -1,
             private: false,
             isPassword: false,
-            ownerPassword: "",
             newPassword: ""
         }
         socket.emit("leave channel", update);
@@ -108,7 +107,6 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
             targetId: -1,
             private: false,
             isPassword: false,
-            ownerPassword: "",
             newPassword: ""
         }
         socket.emit("block channel", update);
@@ -123,7 +121,6 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
             targetId: -1,
             private: false,
             isPassword: false,
-            ownerPassword: "",
             newPassword: ""
         }
         socket.emit("block user", update);
