@@ -10,8 +10,24 @@ import { UsersRelations } from "./users_relations/UsersRelations";
 import IconPen from "../../../ressources/icons/Icon_Pen.svg";
 import "../Profiles.css";
 import { COnUserSimple } from "../../../ContextMenus/COnUserSimple";
+import { io } from "socket.io-client";
 
 export default function UserPrivateProfile() {
+  const socketOptions = {
+    transportOptions: {
+      polling: {
+        extraHeaders: {
+          Token: localStorage.getItem("userToken"),
+        },
+      },
+    },
+  };
+
+  const socket = io("ws://localhost:4000", socketOptions);
+
+  socket.on("connect", () => {
+    console.log(localStorage.getItem("userID"), "connected to socket");
+  });
   const navigate = useNavigate();
 
   const [showUsername, setShowUsername] = useState(false);
@@ -49,8 +65,10 @@ export default function UserPrivateProfile() {
         await getAvatarQuery();
       if (result_1 !== undefined && result_1 instanceof Blob) {
         setAvatarURL(URL.createObjectURL(result_1));
-      } else if (result_1 === "error: avatar")
-        console.log("Could not get avatar of self.");
+      } else if (result_1 === "error")
+        setAvatarURL(
+          "https://img.myloview.fr/stickers/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg"
+        );
     };
     getAvatar();
   }, [avatarFetched]);
@@ -90,7 +108,14 @@ export default function UserPrivateProfile() {
             </div>
           </div>
           <Col className=" content">
-            <div className="profile-username-text">@{userInfo.userName}</div>
+            <div className="profile-username-text">
+              @
+              {userInfo && userInfo.userName
+                ? userInfo.userName.length > 10
+                  ? userInfo!.userName.substring(0, 7) + "..."
+                  : userInfo!.userName
+                : null}
+            </div>
             <span
               id="clickableIcon"
               className="caption"
@@ -115,7 +140,11 @@ export default function UserPrivateProfile() {
                         USERNAME
                       </div>
                       <div className="ROBOTO-text" style={{ fontSize: "15px" }}>
-                        {userInfo.userName}
+                        {userInfo && userInfo.userName
+                          ? userInfo.userName.length > 10
+                            ? userInfo!.userName.substring(0, 7) + "..."
+                            : userInfo!.userName
+                          : null}
                       </div>
                     </Col>
                     <Col className=" text-right">

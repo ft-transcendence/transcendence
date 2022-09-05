@@ -1,20 +1,19 @@
-import { useState } from "react";
-import { Col, Card, Row, Button, Form } from "react-bootstrap";
+import { useContext, useState } from "react";
+import { Col, Card, Row, Form } from "react-bootstrap";
+import { NotifCxt } from "../../../App";
 import {
   updateUsernameQuery,
   updateEmailQuery,
 } from "../../../queries/updateUserQueries";
-import { TAlert } from "../../../toasts/TAlert";
 
 export const ModifyEntry = (props: any) => {
+  const notif = useContext(NotifCxt);
   const initialValues = {
     email: "",
     userName: "",
   };
 
   const [userInput, setUserInput] = useState(initialValues);
-  const [showNotif, setShowNotif] = useState(false);
-  const [notifText, setNotifText] = useState("Error");
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
@@ -38,10 +37,10 @@ export const ModifyEntry = (props: any) => {
             props.onClick();
           }
         } else {
-          setNotifText(
+          notif?.setNotifText(
             "Username already taken. Please enter another username."
           );
-          setShowNotif(true);
+          notif?.setNotifShow(true);
         }
       };
       updateUsername();
@@ -58,8 +57,10 @@ export const ModifyEntry = (props: any) => {
             props.onClick();
           }
         } else {
-          setNotifText("Email already taken. Please enter another email.");
-          setShowNotif(true);
+          notif?.setNotifText(
+            "Email already taken. Please enter another email."
+          );
+          notif?.setNotifShow(true);
         }
       };
       updateEmail();
@@ -67,7 +68,6 @@ export const ModifyEntry = (props: any) => {
   };
   return (
     <Col className="col-6">
-      <TAlert show={showNotif} setShow={setShowNotif} text={notifText} />
       <Card className="p-5 modify-card">
         <Card.Body>
           <div>

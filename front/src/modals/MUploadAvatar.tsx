@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
+import { NotifCxt } from "../App";
 import { uploadAvatarQuery } from "../queries/avatarQueries";
 
 export function MUploadAvatar(props: any) {
+  const notif = useContext(NotifCxt);
   const [newAvatar, setNewAvatar] = useState<any>();
 
   const onChange = (e: any) => {
@@ -13,10 +15,15 @@ export function MUploadAvatar(props: any) {
     if (newAvatar) {
       const uploadAvatar = async () => {
         const result_1 = await uploadAvatarQuery(newAvatar);
-        if (result_1 !== "error: avatar") {
+        if (result_1 !== "error") {
           props.isAvatarUpdated();
           props.onHide();
-        } else console.log("Could not post avatar.");
+        } else {
+          notif?.setNotifText(
+            "Unable to upload avatar. Please try again later."
+          );
+          notif?.setNotifShow(true);
+        }
       };
       uploadAvatar();
     }

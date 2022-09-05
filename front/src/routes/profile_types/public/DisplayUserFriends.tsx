@@ -1,6 +1,14 @@
 import { useState, useEffect, useContext } from "react";
-import { Col, Card, Container, Row, OverlayTrigger } from "react-bootstrap";
+import {
+  Col,
+  Card,
+  Container,
+  Row,
+  OverlayTrigger,
+  Spinner,
+} from "react-bootstrap";
 import { useContextMenu } from "react-contexify";
+import { useNavigate } from "react-router-dom";
 import { UsersStatusCxt } from "../../../App";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
 import { ItableRow, IUserStatus } from "../../../globals/Interfaces";
@@ -20,11 +28,16 @@ export default function DisplayUserFriends(props: any) {
 
   useEffect(() => {
     const fetchDataFriends = async () => {
-      return await getUserFriends(props.userInfo.id);
+      const result = await getUserFriends(props.userInfo.id);
+      if (result !== "error") return result;
     };
 
     const fetchDataFriendsAvatar = async (otherId: number) => {
-      return await getUserAvatarQuery(otherId);
+      const result: undefined | string | Blob | MediaSource =
+        await getUserAvatarQuery(otherId);
+      if (result !== "error") return result;
+      else
+        return "https://img.myloview.fr/stickers/default-avatar-profile-in-trendy-style-for-social-media-user-icon-400-228654852.jpg";
     };
 
     const fetchData = async () => {
@@ -48,9 +61,9 @@ export default function DisplayUserFriends(props: any) {
             );
             if (found) newRow.userModel.status = found.userModel.status;
           }
-          if (avatar !== undefined && avatar instanceof Blob) {
+          if (avatar !== undefined && avatar instanceof Blob)
             newRow.userModel.avatar = URL.createObjectURL(avatar);
-          }
+          else if (avatar) newRow.userModel.avatar = avatar;
           friends.push(newRow);
         }
       }
@@ -102,6 +115,7 @@ export default function DisplayUserFriends(props: any) {
                         hook={setUpdate}
                         key={index}
                         userModel={h.userModel}
+                        myId={props.myId}
                       />
                     );
                   })
@@ -109,7 +123,7 @@ export default function DisplayUserFriends(props: any) {
                   <span>No friends.</span>
                 )
               ) : (
-                <div>Loading...</div>
+                <Spinner animation="border" />
               )}
             </div>
           </Card.Body>
@@ -121,6 +135,7 @@ export default function DisplayUserFriends(props: any) {
 
 const DisplayFriendsRow = (props: any) => {
   const { show } = useContextMenu();
+  const navigate = useNavigate();
 
   function displayMenu(e: React.MouseEvent<HTMLElement>, targetUser: number) {
     e.preventDefault();
@@ -133,12 +148,9 @@ const DisplayFriendsRow = (props: any) => {
   }
 
   const handleClickWatch = (otherId: number) => {
-    console.log("waiting for watch function.", otherId);
+    navigate("/app/watch", { replace: false });
   };
 
-  const handleClickChallenge = (otherId: number) => {
-    console.log("waiting for challenge function.", otherId);
-  };
 
   return (
     <main>
@@ -183,45 +195,34 @@ const DisplayFriendsRow = (props: any) => {
               displayMenu(e, props.userModel.id)
             }
           >
-            <div>@{props.userModel.username}</div>
+            <div>
+              @
+              {props.userModel.username.length > 10
+                ? props.userModel.username.substring(0, 7) + "..."
+                : props.userModel.username}
+            </div>
           </Col>
-          <Col className="">
-            {props.userModel.status === 2 ? (
-              <OverlayTrigger overlay={renderTooltip("Watch game")}>
-                <div
-                  id="clickableIcon"
-                  className="buttons-round-sm float-end"
-                  onClick={(e: any) => {
-                    handleClickWatch(props.userModel.id);
-                  }}
-                >
+          {props.myId !== 0 && props.userModel.id === props.myId ? null : (
+            <Col className="">
+              {props.userModel.status === 2 ? (
+                <OverlayTrigger overlay={renderTooltip("Watch game")}>
+                  <div
+                    id="clickableIcon"
+                    className="buttons-round-sm float-end"
+                    onClick={(e: any) => {
+                      handleClickWatch(props.userModel.id);
+                    }}
+                  >
+                    <i className="bi bi-caret-right-square-fill sm-icons" />
+                  </div>
+                </OverlayTrigger>
+              ) : (
+                <div className="buttons-round-sm-disabled float-end">
                   <i className="bi bi-caret-right-square-fill sm-icons" />
                 </div>
-              </OverlayTrigger>
-            ) : (
-              <div className="buttons-round-sm-disabled float-end">
-                <i className="bi bi-caret-right-square-fill sm-icons" />
-              </div>
-            )}
-
-            {props.userModel.status === 1 ? (
-              <OverlayTrigger overlay={renderTooltip("Challenge")}>
-                <div
-                  id="clickableIcon"
-                  className="buttons-round-sm float-end"
-                  onClick={(e: any) => {
-                    handleClickChallenge(props.userModel.id);
-                  }}
-                >
-                  <i className="bi bi-dpad-fill sm-icons" />
-                </div>
-              </OverlayTrigger>
-            ) : (
-              <div className="buttons-round-sm-disabled float-end">
-                <i className="bi bi-dpad-fill sm-icons" />
-              </div>
-            )}
-          </Col>
+              )}
+            </Col>
+          )}
         </Row>
       </Container>
     </main>

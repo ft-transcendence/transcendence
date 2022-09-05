@@ -1,5 +1,7 @@
+import { useContext } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useContextMenu } from "react-contexify";
+import { NotifCxt } from "../../../../App";
 import {
   removeFriendQuery,
   blockUserQuery,
@@ -20,7 +22,7 @@ export const DisplayRow = (props: any) => {
       },
     });
   }
-  
+
   return (
     <main>
       <Container className="">
@@ -64,7 +66,12 @@ export const DisplayRow = (props: any) => {
             }
           >
             <div className="profile-username-text" style={{ fontSize: "15px" }}>
-              @{props.userModel.username}
+              @
+              {props.userModel && props.userModel.username
+                ? props.userModel.username.length > 10
+                  ? props.userModel.username.substring(0, 7) + "..."
+                  : props.userModel.username
+                : null}
             </div>
           </Col>
           <Col>
@@ -95,16 +102,41 @@ export const DisplayRow = (props: any) => {
 };
 
 const ButtonsFriends = (props: any) => {
+  const notif = useContext(NotifCxt);
+
+  const handleClickRemove = (e: any) => {
+    e.preventDefault();
+    const removeFriend = async () => {
+      const result = await removeFriendQuery(props.id);
+      if (result !== "error") {
+        notif?.setNotifText("User #" + props.id + " removed.");
+        props.hook(!props.state);
+      } else notif?.setNotifText("Could not remove friend :(.");
+      notif?.setNotifShow(true);
+    };
+    removeFriend();
+  };
+
+  const handleClickBlock = (e: any) => {
+    e.preventDefault();
+    const blockFriend = async () => {
+      const result = await blockUserQuery(props.id);
+      if (result !== "error") {
+        notif?.setNotifText("User #" + props.id + " blocked.");
+        props.hook(!props.state);
+      } else notif?.setNotifText("Could not block friend :(.");
+      notif?.setNotifShow(true);
+    };
+    blockFriend();
+  };
+
   return (
     <main>
       <Col className="float-end">
         <button
           type="button"
           className="IBM-text btn btn-sm text-button"
-          onClick={async () => {
-            await removeFriendQuery(props.id);
-            props.hook(!props.state);
-          }}
+          onClick={(e) => handleClickRemove(e)}
         >
           Remove
         </button>
@@ -113,10 +145,7 @@ const ButtonsFriends = (props: any) => {
         <button
           type="button"
           className="IBM-text btn btn-sm text-button"
-          onClick={async () => {
-            await blockUserQuery(props.id);
-            props.hook(!props.state);
-          }}
+          onClick={(e) => handleClickBlock(e)}
         >
           Block
         </button>
@@ -126,6 +155,21 @@ const ButtonsFriends = (props: any) => {
 };
 
 const ButtonsBlocked = (props: any) => {
+  const notif = useContext(NotifCxt);
+
+  const handleClickUnblock = (e: any) => {
+    e.preventDefault();
+    const unblockUser = async () => {
+      const result = await unblockUserQuery(props.id);
+      if (result !== "error") {
+        notif?.setNotifText("User #" + props.id + " unblocked.");
+        props.hook(!props.state);
+      } else notif?.setNotifText("Could not unblock user :(.");
+      notif?.setNotifShow(true);
+    };
+    unblockUser();
+  };
+
   return (
     <main>
       <Col className=""></Col>
@@ -133,10 +177,7 @@ const ButtonsBlocked = (props: any) => {
         <button
           type="button"
           className="IBM-text btn btn-sm text-button"
-          onClick={async () => {
-            await unblockUserQuery(props.id);
-            props.hook(!props.state);
-          }}
+          onClick={(e) => handleClickUnblock(e)}
         >
           Unblock
         </button>
@@ -146,16 +187,41 @@ const ButtonsBlocked = (props: any) => {
 };
 
 const ButtonsPending = (props: any) => {
+  const notif = useContext(NotifCxt);
+
+  const handleClickAccept = (e: any) => {
+    e.preventDefault();
+    const addFriend = async () => {
+      const result = await addFriendQuery(props.id);
+      if (result !== "error") {
+        notif?.setNotifText("Friend request sent to user #" + props.id + "!");
+        props.hook(!props.state);
+      } else notif?.setNotifText("Could not send friend request :(.");
+      notif?.setNotifShow(true);
+    };
+    addFriend();
+  };
+
+  const handleClickIgnore = (e: any) => {
+    e.preventDefault();
+    const ignoreFriend = async () => {
+      const result = await denyInviteQuery(props.id);
+      if (result !== "error") {
+        notif?.setNotifText("Request from user #" + props.id + " ignored.");
+        props.hook(!props.state);
+      } else notif?.setNotifText("Could not ignore request :(.");
+      notif?.setNotifShow(true);
+    };
+    ignoreFriend();
+  };
+
   return (
     <main>
       <Col className="float-end">
         <button
           type="button"
           className="IBM-text btn btn-sm text-button"
-          onClick={async () => {
-            await addFriendQuery(props.id);
-            props.hook(true);
-          }}
+          onClick={(e) => handleClickAccept(e)}
         >
           Accept
         </button>
@@ -164,10 +230,7 @@ const ButtonsPending = (props: any) => {
         <button
           type="button"
           className="IBM-text btn btn-sm text-button"
-          onClick={async () => {
-            await denyInviteQuery(props.id);
-            props.hook(true);
-          }}
+          onClick={(e) => handleClickIgnore(e)}
         >
           Ignore
         </button>

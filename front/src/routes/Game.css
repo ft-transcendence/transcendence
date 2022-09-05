@@ -54,7 +54,7 @@
     justify-content: space-between;
     align-content: space-between;
     height: 7vh;
-    width: calc(177vh * 0.45);
+    /*width: calc(177vh * 0.45);*/
     /*background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -180%, rgb(57,80,127) 270%);*/
     /*border: 2px solid rgb(255, 255, 255);
     border-radius: 15px;*/
@@ -88,7 +88,7 @@
             /*margin: 4% auto;*/
             width: 10%;
             height: 70%;
-            font-size: 4.5vh;
+            /*font-size: 4.5vh;*/
             color: white;
             /*vertical-align: top;*/
         }
@@ -104,8 +104,8 @@
             .Photo {
                 /* background-color: black; */
                 margin: auto;
-                width: 7vh;
-                height: 7vh;
+                /*width: 7vh;
+                height: 7vh;*/
                 border: 2px solid #F9F9F9;
                 border-radius: 50%;
                 /* background: #D8D8D8; */
@@ -115,7 +115,7 @@
                 /* background-color: navy; */
                 margin: auto;
                 width: 40%;
-                font-size: 2vh;
+                /*font-size: 2vh;*/
                 color: white;
             }
 
@@ -125,14 +125,14 @@
     right: 0;
     margin: auto;
     /*display: inline-flex;*/
-    height: 45vh;
-    width: calc(177vh * 0.45);
+    /*height: 45vh;
+    width: calc(177vh * 0.45);*/
     /*background-image: radial-gradient(circle at 50% -40%, rgb(192,69,69) -10%, rgb(57,80,127) 65%, rgb(25,48,49) 184%);*/
     border: 0px solid rgb(255, 255, 255);
     border-radius: 20px;
     /*box-shadow: 0;*/
     overflow: hidden;
-}
+    }
 
     .Pad-left {
         position: absolute;
@@ -206,8 +206,8 @@
         right: 0;
         top: calc(50% - 1vh);
         bottom: 0;
-        height: 2vh;
-        width: 2vh;
+        /*height: 2vh;
+        width: 2vh;*/
         border-radius: 50%;
         /*box-shadow: 0 0 5px 4px rgb(143,72,89), inset 0 0 10px 5px rgb(143,72,89);*/
         background-color: rgb(255, 255, 255);
@@ -321,9 +321,52 @@
     background-color: Transparent;
     color: black;
 }
-/* rgb(143,72,89) 
-text-decoration: rgb(106, 204, 199) underline;
 
+@media all and (orientation:portrait) {
+    .Field {
+    height: calc(90vw / 177 * 100);
+    width: 90vw;
+    }
+    .Info-card {
+        width: 90vw;
+    }
+    .Score {
+        font-size: 4.5vw;
+    }
+    .Photo {
+        width: 7vw;
+        height: 7vw;
+    }
+    .Login {
+        font-size: 2vw;
+    }
+    .Ball {
+        height: calc(2/45*90vw/177*100);
+        width: calc(2/45*90vw/177*100);
+    }
+ }
 
-*/
+ @media all and (orientation:landscape) {
+    .Field {
+    height: 45vh;
+    width: calc(177vh * 0.45);
+    }
+    .Info-card {
+        width: calc(177vh * 0.45);
+    }
+    .Score {
+        font-size: 4.5vh;
+    }
+    .Photo {
+        width: 7vh;
+        height: 7vh;
+    }
+    .Login {
+        font-size: 2vh;
+    }
+    .Ball {
+        height: 2vh;
+        width: 2vh;
+    }
+ }
 

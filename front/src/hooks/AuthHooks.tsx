@@ -1,27 +1,36 @@
-import { ReactNode, useState } from "react";
-import { useLocation, Navigate } from "react-router-dom";
+import { ReactNode, useContext, useState } from "react";
+import { NotifCxt } from "../App";
+import { useLocation, Navigate, matchPath } from "react-router-dom";
 import { AuthContext, useAuth } from "../globals/contexts";
 import { logOut } from "../queries/authQueries";
-import { TAlert } from "../toasts/TAlert";
+
+export const RedirectWhenAuth = ({ children }: { children: JSX.Element }) => {
+  const location = useLocation();
+  if (
+    matchPath(location.pathname, "/auth/signin") &&
+    localStorage!.getItem("userLogged") === "true"
+  )
+    return (
+      <Navigate to="/app/private-profile" state={{ from: location }} replace />
+    );
+  return children;
+};
 
 export const RequireAuth = ({ children }: { children: JSX.Element }) => {
-  let auth = useAuth();
-  let location = useLocation();
+  const auth = useAuth();
+  const location = useLocation();
 
-  if (localStorage!.getItem("userLogged")! === "true") {
+  if (localStorage!.getItem("userLogged")! === "true")
     auth.signin(localStorage.getItem("userName"), () => {});
-  } else {
-    return <Navigate to="/auth/signin" state={{ from: location }} replace />;
-  }
+  else return <Navigate to="/auth/signin" state={{ from: location }} replace />;
   return children;
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  let [user, setUser] = useState<any>(null);
-  const [showNotif, setShowNotif] = useState(false);
-  const [notifText, setNotifText] = useState("Error");
+  const [user, setUser] = useState<any>(null);
+  const notif = useContext(NotifCxt);
 
-  let signin = (newUser: string | null, callback: VoidFunction) => {
+  const signin = (newUser: string | null, callback: VoidFunction) => {
     return fakeAuthProvider.signin(() => {
       setUser(newUser);
       localStorage.setItem("userLogged", "true");
@@ -29,33 +38,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  let signout = (callback: VoidFunction) => {
+  const signout = (callback: VoidFunction) => {
     return fakeAuthProvider.signout(() => {
       const postLogout = async () => {
         const result = await logOut();
         if (result !== "error") {
-          setNotifText("See you soon " + user + " !");
-          setShowNotif(true);
+          notif?.setNotifText("See you soon " + user + " !");
+          notif?.setNotifShow(true);
           setUser(null);
           localStorage.clear();
           localStorage.setItem("userLogged", "false");
           callback();
         } else {
-          setNotifText("Could not log out. Please, try again.");
-          setShowNotif(true);
+          notif?.setNotifText("Could not log out. Please, try again.");
+          notif?.setNotifShow(true);
         }
       };
       postLogout();
     });
   };
-  let value = { user, signin, signout };
+  const value = { user, signin, signout };
 
-  return (
-    <main>
-      <TAlert show={showNotif} setShow={setShowNotif} text={notifText} />
-      <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-    </main>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 const fakeAuthProvider = {
