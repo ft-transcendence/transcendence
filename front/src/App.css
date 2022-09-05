@@ -29,7 +29,7 @@
   );
   --styles-halo-linear-blue: linear-gradient(
     358.71deg,
-    rgba(22, 23, 27, 0.5) 0%,
+    rgba(8, 16, 46, 0.5) 0%,
     rgba(0, 0, 0, 0.1) 0.01%,
     rgba(67, 97, 238, 0.5) 100%
   );
@@ -173,4 +173,8 @@ a:hover {
 }
 .not-active-class {
   color: white;
+}
+.toast-container
+{
+  z-index: 999;
 }
