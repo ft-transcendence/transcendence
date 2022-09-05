@@ -7,6 +7,8 @@ import RoomStatus from "./chat_modes/roomStatus";
 import { chatPreview } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 import { SettingCard } from "./chat_modes/settingCard";
+import { useNavigate } from "react-router-dom";
+import { Player } from "./game.interfaces";
 
 const socketOptions = {
   transportOptions: {
@@ -29,6 +31,7 @@ export default function Chat() {
     const [show, setShow] = useState<boolean | undefined>(undefined);
     const [role, setRole] = useState("");
     const [updateStatus, setUpdateStatus] = useState(0);
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -45,8 +48,12 @@ export default function Chat() {
         })
 
         socket.on("game invitation", (roomId: number) => {
-            // console.log("got invitation:::roomid ", roomId)
-            socket.emit("join_private", {rid: roomId})
+            console.log("got invitation:::roomid ", roomId)
+            socket.emit("join_private", {roomId: roomId}, (player: Player) =>{
+                localStorage.setItem("roomid", player.roomId.toString());
+                localStorage.setItem("playernb", player.playerNb.toString());
+                navigate("/app/privateGame");
+            });
         })
 
         socket.on("update channel request", () => {

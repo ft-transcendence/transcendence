@@ -143,6 +143,7 @@ export class GameGateway {
 		// data to be provided to the client
 		// console.log('arrived in start_private');
 		const newId = await this.gameService.generate_new_id();
+		console.log('in start private id:', client.data.id);
 		const newRoom: Room = {
 			id: newId,
 			name: newId.toString(),
@@ -175,7 +176,7 @@ export class GameGateway {
 		@MessageBody('roomId') rid: number,
 		@ConnectedSocket() client: Client,
 	): Promise<Player | boolean> {
-		// console.log('arrive at join_private');
+		console.log('arrive at join_private');
 		if (this.server.sockets.adapter.rooms.has(String(rid))) {
 			const player: Player = {
 				playerNb: 0,
@@ -196,7 +197,7 @@ export class GameGateway {
 			player.playerNb = 2;
 
 			player.roomId = GameService.rooms[GameService.rooms.length - 1].id;
-
+			console.log('join private', player);
 			return player; // send data to client
 		} else {
 			return false;

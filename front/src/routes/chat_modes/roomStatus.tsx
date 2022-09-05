@@ -231,11 +231,11 @@ function Status({users, current, role}
                 gameInfo: player,
                 targetId: global.selectedUser.id
             }
-            localStorage.setItem("roomid", player.roomId.toString());
-            localStorage.setItem("playernb", "1");
             socket.emit("send invitation", invitation);
+            localStorage.setItem("roomid", player.roomId.toString());
+            localStorage.setItem("playernb", player.playerNb.toString());
+            navigate("/app/privateGame");
         });
-        navigate("/app/privateGame");
     }
 
     function handleMute(mins: number){

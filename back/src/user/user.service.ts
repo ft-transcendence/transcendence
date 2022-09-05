@@ -258,7 +258,7 @@ export class UserService {
 			throw new ForbiddenException('isAdding error : ' + error);
 		}
 	}
-	
+
 	async getBlocks(id: number) {
 		const BlocksIdList = await this.prisma.user.findMany({
 			where: {
