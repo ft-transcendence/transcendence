@@ -25,6 +25,7 @@ export default function Auth() {
     if (username)
       auth.signin(username, () => {
         navigate("/app/private-profile", { replace: true });
+        window.location.reload();
       });
     console.log("user is signed in");
   }, [navigate, auth]);

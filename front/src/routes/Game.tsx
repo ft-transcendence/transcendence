@@ -285,6 +285,8 @@ export default class Game extends React.Component<PropsPong, StatePong> {
   }
 
   componentWillUnmount() {
+    this.socket.disconnect();
+    this.socket.connect();
     this.socket.off("game_started");
     this.socket.off("update");
     this.socket.off("end_game");
