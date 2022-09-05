@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./Chat.css";
 import Preview from "./chat_modes/chatPreview";
@@ -8,6 +8,7 @@ import { chatPreview, gameInvitation } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 import { SettingCard } from "./chat_modes/settingCard";
 import { GameRequestCard } from "./chat_modes/gameRequestCard";
+import { NotifCxt } from "../App";
 
 const socketOptions = {
   transportOptions: {
@@ -32,6 +33,7 @@ export default function Chat() {
     const [show, setShow] = useState<boolean | undefined>(undefined);
     const [role, setRole] = useState("");
     const [updateStatus, setUpdateStatus] = useState(0);
+    const notif = useContext(NotifCxt);
 
     useEffect(() => {
 
@@ -40,7 +42,8 @@ export default function Chat() {
         });
 
         socket.on("exception", (data) => {
-            console.log("exception", data);
+            notif?.setNotifText('error: ' + data);
+            notif?.setNotifShow(true);
         })
 
         socket.on("fetch role", (data) => {

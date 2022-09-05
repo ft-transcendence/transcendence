@@ -77,9 +77,10 @@ export class ChatGateway {
 	) {
 		const channelId = await this.chatservice.new__channel(data);
 		if (channelId == undefined)
-			client.emit('exception', {
-				error: 'channel exist, try another channel name!',
-			});
+			client.emit(
+				'exception',
+				'failed to create the channel, please try again',
+			);
 		else {
 			const preview = await this.chatservice.get__onePreview(
 				channelId,
@@ -98,8 +99,7 @@ export class ChatGateway {
 		@ConnectedSocket() client: Socket,
 	) {
 		const channelId = await this.chatservice.join__channel(data);
-		if (channelId == undefined)
-			client.emit('exception', { error: 'Wrong password' });
+		if (channelId == undefined) client.emit('exception', 'wrong password');
 		else {
 			const channelName = await this.chatservice.get__Cname__ByCId(
 				data.channelId,
