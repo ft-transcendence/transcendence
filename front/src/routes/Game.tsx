@@ -280,7 +280,7 @@ export default class Game extends React.Component<PropsPong, StatePong> {
 
     if (this.props.pvtGame && localStorage.getItem("playernb") === "2") {
       let RoomId = Number(localStorage.getItem("roomid")!);
-      this.setState({roomId: RoomId, playerNumber: 2, msgType: 0});
+      this.setState({roomId: RoomId, playerNumber: 2, msgType: 0, gameStarted: true, showStartButton: false});
     } 
   }
 
