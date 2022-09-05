@@ -160,7 +160,10 @@ const DisplayGamesRow = (props: any) => {
             displayMenu(e, props.game.opponentId)
           }
         >
-          @{props.game.opponentUsername}
+          @
+          {props.game.opponentUsername.length > 10
+            ? props.game.opponentUsername.substring(0, 7) + "..."
+            : props.game.opponentUsername}
         </Col>
         <Col className="text-center">#{props.game.opponentRank}</Col>
         <Col className="text-center">
