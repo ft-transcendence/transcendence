@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./roomStatus.css";
 import { 
     chatPreview, 
@@ -24,9 +24,12 @@ import { socket } from "../Chat";
 import { getUserAvatarQuery } from "../../queries/avatarQueries";
 import { Player } from "../game.interfaces";
 import { useNavigate } from "react-router-dom";
+import { UsersStatusCxt } from "../../App";
+import { IUserStatus } from "../../globals/Interfaces";
 
 declare var global: {
     selectedUser: oneUser
+    onlineStatus: number | undefined
 }
 
 export default function RoomStatus({current, role, outsider, updateStatus}
@@ -188,13 +191,12 @@ function Status({users, current, role}
         role: string }) {
     
     const email = localStorage.getItem("userEmail");
-
     const [selData, setSelData] = useState<any>(null);
     const { show } = useContextMenu();
     const [hide, setHide] = useState<any>();
-
+    const usersStatus = useContext(UsersStatusCxt);
     const navigate = useNavigate();
-    
+
     useEffect(() => {
 
         if (selData && selData.event)
@@ -203,8 +205,10 @@ function Status({users, current, role}
                 hide();
             show(selData.event, {id: JSON.stringify(selData.data)});
             selData.event = null;
+            global.onlineStatus = usersStatus?.find((map: IUserStatus) => map.key === selData.id)?.userModel.status;
         }
-    }, [selData, show, hide]);
+    }, [selData, show, hide, usersStatus]);
+
 
     function handleAddFriend(){
         let update: updateUser = {
@@ -301,9 +305,12 @@ function Status({users, current, role}
                 <Item onClick={handleAddFriend}>
                     add friend
                 </Item>
-                <Item onClick={handleCreateGame}>
-                    invite to a game!
-                </Item>
+                {global.onlineStatus === 1 ?
+                    <Item onClick={handleCreateGame}>
+                        invite to a game!
+                    </Item>
+                    : <></>
+                }
                 <Item onClick={handleBlockUser}>
                     block user
                 </Item>
@@ -361,19 +368,38 @@ function OneStatus({data, setSelData, setHide}
 
     const email = localStorage.getItem("userEmail");
     const [avatarURL, setAvatarURL] = useState("");
+    const usersStatus = useContext(UsersStatusCxt);
+    const [status, setStatus] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
         const getAvatar = async () => {
             const result: undefined | string | Blob | MediaSource =
                 await getUserAvatarQuery(data.id);
-    
             if (result !== undefined && result instanceof Blob) {
                 setAvatarURL(URL.createObjectURL(result));
             }
         }
         getAvatar();
-      }, [data.id]);
+
+        let found = undefined;
+        found = usersStatus?.find((map: IUserStatus) => map.key === data.id);
+        if (found !== undefined)
+        {
+            switch(found.userModel.status)
+            {
+                case(0):
+                    setStatus("status-offline");
+                    break;
+                case(1):
+                    setStatus("status-online");
+                    break;
+                case(2):
+                    setStatus("status-ingame");
+                    break;
+            }
+        }
+      }, [data.id, usersStatus]);
 
     const handleMenu = (event: any) => {
 
@@ -394,11 +420,13 @@ function OneStatus({data, setSelData, setHide}
             onContextMenu={email !== data?.email ? (e) => handleMenu(e) : undefined }
             onClick = {
                 () => navigate("/app/public/" + data?.id)}>
-                <p className="one-pic"
+                <div className={`one-pic status-ball ${status}`}
                     style={{backgroundImage: `url("${avatarURL}")`,
                         backgroundSize: "cover",
                         backgroundPosition: "center"}}/>
-                <p className="one-name">{data?.username}</p>
+                <p className="one-name">
+                    {data?.username}
+                </p>
         </div>
     )
 }
