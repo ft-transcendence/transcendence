@@ -1516,30 +1516,24 @@ export class ChatService {
 
 	async update__setting(data: updateChannel) {
 		try {
-			const verified = await this.verify__UpdateSettingRight(
-				data.ownerPassword,
-				data.channelId,
-			);
-			if (verified) {
+			await this.prisma.channel.update({
+				where: {
+					id: data.channelId,
+				},
+				data: {
+					private: data.private,
+					isPassword: data.isPassword,
+				},
+			});
+			if (data.newPassword !== '')
 				await this.prisma.channel.update({
 					where: {
 						id: data.channelId,
 					},
 					data: {
-						private: data.private,
-						isPassword: data.isPassword,
+						password: data.newPassword,
 					},
 				});
-				if (data.newPassword !== '')
-					await this.prisma.channel.update({
-						where: {
-							id: data.channelId,
-						},
-						data: {
-							password: data.newPassword,
-						},
-					});
-			}
 		} catch (error) {
 			console.log('update__setting error:', error);
 			throw new WsException(error.message);

@@ -70,7 +70,6 @@ export default function RoomStatus({current, role, outsider, updateStatus}
             targetId: member.id,
             private: false,
             isPassword: false,
-            ownerPassword: "",
             newPassword: ""
         }
         socket.emit("invite to channel", update, () => {
@@ -258,7 +257,6 @@ function Status({users, current, role}
             targetId: global.selectedUser.id,
             private: false,
             isPassword: false,
-            ownerPassword: "",
             newPassword: ""
         }
         socket.emit("be admin", update);
@@ -272,7 +270,6 @@ function Status({users, current, role}
             targetId: global.selectedUser.id,
             private: false,
             isPassword: false,
-            ownerPassword: "",
             newPassword: ""
         }
         socket.emit("not admin", update);
@@ -286,7 +283,6 @@ function Status({users, current, role}
             targetId: global.selectedUser.id,
             private: false,
             isPassword: false,
-            ownerPassword: "",
             newPassword: ""
         }
         socket.emit("kick out", update);
@@ -450,7 +446,6 @@ function JoinChannel({channelId, outsider, isPassword}
             targetId: -1,
             private: false,
             isPassword: false,
-            ownerPassword: "",
             newPassword: ""
         }
         socket.emit("join channel", update);

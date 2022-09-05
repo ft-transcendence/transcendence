@@ -51,7 +51,6 @@ export type updateChannel = {
     targetId: number | string;
     private: boolean;
     isPassword: boolean;
-    ownerPassword: string;
     newPassword: string;
 }
 
