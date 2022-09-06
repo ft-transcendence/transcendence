@@ -452,4 +452,14 @@ export class ChatGateway {
 		await this.userService.blockUser(id, data.otherId);
 		client.emit('update channel request');
 	}
+
+	@SubscribeMessage('unblock user')
+	async unblockUser(
+		@MessageBody() data: updateUser,
+		@ConnectedSocket() client: Socket,
+	) {
+		const id = await this.chatservice.get__id__ByEmail(data.selfEmail);
+		await this.userService.unblockUser(id, data.otherId);
+		client.emit('update channel request');
+	}
 }

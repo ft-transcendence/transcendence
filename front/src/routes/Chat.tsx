@@ -33,7 +33,9 @@ export default function Chat() {
     const [show, setShow] = useState<boolean | undefined>(undefined);
     const [role, setRole] = useState("");
     const [updateStatus, setUpdateStatus] = useState(0);
+    const [blockedList, setBlockedList] = useState<[]>([]);
     const notif = useContext(NotifCxt);
+    const email = localStorage.getItem("userEmail");
 
     useEffect(() => {
 
@@ -63,14 +65,16 @@ export default function Chat() {
             setUpdateStatus(u => u+1);
         })
 
-        socket.on("disconnect", () => {})
+        socket.on("fetch blocked", (data: []) => {
+            setBlockedList(data);
+        })
 
         return (() => {
             socket.off("connect");
             socket.off("exception");
             socket.off("fetch role");
             socket.off("invite to game");
-            socket.off("disconnect");
+            socket.off("fetch blocked");
             socket.off("update channel request");
         })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,14 +82,27 @@ export default function Chat() {
 
     useEffect(() => {
         if (selectedChat)
+        {
             setOutsider((role === "invited" || role === "noRole") ? true : false);
-    }, [selectedChat, role]);
+            socket.emit("read blocked", email);
+        }
+    }, [selectedChat, role, email, updateStatus]);
 
     useEffect(() => {
         if (selectedChat)
             setShow((!selectedChat.isPassword) || !outsider)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [outsider])
+
+    useEffect(() => {
+        if (show && selectedChat)
+        {
+            const cId = selectedChat.id;
+            socket.emit("read msgs", cId);
+            socket.emit("get setting", cId);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [updateStatus, selectedChat, show]);
     
     const newRoomCardDisappear = () => {
         setNewRoomRequest(old => {return !old})
@@ -117,7 +134,7 @@ export default function Chat() {
                     role={role}
                     outsider={outsider}
                     setSettingRequest={() => {setSettingRequest(old => {return !old})}}
-                    updateStatus={updateStatus}
+                    blockedList={blockedList}
                 />
             <div style={{display: selectedChat?.dm ? "none" : "", backgroundColor: "#003e60"}}>
                 <RoomStatus
@@ -125,6 +142,7 @@ export default function Chat() {
                     role={role}
                     outsider={outsider}
                     updateStatus={updateStatus}
+                    blockedList={blockedList}
                 />
             </div>
             <div

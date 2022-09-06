@@ -83,6 +83,7 @@ export type oneUser = {
     isMuted: boolean;
     isFriend: boolean;
     isOnline: boolean;
+    isBlocked: boolean;
 }
 
 export type updateUser = {

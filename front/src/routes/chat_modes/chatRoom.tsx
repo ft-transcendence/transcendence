@@ -20,45 +20,16 @@ declare var global: {
     selectedData: oneMsg
 }
 
-export default function ChatRoom({current, show, role, outsider, setSettingRequest, updateStatus}
+export default function ChatRoom({current, show, role, outsider, setSettingRequest, blockedList}
     : { current: chatPreview | undefined,
         show: boolean | undefined,
         role: string,
         outsider: boolean | undefined,
-        setSettingRequest: () => void, updateStatus: number}) {
+        setSettingRequest: () => void,
+        blockedList: []}) {
 
-        const [blockedList, setBlockedList] = useState<[]>([]);
         const email = localStorage.getItem("userEmail");
-
-
-    useEffect(() => {
-        if (show && current)
-        {
-            const cId = current.id;
-            socket.emit("read msgs", cId);
-            socket.emit("get setting", cId);
-            socket.emit("read blocked", email);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [updateStatus, current, show]);
     
-
-    useEffect(() => {
-
-        socket.on("fetch blocked", (data: []) => {
-            setBlockedList(data);
-        })
-
-        socket.on("disconnect", () => {})
-
-        return (() => {
-            socket.off("connect")
-            socket.off("fetch blocked");
-            socket.off("disconnect");
-        })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [show, current, blockedList])
-
     return(
         <>
             <div className="chat-room-zone">

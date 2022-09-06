@@ -32,11 +32,13 @@ declare var global: {
     onlineStatus: number | undefined
 }
 
-export default function RoomStatus({current, role, outsider, updateStatus}
+export default function RoomStatus({current, role, outsider, updateStatus, blockedList}
     : { current: chatPreview | undefined,
         role: string,
         outsider: boolean | undefined,
-        updateStatus: number}) {
+        updateStatus: number,
+        blockedList: []}) {
+
     const [add, setAdd] = useState<boolean>(false);
     const [invitationTag, setTag] = useState<Tag[]>([]);
  
@@ -110,7 +112,8 @@ export default function RoomStatus({current, role, outsider, updateStatus}
             </div>
             <MemberStatus
                 current={current}
-                role={role}/>
+                role={role}
+                blockedList={blockedList}/>
             <JoinChannel
                 channelId={current?.id}
                 outsider={outsider}
@@ -119,9 +122,11 @@ export default function RoomStatus({current, role, outsider, updateStatus}
     )
 }
 
-function MemberStatus({current, role}
+function MemberStatus({current, role, blockedList}
     : { current: chatPreview | undefined,
-        role: string }) {
+        role: string,
+        blockedList: []}) {
+
     const [owner, setOwner] = useState<oneUser[] | null>([]);
     const [admins, setAdmins] = useState<oneUser[] | null>([]);
     const [members, setMembers] = useState<oneUser[] | null>([]);
@@ -161,33 +166,34 @@ function MemberStatus({current, role}
                 style={{display: owner?.length ? "" : "none"}}>
                 OWNER
             </p>
-            <Status users={owner} current={current} role={role}/>
+            <Status users={owner} current={current} role={role} blockedList={blockedList}/>
             <p 
                 className="status-type"
                 style={{display: admins?.length ? "" : "none"}}>
                 ADMINS
             </p>
-            <Status users={admins} current={current} role={role}/>
+            <Status users={admins} current={current} role={role} blockedList={blockedList}/>
             <p
                 className="status-type"
                 style={{display: members?.length ? "" : "none"}}>
                 MEMBERS
             </p>
-            <Status users={members} current={current} role={role}/>
+            <Status users={members} current={current} role={role} blockedList={blockedList}/>
             <p
                 className="status-type"
                 style={{display: inviteds?.length ? "" : "none"}}>
                 Invited Users
             </p>
-            <Status users={inviteds} current={current} role={role}/>
+            <Status users={inviteds} current={current} role={role} blockedList={blockedList}/>
         </div>
     )
 }
 
-function Status({users, current, role}
+function Status({users, current, role, blockedList}
     : { users: oneUser[] | null,
         current: chatPreview | undefined,
-        role: string }) {
+        role: string,
+        blockedList: []}) {
     
     const email = localStorage.getItem("userEmail");
     const [selData, setSelData] = useState<any>(null);
@@ -205,8 +211,7 @@ function Status({users, current, role}
             show(selData.event, {id: JSON.stringify(selData.data)});
             selData.event = null;
         }
-    }, [selData, show, hide, usersStatus]);
-
+    }, [selData, show, hide, usersStatus, blockedList]);
 
     function handleAddFriend(){
         let update: updateUser = {
@@ -246,6 +251,14 @@ function Status({users, current, role}
             otherId: global.selectedUser.id
         }
         socket.emit("block user", update);
+    }
+
+    function handleUnblockUser(){
+        let update: updateUser = {
+            selfEmail: email,
+            otherId: global.selectedUser.id
+        }
+        socket.emit("unblock user", update);
     }
 
     function handleBeAdmin(){
@@ -292,7 +305,7 @@ function Status({users, current, role}
             {users?.map((value, index) => {
                 return (
                 <div key={index}>
-                    <OneStatus data={value} setSelData={setSelData} setHide={setHide}/>
+                    <OneStatus data={value} setSelData={setSelData} setHide={setHide} blockedList={blockedList}/>
                 </div>
                 )
             })}
@@ -306,9 +319,11 @@ function Status({users, current, role}
                     </Item>
                     : <></>
                 }
-                <Item onClick={handleBlockUser}>
-                    block user
-                </Item>
+                { global.selectedUser?.isBlocked ? 
+                <Item onClick={handleUnblockUser}>unblock user</Item>
+                    :
+                <Item onClick={handleBlockUser}>block user</Item>
+                }
                 <Separator/>
                 {role === "owner" && 
                     (global.selectedUser?.isInvited === false) ?
@@ -356,10 +371,10 @@ function Status({users, current, role}
     )
 }
 
-function OneStatus({data, setSelData, setHide}
+function OneStatus({data, setSelData, setHide, blockedList}
     : { data: oneUser,
         setSelData: (d : any) => void,
-        setHide: (d: any) => void }) {
+        setHide: (d: any) => void, blockedList: [] }) {
 
     const email = localStorage.getItem("userEmail");
     const [avatarURL, setAvatarURL] = useState("");
@@ -405,6 +420,7 @@ function OneStatus({data, setSelData, setHide}
         setHide(hideAll);
         global.selectedUser = data;
         global.onlineStatus = usersStatus?.find((map: IUserStatus) => map.key === data.id)?.userModel.status;
+        global.selectedUser.isBlocked = blockedList.find((map: any) => map.id === data.id)!;
         global.selectedUser.isOnline = global.onlineStatus === 1;
 
         event.preventDefault();
