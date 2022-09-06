@@ -605,7 +605,7 @@ export class UserService {
 		if (id == otherId || (await this.isBlocked(id, otherId))) {
 			throw new ForbiddenException('Cannot block this user');
 		}
-		this.rmFriend(id, otherId);
+		// this.rmFriend(id, otherId);
 		const user = await this.prisma.user.update({
 			where: {
 				id: id,
