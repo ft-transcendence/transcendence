@@ -9,7 +9,6 @@ export function SettingCard({channelId, settingRequest, onSettingRequest}
     : { channelId: number | undefined,
         settingRequest: boolean,
         onSettingRequest: () => void}) {
-    const [ownerPass, setOwnerPass] = useState("");
     const [newPass, setNewPass] = useState("");
     const [isPrivate, setPrivate] = useState(false);
     const [isPassword, setIsPassword] = useState(false);
@@ -60,7 +59,6 @@ export function SettingCard({channelId, settingRequest, onSettingRequest}
     const initVars = (data: setting) => {
         setPrivate(data.private);
         setIsPassword(data.isPassword);
-        setOwnerPass("");
         setNewPass("");
     }
 
@@ -116,28 +114,10 @@ export function SettingCard({channelId, settingRequest, onSettingRequest}
         >
           You changed the password setting
         </div>
-        {/* <div
-          className="owner-password"
-          style={{
-            display:
-              isPrivate === current?.private &&
-              isPassword === current?.isPassword
-                ? "none"
-                : "",
-          }}
-        > */}
-          {/* <p className="info-tag">enter your password to confirm</p> */}
-          {/* <input
-            value={ownerPass}
-            onChange={(e) => handleString(e.target.value, setOwnerPass)}
-            className="password"
-            placeholder="********"
-          /> */}
-        {/* </div> */}
-        <div className="flex-block" />
-        <div onMouseUp={onUpdate} className="card-confirm-button">
-          UPDATE
-        </div>
+          <div className="flex-block" />
+          <div onMouseUp={onUpdate} className="card-confirm-button">
+            UPDATE
+          </div>
       </div>
     );
 }
