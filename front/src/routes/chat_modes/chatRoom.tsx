@@ -128,7 +128,7 @@ function MsgStream({email, channelId, blockedList}
                     });
                     return (
                         isBlocked ?
-                        <></> :
+                        <div key={index}></div> :
                         <div key={index}>
                             <OneMessage data={value} email={email}/>
                         </div>
