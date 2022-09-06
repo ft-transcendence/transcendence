@@ -46,6 +46,7 @@ export interface StatePong {
   avatarP1URL: string,
   avatarP2URL: string,
   soloGame: boolean,
+  redirectChat?: boolean,
 }
 
 export interface PropsPong {

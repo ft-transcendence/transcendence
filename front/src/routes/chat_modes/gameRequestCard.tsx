@@ -33,12 +33,14 @@ export function GameRequestCard({game, gameRequest, onGameRequest}
         socket.emit("join_private", {roomId: game!.gameInfo.roomId}, (player: Player) =>{
             localStorage.setItem("roomid", player.roomId.toString());
             localStorage.setItem("playernb", player.playerNb.toString());
+            onGameRequest();
             navigate("/app/privateGame");
         });
     }
 
     const declineGame = () => {
-        
+        socket.emit("decline game", (game));
+        onGameRequest();
     }
     
     return (
@@ -54,7 +56,6 @@ export function GameRequestCard({game, gameRequest, onGameRequest}
                     <div className="text">{game?.inviterName}</div>
                     <div className="text">invited you to a game</div>
                 </div>
-                {/* <div className="flex-block"/> */}
                 <div style={{display: "flex", flex: "3"}}>
                     <div className="join-button"
                         onClick={joinGame}>
