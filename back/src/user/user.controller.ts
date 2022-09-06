@@ -123,7 +123,7 @@ export class UserController {
 
 	@Post('/update_username')
 	async updateUsername(
-		@Body('username') newUsername: UpdateUsernameDto,
+		@Body() newUsername: UpdateUsernameDto,
 		@GetCurrentUserId() id: number,
 	) {
 		const { username } = newUsername;
@@ -150,7 +150,7 @@ export class UserController {
 
 	@Post('/update_email')
 	async updateEmail(
-		@Body('email') newEmail: UpdateEmailDto,
+		@Body() newEmail: UpdateEmailDto,
 		@GetCurrentUserId() id: number,
 	) {
 		const { email } = newEmail;
