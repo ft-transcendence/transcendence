@@ -82,6 +82,7 @@ export type oneUser = {
     isInvited: boolean;
     isMuted: boolean;
     isFriend: boolean;
+    isOnline: boolean;
 }
 
 export type updateUser = {

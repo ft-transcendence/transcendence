@@ -30,22 +30,20 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
         const [blockedList, setBlockedList] = useState<[]>([]);
         const email = localStorage.getItem("userEmail");
 
+
     useEffect(() => {
         if (show && current)
         {
             const cId = current.id;
             socket.emit("read msgs", cId);
             socket.emit("get setting", cId);
+            socket.emit("read blocked", email);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [updateStatus, current, show]);
     
 
     useEffect(() => {
-
-        socket.on("connect", () => {
-            socket.emit("read blocked", email);
-        });
 
         socket.on("fetch blocked", (data: []) => {
             setBlockedList(data);
@@ -59,7 +57,7 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
             socket.off("disconnect");
         })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [show, current])
+    }, [show, current, blockedList])
 
     return(
         <>

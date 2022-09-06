@@ -201,10 +201,9 @@ function Status({users, current, role}
         if (selData && selData.event)
         {
             if (hide)
-                hide();
+                hide();            
             show(selData.event, {id: JSON.stringify(selData.data)});
             selData.event = null;
-            global.onlineStatus = usersStatus?.find((map: IUserStatus) => map.key === selData.id)?.userModel.status;
         }
     }, [selData, show, hide, usersStatus]);
 
@@ -301,7 +300,7 @@ function Status({users, current, role}
                 <Item onClick={handleAddFriend}>
                     add friend
                 </Item>
-                {global.onlineStatus === 1 ?
+                {global.selectedUser?.isOnline ?
                     <Item onClick={handleCreateGame}>
                         invite to a game!
                     </Item>
@@ -405,6 +404,9 @@ function OneStatus({data, setSelData, setHide}
         });
         setHide(hideAll);
         global.selectedUser = data;
+        global.onlineStatus = usersStatus?.find((map: IUserStatus) => map.key === data.id)?.userModel.status;
+        global.selectedUser.isOnline = global.onlineStatus === 1;
+
         event.preventDefault();
         setSelData({data: data, event: event});
     }
