@@ -42,7 +42,11 @@ export default function Chat() {
         });
 
         socket.on("exception", (data) => {
-            notif?.setNotifText('error: ' + data);
+            console.log(data)
+            if (data.message)
+                notif?.setNotifText('error: ' + data.message);
+            else
+                notif?.setNotifText('error: ' + data);
             notif?.setNotifShow(true);
         })
 
@@ -51,7 +55,6 @@ export default function Chat() {
         })
 
         socket.on("game invitation", (game: gameInvitation) => {
-            // console.log('set game request true')
             setGameRequest(true);
             setGameInfo(game);
         })
