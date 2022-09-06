@@ -47,12 +47,12 @@ export class UserController {
 		}
 	}
 
-	@Get('/') //default testing route, localhost:4000/users/
-	getAllUsers() {
-		this.logger.log('getAllUsers');
-		const userListDtos = this.userService.getAllUsers();
-		return userListDtos;
-	}
+	// @Get('/') //default testing route, localhost:4000/users/
+	// getAllUsers() {
+	// 	// console.log('Going through getAllUsers in user.controller');
+	// 	const userListDtos = this.userService.getAllUsers();
+	// 	return userListDtos;
+	// }
 
 	@Get('get_leaderboard')
 	getLeaderboard() {
