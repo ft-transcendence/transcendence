@@ -4,6 +4,16 @@ import { getLeaderBoard } from "../queries/userQueries";
 import { getUserAvatarQuery } from "../queries/avatarQueries";
 import { useNavigate } from "react-router-dom";
 
+type gameRecord = {
+    id: number;
+    rank: number;
+    winRate: number;
+    username: string;
+    gamesWon: number;
+    gamesLost: number;
+    gamesPlayed: number;
+}
+
 export default function LeaderBoard() {
     const [data, setData] = useState<[]>([]);
 
@@ -37,13 +47,13 @@ export default function LeaderBoard() {
                 <div className="leaderboard">
                     <div className="list">
                         {
-                            data?.map((one:any, rank) => {
+                            data?.map((one:gameRecord, rank) => {
                                 return( 
                                 <div key={rank}>
                                     <OneRow
                                         id={one.id}
                                         rank={one.rank}
-                                        winRate={(one.winRate).toFixed(2)}
+                                        winRate={Number((one.winRate).toFixed(2))}
                                         username={one.username}
                                         gamesWon={one.gamesWon}
                                         gamesLost={one.gamesLost}
