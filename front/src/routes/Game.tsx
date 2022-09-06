@@ -6,8 +6,8 @@ import FocusTrap from 'focus-trap-react';
 import { getUserAvatarQuery } from '../queries/avatarQueries';
 import SoloGame from './SoloGame';
 import { socket as chatSocket } from './Chat';
-
- 
+import { Navigate } from 'react-router-dom';
+import { NotifCxt } from '../App';
 
 class Settings extends React.Component <SettingsProps, SettingsState> {
   
@@ -175,7 +175,9 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
     }
 
 export default class Game extends React.Component<PropsPong, StatePong> {
-  
+  static contextType = NotifCxt
+  context!: React.ContextType<typeof NotifCxt>
+
   socketOptions = {
     transportOptions: {
       polling: {
@@ -215,6 +217,7 @@ export default class Game extends React.Component<PropsPong, StatePong> {
       avatarP1URL: "",
       avatarP2URL: "",
       soloGame: false,
+      redirectChat: false,
     };
     if (this.props.pvtGame === false) 
       this.socket = io("ws://localhost:4000", this.socketOptions);
@@ -224,6 +227,7 @@ export default class Game extends React.Component<PropsPong, StatePong> {
     this.onSettingsClickClose = this.onSettingsClickClose.bind(this);
     this.quitSoloMode = this.quitSoloMode.bind(this);
   }
+
 
   componentDidMount() {
     document.onkeydown = this.keyDownInput;
@@ -273,8 +277,14 @@ export default class Game extends React.Component<PropsPong, StatePong> {
       let RoomId = Number(localStorage.getItem("roomid")!);
       this.setState({roomId: RoomId});
       this.setState({playerNumber: 1, msgType: 4, buttonState: "Cancel"});
-      this.socket.on("rejected", () =>
+      this.socket.on("rejected", (targetName: string) => {
         this.setState({roomId: 0, playerNumber: 0, msgType: 0, buttonState: "Start"})
+        this.setState({redirectChat: true})
+        console.log(targetName + 'rejected')
+        this.context?.setNotifText(targetName + ' rejected the game');
+        this.context?.setNotifShow(true);
+      }
+        
       );
     } 
 
@@ -283,6 +293,7 @@ export default class Game extends React.Component<PropsPong, StatePong> {
       this.setState({roomId: RoomId, playerNumber: 2, msgType: 0, gameStarted: true, showStartButton: false});
     } 
   }
+
 
   componentWillUnmount() {
     this.socket.disconnect();
@@ -518,6 +529,9 @@ export default class Game extends React.Component<PropsPong, StatePong> {
             </div>
           </div>
         )}
+        {this.state.redirectChat ? (
+        <Navigate to='/app/chat' replace={true}/>)
+        : null }
       </div>
     );
   }
