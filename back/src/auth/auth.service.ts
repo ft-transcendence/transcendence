@@ -119,11 +119,11 @@ export class AuthService {
 	/* SIGNIN USING 42 API */
 	async signin_42(dto: Auth42Dto): Promise<User> {
 		// DTO
-		const { email } = dto;
+		const { id } = dto;
 		// check if user exists
 		const user = await this.prisma.user.findUnique({
 			where: {
-				email: email,
+				id42: id,
 			},
 		});
 		//sending status update to the front
@@ -154,13 +154,18 @@ export class AuthService {
 
 	async create_42_user(dto: Auth42Dto): Promise<User> {
 		// DTO
-		const { email, username, avatar } = dto;
+		const { id, email, username, avatar } = dto;
 		// generate random password
 		const rdm_string = this.generate_random_password();
 		// hash password using argon2
 		const hash = await argon.hash(rdm_string);
 		//create new user
-		const user = await this.userService.createUser(email, username, hash);
+		const user = await this.userService.createUser(
+			email,
+			username,
+			hash,
+			id,
+		);
 
 		if (user) {
 			await this.uploadService.download_avatar(user.id, avatar);

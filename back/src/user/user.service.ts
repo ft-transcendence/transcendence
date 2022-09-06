@@ -30,12 +30,14 @@ export class UserService {
 		email: string,
 		username: string,
 		hash: string,
+		id = 0,
 	): Promise<User> {
 		const user = await this.prisma.user.create({
 			data: {
 				email,
 				username,
 				hash,
+				id42: id,
 			},
 		});
 		return user;
@@ -262,7 +264,7 @@ export class UserService {
 			throw new ForbiddenException('isAdding error : ' + error);
 		}
 	}
-	
+
 	async getBlocks(id: number) {
 		const BlocksIdList = await this.prisma.user.findMany({
 			where: {
