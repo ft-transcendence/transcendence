@@ -247,7 +247,11 @@ export class ChatGateway {
 				data.channelId,
 			);
 			this.updateChannelRequest('update channel request', cName);
-		}
+		} else
+			client.emit(
+				'exception',
+				"you currently don't have the right to talk in this channel",
+			);
 	}
 
 	async broadcast(event: string, message: oneMessage, channelId: number) {

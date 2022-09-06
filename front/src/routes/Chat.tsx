@@ -73,6 +73,7 @@ export default function Chat() {
             socket.off("disconnect");
             socket.off("update channel request");
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
