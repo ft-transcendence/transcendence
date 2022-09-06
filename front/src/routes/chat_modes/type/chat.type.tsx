@@ -74,7 +74,6 @@ export type oneMsg = {
 }
 
 export type oneUser = {
-    online: boolean;
     username: string;
     id: number;
     email: string;

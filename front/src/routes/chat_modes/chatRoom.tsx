@@ -4,7 +4,6 @@ import "./chatRoom.css";
 import { 
     chatPreview,
     oneMsg,
-    Tag,
     useMsg
 } from "./type/chat.type";
 import {
@@ -28,7 +27,7 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
         outsider: boolean | undefined,
         setSettingRequest: () => void, updateStatus: number}) {
 
-        const [blocked, setBlocked] = useState<Tag[]>([]);
+        const [blockedList, setBlockedList] = useState<[]>([]);
         const email = localStorage.getItem("userEmail");
 
     useEffect(() => {
@@ -48,8 +47,8 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
             socket.emit("read blocked", email);
         });
 
-        socket.on("fetch blocked", (data: Tag[]) => {
-            setBlocked(data);
+        socket.on("fetch blocked", (data: []) => {
+            setBlockedList(data);
         })
 
         socket.on("disconnect", () => {})
@@ -73,7 +72,7 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
                 current ?
                     (show ? 
                         <>
-                            <MsgStream email={email} channelId={current!.id} blocked={blocked}/>
+                            <MsgStream email={email} channelId={current!.id} blockedList={blockedList}/>
                         </>
                         :   
                         <LockIcon/>
@@ -109,10 +108,10 @@ function BriefInfo({info, role, setSettingRequest}
     )
 }
 
-function MsgStream({email, channelId, blocked}
+function MsgStream({email, channelId, blockedList}
     : { email: string | null,
         channelId: number,
-        blocked: Tag[]}) {
+        blockedList: []}) {
 
     const [msgs, setMsgs] = useState<oneMsg[]>([]);
     const scroll = useRef<HTMLDivElement>(null);
@@ -132,7 +131,7 @@ function MsgStream({email, channelId, blocked}
             socket.off("fetch msgs");
             socket.off("broadcast");
         })
-        
+
     }, [channelId, msgs])
 
     const handleDeleteMsg = () => {
@@ -145,28 +144,17 @@ function MsgStream({email, channelId, blocked}
         socket.emit("delete msg", msg)
     }
 
-    const handleEditMsg = () => {
-        let msg: useMsg = {
-            email: email,
-            channelId: channelId,
-            msgId: global.selectedData.msgId,
-            msg: global.selectedData.msg
-        }
-        socket.emit("edit msg", msg)
-    }
-
     setTimeout(()=>{
         if (scroll.current)
             scroll.current.scrollTop = scroll.current.scrollHeight;
     }, 30);
-
 
     return (
         <div 
             className="msg-stream" ref={scroll}>
             {
                 msgs.map((value, index) => {
-                    const isBlocked: Tag | undefined = blocked.find((blocked) => {
+                    const isBlocked = blockedList.find((blocked: any) => {
                         return value.id === blocked.id
                     });
                     return (
@@ -182,9 +170,6 @@ function MsgStream({email, channelId, blocked}
             <Menu id={MENU_MSG} style={{width: "120px", minWidth: "120px"}}>
                 <Item onClick={handleDeleteMsg}>
                     unsend
-                </Item>
-                <Item onClick={handleEditMsg} style={{backgroundColor: "grey"}}>
-                    edit
                 </Item>
             </Menu>
         </div>
@@ -237,7 +222,7 @@ function InputArea({channelId, email}
         setMsg("");
     }, [channelId])
 
-    const handleSetMsg = (event:any) => {
+    const handleSetMsg = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMsg(event.target.value);
     }
 

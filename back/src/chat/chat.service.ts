@@ -1109,7 +1109,6 @@ export class ChatService {
 				select: {
 					id: true,
 					username: true,
-					avatar: true,
 				},
 			});
 			return suggestion;
@@ -1242,7 +1241,7 @@ export class ChatService {
 		try {
 			const id = await this.get__id__ByEmail(email);
 			const source = await this.get__allUsers();
-			const tags = await this.organize__tags(source, id);
+			const tags = this.organize__tags(source, id);
 			return tags;
 		} catch (error) {
 			console.log('get__userTags error:', error);
@@ -1253,7 +1252,7 @@ export class ChatService {
 	async get__invitationTags(channelId: number) {
 		try {
 			const usersSource = await this.get__allUsers();
-			const allUsers = await this.organize__tags(usersSource, -1);
+			const allUsers = this.organize__tags(usersSource, -1);
 			const allInsiders = await this.get__allInsiders(channelId);
 			const allBlockers = await this.get__allBlockers(channelId);
 			const invitationTags = await this.organize__invitationTags(
@@ -1288,40 +1287,6 @@ export class ChatService {
 		}
 		return filterInsiders;
 	}
-
-	// async get__blockedTags(email: string) {
-	// 	try {
-	// 		const id = await this.get__id__ByEmail(email);
-	// 		const source = await this.get__allBlocked(id);
-	// 		const tags = await this.organize__tags(source, -1);
-	// 		return tags;
-	// 	} catch (error) {
-	// 		console.log('get__userTags error:', error);
-	// 		throw new WsException(error);
-	// 	}
-	// }
-
-	// async get__allBlocked(id: number) {
-	// 	try {
-	// 		const source = await this.prisma.user.findUnique({
-	// 			where: {
-	// 				id: id,
-	// 			},
-	// 			select: {
-	// 				blocked: {
-	// 					select: {
-	// 						id: true,
-	// 						username: true,
-	// 					},
-	// 				},
-	// 			},
-	// 		});
-	// 		return source;
-	// 	} catch (error) {
-	// 		console.log('get__allBlocked error:', error);
-	// 		throw new WsException(error);
-	// 	}
-	// }
 
 	async get__publicChats() {
 		try {

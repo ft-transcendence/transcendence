@@ -61,14 +61,14 @@ export class ChatGateway {
 		client.emit('add preview', preview);
 	}
 
-	// @SubscribeMessage('read blocked')
-	// async handleReadBlocked(
-	// 	@MessageBody() email: string,
-	// 	@ConnectedSocket() client: Socket,
-	// ) {
-	// 	const data = await this.chatservice.get__blockedTags(email);
-	// 	client.emit('fetch blocked', data);
-	// }
+	@SubscribeMessage('read blocked')
+	async handleReadBlocked(
+		@MessageBody() email: string,
+		@ConnectedSocket() client: Socket,
+	) {
+		const data = await this.userService.getBlocks(client.data.id);
+		client.emit('fetch blocked', data);
+	}
 
 	@SubscribeMessage('new channel')
 	async handleNewChannel(
@@ -442,9 +442,10 @@ export class ChatGateway {
 	@SubscribeMessage('block user')
 	async blockUser(
 		@MessageBody() data: updateUser,
-		// @ConnectedSocket() client: Socket,
+		@ConnectedSocket() client: Socket,
 	) {
 		const id = await this.chatservice.get__id__ByEmail(data.selfEmail);
 		await this.userService.blockUser(id, data.otherId);
+		client.emit('update channel request');
 	}
 }
