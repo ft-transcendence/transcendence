@@ -140,7 +140,7 @@ export default function Auth() {
               placeholder="****"
             />
             <Form.Text className="form-help-block" id="passwordHelpBlock" muted>
-              Your password must be 8-20 characters long.
+              Your password must be 8-32 characters long.
             </Form.Text>
           </Form.Group>
           {/* USE LINK TO GET USER FROM 42 API */}
@@ -160,10 +160,9 @@ export default function Auth() {
           >
             Submit
           </Button>
-          <p className="text-secondary mt-2">
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          {/* <p className="text-secondary mt-2">
             Forgot your &nbsp; <a href="#">password?</a>
-          </p>
+          </p> */}
         </div>
       </form>
     </div>

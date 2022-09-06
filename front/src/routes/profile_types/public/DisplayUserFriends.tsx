@@ -8,6 +8,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { useContextMenu } from "react-contexify";
+import { useNavigate } from "react-router-dom";
 import { UsersStatusCxt } from "../../../App";
 import { renderTooltip } from "../../../Components/SimpleToolTip";
 import { ItableRow, IUserStatus } from "../../../globals/Interfaces";
@@ -134,6 +135,7 @@ export default function DisplayUserFriends(props: any) {
 
 const DisplayFriendsRow = (props: any) => {
   const { show } = useContextMenu();
+  const navigate = useNavigate();
 
   function displayMenu(e: React.MouseEvent<HTMLElement>, targetUser: number) {
     e.preventDefault();
@@ -146,12 +148,9 @@ const DisplayFriendsRow = (props: any) => {
   }
 
   const handleClickWatch = (otherId: number) => {
-    console.log("waiting for watch function.", otherId);
+    navigate("/app/watch", { replace: false });
   };
 
-  const handleClickChallenge = (otherId: number) => {
-    console.log("waiting for challenge function.", otherId);
-  };
 
   return (
     <main>
@@ -196,7 +195,12 @@ const DisplayFriendsRow = (props: any) => {
               displayMenu(e, props.userModel.id)
             }
           >
-            <div>@{props.userModel.username}</div>
+            <div>
+              @
+              {props.userModel.username.length > 10
+                ? props.userModel.username.substring(0, 7) + "..."
+                : props.userModel.username}
+            </div>
           </Col>
           {props.myId !== 0 && props.userModel.id === props.myId ? null : (
             <Col className="">
@@ -215,24 +219,6 @@ const DisplayFriendsRow = (props: any) => {
               ) : (
                 <div className="buttons-round-sm-disabled float-end">
                   <i className="bi bi-caret-right-square-fill sm-icons" />
-                </div>
-              )}
-
-              {props.userModel.status === 1 ? (
-                <OverlayTrigger overlay={renderTooltip("Challenge")}>
-                  <div
-                    id="clickableIcon"
-                    className="buttons-round-sm float-end"
-                    onClick={(e: any) => {
-                      handleClickChallenge(props.userModel.id);
-                    }}
-                  >
-                    <i className="bi bi-dpad-fill sm-icons" />
-                  </div>
-                </OverlayTrigger>
-              ) : (
-                <div className="buttons-round-sm-disabled float-end">
-                  <i className="bi bi-dpad-fill sm-icons" />
                 </div>
               )}
             </Col>

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Container, Row, Col, OverlayTrigger } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import DisplayGamesStats from "./DisplayGamesStats";
 import { IUserStatus, userModel } from "../../../globals/Interfaces";
 import { getUserAvatarQuery } from "../../../queries/avatarQueries";
@@ -45,6 +45,7 @@ export default function UserProfile() {
   const usersStatus = useContext(UsersStatusCxt);
   const notif = useContext(NotifCxt);
   let params = useParams();
+  const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState<userModel>(userInfoInit);
   const [isFetched, setIsFetched] = useState(false);
   const [avatarURL, setAvatarURL] = useState("");
@@ -102,11 +103,7 @@ export default function UserProfile() {
   };
 
   const handleClickWatch = (otherId: number) => {
-    console.log("waiting for watch function.", otherId);
-  };
-
-  const handleClickChallenge = (otherId: number) => {
-    console.log("waiting for challenge function.", otherId);
+    navigate("/app/watch", { replace: false });
   };
 
   let myId: number = 0;
@@ -136,7 +133,10 @@ export default function UserProfile() {
                 </div>
                 <Col md="auto" className="">
                   <div className="public-username-text">
-                    @{userInfo.username}
+                    @
+                    {userInfo.username.length > 10
+                      ? userInfo.username.substring(0, 7) + "..."
+                      : userInfo.username}
                   </div>
                   <div className="public-rank-text"> Rank #{userInfo.rank}</div>
                   <div
@@ -167,23 +167,6 @@ export default function UserProfile() {
                     ) : (
                       <div className="buttons-round-big-disabled float-end">
                         <i className="bi bi-caret-right-square-fill big-icons" />
-                      </div>
-                    )}
-                    {status === 1 ? (
-                      <OverlayTrigger overlay={renderTooltip("Challenge")}>
-                        <div
-                          id="clickableIcon"
-                          className="buttons-round-big float-end"
-                          onClick={(e: any) => {
-                            handleClickChallenge(userInfo.id);
-                          }}
-                        >
-                          <i className="bi bi-dpad-fill big-icons" />
-                        </div>
-                      </OverlayTrigger>
-                    ) : (
-                      <div className="buttons-round-big-disabled float-end">
-                        <i className="bi bi-dpad-fill big-icons" />
                       </div>
                     )}
                     <OverlayTrigger overlay={renderTooltip("Add friend")}>
