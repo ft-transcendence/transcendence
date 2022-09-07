@@ -299,7 +299,7 @@ export default class Game extends React.Component<{}, StatePong> {
       });
     }
 
-    if (e.key === this.MOVE_DOWN) {
+    if (e.key === this.MOVE_DOWN && this.state.gameStarted) {
       e.preventDefault();
       this.socket.emit("move", {
         dir: 2,
