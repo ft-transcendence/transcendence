@@ -121,7 +121,7 @@ export class AuthService {
 		// DTO
 		const { id } = dto;
 		// check if user exists
-		const user = await this.prisma.user.findUnique({
+		const user = await this.prisma.user.findFirst({
 			where: {
 				id42: id,
 			},
