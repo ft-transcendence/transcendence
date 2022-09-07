@@ -54,7 +54,9 @@ export const DisplayRow = (props: any) => {
                   ? "online"
                   : props.userModel.status === 2
                   ? "ingame"
-                  : "offline"
+                  : props.userModel.status === 0
+                  ? "offline"
+                  : ""
               }`}
             ></div>
           </Col>

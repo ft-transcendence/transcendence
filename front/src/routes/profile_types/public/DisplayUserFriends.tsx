@@ -151,7 +151,6 @@ const DisplayFriendsRow = (props: any) => {
     navigate("/app/watch", { replace: false });
   };
 
-
   return (
     <main>
       <Container
@@ -183,7 +182,9 @@ const DisplayFriendsRow = (props: any) => {
                   ? "online"
                   : props.userModel.status === 2
                   ? "ingame"
-                  : "offline"
+                  : props.userModel.status === 0
+                  ? "offline"
+                  : ""
               }`}
             ></div>
           </Col>

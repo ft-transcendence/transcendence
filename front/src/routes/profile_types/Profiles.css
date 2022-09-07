@@ -127,7 +127,7 @@
 }
 
 .status-private.offline {
-  background: var(--basic-color-red);
+  background: grey;
 }
 
 .status-private.ingame {
@@ -166,7 +166,7 @@
 }
 
 .status-private-sm.offline {
-  background: var(--basic-color-red);
+  background: grey;
 }
 
 .status-private-sm.ingame {

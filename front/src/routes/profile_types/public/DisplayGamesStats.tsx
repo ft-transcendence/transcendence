@@ -76,7 +76,9 @@ export default function DisplayGamesStats(props: any) {
                   </div>
                 </div>
               ) : (
-                <Row className="text-title-games"><Col>No game history.</Col></Row>
+                <Row className="text-title-games">
+                  <Col>No game history.</Col>
+                </Row>
               )}
             </Card.Body>
           </Card>
@@ -154,7 +156,13 @@ const DisplayGamesRow = (props: any) => {
           </div>
           <div
             className={`status-private-sm ${
-              status === 1 ? "online" : status === 2 ? "ingame" : "offline"
+              status === 1
+                ? "online"
+                : status === 2
+                ? "ingame"
+                : props.userModel.status === 0
+                ? "offline"
+                : ""
             }`}
           ></div>
         </Col>

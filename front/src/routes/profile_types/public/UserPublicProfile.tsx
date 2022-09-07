@@ -149,7 +149,9 @@ export default function UserProfile() {
                       ? "online"
                       : status === 2
                       ? "playing"
-                      : "offline"}
+                      : status === 0
+                      ? "offline"
+                      : ""}
                   </div>
                 </Col>
                 {myId !== 0 && userInfo.id === myId ? null : (
