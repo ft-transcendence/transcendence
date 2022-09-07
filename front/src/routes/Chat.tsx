@@ -3,7 +3,7 @@ import "./Chat.css";
 import Preview from "./chat_modes/chatPreview";
 import ChatRoom from "./chat_modes/chatRoom";
 import RoomStatus from "./chat_modes/roomStatus";
-import { chatPreview, gameInvitation } from "./chat_modes/type/chat.type";
+import { chatPreview } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 import { SettingCard } from "./chat_modes/settingCard";
 import { NotifCxt } from "../App";

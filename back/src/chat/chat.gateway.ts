@@ -143,7 +143,7 @@ export class ChatGateway {
 			data.channelId,
 		);
 		client.emit('fetch inviteds', inviteds);
-		this.updateChannelRequest('update channel request', cName);
+		this.updateChannelRequest('update channel request', 'default_all');
 	}
 
 	@SubscribeMessage('block channel')
@@ -260,7 +260,6 @@ export class ChatGateway {
 	}
 
 	async updateChannelRequest(event: string, cName: string) {
-		console.log('update request');
 		this.server.in(cName).emit(event);
 	}
 

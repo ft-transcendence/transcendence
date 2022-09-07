@@ -29,22 +29,19 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
     const email = localStorage.getItem("userEmail");
     
     useEffect(() => {
-        if (updateStatus === 0)
-            return;
+        // if (updateStatus === 0)
+        //     return;
         socket.emit("read preview", email, (data: chatPreview[] | null) => {
             if (data)
                 setPreviews(data);
+        })
+
+        return (() => {
+            socket.off("read review");
         })
     }, [updateStatus, email]);
 
     useEffect(() => {
-
-        socket.on("connect", () => {});
-
-        socket.emit("read preview", email, (data: chatPreview[] | null) => {
-            if (data)
-                setPreviews(data);
-        })
 
         socket.on("add preview", (data: chatPreview) => {
             if (data)
@@ -56,14 +53,9 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
                 setPreviews(data);
         })
 
-        
-        socket.on("disconnect", () => {})
-
         return (() => {
-            socket.off("connect");
             socket.off("add preview");
             socket.off("update preview");
-            socket.off("disconnect")
         })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

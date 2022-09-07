@@ -403,7 +403,7 @@ export class GameService {
 		const duration = Math.abs(
 			game.endTime.getTime() - game.startTime.getTime(),
 		);
-		const updateGame = await this.prisma.game.update({
+		await this.prisma.game.update({
 			where: {
 				id: id,
 			},
@@ -442,7 +442,7 @@ export class GameService {
 			if (Math.floor(newScores[0]) === 1200) newScores[0]++;
 			if (Math.floor(newScores[1]) === 1200) newScores[0]--;
 
-			const updatedWinner = await this.prisma.user.update({
+			await this.prisma.user.update({
 				where: {
 					id: winnerId,
 				},
@@ -453,7 +453,7 @@ export class GameService {
 					},
 				},
 			});
-			const updatedLoser = await this.prisma.user.update({
+			await this.prisma.user.update({
 				where: {
 					id: loserId,
 				},
