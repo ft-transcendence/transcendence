@@ -41,37 +41,43 @@ export default function DisplayGamesStats(props: any) {
                     className="IBM-text float-end"
                     style={{ fontSize: "1em", fontWeight: "500" }}
                   >
-                    {props.userInfo.gamesLost + props.userInfo.gamesWon}
+                    {games.length}
                   </div>
                 </Col>
               </Row>
-              <Row className="text-title-games">
-                <Col>Result</Col>
-                <Col xs={4}>Opponent</Col>
-                <Col>Rank</Col>
-                <Col>Duration</Col>
-                <Col xs={1}></Col>
-              </Row>
-              <div
-                className=""
-                style={{
-                  maxHeight: "150px",
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                }}
-              >
-                {games !== undefined
-                  ? games!.map((_h, index) => {
-                      return (
-                        <DisplayGamesRow
-                          key={index}
-                          game={games[index]}
-                          statuses={usersStatus}
-                        />
-                      );
-                    })
-                  : null}
-              </div>
+              {games && games.length !== 0 ? (
+                <div>
+                  <Row className="text-title-games">
+                    <Col>Result</Col>
+                    <Col xs={4}>Opponent</Col>
+                    <Col>Rank</Col>
+                    <Col>Duration</Col>
+                    <Col xs={1}></Col>
+                  </Row>
+                  <div
+                    className=""
+                    style={{
+                      maxHeight: "150px",
+                      overflowY: "auto",
+                      overflowX: "hidden",
+                    }}
+                  >
+                    {games !== undefined
+                      ? games!.map((_h, index) => {
+                          return (
+                            <DisplayGamesRow
+                              key={index}
+                              game={games[index]}
+                              statuses={usersStatus}
+                            />
+                          );
+                        })
+                      : null}
+                  </div>
+                </div>
+              ) : (
+                <Row className="text-title-games"><Col>No game history.</Col></Row>
+              )}
             </Card.Body>
           </Card>
         </Col>
