@@ -1,7 +1,7 @@
 import "./card.css";
 import "./tags.css"
 import { useEffect, useState } from "react";
-import { socket } from "../Chat";
+import { socket } from "../../App"
 import { setting, updateChannel } from "./type/chat.type";
 import Switch from "react-switch";
 

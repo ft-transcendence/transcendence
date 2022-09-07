@@ -5,7 +5,7 @@ import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, Ms
 import FocusTrap from 'focus-trap-react';
 import { getUserAvatarQuery } from '../queries/avatarQueries';
 import SoloGame from './SoloGame';
-import { socket as chatSocket } from './Chat';
+import { socket as chatSocket } from '../App';
 import { Navigate } from 'react-router-dom';
 import { NotifCxt } from '../App';
 
@@ -280,7 +280,7 @@ export default class Game extends React.Component<PropsPong, StatePong> {
       this.socket.on("rejected", (targetName: string) => {
         this.setState({roomId: 0, playerNumber: 0, msgType: 0, buttonState: "Start"})
         this.setState({redirectChat: true})
-        console.log(targetName + 'rejected')
+        console.log(targetName + ' rejected')
         this.context?.setNotifText(targetName + ' rejected the game');
         this.context?.setNotifShow(true);
       }

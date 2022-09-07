@@ -56,7 +56,7 @@ export default function LeaderBoard() {
                                     <OneRow
                                         id={one.id}
                                         rank={one.rank}
-                                        winRate={Number((one.winRate).toFixed(2))}
+                                        winRate={Number((one.winRate))}
                                         username={one.username}
                                         gamesWon={one.gamesWon}
                                         gamesLost={one.gamesLost}
@@ -111,7 +111,7 @@ function OneRow({rank, id, username, winRate, gamesWon, gamesLost, gamesPlayed, 
                     <div className="top-info">
                         <div className="top-username">{username}</div>
                         <BadgeReward rank={rank}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate === 0 ? 0: winRate.toFixed(2)}</div>
                     </div>
                 </div>
                 );

@@ -4,6 +4,7 @@ import "./Game.css";
 import "./Watch.css";
 import { Game_data, Coordinates, StatePong, Button, ButtonState, PaddleProps, StatePaddle, Game_data_extended } from './game.interfaces';
 import { getUserAvatarQuery } from '../queries/avatarQueries';
+import { socket } from "../App"
 
 
 class RefreshButton extends React.Component< Button, ButtonState > {
@@ -77,19 +78,6 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
         );
        }
     }
-
-const socketOptions = {
-    transportOptions: {
-        polling: {
-        extraHeaders: {
-            Token: localStorage.getItem("userToken"),
-        }
-        }
-    }
-    };
-    
-
-const socket = io("ws://localhost:4000", socketOptions);
 
 export default class Watch extends React.Component < {}, StatePong > {
 

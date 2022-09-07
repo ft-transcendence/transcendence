@@ -1,6 +1,6 @@
 import "./card.css";
 import { useEffect, useState } from "react";
-import { socket } from "../Chat";
+import { socket } from "../../App"
 import { useNavigate } from "react-router-dom";
 import { Player } from "../game.interfaces";
 import { getUserAvatarQuery } from "../../queries/avatarQueries";

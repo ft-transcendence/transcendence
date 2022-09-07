@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { socket } from "../Chat";
+import { socket } from "../../App"
 import "./chatRoom.css";
 import { 
     chatPreview,

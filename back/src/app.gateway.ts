@@ -62,6 +62,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
       this.server.emit('update-status', serializedMap);
       //add to clientSocket
       this.set__clientSocket(UserId, client);
+      // console.log('connect userId', UserId, client.id);
       await this.chatGateway.handleJoinSocket(UserId, client);
     }  
     // eslint-disable-next-line unicorn/prefer-optional-catch-binding, unicorn/catch-error-name, unicorn/prevent-abbreviations
@@ -79,6 +80,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
       const serializedMap = [...this.userStatusMap.entries()];
       client.emit('update-status', serializedMap);
       this.delete__clientSocket(client.data.id);
+      // console.log('disconnect userId', client.data.id, client.id);
     }
 
    if (GameService.rooms.some((room) => room.player1 === client)) {
@@ -138,7 +140,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
 		console.log('send invitation')
     const client = await this.get__clientSocket(data.targetId);
 		if (client) {
-      console.log('send invitation found client')
+      // console.log('send invitation found client', client.id)
       client.emit('game invitation', data);
     }
 	}
@@ -148,7 +150,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
     console.log('decline invitation')
     const client = await this.get__clientSocket(game.inviterId);
 		if (client) {
-      console.log('decline invitation found client')
+      // console.log('decline invitation found client', client.id)
       const target = await this.userService.getUser(game.targetId);
       client.emit('rejected', target.username);
     }

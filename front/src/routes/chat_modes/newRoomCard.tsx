@@ -1,7 +1,7 @@
 import "./card.css";
 import "./tags.css"
 import { useEffect, useRef, useState } from "react";
-import { socket } from "../Chat";
+import { socket } from "../../App"
 import { newChannel } from "./type/chat.type";
 import "react-contexify/dist/ReactContexify.css";
 import "./context.css";

@@ -19,7 +19,17 @@ export const UsersStatusCxt = createContext<IUserStatus[] | undefined>(
 
 export const NotifCxt = createContext<INotifCxt | undefined>(undefined);
 
-export const socket = io("ws://localhost:4000");
+const socketOptions = {
+  transportOptions: {
+    polling: {
+      extraHeaders: {
+          Token: localStorage.getItem("userToken"),
+      }
+    }
+  }
+};
+
+export const socket = io("ws://localhost:4000", socketOptions);
 
 export default function App() {
   const [usersStatus, setUsersStatus] = useState<IUserStatus[] | undefined>(

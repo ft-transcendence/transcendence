@@ -1,6 +1,6 @@
 import "./chatPreview.css";
 import { useEffect, useState } from "react";
-import { socket } from "../Chat";
+import { socket } from "../../App"
 import { chatPreview, newDM, fetchDM, oneSuggestion, updateChannel } from "./type/chat.type";
 import {
     Menu,

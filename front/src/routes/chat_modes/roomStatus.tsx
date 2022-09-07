@@ -20,7 +20,7 @@ import {
 import "./context.css";
 import { AddUserIcon, QuitIcon } from "./icon";
 import ReactTags from "react-tag-autocomplete";
-import { socket } from "../Chat";
+import { socket } from "../../App"
 import { getUserAvatarQuery } from "../../queries/avatarQueries";
 import { Player } from "../game.interfaces";
 import { useNavigate } from "react-router-dom";
