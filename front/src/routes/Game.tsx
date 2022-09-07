@@ -127,6 +127,9 @@ class Message extends React.Component< Msg, MsgState > {
                 case 3:
                     message = "You lose";
                     break;
+                case 5:
+                  message = "Please finish your game before starting a new one";
+                  break;    
                 default:
                     message = "error";
              }
@@ -279,12 +282,19 @@ export default class Game extends React.Component<{}, StatePong> {
     }
     this.setState({ buttonState: "Cancel" });
     this.socket.emit("start", {}, (player: Player) =>
+    {  
+      if (player.playerNb === 3)
+      {
+        this.setState({
+          msgType: 5,});
+          return;
+      }  
       this.setState({
         roomId: player.roomId,
         playerNumber: player.playerNb,
         msgType: 1,
       })
-    );
+    });
   };
 
   soloButtonHandler = () => this.setState({ soloGame: true });
@@ -299,7 +309,7 @@ export default class Game extends React.Component<{}, StatePong> {
       });
     }
 
-    if (e.key === this.MOVE_DOWN) {
+    if (e.key === this.MOVE_DOWN && this.state.gameStarted) {
       e.preventDefault();
       this.socket.emit("move", {
         dir: 2,
