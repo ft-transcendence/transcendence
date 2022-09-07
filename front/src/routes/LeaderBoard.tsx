@@ -16,17 +16,20 @@ type gameRecord = {
 
 export default function LeaderBoard() {
     const [data, setData] = useState<[]>([]);
+    const [isFetched, setFetched] = useState(false);
 
     useEffect(() => {
-        const updateLeaderBoard = async () => {
-            await getLeaderBoard();
+      const updateLeaderBoard = async () => {
+        const result = await getLeaderBoard();
+        if (result !== "error") {
+          setData(result);
+          setFetched(true);
         }
-        updateLeaderBoard();
-        console.log(data);
-        if (localStorage.getItem("leaderBoard") !== null)
-            setData(JSON.parse(localStorage.getItem("leaderBoard")!));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+      };
+      updateLeaderBoard();
+      console.log(data);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isFetched]);
 
     return (
         <div className="background">

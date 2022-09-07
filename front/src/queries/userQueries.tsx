@@ -51,6 +51,5 @@ export const storeFriendsInfo = (result: any) => {
 };
 
 export const storeLeaderBoardInfo = (result: any) => {
-  // console.log("store leaderboard:::", result)
-  localStorage.setItem("leaderBoard", JSON.stringify(result));
+  return result;
 };
