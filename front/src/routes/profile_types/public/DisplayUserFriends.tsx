@@ -137,12 +137,17 @@ const DisplayFriendsRow = (props: any) => {
   const { show } = useContextMenu();
   const navigate = useNavigate();
 
-  function displayMenu(e: React.MouseEvent<HTMLElement>, targetUser: number) {
+  function displayMenu(
+    e: React.MouseEvent<HTMLElement>,
+    targetUserId: number,
+    targetUserUsername: string
+  ) {
     e.preventDefault();
     show(e, {
       id: "onUser",
       props: {
-        who: targetUser,
+        who: targetUserId,
+        username: targetUserUsername,
       },
     });
   }
@@ -172,7 +177,7 @@ const DisplayFriendsRow = (props: any) => {
                 }}
                 id="clickableIcon"
                 onClick={(e: React.MouseEvent<HTMLElement>) =>
-                  displayMenu(e, props.userModel.id)
+                  displayMenu(e, props.userModel.id, props.userModel.username)
                 }
               ></div>
             </div>
@@ -193,7 +198,7 @@ const DisplayFriendsRow = (props: any) => {
             id="clickableIcon"
             className="text-left public-hover"
             onClick={(e: React.MouseEvent<HTMLElement>) =>
-              displayMenu(e, props.userModel.id)
+              displayMenu(e, props.userModel.id, props.userModel.username)
             }
           >
             <div>

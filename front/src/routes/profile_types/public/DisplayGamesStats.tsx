@@ -123,12 +123,17 @@ const DisplayGamesRow = (props: any) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function displayMenu(e: React.MouseEvent<HTMLElement>, targetUser: number) {
+  function displayMenu(
+    e: React.MouseEvent<HTMLElement>,
+    targetUserId: number,
+    targetUserUsername: string
+  ) {
     e.preventDefault();
     show(e, {
       id: "onUser",
       props: {
-        who: targetUser,
+        who: targetUserId,
+        username: targetUserUsername,
       },
     });
   }
@@ -150,19 +155,25 @@ const DisplayGamesRow = (props: any) => {
               }}
               id="clickableIcon"
               onClick={(e: React.MouseEvent<HTMLElement>) =>
-                displayMenu(e, props.game.opponentId)
+                displayMenu(
+                  e,
+                  props.game.opponentId,
+                  props.game.opponentUsername
+                )
               }
             ></div>
           </div>
           <div
-            className={`status-private-sm ${ status ?
-              status === 1
-                ? "online"
-                : status === 2
-                ? "ingame"
-                : props.userModel.status === 0
-                ? "offline"
-                : "" : null
+            className={`status-private-sm ${
+              status
+                ? status === 1
+                  ? "online"
+                  : status === 2
+                  ? "ingame"
+                  : props.userModel.status === 0
+                  ? "offline"
+                  : ""
+                : null
             }`}
           ></div>
         </Col>
@@ -171,7 +182,7 @@ const DisplayGamesRow = (props: any) => {
           id="clickableIcon"
           className="text-left public-hover"
           onClick={(e: React.MouseEvent<HTMLElement>) =>
-            displayMenu(e, props.game.opponentId)
+            displayMenu(e, props.game.opponentId, props.game.opponentUsername)
           }
         >
           @

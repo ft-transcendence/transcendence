@@ -80,18 +80,21 @@ export const DisplayRow = (props: any) => {
             {props.listType === "friends" ? (
               <ButtonsFriends
                 id={props.userModel.id}
+                username={props.userModel.username}
                 hook={props.hook}
                 state={props.state}
               />
             ) : props.listType === "blocked" ? (
               <ButtonsBlocked
                 id={props.userModel.id}
+                username={props.userModel.username}
                 hook={props.hook}
                 state={props.state}
               />
             ) : props.listType === "pending" ? (
               <ButtonsPending
                 id={props.userModel.id}
+                username={props.userModel.username}
                 hook={props.hook}
                 state={props.state}
               />
@@ -111,9 +114,12 @@ const ButtonsFriends = (props: any) => {
     const removeFriend = async () => {
       const result = await removeFriendQuery(props.id);
       if (result !== "error") {
-        notif?.setNotifText("User #" + props.id + " removed.");
+        notif?.setNotifText(props.username + " removed from friends!");
         props.hook(!props.state);
-      } else notif?.setNotifText("Could not remove friend :(.");
+      } else
+        notif?.setNotifText(
+          "Could not remove " + props.username + " from friends :(."
+        );
       notif?.setNotifShow(true);
     };
     removeFriend();
@@ -124,9 +130,9 @@ const ButtonsFriends = (props: any) => {
     const blockFriend = async () => {
       const result = await blockUserQuery(props.id);
       if (result !== "error") {
-        notif?.setNotifText("User #" + props.id + " blocked.");
+        notif?.setNotifText(props.username + " blocked.");
         props.hook(!props.state);
-      } else notif?.setNotifText("Could not block friend :(.");
+      } else notif?.setNotifText("Could not block " + props.username + " :(.");
       notif?.setNotifShow(true);
     };
     blockFriend();
@@ -164,9 +170,10 @@ const ButtonsBlocked = (props: any) => {
     const unblockUser = async () => {
       const result = await unblockUserQuery(props.id);
       if (result !== "error") {
-        notif?.setNotifText("User #" + props.id + " unblocked.");
+        notif?.setNotifText(props.username + " unblocked.");
         props.hook(!props.state);
-      } else notif?.setNotifText("Could not unblock user :(.");
+      } else
+        notif?.setNotifText("Could not unblock " + props.username + " :(.");
       notif?.setNotifShow(true);
     };
     unblockUser();
@@ -196,9 +203,12 @@ const ButtonsPending = (props: any) => {
     const addFriend = async () => {
       const result = await addFriendQuery(props.id);
       if (result !== "error") {
-        notif?.setNotifText("Friend request sent to user #" + props.id + "!");
+        notif?.setNotifText(props.username + " added as friend!");
         props.hook(!props.state);
-      } else notif?.setNotifText("Could not send friend request :(.");
+      } else
+        notif?.setNotifText(
+          "Could not accept friend request from " + props.username + " :(."
+        );
       notif?.setNotifShow(true);
     };
     addFriend();
@@ -209,9 +219,12 @@ const ButtonsPending = (props: any) => {
     const ignoreFriend = async () => {
       const result = await denyInviteQuery(props.id);
       if (result !== "error") {
-        notif?.setNotifText("Request from user #" + props.id + " ignored.");
+        notif?.setNotifText("Request from " + props.username + " ignored.");
         props.hook(!props.state);
-      } else notif?.setNotifText("Could not ignore request :(.");
+      } else
+        notif?.setNotifText(
+          "Could not ignore request from " + props.username + " :(."
+        );
       notif?.setNotifShow(true);
     };
     ignoreFriend();
