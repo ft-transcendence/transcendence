@@ -1,7 +1,7 @@
 import "./card.css";
 import "./tags.css"
 import { useEffect, useRef, useState } from "react";
-import { socket } from "../Chat";
+import { socket } from "../../App"
 import { newChannel } from "./type/chat.type";
 import "react-contexify/dist/ReactContexify.css";
 import "./context.css";
@@ -9,9 +9,10 @@ import Switch from "react-switch";
 import ReactTags, { Tag } from "react-tag-autocomplete";
 import { matchSorter } from "match-sorter";
 
-export function NewRoomCard({newRoomRequest, onNewRoomRequest}
+export function NewRoomCard({newRoomRequest, onNewRoomRequest, updateStatus}
     : { newRoomRequest: boolean,
-        onNewRoomRequest: () => void}) {
+        onNewRoomRequest: () => void,
+        updateStatus: number}) {
     const email = localStorage.getItem("userEmail");
     const [userTag, setUserTag] = useState<Tag[]>([]);
     const [roomName, setRoomName] = useState("");
@@ -20,6 +21,12 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
     const [isPassword, setIsPassword] = useState(false);
     const [addedMember, setAddMember] = useState<Tag[]>([]);
     const scroll = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      if (updateStatus === 0)
+        return;
+      socket.emit("get user tags", email);
+    }, [email, updateStatus])
 
     useEffect(() => {
 
@@ -73,7 +80,9 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
             email: email,
             members: addedMember,
         }
-        socket.emit("new channel", data);
+        socket.emit("new channel", data, (data: newChannel) => {
+          socket.emit('fetch new channel', data);
+        });
         initVars();
         onNewRoomRequest();
         socket.emit("get search suggest", email);
@@ -150,7 +159,6 @@ export function NewRoomCard({newRoomRequest, onNewRoomRequest}
         </div>
         <div style={{ display: isPassword ? "" : "none" }}>
           <input
-            id="password"
             type="password"
             value={roomPass}
             onChange={(e) => handleString(e.target.value, setRoomPass)}

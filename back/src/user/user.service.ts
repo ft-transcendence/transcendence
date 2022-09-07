@@ -2,9 +2,9 @@
 import {
 	Injectable,
 	ForbiddenException,
+	BadRequestException,
 	Inject,
 	forwardRef,
-	BadRequestException,
 } from '@nestjs/common';
 import { Game, User } from '@prisma/client';
 import * as argon from 'argon2';
@@ -20,8 +20,9 @@ import { SubjectiveGameDto } from 'src/game/dto';
 @Injectable()
 export class UserService {
 	constructor(
-		private prisma: PrismaService,
-		@Inject(forwardRef(() => GameService)) private gameService: GameService,
+		private readonly prisma: PrismaService,
+		@Inject(forwardRef(() => GameService))
+		private readonly gameService: GameService,
 	) {}
 
 	/*	CREATE	*/
@@ -83,7 +84,7 @@ export class UserService {
 				gamesWon: true,
 				gamesPlayed: true,
 			},
-			orderBy: { rank: 'desc' },
+			orderBy: { rank: 'asc' },
 		});
 
 		// const usersDTO: UserDto[] = [];
@@ -445,7 +446,7 @@ export class UserService {
 			},
 		});
 
-		const otherUser = await this.prisma.user.update({
+		await this.prisma.user.update({
 			where: {
 				id: otherId,
 			},
@@ -622,8 +623,7 @@ export class UserService {
 		if (id == otherId || (await this.isBlocked(id, otherId))) {
 			throw new ForbiddenException('Cannot block this user');
 		}
-		if (await this.isFriend(id, otherId))
-			await this.rmFriend(id, otherId);
+		if (await this.isFriend(id, otherId)) await this.rmFriend(id, otherId);
 		const user = await this.prisma.user.update({
 			where: {
 				id: id,
@@ -634,17 +634,6 @@ export class UserService {
 				},
 			},
 		});
-
-		// const otherUser = await this.prisma.user.update({
-		// 	where: {
-		// 		id: otherId,
-		// 	},
-		// 	data: {
-		// 		blocked: {
-		// 			push: id,
-		// 		},
-		// 	},
-		// });
 
 		// this.updateBlocks(id);
 		// this.updateBlocks(otherId);
@@ -675,27 +664,6 @@ export class UserService {
 				blocks: user.blocks,
 			},
 		});
-
-		//removing User from otherUser.blocks
-		// const user2 = await this.prisma.user.findUnique({
-		// 	where: {
-		// 		id: otherId,
-		// 	},
-		// });
-
-		// const index2 = user2.blocks.indexOf(id);
-		// if (index2 != -1) {
-		// 	user2.blocks.splice(index2, 1);
-		// }
-
-		// await this.prisma.user.update({
-		// 	where: {
-		// 		id: otherId,
-		// 	},
-		// 	data: {
-		// 		blocks: user2.blocks,
-		// 	},
-		// });
 		return user;
 	}
 
@@ -718,7 +686,7 @@ export class UserService {
 
 		let index = 1;
 		for (const id of usersId) {
-			const usersUpdate = await this.prisma.user.update({
+			await this.prisma.user.update({
 				where: {
 					id: id,
 				},
@@ -816,3 +784,4 @@ export class UserService {
 		return updateUser;
 	}
 }
+

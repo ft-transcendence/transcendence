@@ -1,3 +1,5 @@
+import { Socket } from "socket.io-client";
+
 export interface Game_data {
   paddleLeft?: number;
   paddleRight?: number;
@@ -44,6 +46,14 @@ export interface StatePong {
   avatarP1URL: string,
   avatarP2URL: string,
   soloGame: boolean,
+  redirectChat?: boolean,
+}
+
+export interface PropsPong {
+  pvtGame?: boolean,
+  roomId?: number,
+  playerNumber?: number,
+  socket?: Socket;
 }
 
 export interface Button {

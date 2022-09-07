@@ -1,9 +1,9 @@
 import React from 'react';
-import { io } from "socket.io-client";
 import "./Game.css";
 import "./Watch.css";
 import { Game_data, Coordinates, StatePong, Button, ButtonState, PaddleProps, StatePaddle, Game_data_extended } from './game.interfaces';
 import { getUserAvatarQuery } from '../queries/avatarQueries';
+import { socket } from "../App"
 
 
 class RefreshButton extends React.Component< Button, ButtonState > {
@@ -78,19 +78,6 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
        }
     }
 
-const socketOptions = {
-    transportOptions: {
-        polling: {
-        extraHeaders: {
-            Token: localStorage.getItem("userToken"),
-        }
-        }
-    }
-    };
-    
-
-const socket = io("ws://localhost:4000", socketOptions);
-
 export default class Watch extends React.Component < {}, StatePong > {
 
     constructor(none = {}) 
@@ -118,7 +105,6 @@ export default class Watch extends React.Component < {}, StatePong > {
     }
 
     componentDidMount() {
-        var t = this;
         fetch(process.env.REACT_APP_BACKEND_URL + "/watch", {
             method: "GET",
             headers: authFileHeader(),
@@ -133,7 +119,7 @@ export default class Watch extends React.Component < {}, StatePong > {
         })
         socket.on("update", (info: Game_data) => {
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name});
-            if (this.state.avatarP1URL == "" && this.state.avatarP2URL == "")
+            if (this.state.avatarP1URL === "" && this.state.avatarP2URL === "")
                 this.getAvatars(info.player1Avatar, info.player2Avater);
         });
             socket.on("end_game", (winner: number) => 

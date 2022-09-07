@@ -18,7 +18,7 @@ import { UserService } from 'src/user/user.service';
 export class ChatService {
 	constructor(
 		private readonly prisma: PrismaService,
-		private userService: UserService,
+		private readonly userService: UserService,
 	) {}
 
 	async list__allUsers() {
@@ -59,22 +59,9 @@ export class ChatService {
 		}
 	}
 
-	async get__cId__ByCname(name: string) {
-		try {
-			const channel = await this.prisma.channel.findUnique({
-				where: {
-					name: name,
-				},
-			});
-			return channel.id;
-		} catch (error) {
-			console.log('get__cId__ByCname error:', error);
-		}
-	}
-
 	async get__Cname__ByCId(cid: number) {
 		try {
-			const channel = await this.prisma.channel.findMany({
+			const channel = await this.prisma.channel.findUnique({
 				where: {
 					id: cid,
 				},
@@ -82,20 +69,25 @@ export class ChatService {
 					name: true,
 				},
 			});
-			return channel[0].name;
+			return channel.name;
 		} catch (error) {
 			console.log('get__Cname__ByCId error:', error);
 			throw new WsException(error);
 		}
 	}
 
-	async get__channelsToJoin(email: string) {
+	async get__channelsUserIn(id: number) {
 		try {
 			const source = await this.prisma.user.findUnique({
 				where: {
-					email: email,
+					id: id,
 				},
 				select: {
+					owner: {
+						where: {
+							dm: true,
+						},
+					},
 					admin: true,
 					member: true,
 					invited: true,
@@ -111,6 +103,11 @@ export class ChatService {
 	organize__channelToJoin(source: any) {
 		const channels = [];
 		if (source) {
+			if (source.owner)
+				for (let index = 0; index < source.owner.length; index++) {
+					const channel = source.owner[index].name;
+					channels.push(channel);
+				}
 			if (source.admin)
 				for (let index = 0; index < source.admin.length; index++) {
 					const channel = source.admin[index].name;
@@ -168,8 +165,7 @@ export class ChatService {
 						updateAt: source.owner[index].updateAt,
 						lastMsg:
 							messageCount > 0
-								? source.owner[index].messages[messageCount - 1]
-										.msg
+								? source.owner[index].messages[0].msg
 								: '',
 						ownerEmail: source.owner[index].owners[0].email,
 						ownerId: otherId,
@@ -188,8 +184,7 @@ export class ChatService {
 						updateAt: source.admin[index].updateAt,
 						lastMsg:
 							messageCount > 0
-								? source.admin[index].messages[messageCount - 1]
-										.msg
+								? source.admin[index].messages[0].msg
 								: '',
 						ownerEmail: source.admin[index].owners[0].email,
 						ownerId: source.admin[index].owners[0].id,
@@ -302,9 +297,13 @@ export class ChatService {
 						where: {
 							unsent: false,
 						},
+						orderBy: {
+							createdAt: 'asc',
+						},
 						select: {
 							msg: true,
 						},
+						take: 1,
 					},
 				},
 			});
@@ -343,9 +342,13 @@ export class ChatService {
 								where: {
 									unsent: false,
 								},
+								orderBy: {
+									createdAt: 'desc',
+								},
 								select: {
 									msg: true,
 								},
+								take: 1,
 							},
 						},
 					},
@@ -367,9 +370,13 @@ export class ChatService {
 								where: {
 									unsent: false,
 								},
+								orderBy: {
+									createdAt: 'desc',
+								},
 								select: {
 									msg: true,
 								},
+								take: 1,
 							},
 						},
 					},
@@ -391,9 +398,13 @@ export class ChatService {
 								where: {
 									unsent: false,
 								},
+								orderBy: {
+									createdAt: 'desc',
+								},
 								select: {
 									msg: true,
 								},
+								take: 1,
 							},
 						},
 					},
@@ -415,9 +426,13 @@ export class ChatService {
 								where: {
 									unsent: false,
 								},
+								orderBy: {
+									createdAt: 'desc',
+								},
 								select: {
 									msg: true,
 								},
+								take: 1,
 							},
 						},
 					},
@@ -434,7 +449,7 @@ export class ChatService {
 		try {
 			const ids: number[] = [];
 			const id = await this.get__id__ByEmail(info.email);
-			ids.push(id, info.added_id);
+			ids.push(id, info.targetId);
 			const dm = await this.prisma.channel.create({
 				data: {
 					dm: true,
@@ -669,11 +684,13 @@ export class ChatService {
 						where: {
 							unsent: false,
 						},
+						orderBy: {
+							createdAt: 'asc',
+						},
 						select: {
 							id: true,
 							msg: true,
 							createdAt: true,
-							updatedAt: true,
 							owner: {
 								select: {
 									id: true,
@@ -700,6 +717,7 @@ export class ChatService {
 					const element: oneMessage = {
 						msgId: source.messages[index].id,
 						id: source.messages[index].owner.id,
+						channelId: source.messages[index].channelId,
 						email: source.messages[index].owner.email,
 						username: source.messages[index].owner.username,
 						msg: source.messages[index].msg,
@@ -837,6 +855,7 @@ export class ChatService {
 					msg: true,
 					createdAt: true,
 					updatedAt: true,
+					cid: true,
 					owner: {
 						select: {
 							id: true,
@@ -859,6 +878,7 @@ export class ChatService {
 				const element: oneMessage = {
 					msgId: source.id,
 					id: source.owner.id,
+					channelId: source.cid,
 					email: source.owner.email,
 					username: source.owner.username,
 					msg: source.msg,
@@ -909,10 +929,9 @@ export class ChatService {
 
 	async fetch__owners(userId: number, channelId: number) {
 		try {
-			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					name: name,
+					id: channelId,
 				},
 				select: {
 					owners: true,
@@ -954,10 +973,9 @@ export class ChatService {
 
 	async fetch__admins(id: number, channelId: number) {
 		try {
-			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					name: name,
+					id: channelId,
 				},
 				select: {
 					admins: true,
@@ -999,10 +1017,9 @@ export class ChatService {
 
 	async fetch__members(id: number, channelId: number) {
 		try {
-			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					name: name,
+					id: channelId,
 				},
 				select: {
 					members: true,
@@ -1044,10 +1061,9 @@ export class ChatService {
 
 	async fetch__inviteds(id: number, channelId: number) {
 		try {
-			const name = await this.get__Cname__ByCId(channelId);
 			const source = await this.prisma.channel.findUnique({
 				where: {
-					name: name,
+					id: channelId,
 				},
 				select: {
 					inviteds: true,
@@ -1093,7 +1109,6 @@ export class ChatService {
 				select: {
 					id: true,
 					username: true,
-					avatar: true,
 				},
 			});
 			return suggestion;
@@ -1226,7 +1241,7 @@ export class ChatService {
 		try {
 			const id = await this.get__id__ByEmail(email);
 			const source = await this.get__allUsers();
-			const tags = await this.organize__tags(source, id);
+			const tags = this.organize__tags(source, id);
 			return tags;
 		} catch (error) {
 			console.log('get__userTags error:', error);
@@ -1237,7 +1252,7 @@ export class ChatService {
 	async get__invitationTags(channelId: number) {
 		try {
 			const usersSource = await this.get__allUsers();
-			const allUsers = await this.organize__tags(usersSource, -1);
+			const allUsers = this.organize__tags(usersSource, -1);
 			const allInsiders = await this.get__allInsiders(channelId);
 			const allBlockers = await this.get__allBlockers(channelId);
 			const invitationTags = await this.organize__invitationTags(
@@ -1272,40 +1287,6 @@ export class ChatService {
 		}
 		return filterInsiders;
 	}
-
-	// async get__blockedTags(email: string) {
-	// 	try {
-	// 		const id = await this.get__id__ByEmail(email);
-	// 		const source = await this.get__allBlocked(id);
-	// 		const tags = await this.organize__tags(source, -1);
-	// 		return tags;
-	// 	} catch (error) {
-	// 		console.log('get__userTags error:', error);
-	// 		throw new WsException(error);
-	// 	}
-	// }
-
-	// async get__allBlocked(id: number) {
-	// 	try {
-	// 		const source = await this.prisma.user.findUnique({
-	// 			where: {
-	// 				id: id,
-	// 			},
-	// 			select: {
-	// 				blocked: {
-	// 					select: {
-	// 						id: true,
-	// 						username: true,
-	// 					},
-	// 				},
-	// 			},
-	// 		});
-	// 		return source;
-	// 	} catch (error) {
-	// 		console.log('get__allBlocked error:', error);
-	// 		throw new WsException(error);
-	// 	}
-	// }
 
 	async get__publicChats() {
 		try {
@@ -1500,30 +1481,24 @@ export class ChatService {
 
 	async update__setting(data: updateChannel) {
 		try {
-			const verified = await this.verify__UpdateSettingRight(
-				data.ownerPassword,
-				data.channelId,
-			);
-			if (verified) {
+			await this.prisma.channel.update({
+				where: {
+					id: data.channelId,
+				},
+				data: {
+					private: data.private,
+					isPassword: data.isPassword,
+				},
+			});
+			if (data.newPassword !== '')
 				await this.prisma.channel.update({
 					where: {
 						id: data.channelId,
 					},
 					data: {
-						private: data.private,
-						isPassword: data.isPassword,
+						password: data.newPassword,
 					},
 				});
-				if (data.newPassword !== '')
-					await this.prisma.channel.update({
-						where: {
-							id: data.channelId,
-						},
-						data: {
-							password: data.newPassword,
-						},
-					});
-			}
 		} catch (error) {
 			console.log('update__setting error:', error);
 			throw new WsException(error.message);
@@ -1540,7 +1515,7 @@ export class ChatService {
 						.add(data.duration, 'minute')
 						.toISOString(),
 					userId: id,
-					cid: data.chanelId,
+					cid: data.channelId,
 				},
 			});
 		} catch (error) {

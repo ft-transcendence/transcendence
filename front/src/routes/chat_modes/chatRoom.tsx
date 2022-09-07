@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { socket } from "../Chat";
+import { socket } from "../../App"
 import "./chatRoom.css";
 import { 
     chatPreview,
     oneMsg,
-    Tag,
     useMsg
 } from "./type/chat.type";
 import {
@@ -21,43 +20,16 @@ declare var global: {
     selectedData: oneMsg
 }
 
-export default function ChatRoom({current, show, role, outsider, setSettingRequest}
+export default function ChatRoom({current, show, role, outsider, setSettingRequest, blockedList}
     : { current: chatPreview | undefined,
         show: boolean | undefined,
         role: string,
         outsider: boolean | undefined,
-        setSettingRequest: () => void}) {
+        setSettingRequest: () => void,
+        blockedList: []}) {
 
-        const [blocked, setBlocked] = useState<Tag[]>([]);
         const email = localStorage.getItem("userEmail");
-
-    useEffect(() => {
-
-        socket.on("connect", () => {
-            socket.emit("read blocked", email);
-        });
-
-        socket.on("fetch blocked", (data: Tag[]) => {
-            setBlocked(data);
-        })
-
-        socket.on("disconnect", () => {})
-
-        if (show && current)
-        {
-            const cId = current.id;
-            socket.emit("read msgs", cId);
-            socket.emit("get setting", cId);
-        }
-
-        return (() => {
-            socket.off("connect")
-            socket.off("fetch blocked");
-            socket.off("disconnect");
-        })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [show, current])
-
+    
     return(
         <>
             <div className="chat-room-zone">
@@ -69,7 +41,7 @@ export default function ChatRoom({current, show, role, outsider, setSettingReque
                 current ?
                     (show ? 
                         <>
-                            <MsgStream email={email} channelId={current!.id} blocked={blocked}/>
+                            <MsgStream email={email} channelId={current!.id} blockedList={blockedList}/>
                         </>
                         :   
                         <LockIcon/>
@@ -105,10 +77,10 @@ function BriefInfo({info, role, setSettingRequest}
     )
 }
 
-function MsgStream({email, channelId, blocked}
+function MsgStream({email, channelId, blockedList}
     : { email: string | null,
         channelId: number,
-        blocked: Tag[]}) {
+        blockedList: []}) {
 
     const [msgs, setMsgs] = useState<oneMsg[]>([]);
     const scroll = useRef<HTMLDivElement>(null);
@@ -120,15 +92,16 @@ function MsgStream({email, channelId, blocked}
         })
 
         socket.on("broadcast", (msg: oneMsg) => {
-            setMsgs(oldMsgs => [...oldMsgs, msg]);
+            if (msg.channelId === channelId)
+                setMsgs(oldMsgs => [...oldMsgs, msg]);
         })
 
         return (() => {
             socket.off("fetch msgs");
             socket.off("broadcast");
         })
-        
-    }, [])
+
+    }, [channelId, msgs])
 
     const handleDeleteMsg = () => {
         let msg: useMsg = {
@@ -140,33 +113,22 @@ function MsgStream({email, channelId, blocked}
         socket.emit("delete msg", msg)
     }
 
-    const handleEditMsg = () => {
-        let msg: useMsg = {
-            email: email,
-            channelId: channelId,
-            msgId: global.selectedData.msgId,
-            msg: global.selectedData.msg
-        }
-        socket.emit("edit msg", msg)
-    }
-
     setTimeout(()=>{
         if (scroll.current)
             scroll.current.scrollTop = scroll.current.scrollHeight;
     }, 30);
-
 
     return (
         <div 
             className="msg-stream" ref={scroll}>
             {
                 msgs.map((value, index) => {
-                    const isBlocked = blocked.find((blocked) => {
+                    const isBlocked = blockedList.find((blocked: any) => {
                         return value.id === blocked.id
                     });
                     return (
                         isBlocked ?
-                        <></> :
+                        <div key={index}></div> :
                         <div key={index}>
                             <OneMessage data={value} email={email}/>
                         </div>
@@ -177,9 +139,6 @@ function MsgStream({email, channelId, blocked}
             <Menu id={MENU_MSG} style={{width: "120px", minWidth: "120px"}}>
                 <Item onClick={handleDeleteMsg}>
                     unsend
-                </Item>
-                <Item onClick={handleEditMsg} style={{backgroundColor: "grey"}}>
-                    edit
                 </Item>
             </Menu>
         </div>
@@ -232,7 +191,7 @@ function InputArea({channelId, email}
         setMsg("");
     }, [channelId])
 
-    const handleSetMsg = (event:any) => {
+    const handleSetMsg = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMsg(event.target.value);
     }
 

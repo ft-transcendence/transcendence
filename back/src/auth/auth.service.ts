@@ -16,6 +16,7 @@ import { UserService } from 'src/user/user.service';
 import { Response } from 'express';
 import { UploadService } from 'src/upload/upload.service';
 import { AppGateway } from 'src/app.gateway';
+import { ChatGateway } from 'src/chat/chat.gateway';
 
 /**
  * AUTHENTIFICATION SERVICE
@@ -23,11 +24,12 @@ import { AppGateway } from 'src/app.gateway';
 @Injectable()
 export class AuthService {
 	constructor(
-		private prisma: PrismaService,
-		private jwtService: JwtService,
-		private userService: UserService,
-		private uploadService: UploadService,
-		private appGateway: AppGateway,
+		private readonly prisma: PrismaService,
+		private readonly jwtService: JwtService,
+		private readonly appGateway: AppGateway,
+		private readonly userService: UserService,
+		private readonly chatGateway: ChatGateway,
+		private readonly uploadService: UploadService,
 	) {}
 
 	/* SIGNUP */
@@ -52,6 +54,10 @@ export class AuthService {
 			);
 			//sending status update to the front
 			this.appGateway.onlineFromService(user.id);
+			this.chatGateway.updateChannelRequest(
+				'update channel request',
+				'default_all',
+			);
 
 			return tokens;
 		} catch (error) {

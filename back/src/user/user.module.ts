@@ -1,12 +1,13 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { GameModule } from 'src/game/game.module';
-import { GameService } from 'src/game/game.service';
+import { PrismaModule } from 'src/prisma/prisma.module';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-	imports: [GameModule],
-	providers: [UserService, GameService],
+	imports: [GameModule, forwardRef(() => PrismaModule)],
+	providers: [UserService],
 	controllers: [UserController],
+	exports: [UserService],
 })
 export class UserModule {}

@@ -12,7 +12,6 @@ import { UseMessageDto, ChannelDto, DMDto } from './dto/chat.dto';
 import { ValidationPipe, UsePipes } from '@nestjs/common';
 import { HttpToWsFilter, ProperWsFilter } from './filter/transformation-filter';
 import {
-	gameInvitation,
 	mute,
 	oneMsg as oneMessage,
 	oneUser,
@@ -34,21 +33,19 @@ export class ChatGateway {
 		private userService: UserService,
 	) {}
 
-	async handleFetchChannel(email: string, @ConnectedSocket() client: Socket) {
-		const channels = await this.chatservice.get__channelsToJoin(email);
+	async handleJoinSocket(id: number, @ConnectedSocket() client: Socket) {
+		const channels = await this.chatservice.get__channelsUserIn(id);
+		await client.join('default_all');
 		if (channels)
-			for (let index = 0; index < channels.length; index++)
-				client.join(channels[index]);
+			for (const channel of channels) {
+				await client.join(channel);
+			}
 	}
 
 	@SubscribeMessage('read preview')
-	async handleReadPreview(
-		@MessageBody() email: string,
-		@ConnectedSocket() client: Socket,
-	) {
-		await this.handleFetchChannel(email, client);
+	async handleReadPreview(@MessageBody() email: string) {
 		const data = await this.chatservice.get__previews(email);
-		client.emit('set preview', data);
+		return data;
 	}
 
 	@SubscribeMessage('add preview')
@@ -60,18 +57,18 @@ export class ChatGateway {
 			data.channelId,
 			data.email,
 		);
-		client.join(preview.name);
+		await client.join(preview.name);
 		client.emit('add preview', preview);
 	}
 
-	// @SubscribeMessage('read blocked')
-	// async handleReadBlocked(
-	// 	@MessageBody() email: string,
-	// 	@ConnectedSocket() client: Socket,
-	// ) {
-	// 	const data = await this.chatservice.get__blockedTags(email);
-	// 	client.emit('fetch blocked', data);
-	// }
+	@SubscribeMessage('read blocked')
+	async handleReadBlocked(
+		@MessageBody() email: string,
+		@ConnectedSocket() client: Socket,
+	) {
+		const data = await this.userService.getBlocks(client.data.id);
+		client.emit('fetch blocked', data);
+	}
 
 	@SubscribeMessage('new channel')
 	async handleNewChannel(
@@ -80,16 +77,19 @@ export class ChatGateway {
 	) {
 		const channelId = await this.chatservice.new__channel(data);
 		if (channelId == undefined)
-			client.emit('exception', {
-				error: 'channel exist, try another channel name!',
-			});
+			client.emit(
+				'exception',
+				'failed to create the channel, please try again',
+			);
 		else {
 			const preview = await this.chatservice.get__onePreview(
 				channelId,
 				data.email,
 			);
-			client.join(preview.name);
+			await client.join(preview.name);
 			client.emit('add preview', preview);
+			this.updateChannelRequest('update channel request', 'default_all');
+			return data;
 		}
 	}
 
@@ -99,13 +99,12 @@ export class ChatGateway {
 		@ConnectedSocket() client: Socket,
 	) {
 		const channelId = await this.chatservice.join__channel(data);
-		if (channelId == undefined)
-			client.emit('exception', { error: 'Wrong password' });
+		if (channelId == undefined) client.emit('exception', 'wrong password');
 		else {
 			const channelName = await this.chatservice.get__Cname__ByCId(
 				data.channelId,
 			);
-			client.join(channelName);
+			await client.join(channelName);
 			const id = await this.chatservice.get__id__ByEmail(data.email);
 			const preview = await this.chatservice.get__previews(data.email);
 			client.emit('update preview', preview);
@@ -127,6 +126,7 @@ export class ChatGateway {
 				inviteds,
 			);
 			client.emit('fetch role', role);
+			this.updateChannelRequest('update channel request', channelName);
 		}
 	}
 
@@ -142,6 +142,7 @@ export class ChatGateway {
 			data.channelId,
 		);
 		client.emit('fetch inviteds', inviteds);
+		this.updateChannelRequest('update channel request', 'default_all');
 	}
 
 	@SubscribeMessage('block channel')
@@ -149,6 +150,7 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.block__channel(data);
 		const preview = await this.chatservice.get__previews(data.email);
 		client.emit('update preview', preview);
@@ -158,6 +160,7 @@ export class ChatGateway {
 		client.emit('fetch admins', []);
 		client.emit('fetch members', []);
 		client.emit('fetch inviteds', []);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('leave channel')
@@ -165,6 +168,7 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.leave__channel(data);
 		const preview = await this.chatservice.get__previews(data.email);
 		client.emit('update preview', preview);
@@ -174,6 +178,7 @@ export class ChatGateway {
 		client.emit('fetch admins', []);
 		client.emit('fetch members', []);
 		client.emit('fetch inviteds', []);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('kick out')
@@ -181,6 +186,7 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.leave__channel(data);
 		const id = await this.chatservice.get__id__ByEmail(data.email);
 		const admins = await this.chatservice.fetch__admins(id, data.channelId);
@@ -201,6 +207,7 @@ export class ChatGateway {
 		client.emit('invitation tags', invitationTags);
 		const users = await this.chatservice.get__searchSuggest(data.email);
 		client.emit('search suggest', users);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('new dm')
@@ -211,8 +218,9 @@ export class ChatGateway {
 			data.email,
 		);
 		const channelName = await this.chatservice.get__Cname__ByCId(channelId);
-		client.join(channelName);
+		await client.join(channelName);
 		client.emit('add preview', preview);
+		return channelId;
 	}
 
 	@SubscribeMessage('read msgs')
@@ -234,12 +242,24 @@ export class ChatGateway {
 			this.broadcast('broadcast', message, data.channelId);
 			const preview = await this.chatservice.get__previews(data.email);
 			client.emit('update preview', preview);
-		}
+			const cName = await this.chatservice.get__Cname__ByCId(
+				data.channelId,
+			);
+			this.updateChannelRequest('update channel request', cName);
+		} else
+			client.emit(
+				'exception',
+				"you currently don't have the right to talk in this channel",
+			);
 	}
 
 	async broadcast(event: string, message: oneMessage, channelId: number) {
 		const cName = await this.chatservice.get__Cname__ByCId(channelId);
 		this.server.in(cName).emit(event, message);
+	}
+
+	async updateChannelRequest(event: string, cName: string) {
+		this.server.in(cName).emit(event);
 	}
 
 	async get__role(
@@ -341,23 +361,13 @@ export class ChatGateway {
 		@MessageBody() data: UseMessageDto,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.delete__msg(data);
 		const fetch = await this.chatservice.fetch__msgs(data.channelId);
 		client.emit('fetch msgs', fetch);
 		const preview = await this.chatservice.get__previews(data.email);
 		client.emit('update preview', preview);
-	}
-
-	@SubscribeMessage('edit msg')
-	async handleEditMsg(
-		@MessageBody() data: UseMessageDto,
-		@ConnectedSocket() client: Socket,
-	) {
-		await this.chatservice.edit__msg(data);
-		const fetch = await this.chatservice.fetch__msgs(data.channelId);
-		client.emit('fetch msgs', fetch);
-		const preview = await this.chatservice.get__previews(data.email);
-		client.emit('update preview', preview);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('be admin')
@@ -365,6 +375,7 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.be__admin(data);
 		const id = await this.chatservice.get__id__ByEmail(data.email);
 		const admins = await this.chatservice.fetch__admins(id, data.channelId);
@@ -374,6 +385,7 @@ export class ChatGateway {
 			data.channelId,
 		);
 		client.emit('fetch members', members);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('not admin')
@@ -381,6 +393,7 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.not__admin(data);
 		const id = await this.chatservice.get__id__ByEmail(data.email);
 		const admins = await this.chatservice.fetch__admins(id, data.channelId);
@@ -390,6 +403,7 @@ export class ChatGateway {
 			data.channelId,
 		);
 		client.emit('fetch members', members);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('get setting')
@@ -406,9 +420,11 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
+		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.update__setting(data);
 		const info = await this.chatservice.get__setting(data.channelId);
 		client.emit('setting info', info);
+		this.updateChannelRequest('update channel request', cName);
 	}
 
 	@SubscribeMessage('mute user')
@@ -428,17 +444,20 @@ export class ChatGateway {
 	@SubscribeMessage('block user')
 	async blockUser(
 		@MessageBody() data: updateUser,
-		// @ConnectedSocket() client: Socket,
+		@ConnectedSocket() client: Socket,
 	) {
 		const id = await this.chatservice.get__id__ByEmail(data.selfEmail);
 		await this.userService.blockUser(id, data.otherId);
+		client.emit('update channel request');
 	}
 
-	/* I need a function from user status, to get the target socket */
-
-	// @SubscribeMessage('invite to game')
-	// async gameInvitation(@MessageBody() data: gameInvitation) {
-	// 	const client = this.findClient(data.targetId);
-	// 	client.emit('invite to game', data);
-	// }
+	@SubscribeMessage('unblock user')
+	async unblockUser(
+		@MessageBody() data: updateUser,
+		@ConnectedSocket() client: Socket,
+	) {
+		const id = await this.chatservice.get__id__ByEmail(data.selfEmail);
+		await this.userService.unblockUser(id, data.otherId);
+		client.emit('update channel request');
+	}
 }

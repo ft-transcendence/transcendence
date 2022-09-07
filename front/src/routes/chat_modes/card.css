@@ -3,8 +3,19 @@
     color: grey;
 }
 
+.card-disappear-click-zone {
+    position: absolute;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
 .card-chat {
     background-color: whitesmoke;
+    z-index: 1000;
     height: 500px;
     width: 350px;
     border-radius: 12px;
@@ -119,4 +130,62 @@
     margin-left: 40px;
     color: red;
     font-size: 14px;
+}
+
+.challenger-avatar {
+    margin: auto;
+    margin-top: 0px;
+    border-radius: 50%;
+    height: 110px;
+    width: 110px;
+}
+
+.text {
+    margin: auto;
+    margin-top: 12px;
+    width: 260px;
+    text-align: center;
+    color: grey;
+    font-weight: 600;
+    line-height: 2;
+}
+
+
+.join-button {
+    padding: 20px;
+    width: 120px;
+    height:fit-content;
+    margin-left: 50px;
+    margin-right: 20px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+    /* color: rgb(97, 95, 95); */
+    color: green;
+    cursor: pointer;
+}
+
+.join-button:active {
+    background-color: rgb(177, 169, 169);
+    color: black;
+}
+
+
+.decline-button {
+    padding: 20px;
+    width: 120px;
+    height:fit-content;
+    margin-left: 20px;
+    margin-right: 50px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+    /* color: rgb(97, 95, 95); */
+    color: rgb(194, 7, 7);
+    cursor: pointer;
+}
+
+.decline-button:active {
+    background-color: rgb(177, 169, 169);
+    color: black;
 }

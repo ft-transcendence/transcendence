@@ -30,9 +30,13 @@ export type newChannel = {
 }
 
 export type newDM = {
-
     email: string | null;
-    added_id: number;
+    targetId: number;
+}
+
+export type fetchDM = {
+    channelId: number;
+    targetId: number;
 }
 
 export type Tag = {
@@ -47,7 +51,6 @@ export type updateChannel = {
     targetId: number | string;
     private: boolean;
     isPassword: boolean;
-    ownerPassword: string;
     newPassword: string;
 }
 
@@ -61,6 +64,7 @@ export type useMsg = {
 export type oneMsg = {
     msgId: number;
     id: number;
+    channelId: number;
     email: string;
     username: string;
     msg: string;
@@ -70,7 +74,6 @@ export type oneMsg = {
 }
 
 export type oneUser = {
-    online: boolean;
     username: string;
     id: number;
     email: string;
@@ -79,6 +82,8 @@ export type oneUser = {
     isInvited: boolean;
     isMuted: boolean;
     isFriend: boolean;
+    isOnline: boolean;
+    isBlocked: boolean;
 }
 
 export type updateUser = {
@@ -94,10 +99,12 @@ export type setting = {
 export type mute = {
     duration: number;
     email: string;
-    chanelId: number;
+    channelId: number;
 }
 
 export type gameInvitation = {
     gameInfo: Player;
+    inviterId: number;
+    inviterName: string;
     targetId: number;
 }

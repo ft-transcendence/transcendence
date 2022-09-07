@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { useContext, useEffect, useState } from "react";
 import "./Chat.css";
 import Preview from "./chat_modes/chatPreview";
 import ChatRoom from "./chat_modes/chatRoom";
@@ -7,20 +6,8 @@ import RoomStatus from "./chat_modes/roomStatus";
 import { chatPreview } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 import { SettingCard } from "./chat_modes/settingCard";
-import { Player } from "./game.interfaces";
-
-const socketOptions = {
-  transportOptions: {
-    polling: {
-      extraHeaders: {
-          Token: localStorage.getItem("userToken"),
-      }
-    }
-  }
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const socket = io("ws://localhost:4000", socketOptions);
+import { NotifCxt } from "../App";
+import { socket } from "../App"
 
 export default function Chat() {
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
@@ -29,6 +16,10 @@ export default function Chat() {
     const [outsider, setOutsider] = useState<boolean | undefined>(undefined);
     const [show, setShow] = useState<boolean | undefined>(undefined);
     const [role, setRole] = useState("");
+    const [updateStatus, setUpdateStatus] = useState(0);
+    const [blockedList, setBlockedList] = useState<[]>([]);
+    const notif = useContext(NotifCxt);
+    const email = localStorage.getItem("userEmail");
 
     useEffect(() => {
 
@@ -37,32 +28,43 @@ export default function Chat() {
         });
 
         socket.on("exception", (data) => {
-            console.log("exception", data);
+            console.log(data)
+            if (data.message)
+                notif?.setNotifText('error: ' + data.message);
+            else
+                notif?.setNotifText('error: ' + data);
+            notif?.setNotifShow(true);
         })
 
         socket.on("fetch role", (data) => {
             setRole(data);
         })
 
-        socket.on("invite to game", (data: Player) => {
-            socket.emit("join_private", {rid: data.roomId})
+        socket.on("fetch blocked", (data: []) => {
+            setBlockedList(data);
         })
 
-        socket.on("disconnect", () => {})
+        socket.on("update channel request", () => {
+            setUpdateStatus(u => u+1);
+        })
 
         return (() => {
             socket.off("connect");
             socket.off("exception");
             socket.off("fetch role");
-            socket.off("invite to game");
-            socket.off("disconnect");
+            socket.off("fetch blocked");
+            socket.off("update channel request");
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
         if (selectedChat)
+        {
             setOutsider((role === "invited" || role === "noRole") ? true : false);
-    }, [selectedChat, role]);
+            socket.emit("read blocked", email);
+        }
+    }, [selectedChat, role, email, updateStatus]);
 
     useEffect(() => {
         if (selectedChat)
@@ -70,6 +72,16 @@ export default function Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [outsider])
 
+    useEffect(() => {
+        if (show && selectedChat)
+        {
+            const cId = selectedChat.id;
+            socket.emit("read msgs", cId);
+            socket.emit("get setting", cId);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [updateStatus, selectedChat, show]);
+    
     const newRoomCardDisappear = () => {
         setNewRoomRequest(old => {return !old})
     }
@@ -88,18 +100,24 @@ export default function Chat() {
                     onNewRoomRequest={() => {
                         setNewRoomRequest(old => {return !old})
                     }}
+                    updateStatus={updateStatus}
                 />
                 <ChatRoom
                     current={selectedChat}
                     show={show}
                     role={role}
                     outsider={outsider}
-                    setSettingRequest={() => {setSettingRequest(old => {return !old})}}/>
+                    setSettingRequest={() => {setSettingRequest(old => {return !old})}}
+                    blockedList={blockedList}
+                />
             <div style={{display: selectedChat?.dm ? "none" : "", backgroundColor: "#003e60"}}>
                 <RoomStatus
                     current={selectedChat}
                     role={role}
-                    outsider={outsider}/>
+                    outsider={outsider}
+                    updateStatus={updateStatus}
+                    blockedList={blockedList}
+                />
             </div>
             <div
                 onClick={newRoomCardDisappear}
@@ -112,7 +130,9 @@ export default function Chat() {
                             newRoomRequest={newRoomRequest}
                             onNewRoomRequest={() => {
                                 setNewRoomRequest(old => {return !old})
-                        }}/>
+                            }}
+                            updateStatus={updateStatus}
+                        />
                 </div>
             </div>
             <div

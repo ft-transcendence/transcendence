@@ -1,12 +1,13 @@
 import React from 'react';
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import "./Game.css";
-import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle, SettingsProps, SettingsState } from './game.interfaces';
+import { Game_data, Player, Coordinates, StatePong, Button, ButtonState, Msg, MsgState, PaddleProps, StatePaddle, SettingsProps, SettingsState, PropsPong } from './game.interfaces';
 import FocusTrap from 'focus-trap-react';
 import { getUserAvatarQuery } from '../queries/avatarQueries';
 import SoloGame from './SoloGame';
-
- 
+import { socket as chatSocket } from '../App';
+import { Navigate } from 'react-router-dom';
+import { NotifCxt } from '../App';
 
 class Settings extends React.Component <SettingsProps, SettingsState> {
   
@@ -70,7 +71,7 @@ class Ball extends React.Component< Coordinates, {} >
 {
   render() {
     const show = this.props.showBall ? 'unset': 'none';
-    if(window.innerHeight >= window.innerWidth){
+    if(window.innerHeight <= window.innerWidth){
       return (
          <div
             style={{
@@ -83,7 +84,7 @@ class Ball extends React.Component< Coordinates, {} >
          />
       );
     }
-    if(window.innerHeight < window.innerWidth){
+    if(window.innerHeight > window.innerWidth){
       return (
          <div
             style={{
@@ -114,30 +115,35 @@ class Message extends React.Component< Msg, MsgState > {
           };
         }
       
+
         render() {
-             const disp = this.state.showMsg ? 'unset': 'none';
-             var message: string;
-             switch(this.state.type) {
-                case 1:
-                    message = "Please wait for another player";
-                    break;
-                case 2:
-                    message = "You win";
-                    break;
-                case 3:
-                    message = "You lose";
-                    break;
-                case 5:
-                  message = "Please finish your game before starting a new one";
-                  break;    
-                default:
-                    message = "error";
-             }
-          return (
-                <div style={{display: `${disp}`,}} className="Message">{message}</div>
-            )
-        }
-        } 
+          const disp = this.state.showMsg ? 'unset': 'none';
+          var message: string;
+          switch(this.state.type) {
+            case 1:
+                message = "Please wait for another player";
+                break;
+            case 2:
+                message = "You win";
+                break;
+            case 3:
+                message = "You lose";
+                break;
+            case 4:
+                message = "Waiting for your opponent to accept the invitation";
+                break;
+            case 5:
+                message = "Please finish your game before starting a new one";
+                break; 
+             default:
+                 message = "error";
+          }
+       return (
+             <div style={{display: `${disp}`,}} className="Message">{message}</div>
+         )
+     }
+     } 
+       
 
 class Paddle extends React.Component< PaddleProps, StatePaddle > {
     constructor(props: PaddleProps){
@@ -171,8 +177,10 @@ class Paddle extends React.Component< PaddleProps, StatePaddle > {
        }
     }
 
-export default class Game extends React.Component<{}, StatePong> {
-  
+export default class Game extends React.Component<PropsPong, StatePong> {
+  static contextType = NotifCxt
+  context!: React.ContextType<typeof NotifCxt>
+
   socketOptions = {
     transportOptions: {
       polling: {
@@ -183,14 +191,14 @@ export default class Game extends React.Component<{}, StatePong> {
     },
   };
 
-  socket = io("ws://localhost:4000", this.socketOptions);
+  socket: Socket;
 
   MOVE_UP = "ArrowUp";
   MOVE_DOWN = "ArrowDown";
   avatarsFetched = false;
 
-  constructor(none = {}) {
-    super({});
+  constructor(props: PropsPong) {
+    super(props);
     this.state = {
       paddleLeftY: 50,
       paddleRightY: 50,
@@ -212,11 +220,17 @@ export default class Game extends React.Component<{}, StatePong> {
       avatarP1URL: "",
       avatarP2URL: "",
       soloGame: false,
+      redirectChat: false,
     };
+    if (this.props.pvtGame === false) 
+      this.socket = io("ws://localhost:4000", this.socketOptions);
+    else
+      this.socket = chatSocket;
     this.onSettingsKeyDown = this.onSettingsKeyDown.bind(this);
     this.onSettingsClickClose = this.onSettingsClickClose.bind(this);
     this.quitSoloMode = this.quitSoloMode.bind(this);
   }
+
 
   componentDidMount() {
     document.onkeydown = this.keyDownInput;
@@ -224,6 +238,7 @@ export default class Game extends React.Component<{}, StatePong> {
     this.socket.on("game_started", () => {
       this.setState({ gameStarted: true, showStartButton: false });
       this.avatarsFetched = false;
+      this.socket.off("rejected");
     });
     this.socket.on("update", (info: Game_data) => {
       this.setState({
@@ -260,9 +275,32 @@ export default class Game extends React.Component<{}, StatePong> {
             avatarP2URL: "",
           })
     );
+
+    if (this.props.pvtGame && localStorage.getItem("playernb") === "1") {
+      let RoomId = Number(localStorage.getItem("roomid")!);
+      this.setState({roomId: RoomId});
+      this.setState({playerNumber: 1, msgType: 4, buttonState: "Cancel"});
+      this.socket.on("rejected", (targetName: string) => {
+        this.setState({roomId: 0, playerNumber: 0, msgType: 0, buttonState: "Start"})
+        this.setState({redirectChat: true})
+        console.log(targetName + ' rejected')
+        this.context?.setNotifText(targetName + ' rejected the game');
+        this.context?.setNotifShow(true);
+      }
+        
+      );
+    } 
+
+    if (this.props.pvtGame && localStorage.getItem("playernb") === "2") {
+      let RoomId = Number(localStorage.getItem("roomid")!);
+      this.setState({roomId: RoomId, playerNumber: 2, msgType: 0, gameStarted: true, showStartButton: false});
+    } 
   }
 
+
   componentWillUnmount() {
+    this.socket.disconnect();
+    this.socket.connect();
     this.socket.off("game_started");
     this.socket.off("update");
     this.socket.off("end_game");
@@ -501,6 +539,9 @@ export default class Game extends React.Component<{}, StatePong> {
             </div>
           </div>
         )}
+        {this.state.redirectChat ? (
+        <Navigate to='/app/chat' replace={true}/>)
+        : null }
       </div>
     );
   }

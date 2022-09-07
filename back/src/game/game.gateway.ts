@@ -9,7 +9,6 @@ import { Server } from 'socket.io';
 import { Room } from './interfaces/room.interface';
 import { GameService } from './game.service';
 import { Player } from './interfaces/player.interface';
-import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { Client } from './interfaces/client.interface';
 import { User } from '.prisma/client';
@@ -23,7 +22,6 @@ import { AppGateway } from 'src/app.gateway';
 export class GameGateway {
 	constructor(
 		private gameService: GameService,
-		private readonly jwtService: JwtService,
 		private userService: UserService,
 		private appGateway: AppGateway,
 	) {}
@@ -154,7 +152,9 @@ export class GameGateway {
 	async handleStartPrivate(@ConnectedSocket() client: Client) {
 		// const user = await this.userService.getUser(client.data.id);
 		// data to be provided to the client
+		// console.log('arrived in start_private');
 		const newId = await this.gameService.generate_new_id();
+		console.log('in start private id:', client.data.id);
 		const newRoom: Room = {
 			id: newId,
 			name: newId.toString(),
@@ -179,7 +179,7 @@ export class GameGateway {
 			playerNb: 1,
 			roomId: GameService.rooms[GameService.rooms.length - 1].id,
 		};
-		client.emit('game roomId', player); // send data to client
+		return player;
 	}
 
 	@SubscribeMessage('join_private')
@@ -187,27 +187,32 @@ export class GameGateway {
 		@MessageBody('roomId') rid: number,
 		@ConnectedSocket() client: Client,
 	): Promise<Player | boolean> {
+		// console.log('arrive at join_private');
 		if (this.server.sockets.adapter.rooms.has(String(rid))) {
 			const player: Player = {
 				playerNb: 0,
 				roomId: 0,
 			};
-			GameService.rooms[rid].player2 = client;
-			GameService.rooms[rid].player2Name = await this.userService
-				.getUser(client.data.id)
-				.then((value: User) => value.username);
-			GameService.rooms[rid].player2Avatar = await this.userService
-				.getUser(client.data.id)
-				.then((value: User) => value.avatar);
-			client.join(GameService.rooms[rid].name);
+			if (GameService.rooms.find((room) => room.id === rid).player2)
+				return false;
+			GameService.rooms.find((room) => room.id === rid).player2 = client;
+			GameService.rooms.find((room) => room.id === rid).player2Name =
+				await this.userService
+					.getUser(client.data.id)
+					.then((value: User) => value.username);
+			GameService.rooms.find((room) => room.id === rid).player2Avatar =
+				await this.userService
+					.getUser(client.data.id)
+					.then((value: User) => value.avatar);
+			client.join(GameService.rooms.find((room) => room.id === rid).name);
 			this.server
-				.to(GameService.rooms[rid].name)
+				.to(GameService.rooms.find((room) => room.id === rid).name)
 				.emit('game_started', {}); // inform clients that the game is starting
-			this.gameService.startGame(GameService.rooms[rid].id, this.server);
+			this.gameService.startGame(rid, this.server);
 			player.playerNb = 2;
 
-			player.roomId = GameService.rooms[GameService.rooms.length - 1].id;
-
+			player.roomId = rid;
+			// console.log('join private', player);
 			return player; // send data to client
 		} else {
 			return false;

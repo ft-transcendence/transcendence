@@ -4,18 +4,32 @@ import { getLeaderBoard } from "../queries/userQueries";
 import { getUserAvatarQuery } from "../queries/avatarQueries";
 import { useNavigate } from "react-router-dom";
 
+type gameRecord = {
+    id: number;
+    rank: number;
+    winRate: number;
+    username: string;
+    gamesWon: number;
+    gamesLost: number;
+    gamesPlayed: number;
+}
+
 export default function LeaderBoard() {
     const [data, setData] = useState<[]>([]);
+    const [isFetched, setFetched] = useState(false);
 
     useEffect(() => {
-        const updateLeaderBoard = async () => {
-            await getLeaderBoard();
+      const updateLeaderBoard = async () => {
+        const result = await getLeaderBoard();
+        if (result !== "error") {
+          setData(result);
+          setFetched(true);
         }
-        updateLeaderBoard();
-        console.log(data);
-        if (localStorage.getItem("leaderBoard") !== null)
-            setData(JSON.parse(localStorage.getItem("leaderBoard")!));
-    }, [])
+      };
+      updateLeaderBoard();
+      console.log(data);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isFetched]);
 
     return (
         <div className="background">
@@ -36,14 +50,13 @@ export default function LeaderBoard() {
                 <div className="leaderboard">
                     <div className="list">
                         {
-                            data?.map((one:any, index) => {
+                            data?.map((one:gameRecord, rank) => {
                                 return( 
-                                <div key={index}>
+                                <div key={rank}>
                                     <OneRow
-                                        index={index + 1}
                                         id={one.id}
                                         rank={one.rank}
-                                        winRate={(one.winRate).toFixed(2)}
+                                        winRate={Number((one.winRate))}
                                         username={one.username}
                                         gamesWon={one.gamesWon}
                                         gamesLost={one.gamesLost}
@@ -60,11 +73,10 @@ export default function LeaderBoard() {
     )
 }
 
-function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesPlayed, head}
-    : { index: number,
+function OneRow({rank, id, username, winRate, gamesWon, gamesLost, gamesPlayed, head}
+    : { rank: number,
         id: number,
         username: string,
-        rank: number,
         winRate: number,
         gamesWon: number,
         gamesLost: number,
@@ -86,7 +98,7 @@ function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesP
             getAvatar();
         }, [id]);
 
-        switch(index) {
+        switch(rank) {
             case 1:
                 return(
                 <div className="top first"
@@ -98,9 +110,8 @@ function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesP
                         backgroundPosition: "center"}}/>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
-                        <BadgeReward index={index}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
-                        <div className="top-rank">LV. {rank}</div>
+                        <BadgeReward rank={rank}/>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate === 0 ? 0: winRate.toFixed(2)}</div>
                     </div>
                 </div>
                 );
@@ -115,9 +126,8 @@ function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesP
                         backgroundPosition: "center"}}/>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
-                        <BadgeReward index={index}/>
+                        <BadgeReward rank={rank}/>
                         <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
-                        <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
                 );
@@ -132,9 +142,8 @@ function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesP
                         backgroundPosition: "center"}}/>
                     <div className="top-info">
                         <div className="top-username">{username}</div>
-                        <BadgeReward index={index}/>
+                        <BadgeReward rank={rank}/>
                         <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
-                        <div className="top-rank">LV. {rank}</div>
                     </div>
                 </div>
                 );
@@ -143,9 +152,8 @@ function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesP
                     <div className="element"
                         onClick = {
                         () => navigate("/app/public/" + id)}>
-                        <div className="index">#{index}</div>
+                        <div className="index">#{rank}</div>
                         <div className="id">{id}</div>
-                        <div className="rank">LV. {rank}</div>
                         <div className="user">
                             {!head ? 
                                 <div className="avatar"
@@ -165,12 +173,12 @@ function OneRow({index, id, username, rank, winRate, gamesWon, gamesLost, gamesP
         }
     }
 
-    function BadgeReward({index}:
-        {index: number}) {
+    function BadgeReward({rank}:
+        {rank: number}) {
         return(
             <div className="badge">
                 <div className="top-index">
-                    {index}
+                    {rank}
                 </div>
                 <svg width="40" height="40" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M472.038 443.917L412.343 279.908C429.649 251.901 439.653 218.926 439.653 183.654C439.653 

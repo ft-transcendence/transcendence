@@ -1,7 +1,7 @@
 import "./card.css";
 import "./tags.css"
 import { useEffect, useState } from "react";
-import { socket } from "../Chat";
+import { socket } from "../../App"
 import { setting, updateChannel } from "./type/chat.type";
 import Switch from "react-switch";
 
@@ -9,7 +9,6 @@ export function SettingCard({channelId, settingRequest, onSettingRequest}
     : { channelId: number | undefined,
         settingRequest: boolean,
         onSettingRequest: () => void}) {
-    const [ownerPass, setOwnerPass] = useState("");
     const [newPass, setNewPass] = useState("");
     const [isPrivate, setPrivate] = useState(false);
     const [isPassword, setIsPassword] = useState(false);
@@ -50,7 +49,7 @@ export function SettingCard({channelId, settingRequest, onSettingRequest}
             targetId: 0,
             private: isPrivate,
             isPassword: isPassword,
-            ownerPassword: ownerPass,
+            // ownerPassword: ownerPass,
             newPassword: newPass
         }
         socket.emit("update setting", data);
@@ -60,7 +59,6 @@ export function SettingCard({channelId, settingRequest, onSettingRequest}
     const initVars = (data: setting) => {
         setPrivate(data.private);
         setIsPassword(data.isPassword);
-        setOwnerPass("");
         setNewPass("");
     }
 
@@ -83,7 +81,7 @@ export function SettingCard({channelId, settingRequest, onSettingRequest}
           className="foot-info-tag"
           style={{ display: isPrivate === current?.private ? "none" : "" }}
         >
-          you've change the privacy setting
+          You changed the privacy setting
         </div>
         <div className="div-switch">
           <label style={{ color: isPassword ? "rgb(0,136,0)" : "grey" }}>
@@ -114,30 +112,12 @@ export function SettingCard({channelId, settingRequest, onSettingRequest}
                 : "",
           }}
         >
-          you've change the password setting
+          You changed the password setting
         </div>
-        <div
-          className="owner-password"
-          style={{
-            display:
-              isPrivate === current?.private &&
-              isPassword === current?.isPassword
-                ? "none"
-                : "",
-          }}
-        >
-          <p className="info-tag">enter your password to confirm</p>
-          <input
-            value={ownerPass}
-            onChange={(e) => handleString(e.target.value, setOwnerPass)}
-            className="password"
-            placeholder="********"
-          />
-        </div>
-        <div className="flex-block" />
-        <div onMouseUp={onUpdate} className="card-confirm-button">
-          UPDATE
-        </div>
+          <div className="flex-block" />
+          <div onMouseUp={onUpdate} className="card-confirm-button">
+            UPDATE
+          </div>
       </div>
     );
 }

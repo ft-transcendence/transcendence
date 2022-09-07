@@ -68,7 +68,7 @@ model User {
 model Channel {
   id          Int       @id  @default(autoincrement())
 
-  name        String    @unique @default(uuid())
+  name        String    @default(uuid())
   picture     String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -88,7 +88,7 @@ model Channel {
 
   messages    Msg[]
 
-	@@unique([id, name])
+	@@unique([id])
 }
 
 model Msg {
