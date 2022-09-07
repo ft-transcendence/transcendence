@@ -125,11 +125,11 @@ export class AuthService {
 	/* SIGNIN USING 42 API */
 	async signin_42(dto: Auth42Dto): Promise<User> {
 		// DTO
-		const { email } = dto;
+		const { id } = dto;
 		// check if user exists
-		const user = await this.prisma.user.findUnique({
+		const user = await this.prisma.user.findFirst({
 			where: {
-				email: email,
+				id42: id,
 			},
 		});
 		//sending status update to the front
@@ -144,40 +144,40 @@ export class AuthService {
 		id: number,
 		email: string,
 	): Promise<Response> {
+		// generate tokens
 		const tokens = await this.signin_jwt(id, email);
+		// update refresh token in DB
 		await this.updateRefreshToken(id, tokens.refresh_token);
-		// LOG
-		//console.log(tokens);
-		// SEND TOKEN TO FRONT in URL
+		// generate URL for token
 		const url = new URL(process.env.SITE_URL);
 		url.port = process.env.FRONT_PORT;
 		url.pathname = '/auth';
 		url.searchParams.append('access_token', tokens['access_token']);
+		// send response to front
 		response.status(302).redirect(url.href);
 		return response;
 	}
 
 	async create_42_user(dto: Auth42Dto): Promise<User> {
 		// DTO
-		const { email, username, avatar } = dto;
+		const { id, email, username, avatar } = dto;
 		// generate random password
 		const rdm_string = this.generate_random_password();
-		// LOG generate random password
-		console.log(rdm_string);
 		// hash password using argon2
 		const hash = await argon.hash(rdm_string);
 		//create new user
-		const user = await this.userService.createUser(email, username, hash);
+		const user = await this.userService.createUser(
+			email,
+			username,
+			hash,
+			id,
+		);
 
 		if (user) {
 			await this.uploadService.download_avatar(user.id, avatar);
 		}
-
 		//sending status update to the front
 		this.appGateway.onlineFromService(user.id);
-
-		// LOG
-		console.log('create user :', username, email, rdm_string);
 		// return token
 		return user;
 	}
