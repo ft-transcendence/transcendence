@@ -5,6 +5,7 @@
 
 .card-disappear-click-zone {
     position: absolute;
+    z-index: 999;
     left: 0;
     top: 0;
     height: 100vh;
@@ -14,6 +15,7 @@
 
 .card-chat {
     background-color: whitesmoke;
+    z-index: 1000;
     height: 500px;
     width: 350px;
     border-radius: 12px;

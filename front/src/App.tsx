@@ -83,27 +83,27 @@ export default function App() {
         <UsersStatusCxt.Provider value={usersStatus}>
           <NotifCxt.Provider value={{ setNotifShow, setNotifText }}>
             <TAlert show={notifShow} setShow={setNotifShow} text={notifText} />
-            <div
-              className="card-disappear-click-zone"
-              style={{ display: gameRequest ? "" : "none" }}
-            >
-              <div
-                className="add-zone"
-                onClick={(event) => event.stopPropagation()}
-              >
-                <GameRequestCard
-                  game={gameInfo}
-                  gameRequest={gameRequest}
-                  onGameRequest={() => {
-                    setGameRequest((old) => {
-                      return !old;
-                    });
-                  }}
-                />
-              </div>
-            </div>
             <Outlet />
           </NotifCxt.Provider>
+          <div
+            className="card-disappear-click-zone"
+            style={{ display: gameRequest ? "" : "none" }}
+          >
+            <div
+              className="add-zone"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <GameRequestCard
+                game={gameInfo}
+                gameRequest={gameRequest}
+                onGameRequest={() => {
+                  setGameRequest((old) => {
+                    return !old;
+                  });
+                }}
+              />
+            </div>
+          </div>
         </UsersStatusCxt.Provider>
       </UsernameCxt.Provider>
     </div>
