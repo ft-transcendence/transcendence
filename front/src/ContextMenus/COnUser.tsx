@@ -8,11 +8,11 @@ export const COnUser = (props: any) => {
   const navigate = useNavigate();
   const notif = useContext(NotifCxt);
 
-  const handleClick = (otherId: number) => {
+  const handleClick = (otherId: number, otherUsername:string) => {
     const addFriend = async () => {
       const result = await addFriendQuery(otherId);
       if (result !== "error") {
-        notif?.setNotifText("Friend request sent to user #" + otherId + "!");
+        notif?.setNotifText("Friend request sent to " + otherUsername + "!");
       } else notif?.setNotifText("Could not send friend request :(.");
       notif?.setNotifShow(true);
     };
@@ -32,7 +32,7 @@ export const COnUser = (props: any) => {
       </Item>
       <Item
         onClick={({ props }) => {
-          handleClick(props.who);
+          handleClick(props.who, props.username);
         }}
       >
         add as friend

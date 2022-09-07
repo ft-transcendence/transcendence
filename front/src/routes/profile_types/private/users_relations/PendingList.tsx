@@ -39,7 +39,7 @@ export const PendingList = () => {
         for (let i = 0; i < fetchedPending.length; i++) {
           let newRow: ItableRow = {
             key: i,
-            userModel: { username: "", avatar: "", id: 0, status: 0 },
+            userModel: { username: "", avatar: "", id: 0, status: -1 },
           };
           newRow.userModel.id = fetchedPending[i].id;
           newRow.userModel.username = fetchedPending[i].username;

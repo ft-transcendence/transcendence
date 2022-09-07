@@ -485,7 +485,7 @@ export default class Game extends React.Component<{}, StatePong> {
               <div className="bar"></div>
               <div className="innerFoot">
                 <div className="Button" onClick={() => this.showSettings()}>
-                  Settings
+                  Multiplayer Settings
                 </div>
               </div>
             </div>

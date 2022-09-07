@@ -35,7 +35,7 @@ const initializeUser = (result: any, setUserInfo: any) => {
   userInfoInit.gamesPlayed = result.gamesPlayed;
   userInfoInit.gamesWon = result.gamesWon;
   userInfoInit.playTime = result.playTime;
-  userInfoInit.rank = result.rank === null ? "∞" : result.rank;
+  userInfoInit.rank = result.rank;
   userInfoInit.score = result.score;
   userInfoInit.winRate = result.winRate === null ? 0 : result.winRate;
   setUserInfo(userInfoInit);
@@ -91,11 +91,11 @@ export default function UserProfile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usersStatus, isFetched, userInfo]);
 
-  const handleClickFriend = (otherId: number) => {
+  const handleClickFriend = (otherId: number, otherUsername: string) => {
     const addFriend = async () => {
       const result = await addFriendQuery(otherId);
       if (result !== "error") {
-        notif?.setNotifText("Friend request sent to user #" + otherId + "!");
+        notif?.setNotifText("Friend request sent to " + otherUsername + "!");
       } else notif?.setNotifText("Could not send friend request :(.");
       notif?.setNotifShow(true);
     };
@@ -138,7 +138,9 @@ export default function UserProfile() {
                       ? userInfo.username.substring(0, 7) + "..."
                       : userInfo.username}
                   </div>
-                  <div className="public-rank-text"> Rank #{userInfo.rank}</div>
+                  <div className="public-rank-text">
+                    {userInfo.rank ? `Rank #${userInfo.rank}` : "unranked"}
+                  </div>
                   <div
                     className="IBM-text"
                     style={{ fontSize: "0.8em", fontWeight: "400" }}
@@ -147,7 +149,9 @@ export default function UserProfile() {
                       ? "online"
                       : status === 2
                       ? "playing"
-                      : "offline"}
+                      : status === 0
+                      ? "offline"
+                      : ""}
                   </div>
                 </Col>
                 {myId !== 0 && userInfo.id === myId ? null : (
@@ -174,7 +178,7 @@ export default function UserProfile() {
                         id="clickableIcon"
                         className="buttons-round-big float-end"
                         onClick={(e: any) => {
-                          handleClickFriend(userInfo.id);
+                          handleClickFriend(userInfo.id, userInfo.username);
                         }}
                       >
                         <i className="bi bi-person-plus-fill big-icons" />

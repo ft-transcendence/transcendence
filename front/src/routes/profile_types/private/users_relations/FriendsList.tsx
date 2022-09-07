@@ -42,7 +42,7 @@ export const FriendsList = () => {
         for (let i = 0; i < fetchedFriends.length; i++) {
           let newRow: ItableRow = {
             key: i,
-            userModel: { username: "", avatar: "", id: 0, status: 0 },
+            userModel: { username: "", avatar: "", id: 0, status: -1 },
           };
           newRow.userModel.id = fetchedFriends[i].id;
           newRow.userModel.username = fetchedFriends[i].username;
