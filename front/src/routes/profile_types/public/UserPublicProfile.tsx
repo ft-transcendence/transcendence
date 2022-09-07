@@ -91,11 +91,11 @@ export default function UserProfile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usersStatus, isFetched, userInfo]);
 
-  const handleClickFriend = (otherId: number) => {
+  const handleClickFriend = (otherId: number, otherUsername: string) => {
     const addFriend = async () => {
       const result = await addFriendQuery(otherId);
       if (result !== "error") {
-        notif?.setNotifText("Friend request sent to user #" + otherId + "!");
+        notif?.setNotifText("Friend request sent to " + otherUsername + "!");
       } else notif?.setNotifText("Could not send friend request :(.");
       notif?.setNotifShow(true);
     };
@@ -178,7 +178,7 @@ export default function UserProfile() {
                         id="clickableIcon"
                         className="buttons-round-big float-end"
                         onClick={(e: any) => {
-                          handleClickFriend(userInfo.id);
+                          handleClickFriend(userInfo.id, userInfo.username);
                         }}
                       >
                         <i className="bi bi-person-plus-fill big-icons" />
