@@ -35,7 +35,7 @@ const initializeUser = (result: any, setUserInfo: any) => {
   userInfoInit.gamesPlayed = result.gamesPlayed;
   userInfoInit.gamesWon = result.gamesWon;
   userInfoInit.playTime = result.playTime;
-  userInfoInit.rank = result.rank === null ? "∞" : result.rank;
+  userInfoInit.rank = result.rank;
   userInfoInit.score = result.score;
   userInfoInit.winRate = result.winRate === null ? 0 : result.winRate;
   setUserInfo(userInfoInit);
@@ -138,7 +138,9 @@ export default function UserProfile() {
                       ? userInfo.username.substring(0, 7) + "..."
                       : userInfo.username}
                   </div>
-                  <div className="public-rank-text"> Rank #{userInfo.rank}</div>
+                  <div className="public-rank-text">
+                    {userInfo.rank ? `Rank # " + {userInfo.rank}` : "unranked"}
+                  </div>
                   <div
                     className="IBM-text"
                     style={{ fontSize: "0.8em", fontWeight: "400" }}
