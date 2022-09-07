@@ -15,7 +15,12 @@ import { ChatGateway } from './chat/chat.gateway';
   origin: "http://localhost:3000"}})
 
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
-  constructor(private readonly jwtService: JwtService, private userService: UserService, private readonly chatGateway: ChatGateway, private readonly chatService: ChatService, private gameService: GameService) {}
+  constructor(
+    private readonly jwtService: JwtService, 
+    private readonly userService: UserService, 
+    private readonly chatGateway: ChatGateway,
+    private readonly chatService: ChatService, 
+  ) {}
   
 	@WebSocketServer()
 	server: Server;
@@ -130,16 +135,20 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 	@SubscribeMessage('send invitation')
 	async gameInvitation(@MessageBody() data: gameInvitation) {
-		const client = await this.get__clientSocket(data.targetId);
+		console.log('send invitation')
+    const client = await this.get__clientSocket(data.targetId);
 		if (client) {
+      console.log('send invitation found client')
       client.emit('game invitation', data);
     }
 	}
 
   @SubscribeMessage('decline game')
 	async gameDecline(@MessageBody() game: gameInvitation) {
-		const client = await this.get__clientSocket(game.inviterId);
+    console.log('decline invitation')
+    const client = await this.get__clientSocket(game.inviterId);
 		if (client) {
+      console.log('decline invitation found client')
       const target = await this.userService.getUser(game.targetId);
       client.emit('rejected', target.username);
     }

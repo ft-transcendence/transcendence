@@ -1,19 +1,20 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { GameService } from './game.service';
 import { ScheduleModule } from '@nestjs/schedule';
-import { JwtModule } from '@nestjs/jwt';
-import { UserService } from 'src/user/user.service';
 import { WatchController } from './watch/watch.controller';
 import { GameController } from './game.controller';
+import { GameGateway } from './game.gateway';
+import { UserModule } from 'src/user/user.module';
+import { AppModule } from 'src/app.module';
 
 @Module({
 	imports: [
 		ScheduleModule.forRoot(),
-		JwtModule.register({ secret: process.env.JWT_SECRET }),
+		forwardRef(() => AppModule),
+		forwardRef(() => UserModule),
 	],
-
-	providers: [GameService, UserService],
-
+	providers: [GameService, GameGateway],
 	controllers: [WatchController, GameController],
+	exports: [GameService],
 })
 export class GameModule {}

@@ -9,7 +9,6 @@ import { Server } from 'socket.io';
 import { Room } from './interfaces/room.interface';
 import { GameService } from './game.service';
 import { Player } from './interfaces/player.interface';
-import { JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/user/user.service';
 import { Client } from './interfaces/client.interface';
 import { User } from '.prisma/client';
@@ -23,7 +22,6 @@ import { AppGateway } from 'src/app.gateway';
 export class GameGateway {
 	constructor(
 		private gameService: GameService,
-		private readonly jwtService: JwtService,
 		private userService: UserService,
 		private appGateway: AppGateway,
 	) {}

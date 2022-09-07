@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class UploadService {
 	constructor(
 		private readonly httpService: HttpService,
-		private userService: UserService,
+		private readonly userService: UserService,
 	) {}
 
 	async download_avatar(id: number, avatarURL: string): Promise<any> {

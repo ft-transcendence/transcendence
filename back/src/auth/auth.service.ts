@@ -24,12 +24,12 @@ import { ChatGateway } from 'src/chat/chat.gateway';
 @Injectable()
 export class AuthService {
 	constructor(
-		private prisma: PrismaService,
-		private jwtService: JwtService,
-		private userService: UserService,
-		private uploadService: UploadService,
-		private appGateway: AppGateway,
+		private readonly prisma: PrismaService,
+		private readonly jwtService: JwtService,
+		private readonly appGateway: AppGateway,
+		private readonly userService: UserService,
 		private readonly chatGateway: ChatGateway,
+		private readonly uploadService: UploadService,
 	) {}
 
 	/* SIGNUP */

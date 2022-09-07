@@ -2,9 +2,9 @@
 import {
 	Injectable,
 	ForbiddenException,
+	BadRequestException,
 	Inject,
 	forwardRef,
-	BadRequestException,
 } from '@nestjs/common';
 import { Game, User } from '@prisma/client';
 import * as argon from 'argon2';
@@ -20,8 +20,9 @@ import { SubjectiveGameDto } from 'src/game/dto';
 @Injectable()
 export class UserService {
 	constructor(
-		private prisma: PrismaService,
-		@Inject(forwardRef(() => GameService)) private gameService: GameService,
+		private readonly prisma: PrismaService,
+		@Inject(forwardRef(() => GameService))
+		private readonly gameService: GameService,
 	) {}
 
 	/*	CREATE	*/

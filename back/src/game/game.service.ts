@@ -20,9 +20,10 @@ export class GameService {
 	ballSpeed = 0.25;
 
 	constructor(
-		private schedulerRegistry: SchedulerRegistry,
-		@Inject(forwardRef(() => UserService)) private userService: UserService,
-		private prisma: PrismaService,
+		private readonly schedulerRegistry: SchedulerRegistry,
+		private readonly prisma: PrismaService,
+		@Inject(forwardRef(() => UserService))
+		private readonly userService: UserService,
 	) {}
 
 	static rooms: Room[] = [];
