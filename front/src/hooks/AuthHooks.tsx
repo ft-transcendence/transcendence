@@ -43,15 +43,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const postLogout = async () => {
         const result = await logOut();
         if (result !== "error") {
-          notif?.setNotifText("See you soon " + user + " !");
-          notif?.setNotifShow(true);
           setUser(null);
           localStorage.clear();
           localStorage.setItem("userLogged", "false");
           callback();
-        } else {
-          notif?.setNotifText("Could not log out. Please, try again.");
-          notif?.setNotifShow(true);
         }
       };
       postLogout();

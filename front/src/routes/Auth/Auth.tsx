@@ -87,11 +87,7 @@ export default function Auth() {
                 "User already exists. Please enter another username and/or email."
               )
             : notif?.setNotifText("Unable to sign up. Please try again.");
-        } else
-          notif?.setNotifText(
-            "Welcome " + localStorage.getItem("userName") + "!"
-          );
-        notif?.setNotifShow(true);
+        }
       };
       signUpUser();
     } else {
@@ -103,11 +99,7 @@ export default function Auth() {
                 "User does not exists. Please enter a valid email and/or username."
               )
             : notif?.setNotifText("Could not retreive user. Please try again.");
-        } else
-          notif?.setNotifText(
-            "Welcome back " + localStorage.getItem("userName") + "!"
-          );
-        notif?.setNotifShow(true);
+        }
       };
       signInUser();
     }

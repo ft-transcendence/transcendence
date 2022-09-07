@@ -25,10 +25,10 @@ const socketOptions = {
   transportOptions: {
     polling: {
       extraHeaders: {
-          Token: localStorage.getItem("userToken"),
-      }
-    }
-  }
+        Token: localStorage.getItem("userToken"),
+      },
+    },
+  },
 };
 
 export const socket = io("ws://localhost:4000", socketOptions);
@@ -40,7 +40,9 @@ export default function App() {
   const [notifShow, setNotifShow] = useState(false);
   const [notifText, setNotifText] = useState("error");
   const [gameRequest, setGameRequest] = useState(false);
-    const [gameInfo, setGameInfo] = useState<gameInvitation | undefined>(undefined);
+  const [gameInfo, setGameInfo] = useState<gameInvitation | undefined>(
+    undefined
+  );
 
   let userstatusTab: IUserStatus[] = [];
 
@@ -69,12 +71,11 @@ export default function App() {
       setGameRequest(true);
       setGameInfo(game);
 
-    return (() => {
-      socket.off("game invitation");
-    })
-  })
-
-  }, [])
+      return () => {
+        socket.off("game invitation");
+      };
+    });
+  }, []);
 
   return (
     <div className="App">
@@ -82,23 +83,28 @@ export default function App() {
         <UsersStatusCxt.Provider value={usersStatus}>
           <NotifCxt.Provider value={{ setNotifShow, setNotifText }}>
             <TAlert show={notifShow} setShow={setNotifShow} text={notifText} />
+            <div
+              className="card-disappear-click-zone"
+              style={{ display: gameRequest ? "" : "none" }}
+            >
+              <div
+                className="add-zone"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <GameRequestCard
+                  game={gameInfo}
+                  gameRequest={gameRequest}
+                  onGameRequest={() => {
+                    setGameRequest((old) => {
+                      return !old;
+                    });
+                  }}
+                />
+              </div>
+            </div>
             <Outlet />
           </NotifCxt.Provider>
         </UsersStatusCxt.Provider>
-        <div
-            className="card-disappear-click-zone"
-            style={{display: gameRequest ? "" : "none"}}>
-            <div 
-                className="add-zone"
-                onClick={event => event.stopPropagation()}>
-                    <GameRequestCard
-                        game={gameInfo}
-                        gameRequest={gameRequest}
-                        onGameRequest={() => {
-                            setGameRequest(old => {return !old})
-                    }}/>
-            </div>
-        </div>
       </UsernameCxt.Provider>
     </div>
   );
