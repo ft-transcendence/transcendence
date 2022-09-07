@@ -112,10 +112,6 @@ export default function Chat() {
         setSettingRequest(old => {return !old})
     }
 
-    const gameRequestDisappear = () => {
-        setGameRequest(old => {return !old})
-    }
-
     return (
         <div className="zone-diff">
                 <Preview
@@ -177,7 +173,6 @@ export default function Chat() {
                 </div>
             </div>
             <div
-                onClick={gameRequestDisappear}
                 className="card-disappear-click-zone"
                 style={{display: gameRequest ? "" : "none"}}>
                 <div 
