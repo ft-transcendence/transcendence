@@ -139,7 +139,7 @@ export default function UserProfile() {
                       : userInfo.username}
                   </div>
                   <div className="public-rank-text">
-                    {userInfo.rank ? `Rank # " + {userInfo.rank}` : "unranked"}
+                    {userInfo.rank ? `Rank #${userInfo.rank}` : "unranked"}
                   </div>
                   <div
                     className="IBM-text"

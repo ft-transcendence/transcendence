@@ -155,14 +155,14 @@ const DisplayGamesRow = (props: any) => {
             ></div>
           </div>
           <div
-            className={`status-private-sm ${
+            className={`status-private-sm ${ status ?
               status === 1
                 ? "online"
                 : status === 2
                 ? "ingame"
                 : props.userModel.status === 0
                 ? "offline"
-                : ""
+                : "" : null
             }`}
           ></div>
         </Col>
