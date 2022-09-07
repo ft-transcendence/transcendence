@@ -98,7 +98,12 @@ export class GameGateway {
 			);
 			player.playerNb = 2;
 
-
+			//sending status update to the front
+			const player1Id =
+				GameService.rooms[GameService.rooms.length - 1].player1.data.id;
+			console.log(player1Id);
+			this.appGateway.inGameFromService(user.id);
+			this.appGateway.inGameFromService(player1Id);
 		}
 
 		player.roomId = GameService.rooms[GameService.rooms.length - 1].id;
