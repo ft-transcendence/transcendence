@@ -135,7 +135,6 @@ export class ChatGateway {
 		@MessageBody() data: updateChannel,
 		@ConnectedSocket() client: Socket,
 	) {
-		const cName = await this.chatservice.get__Cname__ByCId(data.channelId);
 		await this.chatservice.invite__toChannel(data);
 		const id = await this.chatservice.get__id__ByEmail(data.email);
 		const inviteds = await this.chatservice.fetch__inviteds(

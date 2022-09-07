@@ -158,9 +158,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
                         delete message
                     </Item>
                     <Item 
-                        onClick={handleBlockUser}
-                        style={{backgroundColor: "grey"}}
-                    >
+                        onClick={handleBlockUser}>
                         Block user
                     </Item>
                 </Menu>
