@@ -32,7 +32,14 @@ export class GameGateway {
 	@SubscribeMessage('start')
 	async handleStart(@ConnectedSocket() client: Client): Promise<Player> {
 		const user = await this.userService.getUser(client.data.id);
-
+		if (GameService.rooms.some((room) => room.player1.data.id === client.data.id)
+		|| GameService.rooms.some((room) => {room.player2 && room.player2.data.id === client.data.id}))
+		{
+			return {
+				playerNb: 3,
+				roomId: 0,
+			};
+		}
 		// data to be provided to the client
 		const player: Player = {
 			playerNb: 0,
@@ -88,12 +95,18 @@ export class GameGateway {
 				this.server,
 			);
 			player.playerNb = 2;
+
+			//sending status update to the front
+			const player1Id =
+				GameService.rooms[GameService.rooms.length - 1].player1.data.id;
+			console.log(player1Id);
+			this.appGateway.inGameFromService(user.id);
+			this.appGateway.inGameFromService(player1Id);
 		}
 
 		player.roomId = GameService.rooms[GameService.rooms.length - 1].id;
 
-		//sending status update to the front
-		this.appGateway.inGameFromService(user.id);
+
 
 		return player; // send data to client
 	}

@@ -51,7 +51,7 @@ export default function App() {
       for (let i = 0; i <= data.length - 1; i++) {
         let newUser: IUserStatus = {
           key: data[i][0],
-          userModel: { id: 0, status: 0 },
+          userModel: { id: 0, status: -1 },
         };
         newUser.userModel.id = data[i][0];
         newUser.userModel.status = data[i][1];

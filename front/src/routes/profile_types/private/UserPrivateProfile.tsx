@@ -70,7 +70,6 @@ export default function UserPrivateProfile() {
         onHide={() => setModalShowAuth(false)}
       />
       <COnUserSimple />
-      <h1 className="app-title">My account</h1>
       <Container className="p-5 h-100">
         <Row className="wrapper">
           <div className="p-2 profile-pic-round">

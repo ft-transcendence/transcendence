@@ -39,7 +39,7 @@ export const BlockedList = () => {
         for (let i = 0; i < fetchedBlocked.length; i++) {
           let newRow: ItableRow = {
             key: i,
-            userModel: { username: "", avatar: "", id: 0, status: 0 },
+            userModel: { username: "", avatar: "", id: 0, status: -1 },
           };
           newRow.userModel.id = fetchedBlocked[i].id;
           newRow.userModel.username = fetchedBlocked[i].username;

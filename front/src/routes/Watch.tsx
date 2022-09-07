@@ -1,5 +1,4 @@
 import React from 'react';
-import { io } from "socket.io-client";
 import "./Game.css";
 import "./Watch.css";
 import { Game_data, Coordinates, StatePong, Button, ButtonState, PaddleProps, StatePaddle, Game_data_extended } from './game.interfaces';
@@ -106,7 +105,6 @@ export default class Watch extends React.Component < {}, StatePong > {
     }
 
     componentDidMount() {
-        var t = this;
         fetch(process.env.REACT_APP_BACKEND_URL + "/watch", {
             method: "GET",
             headers: authFileHeader(),
@@ -121,7 +119,7 @@ export default class Watch extends React.Component < {}, StatePong > {
         })
         socket.on("update", (info: Game_data) => {
             this.setState({ballX: info.xBall, ballY: info.yBall, paddleLeftY: info.paddleLeft, paddleRightY: info.paddleRight, player1Score: info.player1Score, player2Score: info.player2Score, player1Name: info.player1Name, player2Name: info.player2Name});
-            if (this.state.avatarP1URL == "" && this.state.avatarP2URL == "")
+            if (this.state.avatarP1URL === "" && this.state.avatarP2URL === "")
                 this.getAvatars(info.player1Avatar, info.player2Avater);
         });
             socket.on("end_game", (winner: number) => 

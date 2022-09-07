@@ -120,18 +120,21 @@ class Message extends React.Component< Msg, MsgState > {
           const disp = this.state.showMsg ? 'unset': 'none';
           var message: string;
           switch(this.state.type) {
-             case 1:
-                 message = "Please wait for another player";
-                 break;
-             case 2:
-                 message = "You win";
-                 break;
-             case 3:
-                 message = "You lose";
-                 break;
-              case 4:
-                 message = "Waiting for your opponent to accept the invitation";
-                 break;
+            case 1:
+                message = "Please wait for another player";
+                break;
+            case 2:
+                message = "You win";
+                break;
+            case 3:
+                message = "You lose";
+                break;
+            case 4:
+                message = "Waiting for your opponent to accept the invitation";
+                break;
+            case 5:
+                message = "Please finish your game before starting a new one";
+                break; 
              default:
                  message = "error";
           }
@@ -317,12 +320,19 @@ export default class Game extends React.Component<PropsPong, StatePong> {
     }
     this.setState({ buttonState: "Cancel" });
     this.socket.emit("start", {}, (player: Player) =>
+    {  
+      if (player.playerNb === 3)
+      {
+        this.setState({
+          msgType: 5,});
+          return;
+      }  
       this.setState({
         roomId: player.roomId,
         playerNumber: player.playerNb,
         msgType: 1,
       })
-    );
+    });
   };
 
   soloButtonHandler = () => this.setState({ soloGame: true });
@@ -337,7 +347,7 @@ export default class Game extends React.Component<PropsPong, StatePong> {
       });
     }
 
-    if (e.key === this.MOVE_DOWN) {
+    if (e.key === this.MOVE_DOWN && this.state.gameStarted) {
       e.preventDefault();
       this.socket.emit("move", {
         dir: 2,
@@ -523,7 +533,7 @@ export default class Game extends React.Component<PropsPong, StatePong> {
               <div className="bar"></div>
               <div className="innerFoot">
                 <div className="Button" onClick={() => this.showSettings()}>
-                  Settings
+                  Multiplayer Settings
                 </div>
               </div>
             </div>

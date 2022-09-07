@@ -47,7 +47,7 @@ export default function DisplayUserFriends(props: any) {
         for (let i = 0; i < fetchedFriends.length; i++) {
           let newRow: ItableRow = {
             key: i,
-            userModel: { username: "", avatar: "", id: 0, status: 0 },
+            userModel: { username: "", avatar: "", id: 0, status: -1 },
           };
 
           let avatar = await fetchDataFriendsAvatar(fetchedFriends[i].id);
@@ -137,12 +137,17 @@ const DisplayFriendsRow = (props: any) => {
   const { show } = useContextMenu();
   const navigate = useNavigate();
 
-  function displayMenu(e: React.MouseEvent<HTMLElement>, targetUser: number) {
+  function displayMenu(
+    e: React.MouseEvent<HTMLElement>,
+    targetUserId: number,
+    targetUserUsername: string
+  ) {
     e.preventDefault();
     show(e, {
       id: "onUser",
       props: {
-        who: targetUser,
+        who: targetUserId,
+        username: targetUserUsername,
       },
     });
   }
@@ -150,7 +155,6 @@ const DisplayFriendsRow = (props: any) => {
   const handleClickWatch = (otherId: number) => {
     navigate("/app/watch", { replace: false });
   };
-
 
   return (
     <main>
@@ -173,7 +177,7 @@ const DisplayFriendsRow = (props: any) => {
                 }}
                 id="clickableIcon"
                 onClick={(e: React.MouseEvent<HTMLElement>) =>
-                  displayMenu(e, props.userModel.id)
+                  displayMenu(e, props.userModel.id, props.userModel.username)
                 }
               ></div>
             </div>
@@ -183,7 +187,9 @@ const DisplayFriendsRow = (props: any) => {
                   ? "online"
                   : props.userModel.status === 2
                   ? "ingame"
-                  : "offline"
+                  : props.userModel.status === 0
+                  ? "offline"
+                  : ""
               }`}
             ></div>
           </Col>
@@ -192,7 +198,7 @@ const DisplayFriendsRow = (props: any) => {
             id="clickableIcon"
             className="text-left public-hover"
             onClick={(e: React.MouseEvent<HTMLElement>) =>
-              displayMenu(e, props.userModel.id)
+              displayMenu(e, props.userModel.id, props.userModel.username)
             }
           >
             <div>

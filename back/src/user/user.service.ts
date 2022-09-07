@@ -300,6 +300,16 @@ export class UserService {
 			if (index != -1) {
 				return true;
 			}
+			const user2 = await this.prisma.user.findUnique({
+				where: {
+					id: id2,
+				},
+				rejectOnNotFound: true,
+			});
+			const index2 = user2.blocks.indexOf(id1);
+			if (index2 != -1) {
+				return true;
+			}
 			return false;
 		} catch (error) {
 			throw new ForbiddenException('isBlocked error : ' + error);
@@ -420,7 +430,8 @@ export class UserService {
 		if (
 			id == otherId ||
 			(await this.isFriend(id, otherId)) ||
-			(await this.isAdding(id, otherId))
+			(await this.isAdding(id, otherId)) ||
+			(await this.isBlocked(id, otherId))
 		) {
 			throw new ForbiddenException('Cannot invite this user');
 		}
@@ -612,31 +623,20 @@ export class UserService {
 		if (id == otherId || (await this.isBlocked(id, otherId))) {
 			throw new ForbiddenException('Cannot block this user');
 		}
-		// this.rmFriend(id, otherId);
+		if (await this.isFriend(id, otherId)) await this.rmFriend(id, otherId);
 		const user = await this.prisma.user.update({
 			where: {
 				id: id,
 			},
 			data: {
-				blocking: {
+				blocks: {
 					push: otherId,
 				},
 			},
 		});
 
-		await this.prisma.user.update({
-			where: {
-				id: otherId,
-			},
-			data: {
-				blocked: {
-					push: id,
-				},
-			},
-		});
-
-		this.updateBlocks(id);
-		this.updateBlocks(otherId);
+		// this.updateBlocks(id);
+		// this.updateBlocks(otherId);
 
 		return user;
 	}
@@ -662,27 +662,6 @@ export class UserService {
 			},
 			data: {
 				blocks: user.blocks,
-			},
-		});
-
-		//removing User from otherUser.blocks
-		const user2 = await this.prisma.user.findUnique({
-			where: {
-				id: otherId,
-			},
-		});
-
-		const index2 = user2.blocks.indexOf(id);
-		if (index2 != -1) {
-			user2.blocks.splice(index2, 1);
-		}
-
-		await this.prisma.user.update({
-			where: {
-				id: otherId,
-			},
-			data: {
-				blocks: user2.blocks,
 			},
 		});
 		return user;
@@ -805,3 +784,4 @@ export class UserService {
 		return updateUser;
 	}
 }
+
