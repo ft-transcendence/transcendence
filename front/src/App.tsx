@@ -5,6 +5,8 @@ import { createContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { INotifCxt, IUserStatus } from "./globals/Interfaces";
 import { TAlert } from "./toasts/TAlert";
+import { GameRequestCard } from "./routes/gameRequestCard";
+import { gameInvitation } from "./routes/chat_modes/type/chat.type";
 
 let LoginStatus = {
   islogged: false,
@@ -37,6 +39,8 @@ export default function App() {
   );
   const [notifShow, setNotifShow] = useState(false);
   const [notifText, setNotifText] = useState("error");
+  const [gameRequest, setGameRequest] = useState(false);
+    const [gameInfo, setGameInfo] = useState<gameInvitation | undefined>(undefined);
 
   let userstatusTab: IUserStatus[] = [];
 
@@ -60,6 +64,18 @@ export default function App() {
     // }
   }, [usersStatus]);
 
+  useEffect(() => {
+    socket.on("game invitation", (game: gameInvitation) => {
+      setGameRequest(true);
+      setGameInfo(game);
+
+    return (() => {
+      socket.off("game invitation");
+    })
+  })
+
+  }, [])
+
   return (
     <div className="App">
       <UsernameCxt.Provider value={LoginStatus}>
@@ -69,6 +85,20 @@ export default function App() {
             <Outlet />
           </NotifCxt.Provider>
         </UsersStatusCxt.Provider>
+        <div
+            className="card-disappear-click-zone"
+            style={{display: gameRequest ? "" : "none"}}>
+            <div 
+                className="add-zone"
+                onClick={event => event.stopPropagation()}>
+                    <GameRequestCard
+                        game={gameInfo}
+                        gameRequest={gameRequest}
+                        onGameRequest={() => {
+                            setGameRequest(old => {return !old})
+                    }}/>
+            </div>
+        </div>
       </UsernameCxt.Provider>
     </div>
   );

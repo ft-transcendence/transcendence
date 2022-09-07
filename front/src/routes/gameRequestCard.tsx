@@ -1,10 +1,10 @@
-import "./card.css";
+import "./chat_modes/card.css";
 import { useEffect, useState } from "react";
-import { socket } from "../../App"
+import { socket } from "../App"
 import { useNavigate } from "react-router-dom";
-import { Player } from "../game.interfaces";
-import { getUserAvatarQuery } from "../../queries/avatarQueries";
-import { gameInvitation } from "./type/chat.type";
+import { Player } from "./game.interfaces";
+import { getUserAvatarQuery } from "../queries/avatarQueries";
+import { gameInvitation } from "./chat_modes/type/chat.type";
 
 export function GameRequestCard({game, gameRequest, onGameRequest}
     : { game: gameInvitation | undefined,

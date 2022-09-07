@@ -6,7 +6,6 @@ import RoomStatus from "./chat_modes/roomStatus";
 import { chatPreview, gameInvitation } from "./chat_modes/type/chat.type";
 import { NewRoomCard } from "./chat_modes/newRoomCard";
 import { SettingCard } from "./chat_modes/settingCard";
-import { GameRequestCard } from "./chat_modes/gameRequestCard";
 import { NotifCxt } from "../App";
 import { socket } from "../App"
 
@@ -14,8 +13,6 @@ export default function Chat() {
     const [selectedChat, setSelectedChat] = useState<chatPreview | undefined>(undefined);
     const [newRoomRequest, setNewRoomRequest] = useState(false);
     const [settingRequest, setSettingRequest] = useState(false);
-    const [gameRequest, setGameRequest] = useState(false);
-    const [gameInfo, setGameInfo] = useState<gameInvitation | undefined>(undefined);
     const [outsider, setOutsider] = useState<boolean | undefined>(undefined);
     const [show, setShow] = useState<boolean | undefined>(undefined);
     const [role, setRole] = useState("");
@@ -43,24 +40,18 @@ export default function Chat() {
             setRole(data);
         })
 
-        socket.on("game invitation", (game: gameInvitation) => {
-            setGameRequest(true);
-            setGameInfo(game);
+        socket.on("fetch blocked", (data: []) => {
+            setBlockedList(data);
         })
 
         socket.on("update channel request", () => {
             setUpdateStatus(u => u+1);
         })
 
-        socket.on("fetch blocked", (data: []) => {
-            setBlockedList(data);
-        })
-
         return (() => {
             socket.off("connect");
             socket.off("exception");
             socket.off("fetch role");
-            socket.off("invite to game");
             socket.off("fetch blocked");
             socket.off("update channel request");
         })
@@ -156,20 +147,6 @@ export default function Chat() {
                             settingRequest={settingRequest}
                             onSettingRequest={() => {
                                 setSettingRequest(old => {return !old})
-                        }}/>
-                </div>
-            </div>
-            <div
-                className="card-disappear-click-zone"
-                style={{display: gameRequest ? "" : "none"}}>
-                <div 
-                    className="add-zone"
-                    onClick={event => event.stopPropagation()}>
-                        <GameRequestCard
-                            game={gameInfo}
-                            gameRequest={gameRequest}
-                            onGameRequest={() => {
-                                setGameRequest(old => {return !old})
                         }}/>
                 </div>
             </div>

@@ -3,6 +3,15 @@
     color: grey;
 }
 
+.card-disappear-click-zone {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
 .card-chat {
     background-color: whitesmoke;
     height: 500px;
