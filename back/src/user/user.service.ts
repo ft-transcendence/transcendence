@@ -435,7 +435,7 @@ export class UserService {
 			},
 		});
 
-		const otherUser = await this.prisma.user.update({
+		await this.prisma.user.update({
 			where: {
 				id: otherId,
 			},
@@ -624,7 +624,7 @@ export class UserService {
 			},
 		});
 
-		const otherUser = await this.prisma.user.update({
+		await this.prisma.user.update({
 			where: {
 				id: otherId,
 			},
@@ -707,7 +707,7 @@ export class UserService {
 
 		let index = 1;
 		for (const id of usersId) {
-			const usersUpdate = await this.prisma.user.update({
+			await this.prisma.user.update({
 				where: {
 					id: id,
 				},
