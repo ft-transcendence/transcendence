@@ -1,6 +1,7 @@
 import {
 	IsEmail,
 	IsNotEmpty,
+	IsNumber,
 	IsString,
 	MaxLength,
 	MinLength,
@@ -41,6 +42,10 @@ export class SignInDto {
 
 // 42 API DTO
 export class Auth42Dto {
+	@IsNumber()
+	@IsNotEmpty()
+	id: number;
+
 	@IsEmail()
 	@IsNotEmpty()
 	email: string;

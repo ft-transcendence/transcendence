@@ -4,6 +4,7 @@ import {
 	ForbiddenException,
 	Inject,
 	forwardRef,
+	BadRequestException,
 } from '@nestjs/common';
 import { Game, User } from '@prisma/client';
 import * as argon from 'argon2';
@@ -29,12 +30,14 @@ export class UserService {
 		email: string,
 		username: string,
 		hash: string,
+		id = 0,
 	): Promise<User> {
 		const user = await this.prisma.user.create({
 			data: {
 				email,
 				username,
 				hash,
+				id42: id,
 			},
 		});
 		return user;
@@ -148,6 +151,9 @@ export class UserService {
 	}
 
 	async getUser(id: number) {
+		if (id === undefined) {
+			throw new BadRequestException('Undefined user ID');
+		}
 		// console.log('id', id);
 		try {
 			const user = await this.prisma.user.findUnique({
@@ -258,7 +264,7 @@ export class UserService {
 			throw new ForbiddenException('isAdding error : ' + error);
 		}
 	}
-	
+
 	async getBlocks(id: number) {
 		const BlocksIdList = await this.prisma.user.findMany({
 			where: {

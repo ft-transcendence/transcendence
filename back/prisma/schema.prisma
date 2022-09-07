@@ -18,6 +18,7 @@ datasource db {
 
 model User {
 	id			Int			@id @default(autoincrement())
+  id42    Int
 
 	createdAt	DateTime	@default(now())
 	updatedAt	DateTime	@updatedAt

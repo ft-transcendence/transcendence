@@ -3,11 +3,13 @@ import {
 	Controller,
 	ForbiddenException,
 	Get,
+	Logger,
 	Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { isNumber } from 'class-validator';
 import { GetCurrentUserId } from 'src/decorators';
+import { UpdateEmailDto, UpdateUsernameDto } from './dto';
 /* USER MODULES */
 import { UserService } from './user.service';
 
@@ -16,16 +18,20 @@ import { UserService } from './user.service';
 export class UserController {
 	constructor(private userService: UserService) {}
 
+	logger = new Logger('UserController');
+
 	/*	READ	*/
 
 	@Get('me')
 	getMe(@GetCurrentUserId() id: number) {
+		this.logger.log('get current user');
 		const userDto = this.userService.getUser(id);
 		return userDto;
 	}
 
 	@Post('get_user')
 	getUser(@Body('otherId') otherId: number | string) {
+		this.logger.log('getUser by ID ' + otherId);
 		try {
 			if (isNumber(otherId)) {
 				const userDto = this.userService.getUser(Number(otherId));
@@ -50,33 +56,33 @@ export class UserController {
 
 	@Get('get_leaderboard')
 	getLeaderboard() {
-		// console.log('Going through getLeaderboard in user.controller');
+		this.logger.log('getLeaderboard');
 		return this.userService.getLeaderboard();
 	}
 
 	@Post('get_game_history')
 	getGameHistory(@Body('otherId') otherId: number) {
-		// console.log('Going through getGameHistory in user.controller');
+		this.logger.log('getGameHistory otherID: ' + otherId);
 		return this.userService.getGameHistory(otherId);
 	}
 
 	@Post('get_friends')
 	async getFriends(@Body('otherId') otherId: number) {
-		// console.log('Going through getFriends in user.controller');
+		this.logger.log('getFriends otherID: ' + otherId);
 		const result = await this.userService.getFriends(otherId);
 		return result;
 	}
 
 	@Get('get_pending')
 	async getPending(@GetCurrentUserId() id: number) {
-		// console.log('Going through getPending in user.controller');
+		this.logger.log('getPending ID: ' + id);
 		const result = await this.userService.getPending(id);
 		return result;
 	}
 
 	@Get('get_blocked')
 	async getBlocked(@GetCurrentUserId() id: number) {
-		// console.log('Going through getBlocked in user.controller');
+		this.logger.log('getBlocked ID: ' + id);
 		const result = await this.userService.getBlocks(id);
 		return result;
 	}
@@ -86,7 +92,7 @@ export class UserController {
 		@GetCurrentUserId() id: number,
 		@Body('otherId') otherId: number,
 	) {
-		// console.log('Going through isFriend in user.controller');
+		this.logger.log('isFriend ID: ' + id + ' -> otherID: ' + otherId);
 		const result = await this.userService.isFriend(id, otherId);
 		return result;
 	}
@@ -96,7 +102,7 @@ export class UserController {
 		@GetCurrentUserId() id: number,
 		@Body('otherId') otherId: number,
 	) {
-		// console.log('Going through isFriend in user.controller');
+		this.logger.log('isFriend ID: ' + id + ' -> otherID: ' + otherId);
 		const result = await this.userService.isBlocked(id, otherId);
 		return result;
 	}
@@ -106,7 +112,7 @@ export class UserController {
 		@GetCurrentUserId() id: number,
 		@Body('password') password: string,
 	) {
-		// console.log('Going through checkPword in user.controller');
+		this.logger.log('checkPassword ID: ' + id);
 		const result = await this.userService.checkPassword(id, password);
 		return result;
 	}
@@ -117,15 +123,15 @@ export class UserController {
 
 	@Post('/update_username')
 	async updateUsername(
-		@Body('username') newUsername: string,
+		@Body() newUsername: UpdateUsernameDto,
 		@GetCurrentUserId() id: number,
 	) {
-		// console.log('Going through updateUsername in user.controller');
+		const { username } = newUsername;
+		this.logger.log(
+			'updateUsername ID ' + id + ' -> username: ' + username,
+		);
 		try {
-			const result = await this.userService.updateUsername(
-				id,
-				newUsername,
-			);
+			const result = await this.userService.updateUsername(id, username);
 			return result;
 		} catch {
 			throw new ForbiddenException('Username already exists');
@@ -137,19 +143,20 @@ export class UserController {
 		@Body('avatar') newAvatar: string,
 		@GetCurrentUserId() id: number,
 	) {
-		// console.log('Going through updateAvatar in user.controller');
+		this.logger.log('updateAvatar ID ' + id + ' -> Avatar: ' + newAvatar);
 		const result = await this.userService.updateAvatar(id, newAvatar);
 		return result;
 	}
 
 	@Post('/update_email')
 	async updateEmail(
-		@Body('email') newEmail: string,
+		@Body() newEmail: UpdateEmailDto,
 		@GetCurrentUserId() id: number,
 	) {
-		// console.log('Going through updateEmail in user.controller');
+		const { email } = newEmail;
+		this.logger.log('updateEmail ID ' + id + ' -> email: ' + email);
 		try {
-			const result = await this.userService.updateEmail(id, newEmail);
+			const result = await this.userService.updateEmail(id, email);
 			return result;
 		} catch {
 			throw new ForbiddenException('Email already taken');
@@ -163,7 +170,7 @@ export class UserController {
 		@GetCurrentUserId() id: number,
 		@Body('otherId') otherId: number,
 	) {
-		//		console.log('Going through addFriend in user.controller: ' + request.user.id + ' -> ' + otherId);
+		this.logger.log('addFriend ID: ' + id + ' -> otherID: ' + otherId);
 		const result = await this.userService.addFriend(id, otherId);
 		return result;
 	}
@@ -173,7 +180,7 @@ export class UserController {
 		@GetCurrentUserId() id: number,
 		@Body('otherId') otherId: number,
 	) {
-		//		console.log('Going through addFriend in user.controller: ' + request.user.id + ' -> ' + otherId);
+		this.logger.log('addFriend ID: ' + id + ' -> otherID: ' + otherId);
 		const result = await this.userService.rmFriend(id, otherId);
 
 		return result;
@@ -184,7 +191,7 @@ export class UserController {
 		@GetCurrentUserId() id: number,
 		@Body('otherId') otherId: number,
 	) {
-		//		console.log('Going through cancelInvite in user.controller: ' + request.user.id + ' -> ' + otherId);
+		this.logger.log('cancelInvite ID: ' + id + ' -> otherID: ' + otherId);
 		const result = await this.userService.cancelInvite(id, otherId);
 		return result;
 	}
@@ -194,7 +201,7 @@ export class UserController {
 		@GetCurrentUserId() id: number,
 		@Body('otherId') otherId: number,
 	) {
-		//		console.log('Going through denyInvite in user.controller: ' + request.user.id + ' -> ' + otherId);
+		this.logger.log('denyInvite ID' + id + ' -> otherID: ' + otherId);
 		const result = await this.userService.denyInvite(id, otherId);
 		return result;
 	}
@@ -204,8 +211,8 @@ export class UserController {
 		@GetCurrentUserId() id: number,
 		@Body('otherId') otherId: number,
 	) {
+		this.logger.log('blockUser ID: ' + id + ' -> otherID: ' + otherId);
 		const result = await this.userService.blockUser(id, otherId);
-
 		return result;
 	}
 
@@ -214,8 +221,8 @@ export class UserController {
 		@GetCurrentUserId() id: number,
 		@Body('otherId') otherId: number,
 	) {
+		this.logger.log('unblockUser ID: ' + id + ' -> otherID: ' + otherId);
 		const result = await this.userService.unblockUser(id, otherId);
-
 		return result;
 	}
 }

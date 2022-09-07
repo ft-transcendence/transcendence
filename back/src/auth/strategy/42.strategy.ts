@@ -21,6 +21,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, '42auth') {
 			clientSecret: process.env.FORTYTWO_SECRET,
 			callbackURL: process.env.FORTYTWO_CALLBACK,
 			profileFields: {
+				id: 'id',
 				username: 'login',
 				email: 'email',
 				avatar: 'image_url',
