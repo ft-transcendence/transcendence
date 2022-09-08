@@ -128,6 +128,8 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
         socket.emit("unblock user", update);
     }
 
+    global.selectedChat.isBlocked = blockedList.find((map: any) => map.id === global.selectedChat.ownerId)!;
+
     return(
         <div className="preview-zone">
             <div className="preview-chat-search">
