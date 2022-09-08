@@ -17,6 +17,10 @@ services:
                     && yarn run build
                     && yarn global add serve 
                     && serve -s build -l 3000"
+    environment:
+      - PUBLIC_URL=${FRONT_URL}
+      - REACT_APP_BACKEND_URL=${BACK_URL}
+      - REACT_APP_BACKEND_SOCKET=${SOCKET_URL}
     volumes:
       - ./front:/app
     ports:
