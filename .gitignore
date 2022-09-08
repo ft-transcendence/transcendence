@@ -3,6 +3,6 @@ node_modules/
 dist/
 .nfs*
 *.swp
-migrations/
+# migrations/
 package-lock.json
 .vscode/

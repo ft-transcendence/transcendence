@@ -1,5 +1,4 @@
-import { ReactNode, useContext, useState } from "react";
-import { NotifCxt } from "../App";
+import { ReactNode, useState } from "react";
 import { useLocation, Navigate, matchPath } from "react-router-dom";
 import { AuthContext, useAuth } from "../globals/contexts";
 import { logOut } from "../queries/authQueries";
@@ -28,7 +27,6 @@ export const RequireAuth = ({ children }: { children: JSX.Element }) => {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<any>(null);
-  const notif = useContext(NotifCxt);
 
   const signin = (newUser: string | null, callback: VoidFunction) => {
     return fakeAuthProvider.signin(() => {
