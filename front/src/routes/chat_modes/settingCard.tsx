@@ -98,6 +98,7 @@ export function SettingCard({channelId, settingRequest, onSettingRequest}
         <div style={{ display: isPassword ? "" : "none" }}>
           <input
             value={newPass}
+            type="password"
             onChange={(e) => handleString(e.target.value, setNewPass)}
             className="password"
             placeholder="new channel password"
