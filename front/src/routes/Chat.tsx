@@ -23,12 +23,7 @@ export default function Chat() {
 
     useEffect(() => {
 
-        socket.on("connect", () => {
-            console.log("front Connected");
-        });
-
         socket.on("exception", (data) => {
-            console.log(data)
             if (data.message)
                 notif?.setNotifText('error: ' + data.message);
             else
@@ -49,7 +44,6 @@ export default function Chat() {
         })
 
         return (() => {
-            socket.off("connect");
             socket.off("exception");
             socket.off("fetch role");
             socket.off("fetch blocked");

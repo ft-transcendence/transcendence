@@ -137,7 +137,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
 	@SubscribeMessage('send invitation')
 	async gameInvitation(@MessageBody() data: gameInvitation) {
-		console.log('send invitation')
     const client = await this.get__clientSocket(data.targetId);
 		if (client) {
       this.inGameFromService(data.targetId);
@@ -147,7 +146,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
 
   @SubscribeMessage('decline game')
 	async gameDecline(@MessageBody() game: gameInvitation) {
-    console.log('decline invitation')
     const client = await this.get__clientSocket(game.inviterId);
 		if (client) {
       const target = await this.userService.getUser(game.targetId);
