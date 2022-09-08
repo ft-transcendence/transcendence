@@ -31,7 +31,7 @@ const socketOptions = {
   },
 };
 
-export const socket = io("ws://localhost:4000", socketOptions);
+export const socket = io(`${process.env.REACT_APP_BACKEND_SOCKET}`, socketOptions);
 
 export default function App() {
   const [usersStatus, setUsersStatus] = useState<IUserStatus[] | undefined>(

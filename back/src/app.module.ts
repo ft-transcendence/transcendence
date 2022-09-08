@@ -36,6 +36,8 @@ console.log('Using upload dir: ' + process.env.UPLOAD_DIR);
 			envFilePath: environmentFilePath,
 			// global import
 			isGlobal: true,
+			// expand variables
+			expandVariables: true,
 		}),
 		MulterModule,
 		AuthModule,

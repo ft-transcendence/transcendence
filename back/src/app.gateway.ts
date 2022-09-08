@@ -12,7 +12,7 @@ import { ChannelDto } from './chat/dto/chat.dto';
 import { ChatGateway } from './chat/chat.gateway';
 
 @WebSocketGateway({cors: {
-  origin: "http://localhost:3000"}})
+  origin: process.env.FRONT_URL}})
 
 export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
   constructor(
@@ -21,7 +21,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect{
     private readonly chatGateway: ChatGateway,
     private readonly chatService: ChatService, 
   ) {}
-  
+
 	@WebSocketServer()
 	server: Server;
 
