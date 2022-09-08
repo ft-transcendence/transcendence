@@ -15,7 +15,7 @@ const getTime = () => {
 
 export const TAlert = (props: any) => {
   return (
-    <ToastContainer position="bottom-end" className="p-3">
+    <ToastContainer position="bottom-end" className="p-3" style={{zIndex:2000}}>
       <Toast
         onClose={() => props.setShow(false)}
         show={props.show}

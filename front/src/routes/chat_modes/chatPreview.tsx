@@ -339,7 +339,7 @@ function PreviewChat({ data, onClick, selected, blockedList, setHide, setMenuEve
                         <div className="preview-chat-info-1">
                             <p className="preview-chat-name">{data.name}</p>
                             
-                            <p className="preview-chat-msg">{data.lastMsg}</p>
+                            {/* <p className="preview-chat-msg">{data.lastMsg}</p> */}
                         </div>
                     </div>
                 </div>
