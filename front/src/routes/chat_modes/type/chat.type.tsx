@@ -18,6 +18,7 @@ export type chatPreview = {
     unreadCount?: number;
     ownerEmail: string;
     ownerId: number;
+    isBlocked: boolean;
 }
 
 export type newChannel = {
@@ -46,6 +47,7 @@ export type Tag = {
 
 export type updateChannel = {
     channelId: number | undefined;
+    dm: boolean;
     email: string | null;
     password: string;
     targetId: number | string;

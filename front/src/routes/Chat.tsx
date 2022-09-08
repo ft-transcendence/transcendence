@@ -101,6 +101,7 @@ export default function Chat() {
                         setNewRoomRequest(old => {return !old})
                     }}
                     updateStatus={updateStatus}
+                    blockedList={blockedList}
                 />
                 <ChatRoom
                     current={selectedChat}

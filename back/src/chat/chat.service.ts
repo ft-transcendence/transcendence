@@ -641,6 +641,12 @@ export class ChatService {
 
 	async block__channel(data: updateChannel) {
 		try {
+			if (data.dm)
+			{
+				const id = await this.get__id__ByEmail(data.email);
+				const targetId = await this.get__dmTarget(data);
+				await this.userService.blockUser(id, targetId);
+			}
 			const deleted = await this.leave__channel(data);
 			if (!deleted) {
 				await this.prisma.channel.update({
@@ -658,6 +664,32 @@ export class ChatService {
 			}
 		} catch (error) {
 			console.log('block__channel error:', error);
+			throw new WsException(error.message);
+		}
+	}
+
+	async get__dmTarget(data: updateChannel) {
+		try {
+			const target = await this.prisma.channel.findUnique({
+				where: {
+					id: data.channelId,
+				},
+				select: {
+					owners: {
+						where: {
+							NOT: {
+								email: data.email,
+							},
+						},
+						select: {
+							id: true,
+						},
+					},
+				},
+			})
+			return target.owners[0].id;
+		} catch (error) {
+			console.log('get__dmTarget error:', error);
 			throw new WsException(error.message);
 		}
 	}

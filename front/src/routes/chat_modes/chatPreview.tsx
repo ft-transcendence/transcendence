@@ -1,7 +1,7 @@
 import "./chatPreview.css";
 import { useEffect, useState } from "react";
 import { socket } from "../../App"
-import { chatPreview, newDM, fetchDM, oneSuggestion, updateChannel } from "./type/chat.type";
+import { chatPreview, newDM, fetchDM, oneSuggestion, updateChannel, updateUser } from "./type/chat.type";
 import {
     Menu,
     Item,
@@ -19,18 +19,21 @@ declare var global: {
     selectedChat: chatPreview
 }
 
-export default function Preview ({ current, onSelect, onNewRoomRequest, updateStatus}
+export default function Preview ({ current, onSelect, onNewRoomRequest, updateStatus, blockedList}
     : { current: chatPreview | undefined, 
         onSelect: (chatPreview:chatPreview | undefined) => void,
         onNewRoomRequest: () => void,
-        updateStatus: number }) {
+        updateStatus: number,
+        blockedList: []}) {
 
     const [roomPreview, setPreviews] = useState<chatPreview[]>([]);
     const email = localStorage.getItem("userEmail");
+    const { show } = useContextMenu();
+    const [hide, setHide] = useState<any>();
+    const [menuEvent, setMenuEvent] = useState<any>(null);
+
     
     useEffect(() => {
-        // if (updateStatus === 0)
-        //     return;
         socket.emit("read preview", email, (data: chatPreview[] | null) => {
             if (data)
                 setPreviews(data);
@@ -60,6 +63,16 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if (menuEvent)
+        {
+            if (hide)
+                hide();
+            show(menuEvent, {id: JSON.stringify(global.selectedChat)});
+            setMenuEvent(null);
+        }
+    }, [blockedList, show, hide, current])
         
     const addPreview = (channelId: number) => {
         socket.emit("add preview", {channelId: channelId, email: email})
@@ -79,6 +92,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
     function handleLeave(){
         let update: updateChannel = {
             channelId: global.selectedChat.id,
+            dm: global.selectedChat.dm,
             email: email,
             password: "",
             targetId: -1,
@@ -94,6 +108,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
     function handleBlockChannel(){
         let update: updateChannel = {
             channelId: global.selectedChat.id,
+            dm: global.selectedChat.dm,
             email: email,
             password: "",
             targetId: -1,
@@ -105,17 +120,12 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
         onSelect(undefined);
     }
 
-    function handleBlockUser(){
-        let update: updateChannel = {
-            channelId: global.selectedChat.id,
-            email: email,
-            password: "",
-            targetId: -1,
-            private: false,
-            isPassword: false,
-            newPassword: ""
+    function handleUnblockUser(){
+        let update: updateUser = {
+            selfEmail: email,
+            otherId: global.selectedChat.ownerId
         }
-        socket.emit("block user", update);
+        socket.emit("unblock user", update);
     }
 
     return(
@@ -135,32 +145,46 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
                     return (
                     <div key={index}>
                         <PreviewChat
-                            MENU_ID={current?.dm ? MENU_DM : MENU_CHANNEL}
                             data={value} 
                             onClick={()=>{onSelect(value)}}
-                            selected={value.id === current?.id}/>
+                            selected={value.id === current?.id}
+                            blockedList={blockedList}
+                            setHide={setHide} 
+                            setMenuEvent={setMenuEvent}
+                            />
                     </div>);
                 })
                 }
-                <Menu id={MENU_CHANNEL} theme={theme.dark}>
-                    <Item
-                        onClick={handleLeave}>
-                        Leave chat
-                    </Item>
-                    <Item 
-                        onClick={handleBlockChannel}>
-                        Block channel
-                    </Item>
+                <Menu id={JSON.stringify(global.selectedChat)} theme={theme.dark}>
+                    { global.selectedChat?.dm ?
+                       
+                        <>
+                            <Item
+                            onClick={handleLeave}>
+                            delete message
+                            </Item>
+                            { global.selectedChat?.isBlocked ? 
+                                <Item onClick={handleUnblockUser}>unblock user</Item>
+                                    :
+                                <Item onClick={handleBlockChannel}>block user</Item>
+                            }
+                        </>
+                        :
+                        <>
+                            <Item
+                                onClick={handleLeave}>
+                                Leave chat
+                            </Item>
+                            <Item 
+                                onClick={handleBlockChannel}>
+                                Block channel
+                            </Item>
+                        </>
+                    }
+                    
                 </Menu>
                 <Menu id={MENU_DM} theme={theme.dark}>
-                    <Item
-                        onClick={handleLeave}>
-                        delete message
-                    </Item>
-                    <Item 
-                        onClick={handleBlockUser}>
-                        Block user
-                    </Item>
+                    
                 </Menu>
             </div>
         </div>
@@ -264,13 +288,15 @@ function AddRoom({onRequest}
     )
 }
 
-function PreviewChat({ MENU_ID, data, onClick, selected }
-    : { MENU_ID: string,
-        data: chatPreview,
+function PreviewChat({ data, onClick, selected, blockedList, setHide, setMenuEvent }
+    : { data: chatPreview,
         onClick?: () => void,
-        selected: boolean }) {
+        selected: boolean,
+        blockedList: [],
+        setHide: (d: any) => void,
+        setMenuEvent: (event: any) => void,
+    }) {
 
-    const { show } = useContextMenu();
     const [avatarURL, setAvatarURL] = useState("");
 
     useEffect(() => {
@@ -285,12 +311,23 @@ function PreviewChat({ MENU_ID, data, onClick, selected }
         getAvatar();
       }, [data.ownerId]);
 
+    const handleMenu = (event: any) => {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        let { hideAll } = useContextMenu({ 
+            id: JSON.stringify(global.selectedChat)
+        });
+        setHide(hideAll);
+        global.selectedChat = data;
+        global.selectedChat.isBlocked = blockedList.find((map: any) => map.id === data.ownerId)!;
+        setMenuEvent(event);
+    }
+
     return (
         <>
             <div
             className="preview-chat"
             onMouseDown={onClick} style={{backgroundColor: selected ? "rgb(255 255 255 / 29%)" : ""}}
-            onContextMenu={(e) => {global.selectedChat = data; show(e, {id: MENU_ID})}}>
+            onContextMenu={(e) => handleMenu(e)}>
                 <div>
                     <div className="preview-chat-img"
                         style={{backgroundImage: `url("${avatarURL}")`,

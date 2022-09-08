@@ -57,6 +57,7 @@ export type Tag = {
 
 export type updateChannel = {
 	channelId: number;
+	dm: boolean;
 	email: string | null;
 	password: string;
 	targetId: number;
