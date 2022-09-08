@@ -31,14 +31,24 @@ export function GameRequestCard({game, gameRequest, onGameRequest}
 
     const joinGame = () => {
         socket.emit("join_private", {roomId: game!.gameInfo.roomId}, (player: Player) =>{
-            localStorage.setItem("roomid", player.roomId.toString());
-            localStorage.setItem("playernb", player.playerNb.toString());
-            onGameRequest();
-            navigate("/app/privateGame");
+            if (player.roomId !== undefined && player.playerNb !== undefined) { 
+                localStorage.setItem("roomid", player.roomId.toString());
+                localStorage.setItem("playernb", player.playerNb.toString());
+                onGameRequest();
+                navigate("/app/privateGame");
+            }
+            else 
+            {
+                socket.disconnect();
+                socket.connect();
+                onGameRequest();
+            }
         });
     }
 
     const declineGame = () => {
+        socket.disconnect();
+        socket.connect();
         socket.emit("decline game", (game));
         onGameRequest();
     }
