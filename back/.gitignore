@@ -9,7 +9,7 @@
 /image_dir
 
 # prisma migrations
-/prisma/migrations/*
+# /prisma/migrations/*
 
 # Logs
 logs

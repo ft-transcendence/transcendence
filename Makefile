@@ -21,7 +21,7 @@ down:
 
 # CLEAN DATABASES
 dbclean: down
-	rm -rf back/prisma/migrations && docker volume prune -f
+	docker volume prune -f
 
 clean: dbclean
 	rm -rf back/dist back/node_modules front/node_modules
