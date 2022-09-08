@@ -117,6 +117,8 @@
                 width: 40%;
                 /*font-size: 2vh;*/
                 color: white;
+                text-overflow: ellipsis;
+                overflow: hidden;
             }
 
 .Field {

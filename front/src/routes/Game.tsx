@@ -223,7 +223,7 @@ export default class Game extends React.Component<PropsPong, StatePong> {
       redirectChat: false,
     };
     if (this.props.pvtGame === false) 
-      this.socket = io("ws://localhost:4000", this.socketOptions);
+      this.socket = io(`${process.env.REACT_APP_BACKEND_SOCKET}`, this.socketOptions);
     else
       this.socket = chatSocket;
     this.onSettingsKeyDown = this.onSettingsKeyDown.bind(this);

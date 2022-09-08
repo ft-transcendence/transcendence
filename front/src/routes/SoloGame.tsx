@@ -282,7 +282,7 @@ export default class SoloGame extends React.Component<
       this.lock = 1;
       this.updateBall();
       this.updatePaddle();
-      if (this.state.gameStarted == false) clearInterval(this.interval);
+      if (this.state.gameStarted === false) clearInterval(this.interval);
       this.setState(
         { ballX: this.xBall, ballY: this.yBall, paddleLeftY: this.yPaddle },
         () => (this.lock = 0)

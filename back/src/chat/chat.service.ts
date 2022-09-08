@@ -468,7 +468,7 @@ export class ChatService {
 
 	async new__channel(info: ChannelDto) {
 		try {
-			const password = await argon.hash(info.password);
+			const password = info.password;
 			const channel = await this.prisma.channel.create({
 				data: {
 					name: info.name,

@@ -21,7 +21,7 @@ async function bootstrap() {
 
 	// Enable CORS
 	app.enableCors({
-		origin: process.env.SITE_URL + ':' + process.env.FRONT_PORT,
+		origin: process.env.FRONT_URL,
 	});
 
 	// Setup Prisma
@@ -39,7 +39,7 @@ async function bootstrap() {
 	app.useGlobalGuards(new JwtGuard(reflector));
 
 	// start api to listen on port 4000
-	await app.listen(process.env.PORT);
+	await app.listen(process.env.BACK_PORT);
 }
 
 // eslint-disable-next-line unicorn/prefer-top-level-await

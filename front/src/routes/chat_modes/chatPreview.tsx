@@ -12,6 +12,7 @@ import "./context.css";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import { getUserAvatarQuery } from "../../queries/avatarQueries";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MENU_CHANNEL = "menu_channel";
 const MENU_DM = "menu_dm";
 
@@ -72,6 +73,7 @@ export default function Preview ({ current, onSelect, onNewRoomRequest, updateSt
             show(menuEvent, {id: JSON.stringify(global.selectedChat)});
             setMenuEvent(null);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [blockedList, show, hide, current])
         
     const addPreview = (channelId: number) => {
