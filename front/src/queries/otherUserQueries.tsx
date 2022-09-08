@@ -8,7 +8,7 @@ export const getOtherUser = (otherUsername: number) => {
 };
 
 const fetchGetOtherUser = async (url: string, body: any) => {
-  let fetchUrl = "http://localhost:4000/users/" + url;
+  let fetchUrl = process.env.REACT_APP_BACKEND_URL + "/users/" + url;
   try {
     const response = await fetch(fetchUrl, {
       method: "POST",

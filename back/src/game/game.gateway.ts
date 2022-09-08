@@ -16,7 +16,7 @@ import { AppGateway } from 'src/app.gateway';
 
 @WebSocketGateway({
 	cors: {
-		origin: 'http://localhost:3000',
+		origin: process.env.FRONT_URL,
 	},
 })
 export class GameGateway {
