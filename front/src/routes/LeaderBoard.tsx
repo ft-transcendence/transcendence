@@ -27,7 +27,6 @@ export default function LeaderBoard() {
         }
       };
       updateLeaderBoard();
-      console.log(data);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isFetched]);
 
@@ -127,7 +126,7 @@ function OneRow({rank, id, username, winRate, gamesWon, gamesLost, gamesPlayed, 
                     <div className="top-info">
                         <div className="top-username">{username}</div>
                         <BadgeReward rank={rank}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate === 0 ? 0: winRate.toFixed(2)}</div>
                     </div>
                 </div>
                 );
@@ -143,7 +142,7 @@ function OneRow({rank, id, username, winRate, gamesWon, gamesLost, gamesPlayed, 
                     <div className="top-info">
                         <div className="top-username">{username}</div>
                         <BadgeReward rank={rank}/>
-                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate}</div>
+                        <div className="top-record">{gamesWon}/{gamesLost}/{gamesPlayed} {winRate === 0 ? 0: winRate.toFixed(2)}</div>
                     </div>
                 </div>
                 );
@@ -166,7 +165,7 @@ function OneRow({rank, id, username, winRate, gamesWon, gamesLost, gamesPlayed, 
                             {gamesWon}/{gamesLost}/{gamesPlayed}
                         </div>
                         <div className="rate">
-                            {winRate}
+                            {winRate === 0 ? 0: winRate.toFixed(2)}
                         </div>
                     </div>
                 )
