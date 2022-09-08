@@ -149,6 +149,9 @@
     {
         color: white;
         font-size: large;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         text-align: left;
         margin-bottom: auto;
     }

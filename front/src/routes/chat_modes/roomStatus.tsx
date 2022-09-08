@@ -72,7 +72,8 @@ export default function RoomStatus({current, role, outsider, updateStatus, block
             targetId: member.id,
             private: false,
             isPassword: false,
-            newPassword: ""
+            newPassword: "",
+            dm: false
         }
         socket.emit("invite to channel", update, () => {
             socket.emit('fetch new invite');
@@ -269,7 +270,8 @@ function Status({users, current, role, blockedList}
             targetId: global.selectedUser.id,
             private: false,
             isPassword: false,
-            newPassword: ""
+            newPassword: "",
+            dm: false
         }
         socket.emit("be admin", update);
     }
@@ -282,7 +284,8 @@ function Status({users, current, role, blockedList}
             targetId: global.selectedUser.id,
             private: false,
             isPassword: false,
-            newPassword: ""
+            newPassword: "",
+            dm: false
         }
         socket.emit("not admin", update);
     }
@@ -295,7 +298,8 @@ function Status({users, current, role, blockedList}
             targetId: global.selectedUser.id,
             private: false,
             isPassword: false,
-            newPassword: ""
+            newPassword: "",
+            dm: false
         }
         socket.emit("kick out", update);
     }
@@ -374,7 +378,8 @@ function Status({users, current, role, blockedList}
 function OneStatus({data, setSelData, setHide, blockedList}
     : { data: oneUser,
         setSelData: (d : any) => void,
-        setHide: (d: any) => void, blockedList: [] }) {
+        setHide: (d: any) => void,
+        blockedList: [] }) {
 
     const email = localStorage.getItem("userEmail");
     const [avatarURL, setAvatarURL] = useState("");
@@ -464,7 +469,8 @@ function JoinChannel({channelId, outsider, isPassword}
             targetId: -1,
             private: false,
             isPassword: false,
-            newPassword: ""
+            newPassword: "",
+            dm: false
         }
         socket.emit("join channel", update);
         setPass("");

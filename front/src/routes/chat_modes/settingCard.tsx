@@ -43,14 +43,14 @@ export function SettingCard({channelId, settingRequest, onSettingRequest}
 
     const onUpdate = () => {
         let data: updateChannel = {
-            channelId: channelId,
-            email: null,
-            password: "",
-            targetId: 0,
-            private: isPrivate,
-            isPassword: isPassword,
-            // ownerPassword: ownerPass,
-            newPassword: newPass
+          channelId: channelId,
+          email: null,
+          password: "",
+          targetId: 0,
+          private: isPrivate,
+          isPassword: isPassword,
+          newPassword: newPass,
+          dm: false
         }
         socket.emit("update setting", data);
         onSettingRequest();
@@ -98,6 +98,7 @@ export function SettingCard({channelId, settingRequest, onSettingRequest}
         <div style={{ display: isPassword ? "" : "none" }}>
           <input
             value={newPass}
+            type="password"
             onChange={(e) => handleString(e.target.value, setNewPass)}
             className="password"
             placeholder="new channel password"

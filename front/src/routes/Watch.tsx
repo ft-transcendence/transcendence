@@ -221,19 +221,19 @@ export default class Watch extends React.Component < {}, StatePong > {
                         {this.state.game_list.map((item) => {
                             return (
                                 <tr onClick={this.joinGame(item.gameID!)} className="Row">
-                                    <td><div className='LittleAvatar' style={{
+                                    {/* <td><div className='LittleAvatar' style={{
                                 backgroundImage: `url("${item.avatar1URL}")`,
                                 backgroundSize: "cover",
                                 backgroundPosition: "center",
-                              }}></div></td>
+                              }}></div></td> */}
                                     <td>{ item.player1Name }</td>
                                     <td> VS </td>
                                     <td>{ item.player2Name }</td>
-                                    <td><div className='LittleAvatar' style={{
+                                    {/* <td><div className='LittleAvatar' style={{
                                 backgroundImage: `url("${item.avatar2URL}")`,
                                 backgroundSize: "cover",
                                 backgroundPosition: "center",
-                              }}></div></td>
+                              }}></div></td> */}
                                 </tr>
                             );
                         })}

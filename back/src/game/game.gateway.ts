@@ -179,6 +179,7 @@ export class GameGateway {
 			playerNb: 1,
 			roomId: GameService.rooms[GameService.rooms.length - 1].id,
 		};
+		this.appGateway.inGameFromService(client.data.id);
 		return player;
 	}
 

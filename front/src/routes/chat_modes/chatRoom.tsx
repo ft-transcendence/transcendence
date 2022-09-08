@@ -228,8 +228,7 @@ function InputArea({channelId, email}
                         if (e.key === "Enter")
                             sendMsg()}}/>
                 <div className="emoji-button" onMouseDown={() => {
-                    setMyPicker(b => !b);
-                    console.log("HEY")}}>
+                    setMyPicker(b => !b)}}>
                     <EmojiIcon/>
                 </div>
                 {
