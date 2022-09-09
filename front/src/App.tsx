@@ -29,6 +29,7 @@ const socketOptions = {
       },
     },
   },
+  path: '/sockets',
 };
 
 export const socket = io(`${process.env.REACT_APP_BACKEND_SOCKET}`, socketOptions);

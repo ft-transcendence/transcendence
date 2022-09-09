@@ -189,6 +189,7 @@ export default class Game extends React.Component<PropsPong, StatePong> {
         },
       },
     },
+    path: '/sockets',
   };
 
   socket: Socket;

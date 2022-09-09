@@ -23,8 +23,6 @@ services:
       - REACT_APP_BACKEND_SOCKET=${SOCKET_URL}
     volumes:
       - ./front:/app
-    ports:
-      - "3000:3000"
     restart: unless-stopped
     networks:
       - backend
@@ -50,9 +48,6 @@ services:
     volumes:
       - ./back:/app
       - uploads:/app/image_dir
-    ports:
-      - "4000:4000"
-      - "5555:5555"
     restart: unless-stopped
     networks:
       - backend
@@ -62,8 +57,6 @@ services:
   postgres:
     image: postgres:14-alpine
     container_name: postgres
-    ports:
-      - 5432:5432
     restart: unless-stopped
     volumes:
       - data:/var/lib/postgresql/data
@@ -82,7 +75,7 @@ services:
 ##      - ./nginx/ssl-certs/cert.crt:/cert.crt
 ##      - ./nginx/ssl-certs/cert.key:/cert.key
     ports:
-      - "1024:1024"
+      - "80:80"
 #    command: sh -c "tail -f /dev/null"
     restart: unless-stopped
     networks:
