@@ -22,7 +22,7 @@ if (process.env.ENVIRONMENT === 'PRODUCTION') {
 // Log
 console.log(`Running in ` + process.env.ENVIRONMENT + ` mode`);
 console.log('Using environment file: ' + environmentFilePath);
-console.log('Using port: ' + process.env.PORT);
+console.log('Using port: ' + process.env.BACK_PORT);
 console.log('Using upload dir: ' + process.env.UPLOAD_DIR);
 
 /*
